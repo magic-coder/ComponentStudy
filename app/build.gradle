@@ -1,0 +1,175 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.jakewharton.butterknife'
+//获取产品的名字
+def getProductName() {
+    return "bcs"
+}
+
+def module_lib = ""
+//获取当前系统的时间
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd_HH_mm_ss")
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.richfit.barcodesystemproduct"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+        manifestPlaceholders = [CHANNEL: "qhyt"]
+    }
+
+    signingConfigs {
+        //庆阳
+        sign_qingyang {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qingyang_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
+        //青海
+        sign_qinghai {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qinghai_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
+        //西南管道
+        sign_xinangd {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_xinangd_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
+    }
+
+
+    buildTypes {
+        release {
+            // 正式版不显示log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //修改生成的apk名字，格式为 app名_版本号_打包时间_渠道名_release.apk
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def oldFile = output.outputFile
+                    if (variant.buildType.name.equals('release')) {
+                        def releaseApkName = getProductName() + "_v${defaultConfig.versionName}_${releaseTime()}_" + variant.productFlavors[0].name + '_release.apk'
+                        output.outputFile = new File(oldFile.parent, releaseApkName)
+                    }
+
+                }
+            }
+        }
+
+        debug {
+            // 正式版不显示log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            shrinkResources false
+            minifyEnabled false
+        }
+    }
+
+
+    productFlavors {
+        qingyang {
+            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8092/lhbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"bizConfig_QingYang.json"'
+            buildConfigField "String", "APP_NAME", '"qysh"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 2
+            versionName "1.1"
+            signingConfig signingConfigs.sign_qingyang
+        }
+
+        qinghai {
+            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8087/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"QHYT_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"qhyt"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 1
+            versionName "1.0"
+            signingConfig signingConfigs.sign_qinghai
+        }
+
+        xngd {
+            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8085/gdbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"XNGD_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"xngd"'
+            buildConfigField "boolean", "ISSERVICEDL", 'true'
+            versionCode 1
+            versionName "1.0"
+            signingConfig signingConfigs.sign_xinangd
+
+        }
+    }
+
+    productFlavors.all { flavor ->
+        flavor.manifestPlaceholders = [CHANNEL: name]
+    }
+    productFlavors.all { flavor ->
+        module_lib = flavor.name
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    //recommend
+    dexOptions {
+        jumboMode = true
+        javaMaxHeapSize "4g"
+        jumboMode true
+    }
+    packagingOptions {
+        exclude('META-INF/rxjava.properties')
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+}
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.jakewharton:butterknife:8.6.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
+    println("============dependencies==============" + module_lib)
+    switch (module_lib) {
+        case "qysh":
+            break;
+
+        case "qhyt":
+            println("==============正在编译青海油田");
+//            compile project(':module_qhyt')
+            break;
+        case "xngd":
+            println("==============正在编译西南管道");
+//            compile project(':module_xngd')
+            break
+    }
+    compile project(':module_qhyt')
+
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="qhyt_inspection_results">
+        <item>合格</item>
+        <item>不合格</item>
+    </string-array>
+
+
+    <string-array name="qhyt_strategy_codes">
+        <item>请选择</item>
+        <item>1001_接收</item>
+        <item>1004_拒收</item>
+    </string-array>
+
+
+    <string-array name="qhyt_move_reasons">
+        <item>请选择</item>
+        <item>0001_质量低劣</item>
+        <item>0002_未完成的</item>
+        <item>0003_损坏的</item>
+    </string-array>
+
+
+    <string-array name="qhyt_package_conditions">
+        <item>完好</item>
+        <item>散箱</item>
+        <item>包</item>
+        <item>件</item>
+        <item>无包装</item>
+        <item>其他</item>
+    </string-array>
+
+
+</resources>

@@ -1,0 +1,19 @@
+package com.richfit.common_lib.lib_crash;
+
+import java.io.File;
+
+/**
+ * 将崩溃日志上传到服务器
+ * Created by monday on 2016/4/8.
+ */
+public class HttpCrashReport extends BaseCrashReport {
+
+    public HttpCrashReport() {
+    }
+
+
+    @Override
+    public void sendLogFileToTarget(final File logFile) {
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+}

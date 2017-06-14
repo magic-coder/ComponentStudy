@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "tabTitle": "抬头",
+    "fragmentTag": "qhyt_cwtz_header_fragment_tag",
+    "bizType": "100",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.sdk_cwtz.head.LAHeadFragment"
+  },
+  {
+    "id": "2",
+    "tabTitle": "数据采集",
+    "fragmentTag": "qhyt_cwtz_collect_fragment_tag",
+    "bizType": "100",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 2,
+    "className": "com.richfit.sdk_cwtz.collect.LACollectFragment"
+  }
+]
