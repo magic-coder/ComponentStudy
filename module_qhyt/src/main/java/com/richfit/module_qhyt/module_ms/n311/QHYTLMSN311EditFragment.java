@@ -1,7 +1,12 @@
 package com.richfit.module_qhyt.module_ms.n311;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.richfit.common_lib.widget.RichEditText;
@@ -30,11 +35,8 @@ import io.reactivex.FlowableOnSubscribe;
 public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresenterImp> {
 
 
-    @BindView(R2.id.et_send_location)
     RichEditText etSendLocation;
-    @BindView(R2.id.tv_special_inv_flag)
     EditText etSpecialInvFlag;
-    @BindView(R2.id.tv_special_inv_num)
     EditText etSpecialInvNum;
 
     String specialConvert = "N";
@@ -53,6 +55,17 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
     protected void initView() {
 
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        etSendLocation = (RichEditText) mView.findViewById(R.id.et_send_location);
+        etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
+        etSpecialInvNum = (EditText) mView.findViewById(R.id.et_special_inv_num);
+        return mView;
+    }
+
 
 
     @Override

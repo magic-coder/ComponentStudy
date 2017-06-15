@@ -40,4 +40,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
     compile project(':sdk_cwtz')
     compile project(':sdk_sxcl')
+    compile project(':sdk_wzck')
 }

@@ -965,6 +965,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 cursor.close();
             db.close();
         }
+        Log.e("yff", "Fragment配置大小 = " + bizFragmentConfigs.size());
         return bizFragmentConfigs;
     }
 
@@ -1262,7 +1263,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         }
         SQLiteDatabase db = getReadableDB();
         clearStringBuffer();
-        sb.append("select location from base_location where storage_num=? ");
+        sb.append("select distinct location from base_location where storage_num=? ");
         if (!TextUtils.isEmpty(keyWord)) {
             sb.append("and location like ").append("'%").append(keyWord).append("%'");
         } else if (defaultItemNum > 0) {
@@ -1291,7 +1292,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         while (cursor.moveToNext()) {
             batch_flag = cursor.getString(0);
         }
-        Log.e("yff","工厂 = " + workId + "物料 = " + materialId + ";的批次管理状态 = " + batch_flag);
+        Log.e("yff", "工厂 = " + workId + "物料 = " + materialId + ";的批次管理状态 = " + batch_flag);
         cursor.close();
         db.close();
         return batch_flag;

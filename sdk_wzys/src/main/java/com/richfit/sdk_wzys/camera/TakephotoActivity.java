@@ -16,12 +16,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_eventbus.Event;
+import com.richfit.common_lib.lib_eventbus.EventBusUtil;
+import com.richfit.common_lib.lib_eventbus.EventCode;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
-import com.richfit.common_lib.lib_rx.SimpleRxBus;
-import com.richfit.common_lib.rx_event.ReleaseBarcodeReaderEvent;
 import com.richfit.common_lib.utils.AppCompat;
 import com.richfit.common_lib.utils.FileUtil;
 import com.richfit.common_lib.utils.StatusBarCompat;
@@ -31,7 +31,6 @@ import com.richfit.sdk_wzys.R;
 import com.richfit.sdk_wzys.R2;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import butterknife.BindView;
@@ -72,14 +71,15 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
         setupFragment();
         mBtnTakePhoto.setOnClickListener(this);
         StatusBarCompat.compat(this, AppCompat.getColor(R.color.colorPrimaryDark, this));
+        Event<Boolean> event = new Event<>(EventCode.EVENT_BARCODEREADER_CODE);
+        event.setData(true);
+        EventBusUtil.sendEvent(event);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ReleaseBarcodeReaderEvent event = new ReleaseBarcodeReaderEvent();
-        event.isReleaseBarcodeReader = true;
-        SimpleRxBus.getInstance().post(event);
         waitCamera();
     }
 
@@ -225,19 +225,19 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
     /**
      * 强制actionbar显示overflow菜单
      */
-    private void setOverflowMenu() {
-        try {
-            ViewConfiguration config = ViewConfiguration.get(this);
-            Field menuKeyField = ViewConfiguration.class
-                    .getDeclaredField("sHasPermanentMenuKey");
-            if (menuKeyField != null) {
-                menuKeyField.setAccessible(true);
-                menuKeyField.setBoolean(config, false);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void setOverflowMenu() {
+//        try {
+//            ViewConfiguration config = ViewConfiguration.get(this);
+//            Field menuKeyField = ViewConfiguration.class
+//                    .getDeclaredField("sHasPermanentMenuKey");
+//            if (menuKeyField != null) {
+//                menuKeyField.setAccessible(true);
+//                menuKeyField.setBoolean(config, false);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     @Override
     public void onClick(View v) {

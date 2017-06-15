@@ -3,6 +3,9 @@ package com.richfit.common_lib.lib_base_sdk.base_detail;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.richfit.common_lib.lib_eventbus.Event;
+import com.richfit.common_lib.lib_eventbus.EventBusUtil;
+import com.richfit.common_lib.lib_eventbus.EventCode;
 import com.richfit.common_lib.lib_interface.IBarcodeSystemMain;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -70,14 +73,13 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
         if (mContext instanceof IBarcodeSystemMain) {
             IBarcodeSystemMain activity = (IBarcodeSystemMain) mContext;
             activity.showFragmentByPosition(position);
-            if (mRxBus != null && mSimpleRxBus.hasSubscribers()) {
-                mSimpleRxBus.post(true);
-            }
-            if(mRxBus != null && mRxBus.hasSubscribers()) {
-                mRxBus.post(true);
-            }
+            Event<Boolean> event = new Event<>(EventCode.EVENT_CLEARHEAUI);
+            event.setData(true);
+            EventBusUtil.sendEvent(event);
         }
     }
+
+
 
     @Override
     public void setTransFlag(String bizType, String transId, String transFlag) {

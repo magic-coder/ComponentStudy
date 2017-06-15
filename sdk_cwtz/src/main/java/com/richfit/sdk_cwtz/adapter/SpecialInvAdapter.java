@@ -29,7 +29,6 @@ public class SpecialInvAdapter extends CommonAdapter<InventoryEntity> {
         if (TextUtils.isEmpty(item.specialInvFlag) || TextUtils.isEmpty(item.specialInvNum)) {
             viewHolder.setText(android.R.id.text1, "自有");
         } else {
-
             viewHolder.setText(android.R.id.text1, item.specialInvFlag + "_" + item.specialInvNum);
         }
     }

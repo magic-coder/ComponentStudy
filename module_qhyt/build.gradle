@@ -44,4 +44,6 @@ dependencies {
     compile project(':sdk_wzrs')
     compile project(':sdk_cwtz')
     compile project(':sdk_sxcl')
+    compile project(':sdk_wzpd')
+    compile project(':sdk_xxcx')
 }

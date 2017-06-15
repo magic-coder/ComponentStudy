@@ -177,7 +177,7 @@
 
 
             <com.richfit.common_lib.widget.RichEditText
-                android:id="@+id/et_send_location"
+                android:id="@id/et_send_location"
                 style="@style/RightRichEditTextItemStyle" />
         </LinearLayout>
 

@@ -49,7 +49,8 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
         }
 
         ResourceSubscriber<List<RefDetailEntity>> subscriber =
-                Flowable.zip(mRepository.getReference(refNum, refType, bizType, moveType, refLineId, userId),
+                Flowable.zip(mRepository.getReference(refNum, refType, bizType, moveType, refLineId, userId)
+                        .flatMap(refData->Flowable.just(addBatchManagerStatus(refData))),
                         mRepository.getTransferInfo(refNum, refCodeId, bizType, refType, userId, "", "", "", "")
                                 .onErrorReturnItem(new ReferenceEntity()),
                         (refData, cache) -> createNodesByCache(refData, cache))
@@ -193,6 +194,7 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
                     cachedEntity.recordUnit = node.recordUnit;
                     cachedEntity.unitRate = node.unitRate;
                     cachedEntity.materialUnit = node.materialUnit;
+                    cachedEntity.batchManagerStatus = node.batchManagerStatus;
                     //仓位级别的数据
                     cachedEntity.transId = loc.transId;
                     cachedEntity.location = loc.location;

@@ -5,8 +5,6 @@ import android.support.annotation.ArrayRes;
 import android.support.annotation.StringRes;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_rx.RxBus;
-import com.richfit.common_lib.lib_rx.SimpleRxBus;
 import com.richfit.common_lib.lib_tree_rv.RecycleTreeViewHelper;
 import com.richfit.data.constant.Global;
 import com.richfit.data.repository.DataInjection;
@@ -44,14 +42,10 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
     protected Context mContext;
     private CompositeDisposable mCompositeDisposable;
     protected Repository mRepository;
-    protected SimpleRxBus mSimpleRxBus;
-    protected RxBus mRxBus;
 
     public BasePresenter(Context context) {
         this.mContext = context;
         mRepository = DataInjection.getRepository(context.getApplicationContext(),BaseApplication.baseUrl);
-        mRxBus = RxBus.getInstance();
-        mSimpleRxBus = SimpleRxBus.getInstance();
     }
 
     @Override
@@ -60,6 +54,7 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
         this.mCompositeDisposable = new CompositeDisposable();
         onStart();
     }
+
 
     /**
      * Presenter层创建后，在onStart可注册一些监听
@@ -81,12 +76,12 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
     //解除view与presenter的绑定
     @Override
     public void detachView() {
+        unSubscribe();
         mContext = null;
         if (mViewRef != null) {
             mViewRef.clear();
             mViewRef = null;
         }
-        unSubscribe();
     }
 
     //获取View
@@ -113,9 +108,6 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
     public void unSubscribe() {
         if (mCompositeDisposable != null && !mCompositeDisposable.isDisposed()) {
             mCompositeDisposable.dispose();
-        }
-        if(mSimpleRxBus.hasSubscribers()) {
-            mSimpleRxBus.unregisterAll();
         }
     }
 
@@ -296,7 +288,7 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
         return refData;
     }
 
-    private void addBatchManagerStatus(List<RefDetailEntity> list, boolean isOpenBatchManager) {
+    protected void addBatchManagerStatus(List<RefDetailEntity> list, boolean isOpenBatchManager) {
         for (RefDetailEntity item : list) {
             item.batchManagerStatus = isOpenBatchManager;
         }

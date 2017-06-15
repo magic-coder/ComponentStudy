@@ -367,6 +367,9 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 //注意单据中有lineNum105
                 cachedData.lineNum105 = data.lineNum105;
                 cachedData.insLot = data.insLot;
+                cachedData.recWorkCode = data.recWorkCode;
+                cachedData.recWorkId = data.recWorkId;
+                cachedData.recWorkName = data.recWorkName;
                 nodes.add(cachedData);
             }
         }

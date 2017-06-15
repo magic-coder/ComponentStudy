@@ -3,7 +3,6 @@ package com.richfit.barcodesystemproduct.splash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.richfit.barcodesystemproduct.BuildConfig;
@@ -48,11 +47,10 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
         mPresenter = new SplashPresenterImp(this);
     }
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        setStatusBar(false);
-        super.onCreate(savedInstanceState);
 
+    @Override
+    protected boolean isOpenStatusBar() {
+        return false;
     }
 
     @Override

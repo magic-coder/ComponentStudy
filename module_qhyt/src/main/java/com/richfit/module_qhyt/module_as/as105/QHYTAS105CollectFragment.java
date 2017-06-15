@@ -116,8 +116,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
                 final String insLot = entity.insLot;
                 //如果明细中没有打开了批次管理,那么只匹配物料编码
                 if (materialNum.equalsIgnoreCase(entity.materialNum) && !TextUtils.isEmpty(insLot))
-                    insLosts.add(entity.lineNum);
-
+                    insLosts.add(insLot);
             }
         }
         if (insLosts.size() == 0) {

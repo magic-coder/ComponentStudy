@@ -1,12 +1,19 @@
 package com.richfit.common_lib.lib_base_sdk.base_head;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.richfit.common_lib.lib_eventbus.Event;
+import com.richfit.common_lib.lib_eventbus.EventBusUtil;
+import com.richfit.common_lib.lib_eventbus.EventCode;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.ResultEntity;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by monday on 2017/3/18.
@@ -19,24 +26,31 @@ public class BaseHeadPresenterImp<V extends IBaseHeadView> extends BasePresenter
 
     public BaseHeadPresenterImp(Context context) {
         super(context);
+        EventBusUtil.register(this);
     }
 
 
     @Override
     protected void onStart() {
         mView = getView();
-        mSimpleRxBus.register(Boolean.class)
-                .subscribe(aBoolean -> {
-                    if (mView != null) {
-                        mView.clearAllUIAfterSubmitSuccess();
-                    }
-                });
-        mRxBus.toFlowable(Boolean.class)
-                .subscribe(aBoolean -> {
-                    if (mView != null) {
-                        mView.clearAllUIAfterSubmitSuccess();
-                    }
-                });
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onClearHeadUI(Event<Boolean> event) {
+        if (event.getData() && event.getCode() == EventCode.EVENT_CLEARHEAUI) {
+            mView = getView();
+            Log.d("yff", "接收到清除UI信号");
+            if (mView != null) {
+                mView.clearAllUIAfterSubmitSuccess();
+            }
+        }
+    }
+
+    @Override
+    public void detachView() {
+        EventBusUtil.unregister(this);
+        super.detachView();
     }
 
     @Override

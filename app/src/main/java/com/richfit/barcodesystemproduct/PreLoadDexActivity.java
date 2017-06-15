@@ -2,13 +2,12 @@ package com.richfit.barcodesystemproduct;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.richfit.common_lib.lib_multisp.SPHelper;
 
 import java.util.List;
 
@@ -29,8 +28,8 @@ public class PreLoadDexActivity extends AppCompatActivity {
                 super.run();
                 try {
                     MultiDex.install(getApplication());
-                    SPHelper.init(PreLoadDexActivity.this.getApplicationContext());
-                    SPHelper.save("dex_opt",true);
+                    SharedPreferences sp = getSharedPreferences("dexOpt", MODE_MULTI_PROCESS);
+                    sp.edit().putBoolean("dex_opt", true).commit();
                     killCurrentProcess(PreLoadDexActivity.this);
                 } catch (Exception e) {
                     killCurrentProcess(PreLoadDexActivity.this);

@@ -76,7 +76,7 @@ public class MSNCollectPresenterImp extends BasePresenter<IMSNCollectView>
         RxSubscriber<ReferenceEntity> subscriber = mRepository.getTransferInfoSingle("", "", bizType, "",
                 workId, invId, recWorkId, recInvId, materialNum, batchFlag, "", refDoc, refDocItem, userId)
                 .filter(refData -> refData != null && refData.billDetailList.size() > 0)
-                .flatMap(refData -> Flowable.just(addBatchManagerStatus(refData)))
+                .flatMap(refData -> Flowable.just(addBatchManagerStatus(refData,workId)))
                 .map(refData -> calcTotalQuantity(refData))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<ReferenceEntity>(mContext, "正在获取缓存信息...") {
@@ -402,5 +402,21 @@ public class MSNCollectPresenterImp extends BasePresenter<IMSNCollectView>
                         }
                     }
                 });
+    }
+
+    protected ReferenceEntity addBatchManagerStatus(ReferenceEntity refData, String workId) {
+        if ("Y".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
+            addBatchManagerStatus(refData.billDetailList, true);
+        } else if ("N".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
+            addBatchManagerStatus(refData.billDetailList, false);
+        } else if ("T".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
+            List<RefDetailEntity> list = refData.billDetailList;
+            for (RefDetailEntity data : list) {
+                String batchManagerStatus = mRepository.getBatchManagerStatus(workId, data.materialId);
+                //如果是X那么表示打开了批次管理
+                data.batchManagerStatus = "X".equalsIgnoreCase(batchManagerStatus);
+            }
+        }
+        return refData;
     }
 }

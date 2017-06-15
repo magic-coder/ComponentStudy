@@ -41,7 +41,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         implements ILACollectView {
 
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
@@ -49,18 +49,18 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     @BindView(R2.id.tv_material_unit)
     TextView tvMaterialUnit;
     @BindView(R2.id.et_batch_flag)
-    EditText etBatchFlag;
+    protected EditText etBatchFlag;
     @BindView(R2.id.et_send_location)
-    RichEditText etSendLocation;
+    protected RichEditText etSendLocation;
     @BindView(R2.id.tv_send_inv_quantity)
-    TextView tvSendInvQuantity;
+    protected TextView tvSendInvQuantity;
     @BindView(R2.id.et_rec_location)
-    EditText etRecLocation;
+    protected EditText etRecLocation;
     @BindView(R2.id.et_adjust_quantity)
-    EditText etRecQuantity;
+    protected EditText etRecQuantity;
     //增加特殊库存
     @BindView(R2.id.sp_special_inv)
-    Spinner spSpecialInv;
+    protected Spinner spSpecialInv;
     SpecialInvAdapter mAdapter;
     List<InventoryEntity> mInventoryDatas;
 
@@ -161,7 +161,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         tvMaterialDesc.setText(materialEntity.materialDesc);
         tvMaterialGroup.setText(materialEntity.materialGroup);
         tvMaterialUnit.setText(materialEntity.unit);
-        manageBatchFlagStatus(etBatchFlag,materialEntity.batchManagerStatus);
+        manageBatchFlagStatus(etBatchFlag, materialEntity.batchManagerStatus);
         if (TextUtils.isEmpty(getString(etBatchFlag))) {
             etBatchFlag.setText(materialEntity.batchFlag);
         }
@@ -190,8 +190,8 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         }
 
         //如果没有打开批次管理，那么从本地获取库存
-        final String queryType = "Y" .equalsIgnoreCase(Global.WMFLAG)?
-                getString(R.string.inventoryQueryTypeSAPLocation):
+        final String queryType = "Y".equalsIgnoreCase(Global.WMFLAG) ?
+                getString(R.string.inventoryQueryTypeSAPLocation) :
                 getString(R.string.inventoryQueryTypePrecise);
 
         mPresenter.getInventoryInfo(queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
@@ -322,7 +322,10 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
             result.businessType = mRefData.bizType;
-            result.batchFlag = CommonUtil.toUpperCase(getString(etBatchFlag));
+            int position = spSpecialInv.getSelectedItemPosition();
+            //如果没有打开，那么返回服务给出的默认批次
+            result.batchFlag = !isOpenBatchManager ? CommonUtil.toUpperCase(mInventoryDatas.get(position).batchFlag)
+                    : CommonUtil.toUpperCase(getString(etBatchFlag));
             result.workId = mRefData.workId;
             result.invId = mRefData.invId;
             result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
@@ -330,9 +333,10 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             result.recLocation = CommonUtil.toUpperCase(getString(etRecLocation));
             result.quantity = getString(etRecQuantity);
             result.userId = Global.USER_ID;
-            result.invType = "01";
-            result.specialInvFlag = mInventoryDatas.get(spSpecialInv.getSelectedItemPosition()).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(spSpecialInv.getSelectedItemPosition()).specialInvNum;
+            result.invType = mInventoryDatas.get(position).invType;
+            result.invFlag = mInventoryDatas.get(position).invFlag;
+            result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
@@ -388,7 +392,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
      *
      * @return
      */
-    protected String getInventoryQueryType(){
+    protected String getInventoryQueryType() {
         return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -56,9 +57,9 @@ public class WelcomePresenterImp extends BasePresenter<WelcomeContract.View>
                 Flowable.just(configFileName)
                         .map(name -> LocalFileUtil.getStringFormAsset(mContext, name))
                         .map(json -> parseJson(json))
-                         .filter(list->list != null && list.size() > 0)
+                        .filter(list -> list != null && list.size() > 0)
                         .flatMap(list -> mRepository.saveBizFragmentConfig(list))
-                        .doOnComplete(()->SPrefUtil.saveData(Global.IS_INITED_FRAGMENT_CONFIG_KEY,true))
+                        .doOnComplete(() -> SPrefUtil.saveData(Global.IS_INITED_FRAGMENT_CONFIG_KEY, true))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<Boolean>() {
                             @Override
@@ -83,7 +84,7 @@ public class WelcomePresenterImp extends BasePresenter<WelcomeContract.View>
     }
 
     private ArrayList<BizFragmentConfig> parseJson(final String json) {
-        if(TextUtils.isEmpty(json)) {
+        if (TextUtils.isEmpty(json)) {
             return null;
         }
         Gson gson = new Gson();

@@ -1,8 +1,12 @@
 package com.richfit.module_qhyt.module_ms.n311;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.richfit.common_lib.widget.RichEditText;
@@ -13,13 +17,11 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
-import com.richfit.module_qhyt.R2;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
 import java.util.List;
 
-import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
@@ -33,11 +35,9 @@ import io.reactivex.FlowableOnSubscribe;
 
 public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollectPresenterImp> {
 
-    @BindView(R2.id.et_send_location)
+
     RichEditText etSendLocation;
-    @BindView(R2.id.et_special_inv_flag)
     EditText etSpecialInvFlag;
-    @BindView(R2.id.et_special_inv_num)
     EditText etSpecialInvNum;
 
     String specialConvert = "N";
@@ -52,11 +52,22 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
         mPresenter = new MSNCollectPresenterImp(mActivity);
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        etSendLocation = (RichEditText) mView.findViewById(R.id.et_send_location);
+        etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
+        etSpecialInvNum = (EditText) mView.findViewById(R.id.et_special_inv_num);
+        return mView;
+    }
 
     @Override
     protected void initView() {
         //这里将发出仓位禁止，作用是选择发出库位后过滤本次获取发出仓位库存的事件
-        spSendLoc.setEnabled(false);
+        if (spSendLoc != null) {
+            spSendLoc.setEnabled(false);
+        }
         //工厂内移库不需要接收批次
         setVisibility(View.GONE, llRecBatch);
     }
@@ -127,7 +138,6 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
         }
         return true;
     }
-
 
 
     /**
@@ -312,7 +322,7 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
 
         //检查接收仓位
         final String recLocation = getString(autoRecLoc);
-        if(TextUtils.isEmpty(recLocation) || recLocation.length() > 10) {
+        if (TextUtils.isEmpty(recLocation) || recLocation.length() > 10) {
             showMessage("您输入的接收仓位不合理");
             return false;
         }

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -42,8 +41,6 @@ public abstract class BaseActivity<T extends IPresenter> extends AppCompatActivi
     private Unbinder mUnbinder;
     //是否退出App
     private static Boolean isExit = false;
-    //是否打开状态栏
-    private boolean mOpenStatusBar = true;
     //网络超时对话框
     protected NetConnectErrorDialogFragment mNetConnectErrorDialogFragment;
 
@@ -71,17 +68,15 @@ public abstract class BaseActivity<T extends IPresenter> extends AppCompatActivi
         //恢复离线和在线系统标识
         if (savedInstanceState != null && mPresenter != null)
             mPresenter.setLocal(savedInstanceState.getBoolean("is_local_flag"));
-        if (mOpenStatusBar)
+        if (isOpenStatusBar())
             StatusBarCompat.compat(this);
     }
 
     /**
      * 设置是否显示状态栏
-     *
-     * @param isOpenStatusBar
      */
-    protected void setStatusBar(boolean isOpenStatusBar) {
-        mOpenStatusBar = isOpenStatusBar;
+    protected boolean isOpenStatusBar() {
+        return true;
     }
 
     /**

@@ -114,7 +114,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
     public void initDataLazily() {
         if (mRefDetail == null) {
             showMessage("请现在明细界面获取明细数据");
-            clearAll();
+            clearAllUI();
             if (mRefLineAdapter != null) {
                 mRefLines.clear();
                 mRefLineAdapter.notifyDataSetChanged();
@@ -150,7 +150,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
 
     @Override
     public void bindCommonCollectUI() {
-        clearAll();
+        clearAllUI();
         spBatchFlag.setEnabled(true);
         mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
@@ -172,6 +172,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
         //先将累计消耗数量置空
         tvTotalQuantity.setText("0");
         //如果打开了批次管理获取库存
+        Log.e("yff","isOpenManager = " + isOpenBatchManager);
         if (isOpenBatchManager) {
             mPresenter.getInventoryInfo("01", lineData.workId,
                     "", lineData.workCode, "", "", getString(tvMaterialNum),
@@ -430,14 +431,14 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
 
     @Override
     public void _onPause() {
-        clearAll();
+        clearAllUI();
         //清除下拉
         if (mRefLineAdapter != null) {
             spRefLine.setSelection(0);
         }
     }
 
-    private void clearAll() {
+    private void clearAllUI() {
         clearCommonUI(tvMaterialNum, tvMaterialDesc, tvSpecialInvFlag, tvWork, tvActQuantity, tvTotalQuantity);
 
         if (mInventoryAdapter != null) {

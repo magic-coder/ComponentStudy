@@ -23,9 +23,6 @@ import java.util.List;
 public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPresenterImp> {
 
 
-
-
-
     @Override
     public void initView() {
         //父节点不显示发出工厂

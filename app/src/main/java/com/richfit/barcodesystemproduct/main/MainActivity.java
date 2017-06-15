@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.richfit.barcodesystemproduct.BaseBarScannerActivity;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.MainPagerViewAdapter;
@@ -18,8 +17,6 @@ import com.richfit.common_lib.lib_interface.IBarcodeSystemMain;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.NoScrollViewPager;
 import com.richfit.data.constant.Global;
-
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
@@ -83,9 +80,10 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
 
     @Override
     public void initEvent() {
-        RxView.clicks(mFloatingButton)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(a -> responseOnClick());
+//           RxView.clicks(mFloatingButton)
+//                .throttleFirst(500, TimeUnit.MILLISECONDS)
+//                .subscribe(a -> responseOnClick());
+        mFloatingButton.setOnClickListener(v -> responseOnClick());
     }
 
     @Override
@@ -265,5 +263,10 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         } else {
             fragment.handleBarCodeScanResult(type, list);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -15,12 +15,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import com.motorolasolutions.adc.decoder.BarCodeReader;
+import com.richfit.common_lib.lib_eventbus.Event;
+import com.richfit.common_lib.lib_eventbus.EventBusUtil;
+import com.richfit.common_lib.lib_eventbus.EventCode;
 import com.richfit.common_lib.lib_mvp.BaseActivity;
 import com.richfit.common_lib.lib_mvp.IPresenter;
-import com.richfit.common_lib.lib_rx.SimpleRxBus;
-import com.richfit.common_lib.rx_event.ReleaseBarcodeReaderEvent;
 import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.Semaphore;
@@ -60,7 +64,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
     private static final int STATE_DECODE = 1;
     private static final int STATE_SNAPSHOT = 4;
 
-    private boolean stateIsDecoding = false;
+    private static boolean stateIsDecoding = false;
     private ToneGenerator tg = null;
     private static BarCodeReader bcr = null;
     private boolean beepMode = true;
@@ -80,8 +84,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
         super.onCreate(savedInstanceState);
         mSemaphore = new Semaphore(1);
         isServiceDL = BuildConfig.ISSERVICEDL;
-        SimpleRxBus.getInstance().register(ReleaseBarcodeReaderEvent.class)
-                .subscribe(e -> releaseBarcodeReader());
+        EventBusUtil.register(this);
         if (isServiceDL) {
             isStartScan = false;
             IntentFilter scanDataIntentFilter = new IntentFilter();
@@ -94,14 +97,11 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
         }
     }
 
-    /**
-     * 当Activity的UI可以与用户进行交互后(也就是当前Activity变成前台Activity)，启动条码扫描
-     */
+
     @Override
     protected void onResume() {
         super.onResume();
         if (!isServiceDL) {
-            state = STATE_IDLE;
             openBarcodeReader();
         }
     }
@@ -117,7 +117,8 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SimpleRxBus.getInstance().unregisterAll();
+        EventBusUtil.unregister(this);
+        mSemaphore = null;
         if (!isServiceDL) {
             if (bcr != null) {
                 bcr.setDecodeCallback(null);
@@ -128,6 +129,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
         } else {
             unregisterReceiver(receiver);
         }
+        receiver = null;
     }
 
     /**
@@ -261,31 +263,6 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
         return (trigMode == BarCodeReader.ParamVal.AUTO_AIM);
     }
 
-    private void doDecode() {
-        //由于是异步加载，所以主线程必须等待子线程将bcr初始化
-        if (bcr == null) {
-            try {
-                mSemaphore.acquire();
-            } catch (InterruptedException e) {
-                L.e("线程同步 : " + e.getMessage());
-                e.printStackTrace();
-            }
-            if (bcr == null) {
-                //如果子线程完成后，主线程再次判断如果没有初始化再次重试
-                mSemaphore.release();
-                openBarcodeReader();
-            }
-            return;
-        }
-        int idle = setIdle();
-        Log.e("yff","doDecode; setIdle() " + idle + ";state = " + state);
-        if (idle != STATE_IDLE)
-            return;
-        filerBarCodeInfo("");
-        state = STATE_DECODE;
-        isnotdecode = true;
-        bcr.startDecode();
-    }
 
     private static int setIdle() {
         int prevState = state;
@@ -304,9 +281,9 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
 
     @Override
     public void onDecodeComplete(int symbology, int length, byte[] data, BarCodeReader reader) {
+        Log.e("yff", "onDecodeComplete");
         if (state == STATE_DECODE)
             state = STATE_IDLE;
-
         if (length > 0) {
             try {
                 decode_end = SystemClock.elapsedRealtime();
@@ -347,7 +324,6 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                 mHandler.postDelayed(mStartScan, 100);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log.e("yff", "解析条码出错" + e.getMessage());
             } finally {
                 stateIsDecoding = false;
             }
@@ -409,13 +385,13 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
 
     private void responseKeyDown() {
         if (!isServiceDL) {
-            Log.e("yff","responseKeyDown ; " + stateIsDecoding);
-//            if (!stateIsDecoding) {
-//                decode_start = SystemClock.elapsedRealtime();
-//                doDecode();
-//                stateIsDecoding = true;
-//            }
-            doDecode();
+            Log.e("yff", "stateIsDecoding = " + stateIsDecoding);
+            if (!stateIsDecoding) {
+                decode_start = SystemClock.elapsedRealtime();
+                doDecode();
+                stateIsDecoding = true;
+            }
+//            doDecode();
         } else {
             if (!isStartScan) {
                 isStartScan = true;
@@ -426,6 +402,37 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                 sendBroadcast(intent, null);
             }
         }
+    }
+
+    private void doDecode() {
+        //由于是异步加载，所以主线程必须等待子线程将bcr初始化
+        if (bcr == null) {
+            try {
+                mSemaphore.acquire();
+                if (bcr == null) {
+                    //如果子线程完成后，主线程再次判断如果没有初始化再次重试
+                    mSemaphore.release();
+                    openBarcodeReader();
+                    return;
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        if (bcr != null) {
+            bcr.setDecodeCallback(null);
+            bcr.setDecodeCallback(BaseBarScannerActivity.this);
+        }
+        int idle = setIdle();
+        if (idle != STATE_IDLE)
+            return;
+        filerBarCodeInfo("");
+        state = STATE_DECODE;
+        isnotdecode = true;
+
+        Log.e("yff", "startDecode");
+        bcr.startDecode();
     }
 
     /**
@@ -462,6 +469,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
 
 
     private final static Runnable mStartScan = () -> {
+        stateIsDecoding = false;
         if (state == STATE_DECODE && bcr != null) {
             bcr.stopDecode();
         }
@@ -473,26 +481,26 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
             try {
                 //子线程获取许可
                 mSemaphore.acquire();
+                Log.e("yff", "openBarcodeReader;" + "bcr = " + bcr);
                 stateIsDecoding = false;
+                state = STATE_IDLE;
+//                if (bcr != null) {
+//                    bcr.setDecodeCallback(null);
+//                    bcr.setDecodeCallback(BaseBarScannerActivity.this);
+//                    mSemaphore.release();
+//                    return;
+//                }
                 tg = new ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME);
                 if (bcr == null) {
-                    synchronized (BarCodeReader.class) {
-                        if (bcr == null) {
-                            bcr = BarCodeReader.open(getApplicationContext());
-                        }
-                        if (bcr == null) {
-                            bcr.setDecodeCallback(null);
-                            return;
-                        }
-                        bcr.setDecodeCallback(BaseBarScannerActivity.this);
-                    }
-                } else {
-                    bcr.setDecodeCallback(null);
-                    bcr.setDecodeCallback(BaseBarScannerActivity.this);
+                    bcr = BarCodeReader.open(getApplicationContext());
+//                    if (bcr == null) {
+//                        bcr.setDecodeCallback(null);
+//                        return;
+//                    }
+//                    bcr.setDecodeCallback(BaseBarScannerActivity.this);
                 }
                 mSemaphore.release();
             } catch (Exception e) {
-                Log.e("yff", "获取扫描头出错 = " + e.getMessage());
                 if (tg != null) {
                     tg.release();
                 }
@@ -503,19 +511,26 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                 mSemaphore.release();
             }
         }).start();
-
     }
 
-    public static void releaseBarcodeReader() {
-        if (isServiceDL)
-            return;
-        if (bcr != null) {
-            bcr.setDecodeCallback(null);
-            setIdle();
-            bcr.release();
-            bcr = null;
+    /**
+     * 普通事件。释放掉扫描事件
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReleaseBarcodeReader(Event<Boolean> event) {
+        if (event.getData() && event.getCode() == EventCode.EVENT_BARCODEREADER_CODE) {
+            Log.d("yff", "接收到释放扫描头信号");
+            if (isServiceDL)
+                return;
+            if (bcr != null) {
+                bcr.setDecodeCallback(null);
+                setIdle();
+                bcr.release();
+                bcr = null;
+            }
         }
     }
-
 
 }

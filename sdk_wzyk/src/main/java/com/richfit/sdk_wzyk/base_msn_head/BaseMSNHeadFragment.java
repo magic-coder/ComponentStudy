@@ -34,7 +34,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/11/20.
  */
 
-public abstract class BaseMSNHeadFragment<P extends  IMSNHeadPresenter> extends BaseHeadFragment<P>
+public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends BaseHeadFragment<P>
         implements IMSNHeadView {
 
     //发出工厂
@@ -196,8 +196,8 @@ public abstract class BaseMSNHeadFragment<P extends  IMSNHeadPresenter> extends 
     @Override
     public void loadWorksComplete() {
         if (mUploadMsgEntity != null && !TextUtils.isEmpty(mUploadMsgEntity.workId)) {
-            selectedWork(mSendWorks,mUploadMsgEntity.workId,spSendWork);
-            selectedWork(mRecWorks,mUploadMsgEntity.workId,spRecWork);
+            selectedWork(mSendWorks, mUploadMsgEntity.workId, spSendWork);
+            selectedWork(mRecWorks, mUploadMsgEntity.workId, spRecWork);
         }
     }
 
@@ -216,7 +216,8 @@ public abstract class BaseMSNHeadFragment<P extends  IMSNHeadPresenter> extends 
                 })
                 .filter(pos -> pos.intValue() >= 0 && pos.intValue() < works.size())
                 .compose(TransformerHelper.io2main())
-                .subscribe(pos -> sp.setSelection(pos.intValue()),e->{},()-> lockUIUnderEditState(spSendWork,spRecWork));
+                .subscribe(pos -> sp.setSelection(pos.intValue()), e -> {
+                }, () -> lockUIUnderEditState(spSendWork, spRecWork));
     }
 
     @Override
@@ -268,14 +269,15 @@ public abstract class BaseMSNHeadFragment<P extends  IMSNHeadPresenter> extends 
 
     protected boolean checkData() {
         //检查是否填写了必要的字段
-        if (spSendWork.getSelectedItemPosition() == 0)
+        if (spSendWork != null && spSendWork.getSelectedItemPosition() == 0)
             return false;
-        if (spSendInv.getSelectedItemPosition() == 0) {
+        if (spSendInv != null && spSendInv.getSelectedItemPosition() == 0) {
             return false;
         }
-        if (spRecWork.getSelectedItemPosition() == 0)
+        if (spRecWork != null && spRecWork.getSelectedItemPosition() == 0)
             return false;
-        if (spRecInv.getSelectedItemPosition() == 0)
+
+        if (spRecInv != null && spRecInv.getSelectedItemPosition() == 0)
             return false;
         return true;
     }

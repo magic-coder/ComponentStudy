@@ -3,11 +3,12 @@ package com.richfit.barcodesystemproduct;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.richfit.common_lib.lib_multisp.SPHelper;
 import com.richfit.common_lib.lib_mvp.BaseApplication;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
@@ -29,6 +30,7 @@ public class BarcodeSystemApplication extends BaseApplication {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+
         //只有主进程以及SDK版本5.0以下才走。
         if (isMainProcess(BarcodeSystemApplication.this) && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             if (!dexOptDone(base)) {
@@ -53,7 +55,6 @@ public class BarcodeSystemApplication extends BaseApplication {
 
     private String generateBaseUrl() {
         String baseUrl = null;
-        SPrefUtil.initSharePreference(this);
         baseUrl = (String) SPrefUtil.getData("base_url", "");
         L.e("appName = " + BuildConfig.APP_NAME + "; serverUrl = " + baseUrl);
         if (!TextUtils.isEmpty(baseUrl)) {
@@ -93,8 +94,8 @@ public class BarcodeSystemApplication extends BaseApplication {
      * @return
      */
     private boolean dexOptDone(Context context) {
-        SPHelper.init(context);
-        boolean dex_opt = SPHelper.getBoolean("dex_opt", false);
+        SharedPreferences sp = context.getSharedPreferences("dexOpt", MODE_MULTI_PROCESS);
+        boolean dex_opt = sp.getBoolean("dex_opt", false);
         return dex_opt;
     }
 
