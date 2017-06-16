@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="xngd_sp_move_type" type="id"></item>
+    <item name="xngd_cb_emergency" type="id"></item>
+    <item name="xngd_cb_project_move" type="id"></item>
+</resources>

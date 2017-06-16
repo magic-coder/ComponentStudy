@@ -72,6 +72,30 @@ public interface IServerRepository extends IRepository {
 
     Flowable<String> transferCollectionData(ResultEntity result);
 
+
+    /**
+     * 获取库存
+     *
+     * @param queryType：01:获取SAP的库存,"02":获取模糊库存信息,"03":获取精确库存信息,"04":获取SAP的库存信息(必须有仓位)
+     * @param workId：工厂id
+     * @param invId：库存地点id
+     * @param materialId:物料id
+     * @param materialGroup:物料组
+     * @param materialDesc：物料描述
+     * @param batchFlag:批次
+     * @param location:仓位
+     * @param invType:库存类型 0 代管；1:正常
+     * @param specialInvFlag:特殊库存标识  N K
+     * @param specialInvNum:抬头界面的供应商编号
+     * @return
+     */
+    Flowable<List<InventoryEntity>> getInventoryInfo(String queryType, String workId, String invId,
+                                                     String workCode, String invCode, String storageNum,
+                                                     String materialNum, String materialId,
+                                                     String materialGroup, String materialDesc, String batchFlag,
+                                                     String location, String specialInvFlag, String specialInvNum,
+                                                     String invType, String deviceId);
+
     /**
      * 数据上传
      *
@@ -107,28 +131,7 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<String> uploadInspectionImage(ResultEntity result);
 
-    /**
-     * 获取库存
-     *
-     * @param queryType：01:获取SAP的库存,"02":获取模糊库存信息,"03":获取精确库存信息,"04":获取SAP的库存信息(必须有仓位)
-     * @param workId：工厂id
-     * @param invId：库存地点id
-     * @param materialId:物料id
-     * @param materialGroup:物料组
-     * @param materialDesc：物料描述
-     * @param batchFlag:批次
-     * @param location:仓位
-     * @param invType:库存类型 0 代管；1:正常
-     * @param specialInvFlag:特殊库存标识  N K
-     * @param specialInvNum:抬头界面的供应商编号
-     * @return
-     */
-    Flowable<List<InventoryEntity>> getInventoryInfo(String queryType, String workId, String invId,
-                                                     String workCode, String invCode, String storageNum,
-                                                     String materialNum, String materialId,
-                                                     String materialGroup, String materialDesc, String batchFlag,
-                                                     String location, String specialInvFlag, String specialInvNum,
-                                                     String invType, String deviceId);
+
 
     /**
      * 获取最新的App的版本信息，用于更新

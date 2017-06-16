@@ -74,6 +74,8 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
             return;
         }
         super.bindCommonCollectUI();
+        //在复位之后清除enable
+        etBatchFlag.setEnabled(false);
         //处理必检物资逻辑
         //如果是必检物资，不显示批次(注意也不检查批次的输入)
         isQmFlag = "X".equalsIgnoreCase(lineData.qmFlag);//true表示质检物资
@@ -136,7 +138,7 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
             return;
         }
         //注意这里由于MainActivity的启动模式标准模式，
-        if(mActivity instanceof IBarcodeSystemMain) {
+        if (mActivity instanceof IBarcodeSystemMain) {
             IBarcodeSystemMain activity = (IBarcodeSystemMain) mActivity;
             Intent intent = new Intent(mActivity, activity.getMainActivityClass());
             Bundle bundle = new Bundle();
@@ -178,6 +180,16 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
     }
 
     @Override
+    protected String getInvType() {
+        return "1";
+    }
+
+    @Override
+    protected String getInventoryQueryType() {
+        return getString(R.string.inventoryQueryTypeSAPLocation);
+    }
+
+    @Override
     public boolean checkCollectedDataBeforeSave() {
         //对于上架仓位的检查
         if (!isNLocation) {
@@ -192,5 +204,12 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
             }
         }
         return super.checkCollectedDataBeforeSave();
+    }
+
+    @Override
+    public void saveCollectedDataSuccess() {
+        super.saveCollectedDataSuccess();
+        //强制修改enable
+        etBatchFlag.setEnabled(false);
     }
 }

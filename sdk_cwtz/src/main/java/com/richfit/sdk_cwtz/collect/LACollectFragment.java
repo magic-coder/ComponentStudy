@@ -119,6 +119,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
     }
 
 
@@ -152,6 +153,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         }
         clearAllUI();
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         mPresenter.getMaterialInfo("01", materialNum, mRefData.workId);
     }
 
@@ -162,7 +164,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         tvMaterialGroup.setText(materialEntity.materialGroup);
         tvMaterialUnit.setText(materialEntity.unit);
         manageBatchFlagStatus(etBatchFlag, materialEntity.batchManagerStatus);
-        if (TextUtils.isEmpty(getString(etBatchFlag))) {
+        if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
             etBatchFlag.setText(materialEntity.batchFlag);
         }
     }
@@ -228,6 +230,8 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         showSuccessDialog(message);
         clearAllUI();
         clearCommonUI(etMaterialNum, etBatchFlag);
+        isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
     }
 
     @Override

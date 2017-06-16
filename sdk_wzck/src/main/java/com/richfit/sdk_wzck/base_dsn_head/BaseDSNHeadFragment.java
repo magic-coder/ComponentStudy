@@ -45,9 +45,9 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @BindView(R2.id.sp_work)
     Spinner spWork;
     @BindView(R2.id.et_auto_comp)
-    AutoCompleteTextView etAutoComp;
+    protected AutoCompleteTextView etAutoComp;
     @BindView(R2.id.et_auto_comp_name)
-    TextView tvAutoCompName;
+    protected TextView tvAutoCompName;
     @BindView(R2.id.et_transfer_date)
     RichEditText etTransferDate;
 
@@ -111,13 +111,6 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
     }
 
-    @Override
-    protected void initView() {
-        //如果BizType是26那么显示成本中心,否者显示项目编号
-        if ("27".equalsIgnoreCase(mBizType)) {
-            tvAutoCompName.setText("项目编号");
-        }
-    }
 
     @Override
     public void initData() {
@@ -177,6 +170,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
     /**
      * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
+     *
      * @param keyWord
      * @return
      */
@@ -190,6 +184,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         }
         return false;
     }
+
     @Override
     public void _onPause() {
         super._onPause();
@@ -201,12 +196,8 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
             mRefData.workId = mWorks.get(position).workId;
             mRefData.workCode = mWorks.get(position).workCode;
             mRefData.workName = mWorks.get(position).workName;
-
-            if ("27".equalsIgnoreCase(mBizType)) {
-                mRefData.projectNum = getString(etAutoComp).split("_")[0];
-            } else {
-                mRefData.costCenter = getString(etAutoComp).split("_")[0];
-            }
+            mRefData.projectNum = getString(etAutoComp).split("_")[0];
+            mRefData.costCenter = getString(etAutoComp).split("_")[0];
             mRefData.bizType = mBizType;
             mRefData.voucherDate = getString(etTransferDate);
         }

@@ -84,12 +84,12 @@ public final class Repository implements ILocalRepository, IServerRepository {
                         return Flowable.error(new Throwable("未获取到用户菜单"));
                     }
                     return Flowable.just(list);
-                }) :
-                Flowable.concat(mLocalRepository.getMenuInfo(loginId, mode),
-                        mServerRepository.getMenuInfo(loginId, mode))
-                        .filter(list -> list != null && list.size() > 0)
-                        .firstOrError()
-                        .toFlowable();
+                }) : mServerRepository.getMenuInfo(loginId, mode);
+//                Flowable.concat(mLocalRepository.getMenuInfo(loginId, mode),
+//                        mServerRepository.getMenuInfo(loginId, mode))
+//                        .filter(list -> list != null && list.size() > 0)
+//                        .firstOrError()
+//                        .toFlowable();
 
     }
 

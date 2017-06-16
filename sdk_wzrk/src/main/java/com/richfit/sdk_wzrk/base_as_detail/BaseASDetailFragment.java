@@ -26,12 +26,6 @@ import butterknife.BindView;
 public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         BaseDetailFragment<P, RefDetailEntity> implements IASDetailView<RefDetailEntity> {
 
-    /*特殊库存标识*/
-    @BindView(R2.id.specialInventoryFlag)
-    protected TextView tvSpecialInvFag;
-    /*参考单据行*/
-    @BindView(R2.id.lineNum)
-    protected TextView tvLineNum;
     /*应收数量*/
     @BindView(R2.id.actQuantity)
     protected TextView tvActQuantity;
@@ -41,9 +35,6 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
     /*工厂*/
     @BindView(R2.id.work)
     protected TextView tvWork;
-    /*针对委外出库，如果该张单据全部是质检物资，那么不需要上架*/
-    private boolean isQmFlag = false;
-
 
     @Override
     protected int getContentId() {

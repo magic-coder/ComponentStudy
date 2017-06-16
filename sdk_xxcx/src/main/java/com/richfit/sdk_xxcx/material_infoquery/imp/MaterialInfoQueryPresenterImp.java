@@ -2,28 +2,24 @@ package com.richfit.sdk_xxcx.material_infoquery.imp;
 
 import android.content.Context;
 
-import com.richfit.barcodesystemproduct.base.BasePresenter;
-import com.richfit.common_lib.scope.ContextLife;
-import com.richfit.barcodesystemproduct.module_infoquery.material_infoquery.IMaterialInfoQeuryPresenter;
-import com.richfit.barcodesystemproduct.module_infoquery.material_infoquery.IMaterialInfoQeuryView;
-import com.richfit.common_lib.rxutils.RxSubscriber;
-import com.richfit.common_lib.rxutils.TransformerHelper;
-import com.richfit.common_lib.utils.Global;
+import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.data.constant.Global;
+import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.MaterialEntity;
-
-import javax.inject.Inject;
+import com.richfit.sdk_xxcx.material_infoquery.IMaterialInfoQueryPresenter;
+import com.richfit.sdk_xxcx.material_infoquery.IMaterialInfoQueryView;
 
 /**
  * Created by monday on 2017/3/16.
  */
 
-public class IMaterialInfoQeuryPresenterImp extends BasePresenter<IMaterialInfoQeuryView>
-        implements IMaterialInfoQeuryPresenter {
+public class MaterialInfoQueryPresenterImp extends BasePresenter<IMaterialInfoQueryView>
+        implements IMaterialInfoQueryPresenter {
 
-    IMaterialInfoQeuryView mView;
+    IMaterialInfoQueryView mView;
 
-    @Inject
-    public IMaterialInfoQeuryPresenterImp(@ContextLife("Activity") Context context) {
+    public MaterialInfoQueryPresenterImp(Context context) {
         super(context);
     }
 

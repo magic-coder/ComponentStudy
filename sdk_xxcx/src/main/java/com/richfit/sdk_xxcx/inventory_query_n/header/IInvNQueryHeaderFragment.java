@@ -7,13 +7,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.view.RxView;
-import com.richfit.barcodesystemproduct.R;
-import com.richfit.barcodesystemproduct.adapter.InvAdapter;
-import com.richfit.barcodesystemproduct.adapter.WorkAdapter;
-import com.richfit.barcodesystemproduct.base.BaseFragment;
-import com.richfit.barcodesystemproduct.module_infoquery.inventory_query_n.header.imp.IInvNQueryHeaderPresenterImp;
+import com.richfit.common_lib.lib_adapter.InvAdapter;
+import com.richfit.common_lib.lib_adapter.WorkAdapter;
+import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.WorkEntity;
+import com.richfit.sdk_xxcx.R;
+import com.richfit.sdk_xxcx.R2;
+import com.richfit.sdk_xxcx.inventory_query_n.header.imp.IInvNQueryHeaderPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +30,17 @@ import butterknife.BindView;
 public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPresenterImp>
         implements IInvNQueryHeaderView {
 
-    @BindView(R.id.sp_work)
+    @BindView(R2.id.sp_work)
     Spinner spWork;
-    @BindView(R.id.ll_send_work)
+    @BindView(R2.id.ll_send_work)
     LinearLayout llSendWork;
-    @BindView(R.id.sp_inv)
+    @BindView(R2.id.sp_inv)
     Spinner spInv;
-    @BindView(R.id.et_material_class)
+    @BindView(R2.id.et_material_class)
     EditText etMaterialClass;
-    @BindView(R.id.et_material_desc)
+    @BindView(R2.id.et_material_desc)
     EditText etMaterialDesc;
-    @BindView(R.id.floating_button)
+    @BindView(R2.id.floating_button)
     FloatingActionButton mBtnQuery;
 
     /*工厂*/
@@ -52,18 +53,24 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
 
     @Override
     protected int getContentId() {
-        return R.layout.fragment_invn_query_header;
+        return R.layout.xxcx_fragment_invn_query_header;
     }
 
     @Override
-    public void initInjector() {
-
+    public void initPresenter() {
+        mPresenter = new IInvNQueryHeaderPresenterImp(mActivity);
     }
+
 
     public void initVariable(Bundle savedInstanceState) {
         mWorks = new ArrayList<>();
         mInvs = new ArrayList<>();
         mRefData = null;
+    }
+
+    @Override
+    protected void initView() {
+
     }
 
     @Override
@@ -76,6 +83,11 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
     @Override
     public void initData() {
         mPresenter.getWorks(0);
+    }
+
+    @Override
+    public void initDataLazily() {
+
     }
 
     /**

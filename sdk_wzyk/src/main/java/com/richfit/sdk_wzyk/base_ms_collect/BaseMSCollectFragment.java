@@ -120,8 +120,6 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                 //如果已经选中单品，那么说明已经扫描过一次。必须保证每一次的物料都一样
                 getTransferSingle(spSendLoc.getSelectedItemPosition());
             } else if (!cbSingle.isChecked()) {
-                etMaterialNum.setText(materialNum);
-                etSendBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         } else if (list != null && list.length == 1 & !cbSingle.isChecked()) {
@@ -235,6 +233,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etSendBatchFlag.setEnabled(true);
     }
 
     @Override
@@ -247,6 +246,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etSendBatchFlag.setText(batchFlag);
         //刷新界面(在单据行明细查询是否有该物料条码，如果有那么刷新界面)
         matchMaterialInfo(materialNum, batchFlag)
                 .compose(TransformerHelper.io2main())
@@ -293,6 +294,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         isOpenBatchManager = true;
+        etSendBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etSendBatchFlag, lineData.batchManagerStatus);
         etQuantity.setText("");
         //物资描述
@@ -550,7 +552,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvSendWork, tvActQuantity, tvLocQuantity,
-                etQuantity, tvLocQuantity, tvInvQuantity, tvTotalQuantity, cbSingle);
+                etQuantity, tvLocQuantity, tvInvQuantity, tvTotalQuantity, cbSingle,etMaterialNum, etSendBatchFlag);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -730,6 +732,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         tvTotalQuantity.setText(String.valueOf(totalQuantityV + quantityV));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            isOpenBatchManager = true;
+            etSendBatchFlag.setEnabled(true);
         }
     }
 
@@ -753,7 +757,6 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @Override
     public void _onPause() {
         clearAllUI();
-        clearCommonUI(etMaterialNum, etSendBatchFlag);
     }
 
     /**

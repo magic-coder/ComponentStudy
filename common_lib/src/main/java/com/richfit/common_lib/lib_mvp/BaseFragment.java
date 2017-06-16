@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +80,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     /*该页签名称*/
     protected String mTabTitle;
     /*批次管理，默认是打开的*/
-    protected boolean isOpenBatchManager;
+    protected boolean isOpenBatchManager = true;
 
 
     @Override
@@ -446,7 +447,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     }
 
     /**
-     * 管理批次
+     * 管理批次。注意这里通过是否打开了批次管理改变你enable属性，所以
+     * 如果要强制不让用户输入必须在bindCommonCollectUI中强制设置；
      *
      * @param batchFlagView:接收批次信息输入的控件
      * @param batchManagerStatus:当前物料的批次管理状态
@@ -454,10 +456,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected void manageBatchFlagStatus(TextView batchFlagView, boolean batchManagerStatus) {
         //如果该业务打开了批次管理，那么检查该物料是否打开了批次管理
         isOpenBatchManager = batchManagerStatus;
+        Log.d("yff","是否打开了批次管理 = " + isOpenBatchManager);
+        batchFlagView.setEnabled(isOpenBatchManager);
         if (!isOpenBatchManager) {
-            //如果没有打开那么，禁止输入。这里由于系统会针对其他的入库业务设置
-            //enable的属性，所以在打开批次管理的情况下页不能随意修改enable属性
-            batchFlagView.setEnabled(false);
             batchFlagView.setText("");
         }
     }

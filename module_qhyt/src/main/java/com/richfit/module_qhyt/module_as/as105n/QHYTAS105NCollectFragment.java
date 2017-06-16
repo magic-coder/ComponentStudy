@@ -161,5 +161,13 @@ public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPr
         }
         return index;
     }
+    @Override
+    protected String getInvType() {
+        return "1";
+    }
 
+    @Override
+    protected String getInventoryQueryType() {
+        return getString(R.string.inventoryQueryTypeSAPLocation);
+    }
 }

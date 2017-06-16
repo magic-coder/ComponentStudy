@@ -233,6 +233,8 @@
     <item name="cb_special_flag" type="id"></item>
     <item name="invQuantity" type="id"></item>
     <item name="checkState" type="id"></item>
+    <item name="et_material_class" type="id"></item>
+    <item name="et_material_desc" type="id"></item>
 
 
 </resources>

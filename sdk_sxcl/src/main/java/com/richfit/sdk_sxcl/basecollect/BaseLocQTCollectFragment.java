@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -18,7 +19,6 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
-import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
@@ -36,8 +36,6 @@ import com.richfit.sdk_sxcl.basecollect.imp.LocQTCollectPresenterImp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
@@ -50,7 +48,7 @@ import io.reactivex.FlowableOnSubscribe;
  * Created by monday on 2017/5/26.
  */
 
-public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
+public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
         implements ILocQTCollectView {
 
 
@@ -105,8 +103,6 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
     protected String mSelectedRefLineNum;
     /*校验仓位是否存在，如果false表示校验该仓位不存在或者没有校验该仓位，不允许保存数据*/
     protected boolean isLocationChecked = false;
-    /*批次一致性检查*/
-    protected boolean isBatchValidate = true;
     /*上架仓位列表适配器*/
     ArrayAdapter<String> mSLocationAdapter;
     List<String> mSLocationList;
@@ -130,8 +126,6 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
                 }
             } else {
                 //在非单品模式下，扫描不同的物料。注意这里必须用新的物料和批次更新UI
-                etMaterialNum.setText(materialNum);
-                tvBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         }
@@ -200,14 +194,15 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
                 });
 
         //点击上架仓位获取缓存
-        etSLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(tvBatchFlag), location));
+        etSLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(tvBatchFlag), getString(etSLocation)));
 
-        //监听输入的关键字
+        //监听上架仓位输入
         RxTextView.textChanges(etSLocation)
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mSLocationList != null &&
-                        mSLocationList.size() > 0 && !filterKeyWord(str))
-                .subscribe(a -> loadLocationList(getString(etSLocation), true));
+
+                .subscribe(a -> {
+                    tvLocQuantity.setText("");
+                    tvTotalQuantity.setText("");
+                });
 
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
         RxAutoCompleteTextView.itemClickEvents(etSLocation)
@@ -274,6 +269,8 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        tvBatchFlag.setText(batchFlag);
         //这里先将上下架表示清空
         mSHFlag = "";
         //刷新界面(在单据行明细查询是否有该物料条码，如果有那么刷新界面)
@@ -349,6 +346,7 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             //如果是上架，那么获取上架仓位参考列表
             tvLocQuantity.setText("");
             tvTotalQuantity.setText("");
+            loadLocationList(false);
         } else {
             //如果是下架
             loadInventory();
@@ -358,42 +356,30 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
     /**
      * 获取上架仓位参考列表
      *
-     * @param keyWord
      * @param isDropDown
      */
     @Override
-    public void loadLocationList(String keyWord, boolean isDropDown) {
+    public void loadLocationList(boolean isDropDown) {
         tvLocQuantity.setText("");
         tvTotalQuantity.setText("");
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        mPresenter.getLocationList(lineData.workId, lineData.workCode, lineData.invId,
-                lineData.invCode, keyWord, 100, 0, isDropDown);
+        mPresenter.getLocationList(getInventoryQueryType(), lineData.workId,
+                lineData.invId, lineData.workCode, lineData.invCode, "", getString(etMaterialNum),
+                lineData.materialId, "", getString(tvBatchFlag), "", "", getInvType(), "", isDropDown);
     }
 
-    /**
-     * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
-     *
-     * @param keyWord
-     * @return
-     */
-    private boolean filterKeyWord(CharSequence keyWord) {
-        Pattern pattern = Pattern.compile("^" + keyWord.toString().toUpperCase());
-        for (String item : mSLocationList) {
-            Matcher matcher = pattern.matcher(item);
-            while (matcher.find()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
-    public void getLocationListFail(String message) {
+    public void loadLocationListFail(String message) {
         showMessage(message);
+        if (mSLocationAdapter != null) {
+            mSLocationList.clear();
+            etSLocation.setAdapter(null);
+        }
     }
 
     @Override
-    public void getLocationListSuccess(List<String> list, boolean isDropDown) {
+    public void showLocationList(List<String> list) {
         mSLocationList.clear();
         mSLocationList.addAll(list);
         if (mSLocationAdapter == null) {
@@ -404,6 +390,11 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
         } else {
             mSLocationAdapter.notifyDataSetChanged();
         }
+
+    }
+
+    @Override
+    public void loadLocationListComplete(boolean isDropDown) {
         if (isDropDown) {
             showAutoCompleteConfig(etSLocation);
         }
@@ -420,10 +411,7 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             mInventoryDatas.clear();
             mXLocAdapter.notifyDataSetChanged();
         }
-        if (isOpenBatchManager && TextUtils.isEmpty(getString(tvBatchFlag))) {
-            showMessage("请输入批次");
-            return;
-        }
+
         final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
 
         //需要确定库存类型
@@ -468,7 +456,7 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
      * 上架处理时获取单条缓存
      **/
     private void getTransferSingle(String batchFlag, String location) {
-
+        Log.d("yff", "上架仓位 = " + location);
         if (spRefLine.getSelectedItemPosition() <= 0) {
             showMessage("请先选择单据行");
             return;
@@ -481,17 +469,10 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             return;
         }
 
-        //批次处理。打开了批次管理而且必须输入，那么检查是否输入了批次
-        if (isOpenBatchManager && tvBatchFlag.isEnabled())
-            if (TextUtils.isEmpty(batchFlag)) {
-                showMessage("请先输入批次");
-                return;
-            }
         if (TextUtils.isEmpty(location)) {
             showMessage("请先输入上架仓位");
             return;
         }
-        isBatchValidate = false;
         //这里不考虑是否上架
         mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location);
     }
@@ -557,7 +538,6 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
         final String refType = mRefData.refType;
         final String bizType = mRefData.bizType;
         final String refLineId = lineData.refLineId;
-        isBatchValidate = true;
         mPresenter.getTransferInfoSingle(refCodeId, refType, bizType, refLineId,
                 getString(etMaterialNum), batchFlag, location, lineData.refDoc,
                 CommonUtil.convertToInt(lineData.refDocItem),
@@ -575,6 +555,7 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
 
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
+        Log.d("yff", "isOpenBatchManager = " + isOpenBatchManager);
         if (cache != null) {
             tvTotalQuantity.setText(cache.totalQuantity);
             //匹配缓存
@@ -586,26 +567,17 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             }
             tvLocQuantity.setText("0");
             for (LocationInfoEntity cachedItem : locationInfos) {
-                //缓存和输入的都为空或者都不为空而且相等,那么系统默认批次匹配
                 boolean isMatch;
-
-                isBatchValidate = isOpenBatchManager && ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
-                        (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
-
-                isMatch = isOpenBatchManager ? (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag) &&
-                        location.equalsIgnoreCase(cachedItem.location)) || (
-                        !TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                location.equalsIgnoreCase(cachedItem.location))
-                        : location.equalsIgnoreCase(cachedItem.location);
-                L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
-                //注意它没有匹配次成功可能是批次页可能是仓位。
+                if(!TextUtils.isEmpty(batchFlag)) {
+                    //如果有批次
+                    isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) &&  location.equalsIgnoreCase(cachedItem.location);
+                }else {
+                    isMatch = location.equalsIgnoreCase(cachedItem.location);
+                }
                 if (isMatch) {
                     tvLocQuantity.setText(cachedItem.quantity);
                     break;
                 }
-            }
-            if (!isBatchValidate) {
-                showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");
             }
         }
     }
@@ -621,7 +593,6 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
     @Override
     public void loadCacheFail(String message) {
         showMessage(message);
-        isBatchValidate = true;
         //如果没有获取到任何缓存
         tvLocQuantity.setText("0");
         tvTotalQuantity.setText("0");
@@ -636,7 +607,8 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvInv, tvInvType, tvLocQuantity,
-                etQuantity, tvLocQuantity, tvSpecialInvFlag, tvInvQuantity, tvTotalQuantity, cbSingle);
+                etQuantity, tvLocQuantity, tvSpecialInvFlag, tvInvQuantity, tvTotalQuantity, cbSingle,
+                etMaterialNum, tvBatchFlag,etSLocation);
 
         //单据行
         if (mRefLineAdapter != null) {
@@ -672,11 +644,7 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
             showMessage("请先输入物料条码");
             return false;
         }
-        //批次
-        if (isOpenBatchManager && !isBatchValidate) {
-            showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");
-            return false;
-        }
+
         //实发数量
         if (!cbSingle.isChecked() && TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入数量");
@@ -697,6 +665,11 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
         //处理上架仓位
         if ("S".equalsIgnoreCase(mSHFlag) && TextUtils.isEmpty(getString(etSLocation))) {
             showMessage("请先输入上架仓位");
+            return false;
+        }
+
+        if ("S".equalsIgnoreCase(mSHFlag) && TextUtils.isEmpty(getString(tvLocQuantity))) {
+            showMessage("请先获取仓位数量");
             return false;
         }
 
@@ -822,7 +795,6 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum, tvBatchFlag);
     }
 
     @Override
@@ -840,5 +812,24 @@ public class LocQTCollectFragment extends BaseFragment<LocQTCollectPresenterImp>
         super.retry(retryAction);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSLocationAdapter = null;
+        mSLocationList.clear();
+    }
 
+    /**
+     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
+     *
+     * @return
+     */
+    protected abstract String getInvType();
+
+    /**
+     * 子类返回库存查询类型
+     *
+     * @return
+     */
+    protected abstract String getInventoryQueryType();
 }

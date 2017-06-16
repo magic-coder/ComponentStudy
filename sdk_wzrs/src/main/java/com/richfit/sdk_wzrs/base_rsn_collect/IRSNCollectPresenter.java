@@ -8,6 +8,7 @@ import com.richfit.domain.bean.ResultEntity;
  */
 
 public interface IRSNCollectPresenter extends IPresenter<IRSNCollectView> {
+
     /**
      * 获取库存地点列表
      *
@@ -33,4 +34,19 @@ public interface IRSNCollectPresenter extends IPresenter<IRSNCollectView> {
      * @param result:用户采集的数据(json格式)
      */
     void uploadCollectionDataSingle(ResultEntity result);
+
+    /**
+     * 获取库存信息
+     *
+     * @param workId:工厂id
+     * @param invId：库存地点id
+     * @param materialId：物料id
+     * @param location：仓位
+     * @param batchFlag:批次
+     * @param invType：库存类型
+     */
+    void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
+                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
+                          String specialInvFlag, String specialInvNum, String invType, String deviceId,boolean isDropDown);
+
 }

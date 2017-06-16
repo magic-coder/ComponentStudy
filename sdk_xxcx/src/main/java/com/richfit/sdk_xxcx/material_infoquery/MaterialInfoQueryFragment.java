@@ -1,14 +1,17 @@
 package com.richfit.sdk_xxcx.material_infoquery;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.TextView;
 
-import com.richfit.barcodesystemproduct.R;
-import com.richfit.barcodesystemproduct.base.BaseFragment;
-import com.richfit.barcodesystemproduct.module_infoquery.material_infoquery.imp.IMaterialInfoQeuryPresenterImp;
-import com.richfit.common_lib.utils.Global;
+import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.RichEditText;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.MaterialEntity;
+import com.richfit.sdk_xxcx.R;
+import com.richfit.sdk_xxcx.R2;
+import com.richfit.sdk_xxcx.material_infoquery.imp.MaterialInfoQueryPresenterImp;
 
 import butterknife.BindView;
 
@@ -17,18 +20,18 @@ import butterknife.BindView;
  * Created by monday on 2017/3/16.
  */
 
-public class MaterialInfoQueryFragment extends BaseFragment<IMaterialInfoQeuryPresenterImp>
-        implements IMaterialInfoQeuryView {
+public class MaterialInfoQueryFragment extends BaseFragment<MaterialInfoQueryPresenterImp>
+        implements IMaterialInfoQueryView {
 
-    @BindView(R.id.et_material_num)
+    @BindView(R2.id.et_material_num)
     RichEditText etMaterialNum;
-    @BindView(R.id.tv_material_desc)
+    @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
-    @BindView(R.id.tv_material_group)
+    @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
-    @BindView(R.id.tv_material_unit)
+    @BindView(R2.id.tv_material_unit)
     TextView tvMaterialUnit;
-    @BindView(R.id.tv_batch_flag)
+    @BindView(R2.id.tv_batch_flag)
     TextView tvBatchFlag;
 
 
@@ -55,13 +58,14 @@ public class MaterialInfoQueryFragment extends BaseFragment<IMaterialInfoQeuryPr
 
     @Override
     protected int getContentId() {
-        return R.layout.fragment_material_info_query;
+        return R.layout.xxcx_fragment_material_info_query;
     }
 
     @Override
-    public void initInjector() {
-        mFragmentComponent.inject(this);
+    public void initPresenter() {
+        mPresenter = new MaterialInfoQueryPresenterImp(mActivity);
     }
+
 
     @Override
     public void initEvent() {
@@ -70,6 +74,16 @@ public class MaterialInfoQueryFragment extends BaseFragment<IMaterialInfoQeuryPr
             hideKeyboard(view);
             loadMaterialInfo(materialNum);
         });
+    }
+
+    @Override
+    public void initData() {
+
+    }
+
+    @Override
+    public void initDataLazily() {
+
     }
 
     /**
@@ -109,6 +123,16 @@ public class MaterialInfoQueryFragment extends BaseFragment<IMaterialInfoQeuryPr
     public void retry(String action) {
         loadMaterialInfo(getString(etMaterialNum));
         super.retry(action);
+    }
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected void initView() {
+
     }
 
 

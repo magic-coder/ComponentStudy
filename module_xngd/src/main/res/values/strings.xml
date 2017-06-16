@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">module_xngd</string>
+    <string name="xngd_app_name">module_xngd</string>
+    <string name="xngd_is_emergency">是否应急</string>
+    <string name="xngd_project_move">项目移交物资</string>
 </resources>

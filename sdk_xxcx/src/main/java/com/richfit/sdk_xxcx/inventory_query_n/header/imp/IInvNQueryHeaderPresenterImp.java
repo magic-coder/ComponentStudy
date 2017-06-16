@@ -3,15 +3,14 @@ package com.richfit.sdk_xxcx.inventory_query_n.header.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.barcodesystemproduct.base.BasePresenter;
-import com.richfit.barcodesystemproduct.module_infoquery.inventory_query_n.header.IInvNQueryHeaderPresenter;
-import com.richfit.barcodesystemproduct.module_infoquery.inventory_query_n.header.IInvNQueryHeaderView;
-import com.richfit.common_lib.rxutils.TransformerHelper;
-import com.richfit.common_lib.scope.ContextLife;
+import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.WorkEntity;
+import com.richfit.sdk_xxcx.inventory_query_n.header.IInvNQueryHeaderPresenter;
+import com.richfit.sdk_xxcx.inventory_query_n.header.IInvNQueryHeaderView;
+
 import java.util.ArrayList;
-import javax.inject.Inject;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -24,8 +23,7 @@ public class IInvNQueryHeaderPresenterImp extends BasePresenter<IInvNQueryHeader
 
     IInvNQueryHeaderView mView;
 
-    @Inject
-    public IInvNQueryHeaderPresenterImp(@ContextLife("Activity") Context context) {
+    public IInvNQueryHeaderPresenterImp(Context context) {
         super(context);
     }
 

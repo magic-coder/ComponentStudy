@@ -45,10 +45,7 @@ public interface IASCollectView extends BaseView {
     /**
      * 加载上架仓位
      */
-    void loadLocationList(String keyWord, boolean isDropDown);
-
-    void getLocationListFail(String message);
-    void getLocationListSuccess(List<String> list, boolean isDropDown);
+    void loadLocationList(boolean isDropDown);
 
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
@@ -75,5 +72,13 @@ public interface IASCollectView extends BaseView {
 
     void saveCollectedDataSuccess();
     void saveCollectedDataFail(String message);
+
+    /**
+     * 显示库存
+     * @param list
+     */
+    void showInventory(List<String> list);
+    void loadInventoryComplete(boolean isDropDown);
+    void loadInventoryFail(String message);
 
 }

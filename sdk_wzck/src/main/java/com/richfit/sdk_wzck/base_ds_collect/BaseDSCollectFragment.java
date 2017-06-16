@@ -1,7 +1,6 @@
 package com.richfit.sdk_wzck.base_ds_collect;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -115,8 +114,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 getTransferSingle(spLocation.getSelectedItemPosition());
             } else {
                 //在非单品模式下，扫描不同的物料。注意这里必须用新的物料和批次更新UI
-                etMaterialNum.setText(materialNum);
-                etBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         }
@@ -217,10 +214,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
     }
 
     @Override
-    public void loadMaterialInfo(@NonNull String materialNum, @NonNull String batchFlag) {
+    public void loadMaterialInfo(String materialNum,String batchFlag) {
         if (!etMaterialNum.isEnabled()) {
             return;
         }
@@ -229,6 +227,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etBatchFlag.setText(batchFlag);
         //刷新界面(在单据行明细查询是否有该物料条码，如果有那么刷新界面)
         matchMaterialInfo(materialNum, batchFlag)
                 .compose(TransformerHelper.io2main())
@@ -276,6 +276,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         //再次复位批次管理标识
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
         etQuantity.setText("");
         //物资描述
@@ -515,7 +516,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvLocQuantity, etQuantity, tvLocQuantity, tvInvQuantity,
-                tvTotalQuantity, cbSingle);
+                tvTotalQuantity, cbSingle,etMaterialNum, etBatchFlag);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -705,6 +706,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         tvTotalQuantity.setText(String.valueOf(totalQuantityV + quantityV));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            isOpenBatchManager = true;
+            etBatchFlag.setEnabled(true);
         }
     }
 
@@ -717,7 +720,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum, etBatchFlag);
     }
 
     @Override

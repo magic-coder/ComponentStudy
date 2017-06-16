@@ -5,21 +5,19 @@ import android.content.Context;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzck.base_dsn_head.IDSNHeadPresenter;
 import com.richfit.sdk_wzck.base_dsn_head.IDSNHeadView;
 
 import java.util.ArrayList;
 
-import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
  * Created by monday on 2017/2/23.
  */
 
-public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
+public abstract class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
         implements IDSNHeadPresenter {
 
     public DSNHeadPresenterImp(Context context) {
@@ -96,41 +94,5 @@ public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
         addSubscriber(subscriber);
     }
 
-    @Override
-    public void getAutoCompleteList(String workCode, String keyWord, int defaultItemNum, int flag,
-                                    String bizType) {
-        mView = getView();
 
-        if (("26".equals(bizType) && "27".equals(bizType))) {
-            mView.loadAutoCompleteFail("未找到合适业务类型");
-            return;
-        }
-        final Flowable<ArrayList<SimpleEntity>> flowable = "26".equals(bizType) ? mRepository.getCostCenterList(workCode, keyWord, defaultItemNum, flag)
-                : mRepository.getProjectNumList(workCode, keyWord, defaultItemNum, flag);
-
-        ResourceSubscriber<ArrayList<String>> subscriber =
-                flowable.filter(list -> list != null && list.size() > 0)
-                        .map(list -> wrapper2Str(list))
-                        .subscribeWith(new ResourceSubscriber<ArrayList<String>>() {
-                            @Override
-                            public void onNext(ArrayList<String> suppliers) {
-                                if (mView != null) {
-                                    mView.showAutoCompleteList(suppliers);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.loadAutoCompleteFail(t.getMessage());
-                                }
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
 }

@@ -12,6 +12,7 @@ import com.richfit.sdk_wzyk.R;
  */
 
 public class MSYParentHeaderItemDelegate implements ItemViewDelegate<RefDetailEntity> {
+
     @Override
     public int getItemViewLayoutId() {
         return R.layout.wzyk_item_msy_detail_parent_header;
@@ -38,6 +39,5 @@ public class MSYParentHeaderItemDelegate implements ItemViewDelegate<RefDetailEn
         holder.setText(R.id.sendInv,item.invCode);
         //接收工厂
         holder.setText(R.id.recWork,item.recWorkCode);
-
     }
 }

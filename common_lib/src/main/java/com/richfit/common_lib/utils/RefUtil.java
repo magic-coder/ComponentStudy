@@ -22,7 +22,7 @@ import java.lang.reflect.WildcardType;
 public class RefUtil {
 
     public static BaseFragment findFragment(FragmentManager fm, String tag, String companyCode, String moduleCode,
-                                            String bizType, String refType, int fragmentType, String title, Class clazz) {
+                                            String bizType, String refType, int fragmentType, String title, Class clazz) throws Exception{
         BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
         if (fragment == null) {
             fragment = newInstance(clazz, companyCode, moduleCode, bizType, refType, fragmentType, title);
@@ -30,7 +30,7 @@ public class RefUtil {
         return fragment;
     }
 
-    public static BaseFragment findFragment(FragmentManager fm, String tag, Bundle arguments, String className) {
+    public static BaseFragment findFragment(FragmentManager fm, String tag, Bundle arguments, String className) throws Exception {
         BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
         if (fragment == null) {
             fragment = newInstance(className, arguments);
@@ -64,40 +64,28 @@ public class RefUtil {
      * @return
      */
     private static <T extends BaseFragment> T newInstance(final Class<T> clazz, String companyCode, String moduleCode,
-                                                          String bizType, String refType, int fragmentType, String title) {
-        T instance = null;
-        try {
-            instance = clazz.newInstance();
-            Bundle bundle = new Bundle();
-            bundle.putString(Global.EXTRA_COMPANY_CODE_KEY, companyCode);
-            bundle.putString(Global.EXTRA_MODULE_CODE_KEY, moduleCode);
-            bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, bizType);
-            bundle.putString(Global.EXTRA_REF_TYPE_KEY, refType);
-            bundle.putString(Global.EXTRA_TITLE_KEY, title);
-            bundle.putInt(Global.EXTRA_FRAGMENT_TYPE_KEY, fragmentType);
-            setFieldValue(clazz, instance, title);
-            instance.setArguments(bundle);
-            return instance;
+                                                          String bizType, String refType, int fragmentType, String title)  throws  Exception  {
+        T instance = clazz.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putString(Global.EXTRA_COMPANY_CODE_KEY, companyCode);
+        bundle.putString(Global.EXTRA_MODULE_CODE_KEY, moduleCode);
+        bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, bizType);
+        bundle.putString(Global.EXTRA_REF_TYPE_KEY, refType);
+        bundle.putString(Global.EXTRA_TITLE_KEY, title);
+        bundle.putInt(Global.EXTRA_FRAGMENT_TYPE_KEY, fragmentType);
+        setFieldValue(clazz, instance, title);
+        instance.setArguments(bundle);
+        return instance;
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
-    public static <T extends BaseFragment> T newInstance(String className, Bundle arguments) {
-        T instance = null;
-        try {
-            final Class clazz = Class.forName(className);
-            instance = (T) clazz.newInstance();
-            String tabTitle = arguments.getString(Global.EXTRA_TITLE_KEY);
-            setFieldValue(clazz, instance, tabTitle);
-            instance.setArguments(arguments);
-            return instance;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static <T extends BaseFragment> T newInstance(String className, Bundle arguments) throws  Exception {
+        final Class clazz = Class.forName(className);
+        T instance = (T) clazz.newInstance();
+        String tabTitle = arguments.getString(Global.EXTRA_TITLE_KEY);
+        setFieldValue(clazz, instance, tabTitle);
+        instance.setArguments(arguments);
+        return instance;
     }
 
     public static Class<?> getRawType(Type type) {

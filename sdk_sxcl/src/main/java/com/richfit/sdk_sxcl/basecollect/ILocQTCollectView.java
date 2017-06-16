@@ -51,12 +51,19 @@ public interface ILocQTCollectView extends BaseView {
     /**
      * 加载上架仓位
      */
-    void loadLocationList(String keyWord, boolean isDropDown);
+    void loadLocationList(boolean isDropDown);
 
-    void getLocationListFail(String message);
-    void getLocationListSuccess(List<String> list, boolean isDropDown);
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
     void saveCollectedDataSuccess();
     void saveCollectedDataFail(String message);
+
+
+    /**
+     * 显示库存
+     * @param list
+     */
+    void showLocationList(List<String> list);
+    void loadLocationListComplete(boolean isDropDown);
+    void loadLocationListFail(String message);
 }

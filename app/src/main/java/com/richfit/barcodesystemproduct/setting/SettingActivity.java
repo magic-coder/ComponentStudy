@@ -111,7 +111,7 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
 
     @Override
     protected void initPresenter() {
-
+        mPresenter = new SettingPresenterImp(this);
     }
 
 

@@ -13,6 +13,8 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_sxcl.basecollect.ILocQTCollectPresenter;
 import com.richfit.sdk_sxcl.basecollect.ILocQTCollectView;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.subscribers.ResourceSubscriber;
@@ -31,39 +33,33 @@ public class LocQTCollectPresenterImp extends BasePresenter<ILocQTCollectView>
     }
 
     @Override
-    public void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
-                                boolean isDropDown) {
+    public void getLocationList(String queryType, String workId, String invId, String workCode, String invCode,
+                                String storageNum, String materialNum, String materialId, String location, String batchFlag,
+                                String specialInvFlag, String specialInvNum, String invType, String deviceId, boolean isDropDown) {
         mView = getView();
-
-        if (TextUtils.isEmpty(workCode) && TextUtils.isEmpty(workId)) {
-            mView.getLocationListFail("获取到工厂信息");
+        if (isLocal())
             return;
+        ResourceSubscriber<List<String>> subscriber;
+        if ("04".equals(queryType)) {
+            subscriber = mRepository.getStorageNum(workId, workCode, invId, invCode)
+                    .filter(num -> !TextUtils.isEmpty(num))
+                    .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
+                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
+                            specialInvFlag, specialInvNum, invType, deviceId))
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new LocationListSubscriber(isDropDown));
+
+        } else {
+            subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
+                    workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
+                    specialInvFlag, specialInvNum, invType, deviceId)
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new LocationListSubscriber(isDropDown));
         }
-
-        ResourceSubscriber<List<String>> subscriber =
-                mRepository.getLocationList(workId, workCode, invId, invCode, keyWord, defaultItemNum, flag)
-                        .filter(list -> list != null && list.size() > 0)
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<List<String>>() {
-                            @Override
-                            public void onNext(List<String> list) {
-                                if (mView != null) {
-                                    mView.getLocationListSuccess(list,isDropDown);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.getLocationListFail(t.getMessage());
-                                }
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
         addSubscriber(subscriber);
     }
 
@@ -91,6 +87,52 @@ public class LocQTCollectPresenterImp extends BasePresenter<ILocQTCollectView>
         }
         addSubscriber(subscriber);
     }
+
+
+    private List<String> changeInv2Locations(List<InventoryEntity> invs) {
+        List<String> locations = new ArrayList<>();
+        HashSet<String> set = new HashSet<>();
+        for (InventoryEntity data : invs) {
+            if (!set.contains(data.location)) {
+                set.add(data.location);
+                locations.add(data.location);
+            }
+        }
+        return locations;
+    }
+
+    protected class LocationListSubscriber extends ResourceSubscriber<List<String>> {
+
+        private boolean isDropDown;
+
+        public LocationListSubscriber(boolean isDropDown) {
+            this.isDropDown = isDropDown;
+        }
+
+        @Override
+        public void onNext(List<String> list) {
+            if (mView != null) {
+                mView.showLocationList(list);
+            }
+        }
+
+
+        @Override
+        public void onError(Throwable e) {
+            if (mView != null) {
+                mView.loadLocationListFail(e.getMessage());
+            }
+        }
+
+
+        @Override
+        public void onComplete() {
+            if (mView != null) {
+                mView.loadLocationListComplete(isDropDown);
+            }
+        }
+    }
+
 
     protected class InventorySubscriber extends RxSubscriber<List<InventoryEntity>> {
 
@@ -148,7 +190,7 @@ public class LocQTCollectPresenterImp extends BasePresenter<ILocQTCollectView>
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId,"", location)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override

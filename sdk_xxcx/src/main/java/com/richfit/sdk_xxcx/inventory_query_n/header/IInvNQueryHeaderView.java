@@ -1,6 +1,7 @@
 package com.richfit.sdk_xxcx.inventory_query_n.header;
 
-import com.richfit.barcodesystemproduct.base.BaseView;
+
+import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.WorkEntity;
 

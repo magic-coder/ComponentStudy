@@ -104,7 +104,24 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
 
 
     @Override
+    public void saveCollectedDataSuccess() {
+        super.saveCollectedDataSuccess();
+        //强制不输入批次
+        isOpenBatchManager = false;
+    }
+
+    @Override
     protected int getOrgFlag() {
         return getInteger(R.integer.orgNorm);
+    }
+
+    @Override
+    protected String getInvType() {
+        return "1";
+    }
+
+    @Override
+    protected String getInventoryQueryType() {
+        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

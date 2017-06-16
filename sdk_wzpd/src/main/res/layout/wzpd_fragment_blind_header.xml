@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/len_52"
         android:layout_marginRight="@dimen/len_52"
         android:layout_marginTop="@dimen/len_10"
-        android:background="@drawable/top_tab_bg"
+        android:background="@drawable/wzpd_top_tab_bg"
         android:orientation="horizontal">
 
         <RadioButton
@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/selector_top_tab_leftrb"
+            android:background="@drawable/wzpd_selector_top_tab_leftrb"
             android:button="@null"
             android:checked="true"
             android:gravity="center"
@@ -33,7 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/selector_top_tab_rightrb"
+            android:background="@drawable/wzpd_selector_top_tab_rightrb"
             android:button="@null"
             android:gravity="center"
             android:text="仓位级" />

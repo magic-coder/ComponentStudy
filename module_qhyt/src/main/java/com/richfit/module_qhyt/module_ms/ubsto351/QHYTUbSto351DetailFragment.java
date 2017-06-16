@@ -2,7 +2,6 @@ package com.richfit.module_qhyt.module_ms.ubsto351;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.utils.SPrefUtil;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 351接收没有接收仓位和接收批次,同时不需要显示发出工厂
+ * 351发出子节点没有接收仓位和接收批次
  * Created by monday on 2017/2/10.
  */
 
@@ -24,10 +23,15 @@ public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPre
 
 
     @Override
-    public void initView() {
-        //父节点不显示发出工厂
-        setVisibility(View.GONE, tvSendWork);
-        super.initView();
+    public void onBindViewHolder(ViewHolder viewHolder, int viewType) {
+        switch (viewType) {
+            //隐藏子节点的发出批次和发出仓位
+            case Global.CHILD_NODE_HEADER_TYPE:
+            case Global.CHILD_NODE_ITEM_TYPE:
+                viewHolder.setVisible(R.id.recLocation, false)
+                        .setVisible(R.id.recBatchFlag, false);
+                break;
+        }
     }
 
     @Override
@@ -40,22 +44,6 @@ public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPre
 
     }
 
-
-    @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int viewType) {
-        switch (viewType) {
-            case Global.PARENT_NODE_ITEM_TYPE:
-                //隐藏父节点的发出工厂
-                viewHolder.setVisible(R.id.sendWork,false);
-                break;
-               //隐藏子节点的发出批次和发出仓位
-            case Global.CHILD_NODE_HEADER_TYPE:
-            case Global.CHILD_NODE_ITEM_TYPE:
-                viewHolder.setVisible(R.id.recLocation, false)
-                        .setVisible(R.id.recBatchFlag, false);
-                break;
-        }
-    }
 
     @Override
     public void initPresenter() {

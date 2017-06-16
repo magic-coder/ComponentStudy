@@ -2,7 +2,6 @@ package com.richfit.data.repository.local;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.richfit.domain.bean.BizFragmentConfig;
 import com.richfit.domain.bean.ImageEntity;
@@ -378,6 +377,7 @@ public class LocalRepositoryImp implements ILocalRepository {
                 .flatMap(type -> Flowable.just(getReferenceInfoInner(refNum, refType, type, moveType, refLineId, userId)))
                 .flatMap(refData -> processReferenceError(refData, bizType, "未获取到单据数据"));
     }
+
 
     private ReferenceEntity getReferenceInfoInner(String refNum, String refType, String bizType,
                                                   String moveType, String refLineId, String userId) {

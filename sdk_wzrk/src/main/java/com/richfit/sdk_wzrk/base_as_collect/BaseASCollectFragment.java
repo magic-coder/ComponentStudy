@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog.Builder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -36,8 +37,6 @@ import com.richfit.sdk_wzrk.R2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
@@ -163,8 +162,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             } else {
                 //在非单品模式下，扫描不同的物料。注意这里必须用新的物料和批次更新UI,因为clearAllUI方法没有
                 //清除显示在屏幕上的物料和批次信息
-                etMaterialNum.setText(materialNum);
-                etBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
             //处理仓位
@@ -208,6 +205,21 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             etQuantity.setEnabled(!isChecked);
         });
 
+
+
+        //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
+        RxAdapterView.itemSelections(spInv)
+                .filter(pos -> pos > 0)
+                .subscribe(pos -> {
+                    Log.d("yff","是否上架 = " + isNLocation);
+                    if (isNLocation) {
+                        //如果不上架
+                        getTransferSingle(getString(etBatchFlag), getString(etLocation));
+                    } else {
+                        loadLocationList(false);
+                    }
+                });
+
         //监听上架仓位时时变化
         RxTextView.textChanges(etLocation)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -216,27 +228,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                     tvTotalQuantity.setText("");
                 });
 
-        //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
-        RxAdapterView.itemSelections(spInv)
-                .filter(pos -> pos > 0)
-                .subscribe(pos -> {
-                    if (isNLocation) {
-                        //如果不上架
-                        getTransferSingle(getString(etBatchFlag), getString(etLocation));
-                    } else {
-                        loadLocationList(getString(etLocation), false);
-                    }
-                });
-
-        //监听输入的关键字
-        RxTextView.textChanges(etLocation)
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mLocationList != null &&
-                        mLocationList.size() > 0 && !filterKeyWord(str))
-                .subscribe(a -> loadLocationList(getString(etLocation), true));
-
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
         RxAutoCompleteTextView.itemClickEvents(etLocation)
+                .delay(50,TimeUnit.MILLISECONDS)
                 .filter(a -> !isNLocation)
                 .subscribe(a -> {
                     hideKeyboard(etLocation);
@@ -286,8 +280,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         }
         etMaterialNum.setEnabled(true);
         etLocation.setEnabled(!isNLocation);
-        //重新复位批次管理标识
+        //重新复位批次管理标识和enable
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
     }
 
 
@@ -307,6 +302,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etBatchFlag.setText(batchFlag);
         //刷新界面(在单据行明细查询是否有该物料条码，如果有那么刷新界面)
         matchMaterialInfo(materialNum, batchFlag)
                 .compose(TransformerHelper.io2main())
@@ -356,6 +353,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         //再次复位批次管理标识
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
         etQuantity.setText("");
         //物资描述
@@ -399,37 +397,27 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     }
 
     @Override
-    public void loadLocationList(String keyWord, boolean isDropDown) {
+    public void loadLocationList(boolean isDropDown) {
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         InvEntity invEntity = mInvDatas.get(spInv.getSelectedItemPosition());
-        mPresenter.getLocationList(lineData.workId, lineData.workCode, invEntity.invId,
-                invEntity.invCode, keyWord, 100, getOrgFlag(), isDropDown);
+
+        mPresenter.getInventoryInfo(getInventoryQueryType(), lineData.workId,
+                invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
+                lineData.materialId, "", getString(etBatchFlag), "", "", getInvType(), "",isDropDown);
     }
 
-    /**
-     * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
-     *
-     * @param keyWord
-     * @return
-     */
-    private boolean filterKeyWord(CharSequence keyWord) {
-        Pattern pattern = Pattern.compile("^" + keyWord.toString().toUpperCase());
-        for (String item : mLocationList) {
-            Matcher matcher = pattern.matcher(item);
-            while (matcher.find()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     @Override
-    public void getLocationListFail(String message) {
+    public void loadInventoryFail(String message) {
         showMessage(message);
+        if(mLocationAdapter != null) {
+            mLocationList.clear();
+            etLocation.setAdapter(null);
+        }
     }
 
     @Override
-    public void getLocationListSuccess(List<String> list, boolean isDropDown) {
+    public void showInventory(List<String> list) {
         mLocationList.clear();
         mLocationList.addAll(list);
         if (mLocationAdapter == null) {
@@ -440,6 +428,10 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         } else {
             mLocationAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void loadInventoryComplete(boolean isDropDown) {
         if (isDropDown) {
             showAutoCompleteConfig(etLocation);
         }
@@ -510,7 +502,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, etLocation, tvLocQuantity, etQuantity, tvLocQuantity,
-                tvTotalQuantity, cbSingle, tvInsLostQuantity);
+                tvTotalQuantity, cbSingle, tvInsLostQuantity,etMaterialNum, etBatchFlag);
 
         //单据行
         if (mRefLineAdapter != null) {
@@ -662,7 +654,11 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
-        if (!isLocationChecked) {
+        if(!isNLocation && TextUtils.isEmpty(getString(tvLocQuantity))) {
+            showMessage("请先获取仓位数量");
+            return false;
+        }
+        if (!isNLocation && !isLocationChecked) {
             showMessage("您输入的仓位不存在");
             return false;
         }
@@ -787,6 +783,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         }
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            //本次数据保存之后恢复批次
+            isOpenBatchManager = true;
+            etBatchFlag.setEnabled(true);
         }
     }
 
@@ -799,7 +798,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum, etBatchFlag);
     }
 
     @Override
@@ -813,10 +811,30 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         super.retry(retryAction);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLocationAdapter = null;
+        mLocationList.clear();
+    }
+
     /**
      * 子类返回组织机构级别
      *
      * @return
      */
     protected abstract int getOrgFlag();
+    /**
+     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
+     *
+     * @return
+     */
+    protected abstract String getInvType();
+
+    /**
+     * 子类返回库存查询类型
+     *
+     * @return
+     */
+    protected abstract String getInventoryQueryType();
 }

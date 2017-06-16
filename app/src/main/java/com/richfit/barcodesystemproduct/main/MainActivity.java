@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
 import com.richfit.barcodesystemproduct.BaseBarScannerActivity;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.MainPagerViewAdapter;
@@ -267,6 +268,9 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
 
     @Override
     public void onDestroy() {
+        if(BarcodeSystemApplication.getRefWatcher() != null) {
+            BarcodeSystemApplication.getRefWatcher().watch(this);
+        }
         super.onDestroy();
     }
 }

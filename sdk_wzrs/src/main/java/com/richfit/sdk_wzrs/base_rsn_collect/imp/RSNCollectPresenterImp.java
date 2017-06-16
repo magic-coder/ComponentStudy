@@ -1,12 +1,14 @@
 package com.richfit.sdk_wzrs.base_rsn_collect.imp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -14,6 +16,7 @@ import com.richfit.sdk_wzrs.base_rsn_collect.IRSNCollectPresenter;
 import com.richfit.sdk_wzrs.base_rsn_collect.IRSNCollectView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.Flowable;
@@ -32,6 +35,82 @@ public class RSNCollectPresenterImp extends BasePresenter<IRSNCollectView>
         super(context);
     }
 
+    @Override
+    public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
+                                 String materialNum, String materialId, String location, String batchFlag,
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,
+                                 boolean isDropDown) {
+        mView = getView();
+        if(isLocal())
+            return;
+        ResourceSubscriber<List<String>> subscriber;
+        if ("04".equals(queryType)) {
+            subscriber = mRepository.getStorageNum(workId, workCode, invId, invCode)
+                    .filter(num -> !TextUtils.isEmpty(num))
+                    .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
+                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
+                            specialInvFlag, specialInvNum, invType, deviceId))
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new InventorySubscriber(isDropDown));
+
+        } else {
+            subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
+                    workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
+                    specialInvFlag, specialInvNum, invType, deviceId)
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new InventorySubscriber(isDropDown));
+        }
+        addSubscriber(subscriber);
+    }
+
+    private List<String> changeInv2Locations(List<InventoryEntity> invs) {
+        List<String> locations = new ArrayList<>();
+        HashSet<String> set = new HashSet<>();
+        for (InventoryEntity data : invs) {
+            if(!set.contains(data.location)) {
+                set.add(data.location);
+                locations.add(data.location);
+            }
+        }
+        return locations;
+    }
+
+    protected class InventorySubscriber extends ResourceSubscriber<List<String>> {
+
+        private boolean isDropDown;
+
+        public InventorySubscriber(boolean isDropDown) {
+            this.isDropDown = isDropDown;
+        }
+
+        @Override
+        public void onNext(List<String> list) {
+            if (mView != null) {
+                mView.showInventory(list);
+            }
+        }
+
+
+        @Override
+        public void onError(Throwable e) {
+            if (mView != null) {
+                mView.loadInventoryFail(e.getMessage());
+            }
+        }
+
+
+
+        @Override
+        public void onComplete() {
+            if(mView != null) {
+                mView.loadInventoryComplete(isDropDown);
+            }
+        }
+    }
 
     @Override
     public void getInvsByWorks(String workId, int flag) {

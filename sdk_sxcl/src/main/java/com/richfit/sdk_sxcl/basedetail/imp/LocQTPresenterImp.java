@@ -268,7 +268,6 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
         //1.形成父节点数据集合
         for (RefDetailEntity data : list) {
             RefDetailEntity cachedData = getLineDataByRefLineId(data, cache);
-            cachedData.shkzg = data.shkzg;
             if (cachedData == null) {
                 //说明该还没有缓存
                 nodes.add(data);

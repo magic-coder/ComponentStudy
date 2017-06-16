@@ -79,18 +79,21 @@ public class UploadActivity extends AppCompatActivity implements ViewPager.OnPag
 
         }
         mCurrentFragmentIndex = 0;
-        BaseFragment fragment = null;
-        fragment = RefUtil.findFragment(getSupportFragmentManager(),
-                "Buzi_Upload_Fragment", "", "", "", "", -1, "出入库业务", BuziUploadFragment.class);
-        mFragments.add(fragment);
+        try {
+            BaseFragment fragment = null;
+            fragment = RefUtil.findFragment(getSupportFragmentManager(),
+                    "Buzi_Upload_Fragment", "", "", "", "", -1, "出入库业务", BuziUploadFragment.class);
+            mFragments.add(fragment);
 
-        fragment = RefUtil.findFragment(getSupportFragmentManager(),
-                "Check_Upload_Fragment", "", "", "", "", -1, "盘点业务", CheckUploadFragment.class);
-        mFragments.add(fragment);
-
-        MainPagerViewAdapter<BaseFragment> adapter = new MainPagerViewAdapter<>(getSupportFragmentManager(), mFragments);
-        mViewPager.setAdapter(adapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+            fragment = RefUtil.findFragment(getSupportFragmentManager(),
+                    "Check_Upload_Fragment", "", "", "", "", -1, "盘点业务", CheckUploadFragment.class);
+            mFragments.add(fragment);
+            MainPagerViewAdapter<BaseFragment> adapter = new MainPagerViewAdapter<>(getSupportFragmentManager(), mFragments);
+            mViewPager.setAdapter(adapter);
+            mTabLayout.setupWithViewPager(mViewPager);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

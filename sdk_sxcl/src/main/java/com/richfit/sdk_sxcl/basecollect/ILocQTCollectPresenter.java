@@ -16,13 +16,11 @@ public interface ILocQTCollectPresenter extends IPresenter<ILocQTCollectView> {
      * @param workCode
      * @param invId
      * @param invCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
      * @param isDropDown
      */
-    void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
-                         boolean isDropDown);
+    void getLocationList(String queryType, String workId, String invId, String workCode, String invCode,
+                         String storageNum, String materialNum, String materialId, String location, String batchFlag,
+                         String specialInvFlag, String specialInvNum, String invType, String deviceId,boolean isDropDown);
     /**
      * 获取库存信息
      *

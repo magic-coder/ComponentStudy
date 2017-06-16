@@ -1,6 +1,7 @@
 package com.richfit.module_qhyt.module_rs.rsy;
 
 
+import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
@@ -36,5 +37,15 @@ public class QHYTRSYCollectFragment extends BaseASCollectFragment<ASCollectPrese
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+    @Override
+    protected String getInvType() {
+        return "1";
+    }
+
+    @Override
+    protected String getInventoryQueryType() {
+        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

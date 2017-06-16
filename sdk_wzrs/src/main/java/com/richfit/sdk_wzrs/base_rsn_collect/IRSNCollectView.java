@@ -35,4 +35,11 @@ public interface IRSNCollectView extends BaseView {
     void saveCollectedDataSuccess();
     void saveCollectedDataFail(String message);
 
+    /**
+     * 加载上架仓位
+     */
+    void loadLocationList(boolean isDropDown);
+    void showInventory(List<String> list);
+    void loadInventoryComplete(boolean isDropDown);
+    void loadInventoryFail(String message);
 }

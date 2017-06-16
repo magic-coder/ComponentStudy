@@ -191,6 +191,8 @@ public class ViewHolder extends RecyclerView.ViewHolder {
 
     public ViewHolder setVisible(int viewId, boolean visible) {
         View view = getView(viewId);
+        if(view == null)
+            return this;
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -48,8 +47,8 @@ public class WelcomePresenterImp extends BasePresenter<WelcomeContract.View>
             return;
         }
 
-//        boolean initedFragmentConfig = (boolean) SPrefUtil.getData(Global.IS_INITED_FRAGMENT_CONFIG_KEY,false);
-//        if(initedFragmentConfig && mView != null) {
+//        boolean initiatedFragmentConfig = (boolean) SPrefUtil.getData(Global.IS_INITED_FRAGMENT_CONFIG_KEY,false);
+//        if(initiatedFragmentConfig && mView != null) {
 //            mView.loadFragmentConfigSuccess();
 //            return;
 //        }

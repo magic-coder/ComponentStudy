@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.richfit.common_lib.lib_mvp.BaseApplication;
 import com.richfit.common_lib.utils.L;
@@ -69,9 +68,10 @@ public class BarcodeSystemApplication extends BaseApplication {
                     baseUrl = "http://11.11.177.100:8092/lhbk_middleware/MobileProcess/";
                     break;
                 case Global.QINGHAI:
+                    //培训系统
+                    baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
                     //青海测试地址(D)
-//                    baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
-                    baseUrl = "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
+//                    baseUrl = "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
                     break;
                 case Global.XINANGD:
                     //西南管道

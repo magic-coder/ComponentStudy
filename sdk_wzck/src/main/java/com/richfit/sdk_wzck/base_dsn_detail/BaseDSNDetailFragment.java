@@ -46,19 +46,12 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
             showMessage("请先在抬头界面选择工厂");
             return;
         }
-        if ("26".equals(mBizType) && TextUtils.isEmpty(mRefData.costCenter)) {
-            showMessage("请先在抬头界面输入成本中心");
-            return;
-        }
-        if ("27".equals(mBizType) && TextUtils.isEmpty(mRefData.projectNum)) {
-            showMessage("请现在抬头界面输入项目编号");
-            return;
-        }
         //这里先将寄售转自有的相关标记清空
         isNeedTurn = false;
         isTurnSuccess = false;
         startAutoRefresh();
     }
+
 
 
     @Override

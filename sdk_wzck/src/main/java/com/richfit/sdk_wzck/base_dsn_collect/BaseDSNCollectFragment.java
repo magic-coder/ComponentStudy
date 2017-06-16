@@ -94,8 +94,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
                 //如果已经选中单品，那么说明已经扫描过一次。必须保证每一次的物料都一样
                 loadLocationQuantity(spLocation.getSelectedItemPosition());
             } else {
-                etMaterialNum.setText(materialNum);
-                etBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         } else if (list != null && list.length == 2 & !cbSingle.isChecked()) {
@@ -177,16 +175,10 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             showMessage("请先在抬头界面选择工厂");
             return;
         }
-        if ("26".equals(mBizType) && TextUtils.isEmpty(mRefData.costCenter)) {
-            showMessage("请先在抬头界面输入成本中心");
-            return;
-        }
-        if ("27".equals(mBizType) && TextUtils.isEmpty(mRefData.projectNum)) {
-            showMessage("请现在抬头界面输入项目编号");
-            return;
-        }
+
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
     }
 
 
@@ -196,6 +188,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etBatchFlag.setText(batchFlag);
         mHistoryDetailList = null;
         mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
@@ -206,12 +200,16 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
         RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
-        etBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag : batchFlag);
+        //如果打开了批次管理，那么以当前输入的为准，如果没有那么获取单据中的批次
+        if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+            etBatchFlag.setText(data.batchFlag);
+        }
         mHistoryDetailList = refData.billDetailList;
     }
 
@@ -477,8 +475,11 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
-        if (!cbSingle.isChecked())
+        if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            isOpenBatchManager = true;
+            etBatchFlag.setEnabled(true);
+        }
     }
 
     @Override
@@ -487,7 +488,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     }
 
     private void clearAllUI() {
-        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvInvQuantity, tvLocQuantity, etQuantity);
+        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvInvQuantity, tvLocQuantity,
+                etQuantity, etMaterialNum, etBatchFlag);
 
         //库存地点
         if (spInv.getAdapter() != null) {
@@ -531,7 +533,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum, etBatchFlag);
     }
 
     @Override

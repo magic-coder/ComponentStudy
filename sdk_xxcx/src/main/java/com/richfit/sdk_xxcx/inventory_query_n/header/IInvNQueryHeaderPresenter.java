@@ -1,6 +1,7 @@
 package com.richfit.sdk_xxcx.inventory_query_n.header;
 
-import com.richfit.common_lib.IInterface.IPresenter;
+
+import com.richfit.common_lib.lib_mvp.IPresenter;
 
 /**
  * Created by monday on 2017/5/25.

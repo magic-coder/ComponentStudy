@@ -133,8 +133,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 //如果已经选中单品，那么说明已经扫描过一次。必须保证每一次的物料都一样
                 saveCollectedData();
             } else {
-                etMaterialNum.setText(materialNum);
-                etSendBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         } else if (list != null && list.length == 1 & !cbSingle.isChecked()) {
@@ -255,6 +253,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etSendBatchFlag.setEnabled(true);
     }
 
     protected void loadMaterialInfo(String materialNum, String batchFlag) {
@@ -263,6 +262,8 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etSendBatchFlag.setText(batchFlag);
         mHistoryDetailList = null;
         mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
@@ -273,14 +274,16 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
         RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
+        etSendBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etSendBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
         tvMaterialUnit.setText(data.unit);
-        etSendBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
-                batchFlag);
+        if (isOpenBatchManager && TextUtils.isEmpty(getString(etSendBatchFlag))) {
+            etSendBatchFlag.setText(data.batchFlag);
+        }
         etRecBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
                 batchFlag);
         mHistoryDetailList = refData.billDetailList;
@@ -746,8 +749,11 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
-        if (!cbSingle.isChecked())
+        if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            isOpenBatchManager = true;
+            etSendBatchFlag.setEnabled(true);
+        }
     }
 
     @Override
@@ -757,7 +763,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit,
-                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag, autoRecLoc);
+                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag, autoRecLoc,etMaterialNum, etSendBatchFlag);
 
         //发出库位(注意由于发出库位是一进来就加载的,所以不能清理)
         if (spSendInv.getAdapter() != null) {
@@ -806,7 +812,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     @Override
     public void _onPause() {
         clearAllUI();
-        clearCommonUI(etMaterialNum, etSendBatchFlag);
     }
 
     @Override

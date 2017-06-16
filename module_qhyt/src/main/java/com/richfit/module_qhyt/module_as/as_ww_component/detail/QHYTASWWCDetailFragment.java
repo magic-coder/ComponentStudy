@@ -122,7 +122,7 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
         }
         mRefDetail = allNodes;
         if (mAdapter == null) {
-            mAdapter = new QHYTASWWCAdapter(mActivity, R.layout.qhyt_item_wwc_parent_header,
+            mAdapter = new QHYTASWWCAdapter(mActivity, R.layout.qhyt_item_wwc_item,
                     allNodes);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemEditAndDeleteListener(this);

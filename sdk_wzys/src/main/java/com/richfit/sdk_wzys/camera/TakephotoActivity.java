@@ -184,7 +184,7 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.take_photo_menu, menu);
+        getMenuInflater().inflate(R.menu.wzys_take_photo_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

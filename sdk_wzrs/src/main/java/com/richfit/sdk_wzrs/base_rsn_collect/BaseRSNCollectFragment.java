@@ -3,13 +3,20 @@ package com.richfit.sdk_wzrs.base_rsn_collect;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
@@ -20,15 +27,16 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzrs.R;
 import com.richfit.sdk_wzrs.R2;
-import com.richfit.sdk_wzrs.base_rsn_collect.imp.RSNCollectPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by monday on 2017/3/2.
@@ -53,7 +61,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     @BindView(R2.id.sp_inv)
     Spinner spInv;
     @BindView(R2.id.et_location)
-    RichEditText etLocation;
+    RichAutoEditText etLocation;
     @BindView(R2.id.tv_location_quantity)
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
@@ -66,6 +74,9 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     private List<InvEntity> mInvs;
     /*缓存的历史仓位数量*/
     private List<RefDetailEntity> mHistoryDetailList;
+    /*上架仓位列表适配器*/
+    ArrayAdapter<String> mLocationAdapter;
+    List<String> mLocationList;
 
     /**
      * 处理扫描
@@ -86,8 +97,6 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
                 //如果已经选中单品，那么说明已经扫描过一次。必须保证每一次的物料都一样
                 saveCollectedData();
             } else {
-                etMaterialNum.setText(materialNum);
-                etBatchFlag.setText(batchFlag);
                 loadMaterialInfo(materialNum, batchFlag);
             }
         }
@@ -101,6 +110,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     @Override
     public void initVariable(Bundle savedInstanceState) {
         mInvs = new ArrayList<>();
+        mLocationList = new ArrayList<>();
     }
 
     @Override
@@ -112,13 +122,40 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
+        RxAdapterView.itemSelections(spInv)
+                .filter(pos -> pos > 0)
+                .subscribe(pos -> loadLocationList(false));
+
         //上架仓位,匹配缓存的历史仓位数量
-        etLocation.setOnRichEditTouchListener((view, location) -> {
+        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
             hideKeyboard(etLocation);
             if (cbSingle.isChecked())
                 return;
-            matchLocationQuantity(getString(etBatchFlag), location);
+            matchLocationQuantity(getString(etBatchFlag), getString(etLocation));
         });
+
+        //监听上架仓位时时变化
+        RxTextView.textChanges(etLocation)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(a -> tvLocQuantity.setText(""));
+
+
+        //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
+        //注意这里由于不在请求接口，所以先执行了，然后执行了上面的监听
+        RxAutoCompleteTextView.itemClickEvents(etLocation)
+                .delay(100,TimeUnit.MILLISECONDS)
+                .subscribe(a -> {
+                    Log.d("yff", "选择了上架仓位");
+                    hideKeyboard(etLocation);
+                    matchLocationQuantity(getString(etBatchFlag), getString(etLocation));
+                });
+
+        //点击自动提示控件，显示默认列表
+        RxView.clicks(etLocation)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> mLocationList != null && mLocationList.size() > 0)
+                .subscribe(a -> showAutoCompleteConfig(etLocation));
     }
 
     @Override
@@ -142,6 +179,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         //加载发出工厂下的发出库位
         mPresenter.getInvsByWorks(mRefData.workId, 0);
     }
@@ -154,6 +192,8 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etBatchFlag.setText(batchFlag);
         mPresenter.getTransferSingleInfo(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                 mRefData.recInvId, batchFlag, "", -1);
@@ -176,25 +216,69 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         showMessage(message);
     }
 
+
     @Override
     public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
         RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
         manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
         tvMaterialUnit.setText(data.unit);
-//        tvSpecialInvFlag.setText("K");
-        etBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
-                batchFlag);
+        if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+            etBatchFlag.setText(data.batchFlag);
+        }
         mHistoryDetailList = refData.billDetailList;
     }
 
     @Override
     public void loadTransferSingleInfoFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    public void loadLocationList(boolean isDropDown) {
+        if (mHistoryDetailList != null && mHistoryDetailList.size() > 0) {
+            RefDetailEntity lineData = mHistoryDetailList.get(0);
+            InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
+            mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId,
+                    invEntity.invId, mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
+                    lineData.materialId, "", getString(etBatchFlag), "", "", getInvType(), "", isDropDown);
+        }
+    }
+
+
+    @Override
+    public void loadInventoryFail(String message) {
+        showMessage(message);
+        if (mLocationAdapter != null) {
+            mLocationList.clear();
+            etLocation.setAdapter(null);
+        }
+    }
+
+    @Override
+    public void showInventory(List<String> list) {
+        mLocationList.clear();
+        mLocationList.addAll(list);
+        if (mLocationAdapter == null) {
+            mLocationAdapter = new ArrayAdapter<>(mActivity,
+                    android.R.layout.simple_dropdown_item_1line, mLocationList);
+            etLocation.setAdapter(mLocationAdapter);
+            setAutoCompleteConfig(etLocation);
+        } else {
+            mLocationAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void loadInventoryComplete(boolean isDropDown) {
+        if (isDropDown) {
+            showAutoCompleteConfig(etLocation);
+        }
     }
 
 
@@ -240,11 +324,16 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
 
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit, tvSpecialInvFlag,
-                tvLocQuantity, tvLocQuantity, etQuantity, etLocation);
-
+                tvLocQuantity, tvLocQuantity, etQuantity, etLocation, etMaterialNum, etBatchFlag);
         //库存地点
         if (spInv.getAdapter() != null) {
             spInv.setSelection(0);
+        }
+
+        //上架仓位
+        if (mLocationAdapter != null) {
+            mLocationList.clear();
+            mLocationAdapter.notifyDataSetChanged();
         }
     }
 
@@ -329,21 +418,32 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum, etBatchFlag);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mLocationAdapter = null;
+        mLocationList.clear();
     }
 
     @Override
     public void saveCollectedDataSuccess() {
         showMessage("保存成功");
         tvLocQuantity.setText(getString(etQuantity));
-        if (!cbSingle.isChecked())
+        if (!cbSingle.isChecked()) {
             etQuantity.setText("");
+            isOpenBatchManager = true;
+            etBatchFlag.setEnabled(true);
+        }
     }
 
     @Override
     public void saveCollectedDataFail(String message) {
         showMessage("保存数据失败;" + message);
     }
+
+    protected abstract String getInvType();
 
     protected abstract String getInventoryQueryType();
 

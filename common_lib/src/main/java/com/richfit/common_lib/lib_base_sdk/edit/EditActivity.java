@@ -103,9 +103,14 @@ public class EditActivity extends BaseActivity<EditPresenterImp> implements IEdi
             showMessage("不能初始化修改界面");
             return;
         }
-        mFragment = RefUtil.findFragment(mFragmentManager, fragmentTag, getIntent().getExtras(), className);
-        if (mFragment != null)
-            mFragmentManager.beginTransaction().replace(R.id.edit_content, mFragment, fragmentTag).commit();
+        try {
+            mFragment = RefUtil.findFragment(mFragmentManager, fragmentTag, getIntent().getExtras(), className);
+            if (mFragment != null)
+                mFragmentManager.beginTransaction().replace(R.id.edit_content, mFragment, fragmentTag).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage(e.getMessage());
+        }
     }
 
     @Override
