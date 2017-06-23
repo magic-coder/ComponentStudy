@@ -1,6 +1,5 @@
 package com.richfit.module_qhyt.module_rg;
 
-import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
 import com.richfit.sdk_wzck.base_ds_collect.imp.DSCollectPresenterImp;
 
@@ -25,16 +24,6 @@ public class QHYTRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
     @Override
     public void initData() {
 
-    }
-
-    @Override
-    protected String getInvType() {
-        return "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 
     @Override

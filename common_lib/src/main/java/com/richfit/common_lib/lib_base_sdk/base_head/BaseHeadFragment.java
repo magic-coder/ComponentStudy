@@ -33,10 +33,10 @@ public abstract class BaseHeadFragment<P extends IBaseHeadPresenter> extends
 
     @Override
     public boolean checkDataBeforeOperationOnHeader() {
-        if (mRefData == null) {
-            showMessage("请先获取单据数据");
-            return false;
-        }
+//        if (mRefData == null) {
+//            showMessage("请先获取单据数据");
+//            return false;
+//        }
         if (TextUtils.isEmpty(mBizType)) {
             showMessage("未获取到业务类型");
             return false;
@@ -60,6 +60,8 @@ public abstract class BaseHeadFragment<P extends IBaseHeadPresenter> extends
 
                 }).setNegativeButton("取消", (dialog, which) -> dialog.dismiss()).show();
     }
+
+
 
     @Override
     public void uploadEditedHeadDataFail(String message) {

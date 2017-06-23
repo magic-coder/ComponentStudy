@@ -14,16 +14,6 @@ public class QHYTUbSto351CollectFragment extends BaseMSCollectFragment<MSCollect
 
 
     @Override
-    protected String getInvType() {
-        return "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
-    @Override
     protected int getOrgFlag() {
         return getInteger(R.integer.orgNorm);
     }

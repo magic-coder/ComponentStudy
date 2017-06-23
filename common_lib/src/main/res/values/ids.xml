@@ -51,6 +51,8 @@
     <item name="smooth_imageview" type="id"></item>
     <item name="image_button" type="id"></item>
     <item name="image" type="id"></item>
+    <item name="sp_move_type" type="id"></item>
+    <item name="et_supplier" type="id"></item>
 
 
     <!--明细界面业务id-->

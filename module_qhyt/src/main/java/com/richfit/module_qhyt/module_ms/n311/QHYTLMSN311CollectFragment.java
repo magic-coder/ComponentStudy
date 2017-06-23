@@ -13,6 +13,7 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -335,6 +336,7 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -348,7 +350,7 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
             result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
             result.quantity = getString(etQuantity);
-            result.invType = getInvType();
+            result.invType = param.invType;
             result.modifyFlag = "N";
             result.deviceId = mDeviceId;
 
@@ -365,13 +367,9 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
     }
 
     @Override
-    protected String getInvType() {
-        return "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
+    protected void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etSendLocation, etSpecialInvFlag, etSpecialInvNum);
     }
 
     @Override

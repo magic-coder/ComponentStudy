@@ -56,6 +56,12 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
 
     }
 
+
+    @Override
+    protected void initView() {
+
+    }
+
     @Override
     public void initDataLazily() {
         super.initDataLazily();
@@ -170,26 +176,6 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
     }
 
     @Override
-    protected void initView() {
-
-    }
-
-    @Override
-    protected int getOrgFlag() {
-        return 0;
-    }
-
-    @Override
-    protected String getInvType() {
-        return "1";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
-    @Override
     public boolean checkCollectedDataBeforeSave() {
         //对于上架仓位的检查
         if (!isNLocation) {
@@ -211,5 +197,11 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
         super.saveCollectedDataSuccess();
         //强制修改enable
         etBatchFlag.setEnabled(false);
+    }
+
+
+    @Override
+    protected int getOrgFlag() {
+        return 0;
     }
 }

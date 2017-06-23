@@ -41,9 +41,9 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     @BindView(R2.id.sp_work)
     Spinner spWork;
     @BindView(R2.id.et_auto_comp)
-    AutoCompleteTextView etAutoComp;
+    protected AutoCompleteTextView etAutoComp;
     @BindView(R2.id.tv_auto_comp_name)
-    TextView tvAutoCompName;
+    protected TextView tvAutoCompName;
     @BindView(R2.id.et_transfer_date)
     RichEditText etTransferDate;
 
@@ -101,13 +101,6 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
     }
 
-    @Override
-    protected void initView() {
-        //如果BizType是26那么显示成本中心,否者显示项目编号
-        if ("47".equalsIgnoreCase(mBizType)) {
-            tvAutoCompName.setText("项目编号");
-        }
-    }
 
     @Override
     public void initData() {
@@ -186,11 +179,7 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
             mRefData.workCode = mWorks.get(position).workCode;
             mRefData.workName = mWorks.get(position).workName;
 
-            if ("47".equalsIgnoreCase(mBizType)) {
-                mRefData.projectNum = getString(etAutoComp).split("_")[0];
-            } else {
-                mRefData.costCenter = getString(etAutoComp).split("_")[0];
-            }
+
             mRefData.bizType = mBizType;
             mRefData.voucherDate = getString(etTransferDate);
         }

@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
@@ -31,12 +30,13 @@ public class BarcodeSystemApplication extends BaseApplication {
         super.attachBaseContext(base);
 
         //只有主进程以及SDK版本5.0以下才走。
-        if (isMainProcess(BarcodeSystemApplication.this) && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (!dexOptDone(base)) {
-                preLoadDex(base);
-            }
-            MultiDex.install(this);
-        }
+//        if (isMainProcess(BarcodeSystemApplication.this) && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+//            if (!dexOptDone(base)) {
+//                preLoadDex(base);
+//            }
+//            MultiDex.install(this);
+//        }
+        MultiDex.install(this);
     }
 
     @Override
@@ -70,8 +70,6 @@ public class BarcodeSystemApplication extends BaseApplication {
                 case Global.QINGHAI:
                     //培训系统
                     baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
-                    //青海测试地址(D)
-//                    baseUrl = "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
                     break;
                 case Global.XINANGD:
                     //西南管道

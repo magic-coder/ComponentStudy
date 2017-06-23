@@ -1,12 +1,7 @@
 package com.richfit.module_qhyt.module_ms.n311;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.richfit.common_lib.widget.RichEditText;
@@ -17,13 +12,11 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
-import com.richfit.module_qhyt.R2;
 import com.richfit.sdk_wzyk.base_msn_edit.BaseMSNEditFragment;
 import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
 
 import java.util.List;
 
-import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
@@ -38,7 +31,6 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
     RichEditText etSendLocation;
     EditText etSpecialInvFlag;
     EditText etSpecialInvNum;
-
     String specialConvert = "N";
 
     @Override
@@ -53,20 +45,10 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
 
     @Override
     protected void initView() {
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
         etSendLocation = (RichEditText) mView.findViewById(R.id.et_send_location);
         etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
         etSpecialInvNum = (EditText) mView.findViewById(R.id.et_special_inv_num);
-        return mView;
     }
-
-
 
     @Override
     public void initEvent() {
@@ -90,7 +72,7 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
         super.initData();
         etSpecialInvFlag.setText(mSpecialInvFlag);
         etSpecialInvNum.setText(mSpecialInvNum);
-        etSendLocation.setText(mSendLocation);
+        etSendLocation.setText(mSendLocationCombine);
     }
 
     @Override
@@ -102,15 +84,10 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
      * 匹配仓位数量
      *
      * @param batchFlag
-     * @param location
+     * @param locationCombine
      */
-    private void loadLocationQuantity(String batchFlag, String location) {
-        String locationCombine;
-        if (!TextUtils.isEmpty(mSpecialInvFlag) && !TextUtils.isEmpty(mSpecialInvNum)) {
-            locationCombine = location + "_" + mSpecialInvFlag + "_" + mSpecialInvNum;
-        } else {
-            locationCombine = location;
-        }
+    private void loadLocationQuantity(String batchFlag, String locationCombine) {
+
         if (TextUtils.isEmpty(locationCombine)) {
             showMessage("发出仓位为空");
             return;
@@ -135,6 +112,7 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
                             locQuantity = locationInfo.quantity;
                             recLocation = locationInfo.recLocation;
                             recBatchFlag = locationInfo.recBatchFlag;
+                            mSendLocationCombine = locationInfo.locationCombine;
                             break;
                         }
                     } else {
@@ -142,6 +120,7 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
                             locQuantity = locationInfo.quantity;
                             recLocation = locationInfo.recLocation;
                             recBatchFlag = locationInfo.recBatchFlag;
+                            mSendLocationCombine = locationInfo.locationCombine;
                             break;
                         }
                     }

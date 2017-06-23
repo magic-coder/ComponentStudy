@@ -3,6 +3,8 @@ package com.richfit.sdk_cwtz.collect;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/2/7.
  */
@@ -16,7 +18,7 @@ public interface ILACollectPresenter extends IPresenter<ILACollectView> {
                           String materialNum, String materialId, String materialGroup,
                           String materialDesc, String batchFlag,
                           String location, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId);
+                          String invType, String deviceId,Map<String,Object> extraMap);
 
     /**
      * 保存本次采集的数据

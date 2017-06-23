@@ -2,7 +2,7 @@ package com.richfit.module_xngd.module_cwtz;
 
 import android.text.TextUtils;
 
-import com.richfit.module_xngd.R;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_cwtz.collect.LACollectFragment;
 
 /**
@@ -69,7 +69,11 @@ public class CNGDLACollectFragment extends LACollectFragment {
     }
 
     @Override
-    protected String getInventoryQueryType(){
-        return getString(R.string.inventoryQueryTypePrecise);
+    public InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam param = super.provideInventoryQueryParam();
+        param.queryType = "03";
+        param.invType = "1";
+        return param;
     }
+
 }

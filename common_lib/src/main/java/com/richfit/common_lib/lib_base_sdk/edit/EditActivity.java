@@ -3,7 +3,6 @@ package com.richfit.common_lib.lib_base_sdk.edit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +23,7 @@ public class EditActivity extends BaseActivity<EditPresenterImp> implements IEdi
 ,View.OnClickListener{
 
     private FloatingActionButton mBtnSaveModifiedData;
-    protected FragmentManager mFragmentManager;
+//    protected FragmentManager mFragmentManager;
     protected BaseFragment mFragment = null;
     protected String mTitle;
     protected String mCompanyCode;
@@ -45,9 +44,9 @@ public class EditActivity extends BaseActivity<EditPresenterImp> implements IEdi
     @Override
     public void initVariables() {
         mFragment = null;
-        if (mFragmentManager == null) {
-            mFragmentManager = getSupportFragmentManager();
-        }
+//        if (mFragmentManager == null) {
+//            mFragmentManager = getSupportFragmentManager();
+//        }
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
@@ -104,9 +103,9 @@ public class EditActivity extends BaseActivity<EditPresenterImp> implements IEdi
             return;
         }
         try {
-            mFragment = RefUtil.findFragment(mFragmentManager, fragmentTag, getIntent().getExtras(), className);
+            mFragment = RefUtil.newInstance(className,getIntent().getExtras());
             if (mFragment != null)
-                mFragmentManager.beginTransaction().replace(R.id.edit_content, mFragment, fragmentTag).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.edit_content, mFragment, fragmentTag).commit();
         } catch (Exception e) {
             e.printStackTrace();
             showMessage(e.getMessage());

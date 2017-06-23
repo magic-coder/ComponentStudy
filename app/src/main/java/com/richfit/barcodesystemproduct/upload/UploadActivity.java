@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -80,19 +81,17 @@ public class UploadActivity extends AppCompatActivity implements ViewPager.OnPag
         }
         mCurrentFragmentIndex = 0;
         try {
-            BaseFragment fragment = null;
-            fragment = RefUtil.findFragment(getSupportFragmentManager(),
-                    "Buzi_Upload_Fragment", "", "", "", "", -1, "出入库业务", BuziUploadFragment.class);
+            BaseFragment fragment = RefUtil.newInstance(BuziUploadFragment.class, "", "", "", "", -1, "出入库业务");
+            mFragments.add(fragment);
+            fragment = RefUtil.newInstance(CheckUploadFragment.class, "", "", "", "", -1, "盘点业务");
             mFragments.add(fragment);
 
-            fragment = RefUtil.findFragment(getSupportFragmentManager(),
-                    "Check_Upload_Fragment", "", "", "", "", -1, "盘点业务", CheckUploadFragment.class);
-            mFragments.add(fragment);
             MainPagerViewAdapter<BaseFragment> adapter = new MainPagerViewAdapter<>(getSupportFragmentManager(), mFragments);
             mViewPager.setAdapter(adapter);
             mTabLayout.setupWithViewPager(mViewPager);
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("yff", e.getMessage());
         }
     }
 

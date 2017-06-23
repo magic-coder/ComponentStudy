@@ -9,6 +9,7 @@ import com.richfit.barcodesystemproduct.upload.UploadContract;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.common_lib.utils.FileUtil;
+import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
@@ -48,7 +49,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
     protected static final String TRANSTOSAPFLAG_KEY = "transTosapFlag";
 
     /*注意这里是从-1开始*/
-    protected int mTaskNum = -1;
+    protected int mTaskNum = 0;
     UploadContract.View mView;
     List<ReferenceEntity> mRefDatas;
     /*返回给用户的信息*/
@@ -125,7 +126,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
     @Override
     public void uploadCollectedDataOffLine() {
         mView = getView();
-        mTaskNum = -1;
+        mTaskNum = 0;
         info = null;
         if (mRefDatas != null && mRefDatas.size() == 0) {
             mView.uploadCollectDataComplete();
@@ -135,11 +136,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                 Flowable.fromIterable(mRefDatas)
                         .filter(refData -> refData != null && refData.billDetailList != null && refData.billDetailList.size() > 0)
                         .map(refData -> wrapper2Results(refData, false))
-                        .flatMap(results -> {
-                            mTaskNum++;
-                            mMessageArray.get(mTaskNum).taskId = mTaskNum;
-                            return mRepository.uploadCollectionDataOffline(results);
-                        })
+                        .flatMap(results -> mRepository.uploadCollectionDataOffline(results))
                         .flatMap(message -> submitData2SAPInner(message))
                         .doOnComplete(() -> mRepository.deleteOfflineDataAfterUploadSuccess("", "0", "", ""))
                         .compose(TransformerHelper.io2main())
@@ -154,11 +151,13 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
 
                             @Override
                             public void _onNext(String transNum) {
+                                mMessageArray.get(mTaskNum).taskId = mTaskNum;
                                 UploadMsgEntity info = mMessageArray.get(mTaskNum);
                                 if (mView != null && info != null) {
                                     info.transNum = transNum;
                                     mView.uploadCollectDataSuccess(info);
-//                                    L.e("onNext mTaskNum = " + mTaskNum + ";info = " + info);
+                                    L.e("onNext mTaskNum = " + mTaskNum + ";info = " + info);
+                                    mTaskNum++;
                                 }
                             }
 
@@ -171,12 +170,15 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
 
                             @Override
                             public void _onCommonError(String message) {
+
+                                mMessageArray.get(mTaskNum).taskId = mTaskNum;
                                 UploadMsgEntity info = mMessageArray.get(mTaskNum);
                                 if (mView != null && info != null) {
                                     info.errorMsg = message;
                                     info.isEror = true;
-//                                    L.e("onError mTaskNum = " + mTaskNum + ";info = " + info);
                                     mView.uploadCollectDataFail(mMessageArray.get(mTaskNum));
+                                    mTaskNum++;
+                                    L.e("onError mTaskNum = " + mTaskNum + ";info = " + info);
                                 }
                             }
 
@@ -186,14 +188,13 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                                 if (mView != null && info != null) {
                                     info.errorMsg = message;
                                     info.isEror = true;
-//                                    L.e("onError mTaskNum = " + mTaskNum + ";info = " + info);
                                     mView.uploadCollectDataFail(mMessageArray.get(mTaskNum));
+                                    L.e("onError mTaskNum = " + mTaskNum + ";info = " + info);
                                 }
                             }
 
                             @Override
                             public void _onComplete() {
-//                                L.e("onComplete");
                                 if (mView != null) {
                                     mView.uploadCollectDataComplete();
                                 }
@@ -207,7 +208,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
         mRefDatas.clear();
         mMessageArray.clear();
         mExtraTransMap.clear();
-        mTaskNum = -1;
+        mTaskNum = 0;
         info = null;
     }
 
@@ -367,7 +368,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             info.workId = refData.workId;
             info.invId = refData.invId;
             info.recWorkId = refData.recWorkId;
-            info.recInvId = refData.recWorkId;
+            info.recInvId = refData.recInvId;
             info.bizTypeDesc = map.get(BIZTYPE_DESC_KEY);
             info.refTypeDesc = map.get(REFTYPE_DESC_KEY);
             info.totalTaskNum = refData.totalCount;
@@ -463,6 +464,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             result.qmCertificate = item.qmCertificate;
             //检验结果
             result.inspectionResult = item.inspectionResult;
+            result.remark = item.remark;
 
             result.modifyFlag = "N";
 

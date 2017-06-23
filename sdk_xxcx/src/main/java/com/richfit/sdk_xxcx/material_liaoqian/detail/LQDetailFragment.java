@@ -76,7 +76,7 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
         String queryType = isEmpty(mRefData.location) ? "01" : "04";
         mPresenter.getInventoryInfo(queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", "1", "");
+                mRefData.batchFlag, "", "", "1", "",null);
     }
 
     @Override
@@ -89,11 +89,6 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
         }
     }
 
-
-    @Override
-    public void loadInventoryFail(String message) {
-        showMessage(message);
-    }
 
     @Override
     protected boolean checkTransStateBeforeRefresh() {

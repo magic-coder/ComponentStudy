@@ -28,6 +28,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -400,10 +401,10 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     public void loadLocationList(boolean isDropDown) {
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         InvEntity invEntity = mInvDatas.get(spInv.getSelectedItemPosition());
-
-        mPresenter.getInventoryInfo(getInventoryQueryType(), lineData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", getInvType(), "",isDropDown);
+                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "",param.extraMap,isDropDown);
     }
 
 
@@ -502,7 +503,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, etLocation, tvLocQuantity, etQuantity, tvLocQuantity,
-                tvTotalQuantity, cbSingle, tvInsLostQuantity,etMaterialNum, etBatchFlag);
+                tvTotalQuantity, cbSingle, tvInsLostQuantity,etMaterialNum, etBatchFlag,tvSpecialInvFlag);
 
         //单据行
         if (mRefLineAdapter != null) {
@@ -824,17 +825,5 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      * @return
      */
     protected abstract int getOrgFlag();
-    /**
-     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
-     *
-     * @return
-     */
-    protected abstract String getInvType();
 
-    /**
-     * 子类返回库存查询类型
-     *
-     * @return
-     */
-    protected abstract String getInventoryQueryType();
 }

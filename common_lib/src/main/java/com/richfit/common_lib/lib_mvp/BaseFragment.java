@@ -29,6 +29,7 @@ import com.richfit.common_lib.lib_interface.IFragmentState;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.squareup.leakcanary.RefWatcher;
@@ -36,15 +37,12 @@ import com.squareup.leakcanary.RefWatcher;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
 
 
 /**
@@ -59,7 +57,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     public static final int COLLECT_FRAGMENT_INDEX = 0x2;
 
     private boolean isActivityCreated;
-    private Disposable mDisposable;
     protected View mView;
     protected P mPresenter;
     protected Activity mActivity;
@@ -70,8 +67,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected static ReferenceEntity mRefData;
     /*对于委外入库，组件界面的明细界面和数据采集界面共享的数据明细*/
     protected static List<RefDetailEntity> mRefDetail;
-    /*额外控件缓存*/
-    protected Map<String, View> mExtraViews;
     protected String mCompanyCode;
     protected String mModuleCode;
     protected String mBizType;
@@ -81,7 +76,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected String mTabTitle;
     /*批次管理，默认是打开的*/
     protected boolean isOpenBatchManager = true;
-
+    private static List<BottomMenuEntity> mBottomMenus;
+    private static InventoryQueryParam mInventoryParam;
 
     @Override
     public void onAttach(Context context) {
@@ -92,7 +88,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mExtraViews = new HashMap<>();
         Bundle bundle = getArguments();
         if (bundle != null) {
             mCompanyCode = bundle.getString(Global.EXTRA_COMPANY_CODE_KEY);
@@ -150,12 +145,13 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     public void onDestroyView() {
         super.onDestroyView();
         if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
-
-        if (mDisposable != null && !mDisposable.isDisposed())
-            mDisposable.dispose();
+//        if (mDisposable != null && !mDisposable.isDisposed())
+//            mDisposable.dispose();
         if (mPresenter != null) {
             mPresenter.detachView();
         }
+        mView = null;
+        mPresenter = null;
     }
 
     @Override
@@ -288,32 +284,46 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         return mFragmentType;
     }
 
-    protected void setTabTitle(String title) {
+    public void setTabTitle(String title) {
         this.mTabTitle = title;
     }
 
     protected List<BottomMenuEntity> provideDefaultBottomMenu() {
-        ArrayList<BottomMenuEntity> menus = new ArrayList<>();
+        if(mBottomMenus == null) {
+            mBottomMenus = new ArrayList<>();
+        }
+        mBottomMenus.clear();
         BottomMenuEntity menu = new BottomMenuEntity();
         menu.menuName = "过账";
         menu.menuImageRes = R.mipmap.icon_transfer;
-        menus.add(menu);
+        mBottomMenus.add(menu);
 
         menu = new BottomMenuEntity();
         menu.menuName = "上架";
         menu.menuImageRes = R.mipmap.icon_data_submit;
-        menus.add(menu);
+        mBottomMenus.add(menu);
 
         menu = new BottomMenuEntity();
         menu.menuName = "下架";
         menu.menuImageRes = R.mipmap.icon_down_location;
-        menus.add(menu);
+        mBottomMenus.add(menu);
 
         menu = new BottomMenuEntity();
         menu.menuName = "记账更改";
         menu.menuImageRes = R.mipmap.icon_detail_transfer;
-        menus.add(menu);
-        return menus;
+        mBottomMenus.add(menu);
+        return mBottomMenus;
+    }
+
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        if(mInventoryParam == null) {
+            mInventoryParam = new InventoryQueryParam();
+        }
+        mInventoryParam.reset();
+        mInventoryParam.invType = "1";
+        mInventoryParam.queryType = "04";
+        mInventoryParam.extraMap = null;
+        return mInventoryParam;
     }
 
     //初始化相关变量

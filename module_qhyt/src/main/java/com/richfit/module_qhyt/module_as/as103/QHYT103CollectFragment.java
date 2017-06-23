@@ -10,6 +10,7 @@ import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
 /**
+ * 2017年06年19打开批次，但是不检查批次必输。
  * Created by monday on 2017/6/12.
  */
 
@@ -46,7 +47,7 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
 
     @Override
     public void initView() {
-        llBatchFlag.setVisibility(View.GONE);
+//        llBatchFlag.setVisibility(View.GONE);
         llLocation.setVisibility(View.GONE);
         llLocationQuantity.setVisibility(View.GONE);
     }
@@ -56,13 +57,6 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
 
     }
 
-
-    @Override
-    public void bindCommonCollectUI() {
-        super.bindCommonCollectUI();
-        //强制不进行批次检查
-        isOpenBatchManager = false;
-    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -104,24 +98,7 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
 
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
-        //强制不输入批次
-        isOpenBatchManager = false;
-    }
-
-    @Override
     protected int getOrgFlag() {
         return getInteger(R.integer.orgNorm);
-    }
-
-    @Override
-    protected String getInvType() {
-        return "1";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

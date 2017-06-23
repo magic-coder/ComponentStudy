@@ -210,7 +210,7 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUI() {
-        clearCommonUI(tvRefNum, tvSupplier, tvCreator);
+        clearCommonUI(etRefNum,tvRefNum, tvSupplier, tvCreator);
     }
 
     @Override

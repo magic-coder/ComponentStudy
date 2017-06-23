@@ -4,6 +4,8 @@ package com.richfit.sdk_sxcl.basecollect;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/5/26.
  */
@@ -20,7 +22,7 @@ public interface ILocQTCollectPresenter extends IPresenter<ILocQTCollectView> {
      */
     void getLocationList(String queryType, String workId, String invId, String workCode, String invCode,
                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                         String specialInvFlag, String specialInvNum, String invType, String deviceId,boolean isDropDown);
+                         String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap,boolean isDropDown);
     /**
      * 获取库存信息
      *
@@ -33,7 +35,7 @@ public interface ILocQTCollectPresenter extends IPresenter<ILocQTCollectView> {
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId);
+                          String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
 
     /**
      * 获取单条缓存

@@ -9,11 +9,11 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
-import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -65,10 +65,10 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     protected String mQuantity;
     protected List<InventoryEntity> mInventoryDatas;
     private LocationAdapter mLocationAdapter;
-    private List<String> mLocations;
-    protected String mSelectedLocation;
-    private String mSpecialInvFlag;
-    private String mSpecialInvNum;
+    private List<String> mLocationCombines;
+    protected String mSpecialInvFlag;
+    protected String mSpecialInvNum;
+    protected String mSelectedLocationCombine;
     protected float mTotalQuantity;
 
     @Override
@@ -103,11 +103,12 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
      * @return
      */
     private boolean isValidatedLocation() {
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             return false;
         }
-        for (String location : mLocations) {
-            if (mSelectedLocation.equalsIgnoreCase(location)) {
+        for (String locationCombine : mLocationCombines) {
+            if (mSelectedLocationCombine.equalsIgnoreCase(locationCombine)) {
+                showMessage("该仓位已经存在");
                 return false;
             }
         }
@@ -117,7 +118,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     @Override
     public void initData() {
         Bundle bundle = getArguments();
-        mSelectedLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
+        mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
         mSpecialInvNum = bundle.getString(Global.EXTRA_SPECIAL_INV_NUM_KEY);
         final String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
@@ -126,7 +127,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
-        mLocations = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
+        mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mRefLineId = bundle.getString(Global.EXTRA_REF_LINE_ID_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
 
@@ -170,8 +171,9 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             showMessage("库存地点");
             return;
         }
-        mPresenter.getInventoryInfo(getInventoryQueryType(), workId, invId, workCode, invCode, "",
-                getString(tvMaterialNum), materialId, location, batchFlag, "", "", getInvType(), "");
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode, "",
+                getString(tvMaterialNum), materialId, location, batchFlag, "", "", param.invType, "", param.extraMap);
     }
 
     @Override
@@ -186,29 +188,18 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         }
 
         //默认选择已经下架的仓位
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             spLocation.setSelection(0);
             return;
         }
 
-        String locationCombine;
-        if (!TextUtils.isEmpty(mSpecialInvFlag) && !TextUtils.isEmpty(mSpecialInvNum)) {
-            locationCombine = mSelectedLocation + mSpecialInvFlag + mSpecialInvNum;
-        } else {
-            locationCombine = mSelectedLocation;
-        }
+
         int pos = -1;
         for (InventoryEntity loc : mInventoryDatas) {
             pos++;
-            if (mSelectedLocation.equals(locationCombine)) {
-                if (mSelectedLocation.equalsIgnoreCase(loc.location)) {
-                    break;
-                }
-            } else {
-                //如果在修改前选择的是寄售库存的仓位
-                if (locationCombine.equalsIgnoreCase(loc.locationCombine))
-                    break;
-            }
+            //如果在修改前选择的是寄售库存的仓位
+            if (mSelectedLocationCombine.equalsIgnoreCase(loc.locationCombine))
+                break;
         }
         if (pos >= 0 && pos < list.size()) {
             spLocation.setSelection(pos);
@@ -226,6 +217,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
         if (cache != null) {
             tvTotalQuantity.setText(cache.totalQuantity);
+
             //查询该行的locationInfo
             List<LocationInfoEntity> locationInfos = cache.locationList;
             if (locationInfos == null || locationInfos.size() == 0) {
@@ -304,6 +296,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+            InventoryQueryParam param = provideInventoryQueryParam();
             ResultEntity result = new ResultEntity();
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
@@ -328,6 +321,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
                     "Y" : "N";
             result.batchFlag = getString(tvBatchFlag);
             result.quantity = getString(etQuantity);
+            result.invType = param.invType;
             result.modifyFlag = "Y";
             emitter.onNext(result);
             emitter.onComplete();
@@ -341,6 +335,10 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         super.saveEditedDataSuccess(message);
         tvTotalQuantity.setText(String.valueOf(mTotalQuantity));
         tvLocQuantity.setText(getString(etQuantity));
+        int locationPos = spLocation.getSelectedItemPosition();
+        if (locationPos >= 0 && locationPos < mInventoryDatas.size()) {
+            mSelectedLocationCombine = mInventoryDatas.get(locationPos).locationCombine;
+        }
     }
 
     @Override
@@ -354,13 +352,4 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         super.retry(retryAction);
     }
 
-    /**
-     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
-     *
-     * @return
-     */
-
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
 }

@@ -13,6 +13,7 @@ import com.richfit.sdk_wzck.base_ds_edit.IDSEditPresenter;
 import com.richfit.sdk_wzck.base_ds_edit.IDSEditView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2016/11/21.
@@ -30,7 +31,7 @@ public class DSEditPresenterImp extends BaseEditPresenterImp<IDSEditView>
                                  String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location,
                                  String batchFlag, String specialInvFlag, String specialInvNum,
-                                 String invType, String deviceId) {
+                                 String invType, String deviceId,Map<String,Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
@@ -38,7 +39,7 @@ public class DSEditPresenterImp extends BaseEditPresenterImp<IDSEditView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId))
+                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
@@ -46,7 +47,7 @@ public class DSEditPresenterImp extends BaseEditPresenterImp<IDSEditView>
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId)
+                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));

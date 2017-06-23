@@ -13,6 +13,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -68,11 +69,11 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     protected String mQuantity;
     protected List<InventoryEntity> mInventoryDatas;
     private LocationAdapter mLocationAdapter;
-    private List<String> mLocations;
-    protected String mSelectedLocation;
-    protected float mTotalQuantity;
+    private List<String> mLocationCombines;
+    protected String mSelectedLocationCombine;
     protected String mSpecialInvFlag;
     protected String mSpecialInvNum;
+    protected float mTotalQuantity;
 
     @Override
     protected int getContentId() {
@@ -107,11 +108,11 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
      * @return
      */
     private boolean isValidatedLocation() {
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             return false;
         }
-        for (String location : mLocations) {
-            if (mSelectedLocation.equalsIgnoreCase(location)) {
+        for (String locationCombine : mLocationCombines) {
+            if (mSelectedLocationCombine.equalsIgnoreCase(locationCombine)) {
                 return false;
             }
         }
@@ -121,7 +122,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     @Override
     public void initData() {
         Bundle bundle = getArguments();
-        mSelectedLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
+        mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
         mSpecialInvNum = bundle.getString(Global.EXTRA_SPECIAL_INV_NUM_KEY);
         final String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
@@ -130,7 +131,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
-        mLocations = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
+        mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mRefLineId = bundle.getString(Global.EXTRA_REF_LINE_ID_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
 
@@ -174,9 +175,10 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             return;
         }
         final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-        mPresenter.getInventoryInfo(getInventoryQueryType(), workId, invId, workCode, invCode,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode,
                 "", getString(tvMaterialNum), materialId, location, batchFlag, lineData.specialInvFlag,
-                mRefData.supplierNum, getInvType(), "");
+                mRefData.supplierNum, param.invType, "", param.extraMap);
     }
 
     @Override
@@ -191,31 +193,19 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         }
 
         //默认选择已经下架的仓位
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             spLocation.setSelection(0);
             return;
         }
 
-        String locationCombine;
-        if (!TextUtils.isEmpty(mSpecialInvFlag) && !TextUtils.isEmpty(mSpecialInvNum)) {
-            locationCombine = mSelectedLocation + mSpecialInvFlag + mSpecialInvNum;
-        } else {
-            locationCombine = mSelectedLocation;
-        }
 
         //系统自动选择用户选中的仓位
         int pos = -1;
         for (InventoryEntity loc : mInventoryDatas) {
             pos++;
-            if (mSelectedLocation.equals(locationCombine)) {
-                if (mSelectedLocation.equalsIgnoreCase(loc.location)) {
-                    break;
-                }
-            } else {
-                //如果在修改前选择的是寄售库存的仓位
-                if (locationCombine.equalsIgnoreCase(loc.locationCombine))
-                    break;
-            }
+            //如果在修改前选择的是寄售库存的仓位
+            if (mSelectedLocationCombine.equalsIgnoreCase(loc.locationCombine))
+                break;
         }
         if (pos >= 0 && pos < list.size()) {
             spLocation.setSelection(pos);
@@ -345,6 +335,10 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         super.saveEditedDataSuccess(message);
         tvTotalQuantity.setText(String.valueOf(mTotalQuantity));
         tvLocQuantity.setText(getString(etQuantity));
+        int locationPos = spLocation.getSelectedItemPosition();
+        if (locationPos >= 0 && locationPos < mInventoryDatas.size()) {
+            mSelectedLocationCombine = mInventoryDatas.get(locationPos).locationCombine;
+        }
     }
 
     @Override
@@ -359,14 +353,4 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         }
         super.retry(retryAction);
     }
-
-    /**
-     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
-     *
-     * @return
-     */
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
-
 }

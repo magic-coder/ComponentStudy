@@ -30,5 +30,5 @@ public interface ISettingPresenter extends IPresenter<ISettingView> {
      */
     void loadLatestApp(String url, String saveName, String savePath);
 
-    void setupUrl(String url);
+   void resetPassword(String oldPassword,String newPassword);
 }

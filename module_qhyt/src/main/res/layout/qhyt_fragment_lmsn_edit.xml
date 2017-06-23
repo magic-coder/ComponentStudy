@@ -118,7 +118,7 @@
 
 
             <EditText
-                android:id="@id/tv_special_inv_flag"
+                android:id="@id/et_special_inv_flag"
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 
@@ -135,7 +135,7 @@
 
 
             <EditText
-                android:id="@+id/tv_special_inv_num"
+                android:id="@+id/et_special_inv_num"
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 

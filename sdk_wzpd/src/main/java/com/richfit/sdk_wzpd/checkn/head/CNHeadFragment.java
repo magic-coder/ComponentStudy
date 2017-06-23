@@ -59,7 +59,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @BindView(R2.id.ll_storage_num_level)
     LinearLayout llStorageNumLevel;
     @BindView(R2.id.btn_storage_num_level)
-    RadioButton rbStorageNumLevel;
+    protected RadioButton rbStorageNumLevel;
     @BindView(R2.id.btn_warehouse_level)
     RadioButton rbWarehouseLevel;
     @BindView(R2.id.sp_work)
@@ -126,6 +126,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
          /*如果选择仓库级，那么初始化工厂和库存地点*/
         RxView.clicks(rbWarehouseLevel)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> rbWarehouseLevel.isEnabled())
                 .subscribe(a -> {
                     resetUI();
                     mRefData = null;
@@ -137,6 +138,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
         /*如果选择仓位级，那么初始化仓库号*/
         RxView.clicks(rbStorageNumLevel)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> rbStorageNumLevel.isEnabled())
                 .subscribe(a -> {
                     resetUI();
                     mRefData = null;

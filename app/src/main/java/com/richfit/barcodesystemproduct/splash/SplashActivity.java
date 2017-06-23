@@ -80,8 +80,8 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
         if (judgeProperty()) {
             new AlertDialog.Builder(this)
                     .setTitle("扫描设置")
-                    .setMessage("您已经打开\"了使能上报扫描键值\",请先关闭它")
-                    .setPositiveButton("现在去关闭", (dialog, which) -> {
+                    .setMessage("您未打开\"使能上报扫描键值\",请先打开它")
+                    .setPositiveButton("现在去开启", (dialog, which) -> {
                         Intent intent = new Intent(
                                 Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         startActivity(intent);
@@ -93,6 +93,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
         if (!NetworkStateUtil.isNetConnected(this.getApplicationContext()) && mPresenter != null) {
             mPresenter.setLocal(true);
             toLogin();
+//            mPresenter.loadFragmentConfigs();
             return;
         }
         //如果有网络那么直接进行基础数据更新
@@ -107,16 +108,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      */
     @Override
     public void networkAvailable() {
-        //如果网络可用，那么针对不同的地区公司下载原始单据数据
-        switch (BuildConfig.APP_NAME) {
-            case Global.QINGHAI:
-                mPresenter.downloadInitialDB();
-                break;
-            default:
-                //如果没有离线业务，那么直接同步基础数据
-                startSyncBasicData();
-                break;
-        }
+        mPresenter.downloadInitialDB();
     }
 
     @Override
@@ -129,11 +121,10 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      * 判断快捷扫描是否勾选   不勾选跳转到系统设置中进行设置
      */
     private boolean judgeProperty() {
-        if (!BuildConfig.ISSERVICEDL) {
-            String result = SysProp.get("persist.sys.keyreport", "false");
-            return result.equals("true");
-        }
-        return false;
+        if(!BuildConfig.ISSERVICEDL)
+            return false;
+        String result = SysProp.get("persist.sys.keyreport", "false");
+        return result.equals("false");
     }
 
 

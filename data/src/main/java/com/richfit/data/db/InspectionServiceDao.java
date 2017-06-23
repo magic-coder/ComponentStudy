@@ -310,7 +310,7 @@ public class InspectionServiceDao extends BaseDao implements IInspectionServiceD
                 .append("L.line_num,L.inspection_result,L.unit,")
                 .append("L.work_id,WORG.org_code as work_code,WORG.org_name as work_name, ")
                 .append("L.inv_id,IORG.org_code as inv_code,IORG.org_name as inv_name,")
-                .append("L.created_by,L.quantity,L.qualified_quantity,")
+                .append("L.created_by,L.quantity,L.qualified_quantity,L.remark,")
                 .append("S.random_quantity,S.rust_quantity,S.damaged_quantity,")
                 .append("S.bad_quantity,S.other_quantity,S.z_package,S.qm_num,")
                 .append("S.certificate,S.instructions,S.qm_certificate,S.claim_num,")
@@ -355,6 +355,7 @@ public class InspectionServiceDao extends BaseDao implements IInspectionServiceD
                 detail.userId = cursor.getString(++index);
                 detail.quantity = cursor.getString(++index);
                 detail.qualifiedQuantity = cursor.getString(++index);
+                detail.remark = cursor.getString(++index);
                 detail.randomQuantity = cursor.getString(++index);
                 detail.rustQuantity = cursor.getString(++index);
                 detail.damagedQuantity = cursor.getString(++index);

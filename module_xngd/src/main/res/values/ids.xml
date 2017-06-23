@@ -2,6 +2,11 @@
 <resources>
 
     <item name="xngd_sp_move_type" type="id"></item>
-    <item name="xngd_cb_emergency" type="id"></item>
-    <item name="xngd_cb_project_move" type="id"></item>
+    <item name="xngd_cb_inv_flag" type="id"></item>
+    <item name="xngd_cb_project_flag" type="id"></item>
+    <item name="xngd_tv_inv_flag" type="id"></item>
+    <item name="xngd_tv_cost_center" type="id"></item>
+    <item name="xngd_tv_project_num" type="id"></item>
+    <item name="xngd_tv_job_num" type="id"></item>
+    <item name="xngd_sp_goods_type" type="id"></item>
 </resources>

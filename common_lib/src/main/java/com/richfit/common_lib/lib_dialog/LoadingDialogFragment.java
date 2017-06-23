@@ -48,4 +48,10 @@ public class LoadingDialogFragment extends DialogFragment {
         mTvLoadingMsg.setText(message);
     }
 
+    @Override
+    public void onDestroy() {
+        mTvLoadingMsg = null;
+        super.onDestroy();
+    }
+
 }

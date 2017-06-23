@@ -3,12 +3,15 @@ package com.richfit.barcodesystemproduct.splash.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
 import com.richfit.barcodesystemproduct.splash.ISplashPresenter;
 import com.richfit.barcodesystemproduct.splash.ISplashView;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.common_lib.utils.L;
+import com.richfit.common_lib.utils.LocalFileUtil;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.db.BCSSQLiteHelper;
@@ -16,6 +19,8 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.LoadBasicDataWrapper;
 import com.richfit.domain.bean.LoadDataTask;
+import com.richfit.domain.bean.MenuNode;
+import com.richfit.domain.bean.UserEntity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,7 +45,7 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
     private int mTaskId = 0;
     private RxDownload mRxDownload;
 
-    public SplashPresenterImp( Context context) {
+    public SplashPresenterImp(Context context) {
         super(context);
     }
 
@@ -51,6 +56,7 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
                 .maxThread(1)
                 .maxRetryCount(3);
     }
+
     /**
      * 下载基础数据的入口。
      * 注意这里由于系统必须去下载两种类型的ZZ的基础数据，
@@ -139,9 +145,9 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
             Global.MAC_ADDRESS = CommonUtil.getMacAddress();
         }
         final String dbName = BCSSQLiteHelper.DB_NAME;
-        File  fileDB = mContext.getDatabasePath(dbName);
+        File fileDB = mContext.getDatabasePath(dbName);
         String dirDB = fileDB.getParent();
-        if(fileDB.exists()) {
+        if (fileDB.exists()) {
             fileDB.delete();
         }
         File file = new File(dirDB);
@@ -191,19 +197,85 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
 
                     @Override
                     public void onError(Throwable t) {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.networkNotAvailable(t.getMessage());
                         }
                     }
 
                     @Override
                     public void onComplete() {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.networkAvailable();
                         }
                     }
                 });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void loadFragmentConfigs() {
+        mView = getView();
+
+        ResourceSubscriber<Boolean> subscriber = Flowable.just("fragment_configs.json")
+                .map(name -> LocalFileUtil.getStringFormAsset(mContext, name))
+                .map(json -> parseJson(json))
+                .filter(list -> list != null && list.size() > 0)
+                .map(list -> wrapperMenuNodes(list,Global.OFFLINE_MODE))
+                .map(list -> mRepository.saveMenuInfo(list, "1", Global.OFFLINE_MODE))
+                .map(list -> {
+                    final UserEntity userEntity = new UserEntity();
+                    userEntity.password = "1";
+                    userEntity.loginId = "1";
+                    userEntity.companyCode = "D740";
+                    userEntity.companyId = "A8BB8253DDF56CADC46B3DB6BED48873";
+                    userEntity.userId = "测试1";
+                    userEntity.userId = "100060149671991351102";
+                    userEntity.wmFlag = "N";
+                    mRepository.saveUserInfo(userEntity);
+                    return true;
+                })
+                .subscribeWith(new ResourceSubscriber<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.toLogin();
+                        }
+                    }
+                });
+        addSubscriber(subscriber);
+
+    }
+
+    private ArrayList<MenuNode> wrapperMenuNodes(ArrayList<MenuNode> list, int mode) {
+        ArrayList<MenuNode> menus = new ArrayList<>();
+        if (list == null || list.size() == 0)
+            return menus;
+        for (MenuNode menuNode : list) {
+            menuNode.setMode(mode);
+            menus.add(menuNode);
+        }
+        return menus;
+    }
+
+    private ArrayList<MenuNode> parseJson(final String json) {
+        if (TextUtils.isEmpty(json)) {
+            return null;
+        }
+        Gson gson = new Gson();
+        ArrayList<MenuNode> list =
+                gson.fromJson(json, new TypeToken<ArrayList<MenuNode>>() {
+                }.getType());
+        return list;
     }
 
 

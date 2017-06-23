@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 public abstract class BaseActivity<T extends IPresenter> extends AppCompatActivity implements BaseView,
         NetConnectErrorDialogFragment.INetworkConnectListener {
@@ -35,8 +34,6 @@ public abstract class BaseActivity<T extends IPresenter> extends AppCompatActivi
     protected T mPresenter;
     //系统DecorView的根View
     protected View mView;
-    //取消订阅
-    private Disposable mDisposable;
     //ButterKnife注解
     private Unbinder mUnbinder;
     //是否退出App
@@ -121,12 +118,14 @@ public abstract class BaseActivity<T extends IPresenter> extends AppCompatActivi
         }
         if (mUnbinder != null && mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
 
-        if (mDisposable != null && !mDisposable.isDisposed())
-            mDisposable.dispose();
+//        if (mDisposable != null && !mDisposable.isDisposed())
+//            mDisposable.dispose();
         //防止内存泄露
         if (mPresenter != null) {
             mPresenter.detachView();
+            mPresenter = null;
         }
+        mView = null;
     }
 
     protected abstract void initVariables();

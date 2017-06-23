@@ -11,6 +11,7 @@ import com.richfit.common_lib.lib_interface.IBarcodeSystemMain;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
+import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -28,7 +29,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
 public class CNDetailPresenterImp extends BasePresenter<ICNDetailView>
         implements ICNDetailPresenter {
 
-    ICNDetailView mView;
+    protected ICNDetailView mView;
 
     public CNDetailPresenterImp(Context context) {
         super(context);
@@ -198,7 +199,8 @@ public class CNDetailPresenterImp extends BasePresenter<ICNDetailView>
     private ReferenceEntity setCheckFlag(ReferenceEntity refData) {
         List<InventoryEntity> checkList = refData.checkList;
         for (InventoryEntity entity : checkList) {
-            if (!TextUtils.isEmpty(entity.totalQuantity) && !"0".equals(entity.totalQuantity)) {
+            final float totalQ = CommonUtil.convertToFloat(entity.totalQuantity, 0.0F);
+            if (!TextUtils.isEmpty(entity.totalQuantity) && Float.compare(totalQ,0.0F) > 0) {
                 entity.isChecked = true;
             }
         }

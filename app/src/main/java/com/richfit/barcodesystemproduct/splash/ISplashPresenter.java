@@ -24,4 +24,6 @@ public interface ISplashPresenter extends IPresenter<ISplashView> {
 
     void getConnectionStatus();
 
+    void loadFragmentConfigs();
+
 }

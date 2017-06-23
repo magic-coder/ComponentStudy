@@ -11,17 +11,6 @@ import com.richfit.sdk_wzck.base_ds_collect.imp.DSCollectPresenterImp;
 
 public class QHYTDSXSCollectFragment extends BaseDSCollectFragment<DSCollectPresenterImp> {
 
-
-    @Override
-    protected String getInvType() {
-        return "01";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
     @Override
     protected int getOrgFlag() {
         return getInteger(R.integer.orgNorm);

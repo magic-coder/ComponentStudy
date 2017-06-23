@@ -7,8 +7,8 @@ import android.view.View;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
@@ -110,7 +110,7 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
         //调用父类方法，将缓存中的发出仓位数量匹配出来
         super.loadLocationQuantity(position);
         //接收仓位默认为发出仓位
-        autoRecLoc.setText(mInventoryDatas.get(position).location);
+//        autoRecLoc.setText(mInventoryDatas.get(position).location);
     }
 
 
@@ -178,6 +178,7 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -191,7 +192,7 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
             result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
             result.quantity = getString(etQuantity);
-            result.invType = getInvType();
+            result.invType = param.invType;
             result.modifyFlag = "N";
 
             result.deviceId = mDeviceId;
@@ -205,17 +206,6 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
         }, BackpressureStrategy.BUFFER)
                 .compose(TransformerHelper.io2main())
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-    }
-
-
-    @Override
-    protected String getInvType() {
-        return "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 
     @Override

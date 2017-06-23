@@ -35,7 +35,7 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
     public void showNodes(List<RefDetailEntity> allNodes) {
         saveTransId(allNodes);
         if (mAdapter == null) {
-            mAdapter = new QHYTAS103DetailAdapter(mActivity, R.layout.wzrk_item_asy_detail_parent_header,
+            mAdapter = new QHYTAS103DetailAdapter(mActivity, R.layout.qhyt_item_as103_item,
                     allNodes);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setOnItemEditAndDeleteListener(this);

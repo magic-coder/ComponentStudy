@@ -20,10 +20,9 @@ import android.widget.TextView;
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
 import com.richfit.barcodesystemproduct.R;
+import com.richfit.barcodesystemproduct.login.LoginActivity;
 import com.richfit.barcodesystemproduct.setting.imp.SettingPresenterImp;
-import com.richfit.barcodesystemproduct.splash.SplashActivity;
 import com.richfit.common_lib.lib_dialog.ProgressDialogFragment;
 import com.richfit.common_lib.lib_mvp.BaseActivity;
 import com.richfit.common_lib.utils.FileUtil;
@@ -83,8 +82,8 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
     FloatingActionButton fabButton;
     @BindView(R.id.btn_circle_progress)
     ButtonCircleProgressBar mProgressBar;
-    @BindView(R.id.set_ip)
-    LinearLayout llSetIP;
+    @BindView(R.id.reset_password)
+    LinearLayout llResetPassword;
     @BindView(R.id.sb_batch_flag)
     SwitchView sbBatchFlag;
 
@@ -93,11 +92,8 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
     private ProgressDialogFragment mProgressDialog;
     private String mMessage;
     private AlertView mAlertView;
-    private EditText mIP1;
-    private EditText mIP2;
-    private EditText mIP3;
-    private EditText mIP4;
-    private EditText mEtPort;
+    private EditText etOldPwd;
+    private EditText etNewPwd;
 
     @Override
     protected int getContentId() {
@@ -134,9 +130,9 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(a -> mCurrentLoadStatus != LOAD_STATUS_LADING)
                 .subscribe(a -> startLoadBasicData());
-        /*IP设置*/
-        RxView.clicks(llSetIP)
-                .subscribe(a -> startSetupIP());
+        /*修改密码*/
+        RxView.clicks(llResetPassword)
+                .subscribe(a -> startResetPassword());
     }
 
 
@@ -146,17 +142,14 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
     }
 
     /**
-     * 启动IP设置界面
+     * 启动修改密码界面
      */
-    private void startSetupIP() {
+    private void startResetPassword() {
         if (mAlertView == null) {
-            mAlertView = new AlertView("提示", "请输入服务器地址", "取消", null, new String[]{"完成"}, this, AlertView.Style.Alert, this);
-            ViewGroup extView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.dialog_ip_manager, null);
-            mIP1 = (EditText) extView.findViewById(R.id.ip1);
-            mIP2 = (EditText) extView.findViewById(R.id.ip2);
-            mIP3 = (EditText) extView.findViewById(R.id.ip3);
-            mIP4 = (EditText) extView.findViewById(R.id.ip4);
-            mEtPort = (EditText) extView.findViewById(R.id.et_port);
+            mAlertView = new AlertView("提示", "请输入新密码", "取消", null, new String[]{"完成"}, this, AlertView.Style.Alert, this);
+            ViewGroup extView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.dialog_reset_pwd, null);
+            etOldPwd = (EditText) extView.findViewById(R.id.et_old_pwd);
+            etNewPwd = (EditText) extView.findViewById(R.id.et_new_pwd);
             mAlertView.addExtView(extView);
         }
         mAlertView.show();
@@ -204,7 +197,7 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
             mMessage += "仓位主数据";
         }
 
-        if(sbBatchFlag.isOpened()) {
+        if (sbBatchFlag.isOpened()) {
             task = new LoadBasicDataWrapper();
             task.isByPage = true;
             task.queryType = "PC";
@@ -393,68 +386,33 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
     }
 
     @Override
-    public void onItemClick(Object o, int position) {
-        hideKeyboard(mIP1);
-        //判断是否是拓展窗口View，而且点击的是非取消按钮
-        if (o == mAlertView && position != AlertView.CANCELPOSITION) {
-            if (!checkIP(mIP1, mIP2, mIP3, mIP4)) {
-                showMessage("您输入的IP不合理");
-                return;
-            }
-
-            final String port = mEtPort.getText().toString();
-            if (TextUtils.isEmpty(port)) {
-                showMessage("请输入端口号");
-                return;
-            }
-            //1. 先拿到当前服务器地址的资源名
-            final String url = BarcodeSystemApplication.baseUrl;
-            final StringBuffer sb = new StringBuffer();
-            if (!TextUtils.isEmpty(url)) {
-                int indexOf = url.indexOf("/", 7);//这里去除http://
-                if (indexOf > 0) {
-                    String webURI = url.substring(indexOf);
-                    sb.append("http://")
-                            .append(mIP1.getText())
-                            .append(".")
-                            .append(mIP2.getText())
-                            .append(".")
-                            .append(mIP3.getText())
-                            .append(".")
-                            .append(mIP4.getText())
-                            .append(":")
-                            .append(port)
-                            .append(webURI);
-                }
-            }
-            final String newUrl = sb.toString();
-            if (TextUtils.isEmpty(newUrl)) {
-                showMessage("服务为空");
-                return;
-            }
-            mPresenter.setupUrl(newUrl);
-            return;
-        }
+    public void resetPasswordFail(String message) {
+        showMessage(message);
     }
 
-
     @Override
-    public void setupUrlComplete() {
-        //启动SplashActivity
-        Intent intent = new Intent(this, SplashActivity.class);
+    public void resetPasswordComplete() {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
 
-    private boolean checkIP(EditText... ets) {
-        for (EditText et : ets) {
-            int ip = CommonUtil.convertToInt(et.getText(), 0);
-            if (ip <= 0 || ip > 255) {
-                return false;
+    @Override
+    public void onItemClick(Object o, int position) {
+        hideKeyboard(llResetPassword);
+        //判断是否是拓展窗口View，而且点击的是非取消按钮
+        if (o == mAlertView && position != AlertView.CANCELPOSITION) {
+            String oldPwd = etOldPwd.getText().toString();
+            String newPwd = etNewPwd.getText().toString();
+            if(TextUtils.isEmpty(oldPwd) || TextUtils.isEmpty(newPwd)) {
+                showMessage("输入密码有误");
+                return;
             }
+            mPresenter.resetPassword(oldPwd,newPwd);
+            return;
         }
-        return true;
     }
+
 
     @Override
     protected void onDestroy() {

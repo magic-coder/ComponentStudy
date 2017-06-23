@@ -13,19 +13,15 @@ import java.util.List;
 import io.reactivex.Flowable;
 
 /**
- * 青海105物资入库数据采集界面。对于必检的物资不能使用105非必检入库
+ * 青海105物资入库数据采集界面。对于必检的物资不能使用105非必检入库。
+ * 注意批次的enable=false,表示不检查批次输入，也就是即使在打开了批次管理的情况。
+ * 下也不检查是否输入了批次
  * Created by monday on 2017/2/20.
  */
 
-public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
+public class  QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
 
 
-    @Override
-    public void initDataLazily() {
-        super.initDataLazily();
-        //这里让系统不能让用户手动输入批次，必须通过扫码的方式获取批次
-        etBatchFlag.setEnabled(false);
-    }
 
     @Override
     public void initPresenter() {
@@ -48,6 +44,13 @@ public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPr
 
     }
 
+    @Override
+    public void initDataLazily() {
+        super.initDataLazily();
+        //这里让系统不能让用户手动输入批次，必须通过扫码的方式获取批次
+        etBatchFlag.setEnabled(false);
+    }
+
     /**
      * 绑定UI。注意重写的目的是判断必检物资不能做105非必检入库
      */
@@ -63,6 +66,7 @@ public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPr
             return;
         }
         super.bindCommonCollectUI();
+        etBatchFlag.setEnabled(false);
     }
 
     @Override
@@ -84,6 +88,14 @@ public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPr
             return false;
         }
         return super.checkCollectedDataBeforeSave();
+    }
+
+
+    @Override
+    public void saveCollectedDataSuccess() {
+        super.saveCollectedDataSuccess();
+        //强制修改enable
+        etBatchFlag.setEnabled(false);
     }
 
     @Override
@@ -160,14 +172,5 @@ public class QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPr
 
         }
         return index;
-    }
-    @Override
-    protected String getInvType() {
-        return "1";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

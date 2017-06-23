@@ -13,8 +13,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,8 +51,8 @@ import butterknife.BindView;
  * Created by monday on 2016/11/7.
  */
 public class HomeActivity extends BaseActivity<HomePresenterImp> implements HomeContract.View,
-        NavigationView.OnNavigationItemSelectedListener, MultiItemTypeAdapter.OnItemClickListener ,
-        OnItemClickListener{
+        NavigationView.OnNavigationItemSelectedListener, MultiItemTypeAdapter.OnItemClickListener,
+        OnItemClickListener {
 
     @BindView(R.id.modular_list)
     RecyclerView mRecycleView;
@@ -70,7 +70,7 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
     ModularAdapter mAdapter;
     ActionBarDrawerToggle mDrawerListener;
     Dialog mBottomSheetDialog;
-    AlertView  mBackDialog;
+    AlertView mBackDialog;
     //保存之前选择的MenuItem
     MenuItem preSelectedMenuItem;
 
@@ -176,7 +176,7 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
     @Override
     public void initModelsFail(String message) {
         showMessage(message);
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.removeAll();
         }
     }
@@ -279,8 +279,13 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
             }
 
             new AlertView("请选择您需要操作的单据类型", null, "取消", null, items, this,
-                    AlertView.Style.ActionSheet, (o, position) -> toMain(Global.COMPANY_CODE, moduleCode, menuNode.getBusinessType(),
-                            children.get(position).getRefType(), children.get(position).getCaption())).show();
+                    AlertView.Style.ActionSheet, (o, position) -> {
+                Log.d("yff", "position = " + position);
+                if (position < 0)
+                    return;
+                toMain(Global.COMPANY_CODE, moduleCode, menuNode.getBusinessType(),
+                        children.get(position).getRefType(), children.get(position).getCaption());
+            }).show();
         }
     }
 
@@ -336,17 +341,39 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
         startActivity(intent);
     }
 
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        Log.d("yff","退出App");
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            if (mBackDialog == null) {
+//                mBackDialog = new AlertView("温馨提示", "您真的退出App吗?", "取消", new String[]{"确定"}, null,
+//                        this, AlertView.Style.Alert, this);
+//            }
+//            mBackDialog.show();
+//            // 这里返回true表示后续依然可以后面的事件
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+//    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+//                && event.getAction() == KeyEvent.ACTION_DOWN
+//                && event.getRepeatCount() == 0) {
+//            //具体的操作代码
+//        }
+//        return super.dispatchKeyEvent(event);
+//    }
+
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (mBackDialog == null) {
-                mBackDialog =  new AlertView("温馨提示", "您真的退出App吗?", "取消", new String[]{"确定"}, null,
-                        this, AlertView.Style.Alert, this);
-            }
-            mBackDialog.show();
-            return true;
+    public void onBackPressed() {
+        Log.d("yff","onBackPressed");
+        if (mBackDialog == null) {
+            mBackDialog = new AlertView("温馨提示", "您真的退出App吗?", "取消", new String[]{"确定"}, null,
+                    this, AlertView.Style.Alert, this);
         }
-        return super.onKeyDown(keyCode, event);
+        mBackDialog.show();
     }
 
     /**
@@ -403,7 +430,7 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
     @Override
     public void retry(String action) {
         //必须情况所有的历史菜单
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mAdapter.removeAll();
         }
         switch (action) {

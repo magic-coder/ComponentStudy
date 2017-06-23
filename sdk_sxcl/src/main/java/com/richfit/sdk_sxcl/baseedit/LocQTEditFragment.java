@@ -222,7 +222,7 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
             return;
         }
         mPresenter.getInventoryInfo("04", workId, invId, workCode, invCode, "",
-                getString(tvMaterialNum), materialId, location, batchFlag, "", "", "", "");
+                getString(tvMaterialNum), materialId, location, batchFlag, "", "", "", "",null);
     }
 
     @Override

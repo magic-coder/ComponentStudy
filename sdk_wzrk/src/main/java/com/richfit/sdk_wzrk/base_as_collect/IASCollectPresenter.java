@@ -3,6 +3,8 @@ package com.richfit.sdk_wzrk.base_as_collect;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.Map;
+
 
 /**
  * Created by monday on 2016/11/15.
@@ -52,6 +54,6 @@ public interface IASCollectPresenter extends IPresenter<IASCollectView> {
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId,boolean isDropDown);
+                          String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap,boolean isDropDown);
 
 }

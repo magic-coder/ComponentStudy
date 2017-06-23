@@ -15,6 +15,8 @@ import com.richfit.common_lib.utils.AppCompat;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 
 /**
@@ -58,6 +60,10 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenterImp> implement
 
     }
 
+    /**
+     * debounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
+     * throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
+     */
     @Override
     public void initEvent() {
         switch (BuildConfig.APP_NAME) {
@@ -66,12 +72,14 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenterImp> implement
                 break;
         }
         RxView.clicks(btnOnlineMode)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(a -> {
                     mode = Global.ONLINE_MODE;
                     mPresenter.loadFragmentConfig(Global.COMPANY_ID, BuildConfig.CONFIG_FILE_NAME);
                 });
 
         RxView.clicks(btnOfflineMode)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(a -> {
                     mode = Global.OFFLINE_MODE;
                     mPresenter.loadFragmentConfig(Global.COMPANY_ID, BuildConfig.CONFIG_FILE_NAME);
@@ -85,7 +93,7 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenterImp> implement
     }
 
     @Override
-    public void loadFragmentConfigFail(String message){
+    public void loadFragmentConfigFail(String message) {
         showMessage(message);
         toHome();
     }

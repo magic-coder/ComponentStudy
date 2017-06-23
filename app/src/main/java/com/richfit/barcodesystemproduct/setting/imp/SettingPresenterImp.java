@@ -9,12 +9,9 @@ import com.richfit.barcodesystemproduct.setting.ISettingView;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RetryWhenNetworkException;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
-import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
-import com.richfit.data.net.http.RetrofitModule;
-import com.richfit.data.repository.DataInjection;
 import com.richfit.domain.bean.LoadBasicDataWrapper;
 import com.richfit.domain.bean.LoadDataTask;
 import com.richfit.domain.bean.UpdateEntity;
@@ -231,40 +228,48 @@ public class SettingPresenterImp extends BasePresenter<ISettingView>
     }
 
     @Override
-    public void setupUrl(String url) {
+    public void resetPassword(String oldPassword, String newPassword) {
         mView = getView();
-        ResourceSubscriber<String> subscriber = Flowable.just(url)
-                .map(baseUrl -> {
-                    RetrofitModule.setRequestApi(null);
-                    DataInjection.setRepository(null);
-                    BarcodeSystemApplication.baseUrl = baseUrl;
-                    DataInjection.getRepository(BarcodeSystemApplication.getAppContext(), baseUrl);
-                    SPrefUtil.saveData("base_url", baseUrl);
-                    SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, true);
-                    SPrefUtil.saveData(Global.IS_INITED_FRAGMENT_CONFIG_KEY, false);
-                    return baseUrl;
-                })
+        RxSubscriber<String> subscriber = mRepository.login(Global.LOGIN_ID, oldPassword)
+                .flatMap(user -> mRepository.resetPassword(user.userId, newPassword))
+
                 .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<String>() {
+                .subscribeWith(new RxSubscriber<String>(mContext, "正在修改请稍后...") {
                     @Override
-                    public void onNext(String s) {
+                    public void _onNext(String s) {
 
                     }
 
                     @Override
-                    public void onError(Throwable t) {
+                    public void _onNetWorkConnectError(String message) {
 
                     }
 
+
                     @Override
-                    public void onComplete() {
+                    public void _onCommonError(String message) {
                         if (mView != null) {
-                            mView.setupUrlComplete();
+                            mView.resetPasswordFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onServerError(String code, String message) {
+                        if (mView != null) {
+                            mView.resetPasswordFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onComplete() {
+                        if (mView != null) {
+                            mView.resetPasswordComplete();
                         }
                     }
                 });
         addSubscriber(subscriber);
     }
+
 
     @Override
     public void detachView() {

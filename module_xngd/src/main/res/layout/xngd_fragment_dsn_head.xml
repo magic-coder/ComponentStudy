@@ -48,20 +48,20 @@
 
         <TextView
             style="@style/LeftTextViewItemStyle"
-            android:text="@string/xngd_is_emergency" />
+            android:text="@string/xngd_is_inv_flag" />
 
         <CheckBox
-            android:id="@id/xngd_cb_emergency"
+            android:id="@id/xngd_cb_inv_flag"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_min_height"
             android:layout_weight="1" />
 
         <TextView
             style="@style/LeftTextViewItemStyle"
-            android:text="@string/xngd_project_move" />
+            android:text="@string/xngd_project_flag" />
 
         <CheckBox
-            android:id="@id/xngd_cb_project_move"
+            android:id="@id/xngd_cb_project_flag"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_min_height"
             android:layout_weight="1" />

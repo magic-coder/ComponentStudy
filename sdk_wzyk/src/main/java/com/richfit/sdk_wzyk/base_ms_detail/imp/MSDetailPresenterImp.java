@@ -143,7 +143,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                                 if (childNode.getViewType() == Global.CHILD_NODE_HEADER_TYPE || node == childNode)
                                     //排除自己
                                     continue;
-                                locations.add(childNode.location);
+                                locations.add(childNode.locationCombine);
                             }
                         }
                     }
@@ -175,7 +175,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                     bundle.putString(Global.EXTRA_BATCH_FLAG_KEY, node.batchFlag);
 
                     //上架仓位
-                    bundle.putString(Global.EXTRA_LOCATION_KEY, node.location);
+                    bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
                     //实收数量
@@ -403,6 +403,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 childNode.specialInvFlag = location.specialInvFlag;
                 childNode.specialInvNum = location.specialInvNum;
                 childNode.specialConvert = location.specialConvert;
+                childNode.locationCombine = location.locationCombine;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

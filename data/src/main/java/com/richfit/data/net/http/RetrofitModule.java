@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitModule {
 
+    private final static int DEFUALT_TIME_OUT = 60;
     private static IRequestApi sRequest;
 
     public static IRequestApi getRequestApi(String baseUrl) {
@@ -53,9 +54,9 @@ public class RetrofitModule {
             OkHttpClient httpClient = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)//添加拦截器
                     .addInterceptor(logging)//添加打印拦截器
-                    .connectTimeout(25, TimeUnit.SECONDS)//设置请求超时时间
-                    .readTimeout(25, TimeUnit.SECONDS)
-                    .writeTimeout(25, TimeUnit.SECONDS)
+                    .connectTimeout(DEFUALT_TIME_OUT, TimeUnit.SECONDS)//设置请求超时时间
+                    .readTimeout(DEFUALT_TIME_OUT, TimeUnit.SECONDS)
+                    .writeTimeout(DEFUALT_TIME_OUT, TimeUnit.SECONDS)
                     .retryOnConnectionFailure(true)//设置出现错误进行重新连接。
                     .build();
 

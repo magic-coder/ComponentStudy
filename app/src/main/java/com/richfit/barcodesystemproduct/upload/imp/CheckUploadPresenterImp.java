@@ -82,7 +82,7 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
     @Override
     public void uploadCollectedDataOffLine() {
         mView = getView();
-        mTaskNum = -1;
+        mTaskNum = 0;
         info = null;
         if (mRefDatas != null && mRefDatas.size() == 0) {
             mView.uploadCollectDataComplete();
@@ -93,8 +93,7 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
                         .filter(refData -> refData != null && refData.checkList != null && refData.checkList.size() > 0)
                         .map(refData -> wrapper2Results(refData, false))
                         .flatMap(results -> {
-                            mTaskNum++;
-                            mMessageArray.get(mTaskNum).taskId = mTaskNum;
+
                             return mRepository.uploadCheckDataOffline(results);
                         })
                         .flatMap(message -> submitData2SAPInner(message))
@@ -111,11 +110,14 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
 
                             @Override
                             public void _onNext(String transNum) {
+
+                                mMessageArray.get(mTaskNum).taskId = mTaskNum;
                                 UploadMsgEntity info = mMessageArray.get(mTaskNum);
                                 if (mView != null && info != null) {
                                     info.transNum = transNum;
                                     mView.uploadCollectDataSuccess(info);
                                     L.e("onNext mTaskNum = " + mTaskNum + ";info = " + info);
+                                    mTaskNum++;
                                 }
                             }
 
@@ -128,12 +130,14 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
 
                             @Override
                             public void _onCommonError(String message) {
+                                mMessageArray.get(mTaskNum).taskId = mTaskNum;
                                 UploadMsgEntity info = mMessageArray.get(mTaskNum);
                                 if (mView != null && info != null) {
                                     info.errorMsg = message;
                                     info.isEror = true;
                                     L.e("onError mTaskNum = " + mTaskNum + ";info = " + info);
                                     mView.uploadCollectDataFail(mMessageArray.get(mTaskNum));
+                                    mTaskNum++;
                                 }
                             }
 
@@ -207,7 +211,7 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
             info.bizTypeDesc = map.get(BIZTYPE_DESC_KEY);
             info.refTypeDesc = map.get(REFTYPE_DESC_KEY);
             info.totalTaskNum = refData.totalCount;
-            mMessageArray.put( mTotalUploadDataNum++, info);
+            mMessageArray.put(mTotalUploadDataNum++, info);
         }
 
         ArrayList<ResultEntity> results = new ArrayList<>();

@@ -91,7 +91,7 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
     }
 
     /**
-     * 发送系统广播，并等待相机释放。sending system broadcast，and waiting for camera release
+     * 发送系统广播，并等待相机释放。
      */
     private void waitCamera() {
         sendBroadcast(new Intent().setAction("com.se4500.opencamera"));

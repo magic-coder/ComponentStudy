@@ -1,5 +1,7 @@
 <resources>
     <string name="xngd_app_name">module_xngd</string>
-    <string name="xngd_is_emergency">是否应急</string>
-    <string name="xngd_project_move">项目移交物资</string>
+    <string name="xngd_is_inv_flag">是否应急</string>
+    <string name="xngd_project_flag">项目移交物资</string>
+    <string name="xngd_job_num">工单号</string>
+    <string name="xngd_rg_goods_type">退货物资类型</string>
 </resources>

@@ -4,7 +4,6 @@ import android.text.TextUtils;
 
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.RefDetailEntity;
-import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzck.base_ds_edit.BaseDSEditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
 
@@ -85,15 +84,5 @@ public class QHYTDSWWEditFragment extends BaseDSEditFragment<DSEditPresenterImp>
         mQuantity = quantityV + "";
         mTotalQuantity = residualQuantity;
         return true;
-    }
-
-    @Override
-    protected String getInvType() {
-        return "01";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

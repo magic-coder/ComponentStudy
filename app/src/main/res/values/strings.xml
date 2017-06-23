@@ -21,4 +21,6 @@
     <string name="app_basic_supplier">供应商主数据</string>
     <string name="app_basic_cost_center">成本中心主数据</string>
     <string name="app_basic_project_num">项目编号主数据</string>
+    <string name="app_old_pwd">旧密码</string>
+    <string name="app_new_pwd">新密码</string>
 </resources>

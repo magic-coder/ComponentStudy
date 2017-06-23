@@ -15,6 +15,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.MaterialEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_cwtz.R;
@@ -191,14 +192,10 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             return;
         }
 
-        //如果没有打开批次管理，那么从本地获取库存
-        final String queryType = "Y".equalsIgnoreCase(Global.WMFLAG) ?
-                getString(R.string.inventoryQueryTypeSAPLocation) :
-                getString(R.string.inventoryQueryTypePrecise);
-
-        mPresenter.getInventoryInfo(queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
                 mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
-                "", "", getString(etBatchFlag), location, "", "", "", "");
+                "", "", getString(etBatchFlag), location, "", param.invType, "", "", param.extraMap);
     }
 
     @Override
@@ -389,14 +386,5 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         super._onPause();
         clearAllUI();
         clearCommonUI(etMaterialNum, etBatchFlag);
-    }
-
-    /**
-     * 子类返回库存查询类型
-     *
-     * @return
-     */
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
     }
 }

@@ -21,6 +21,7 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -169,14 +170,6 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             showMessage("请先在抬头界面选择工厂");
             return;
         }
-        if ("46".equals(mBizType) && TextUtils.isEmpty(mRefData.costCenter)) {
-            showMessage("请先在抬头界面输入成本中心");
-            return;
-        }
-        if ("47".equals(mBizType) && TextUtils.isEmpty(mRefData.projectNum)) {
-            showMessage("请现在抬头界面输入项目编号");
-            return;
-        }
         etMaterialNum.setEnabled(true);
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
@@ -244,9 +237,10 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         if (mHistoryDetailList != null && mHistoryDetailList.size() > 0) {
             RefDetailEntity lineData = mHistoryDetailList.get(0);
             InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
-            mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId,
+            InventoryQueryParam param = provideInventoryQueryParam();
+            mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                     invEntity.invId, mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                    lineData.materialId, "", getString(etBatchFlag), "", "", getInvType(), "", isDropDown);
+                    lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap, isDropDown);
         }
     }
 
@@ -388,6 +382,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -404,7 +399,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             result.supplierId = mRefData.supplierId;
             result.costCenter = mRefData.costCenter;
             result.projectNum = mRefData.projectNum;
-            result.invType = getInventoryQueryType();
+            result.invType = param.invType;
             result.modifyFlag = "N";
             emitter.onNext(result);
             emitter.onComplete();
@@ -442,9 +437,4 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     public void saveCollectedDataFail(String message) {
         showMessage("保存数据失败;" + message);
     }
-
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
-
 }

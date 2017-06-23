@@ -146,16 +146,6 @@ public class QHYTDSWWCollectFragment extends BaseDSCollectFragment<DSCollectPres
     }
 
     @Override
-    protected String getInvType() {
-        return "01";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
-    @Override
     protected int getOrgFlag() {
         return 0;
     }

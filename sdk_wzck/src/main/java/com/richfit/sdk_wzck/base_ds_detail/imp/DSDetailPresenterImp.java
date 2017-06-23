@@ -143,7 +143,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                                 if (childNode.getViewType() == Global.CHILD_NODE_HEADER_TYPE || node == childNode)
                                     //排除自己
                                     continue;
-                                locations.add(childNode.location);
+                                locations.add(childNode.locationCombine);
                             }
                         }
                     }
@@ -171,7 +171,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                     bundle.putSerializable(Global.EXTRA_TOTAL_QUANTITY_KEY, node.totalQuantity);
                     //需要修改的字段
                     //上架仓位
-                    bundle.putString(Global.EXTRA_LOCATION_KEY, node.location);
+                    bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
                     //实收数量
@@ -393,6 +393,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                 childNode.transId = location.transId;
                 childNode.transLineId = location.transLineId;
                 childNode.locationId = location.id;
+                childNode.locationCombine = location.locationCombine;
                 childNode.specialInvFlag = location.specialInvFlag;
                 childNode.specialInvNum = location.specialInvNum;
                 childNode.specialConvert = location.specialConvert;

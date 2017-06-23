@@ -46,7 +46,7 @@ public class RSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
             if (i == position || TextUtils.isEmpty(node.location) || TextUtils.isEmpty(node.recLocation)) {
                 continue;
             }
-            locations.add(0 == flag ? node.location : node.recLocation);
+            locations.add(0 == flag ? node.locationCombine : node.recLocation);
         }
         return locations;
     }

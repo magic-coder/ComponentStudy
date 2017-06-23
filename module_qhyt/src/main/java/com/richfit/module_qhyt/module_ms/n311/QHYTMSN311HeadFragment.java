@@ -1,6 +1,7 @@
 package com.richfit.module_qhyt.module_ms.n311;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
@@ -9,6 +10,7 @@ import com.richfit.common_lib.utils.DateChooseHelper;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_msn_head.BaseMSNHeadFragment;
 import com.richfit.sdk_wzyk.base_msn_head.imp.MSNHeadPresenterImp;
@@ -88,20 +90,40 @@ public class QHYTMSN311HeadFragment extends BaseMSNHeadFragment<MSNHeadPresenter
     @Override
     public void loadSendInvsComplete() {
         if (mUploadMsgEntity != null && !TextUtils.isEmpty(mUploadMsgEntity.invId)) {
+            Log.d("yff","invId = " + mUploadMsgEntity.invId);
             Flowable.just(mSendInvs)
                     .map(list -> {
                         int pos = -1;
                         for (InvEntity item : list) {
                             ++pos;
-                            if (item.invId.equals(mUploadMsgEntity.invId))
+                            //注意请选择没有id
+                            if (mUploadMsgEntity.invId.equalsIgnoreCase(item.invId))
                                 return pos;
                         }
                         return pos;
                     })
                     .filter(pos -> pos.intValue() >= 0 && pos.intValue() < mSendInvs.size())
                     .compose(TransformerHelper.io2main())
-                    .subscribe(pos -> spSendInv.setSelection(pos.intValue()), e -> {
-                    }, () -> lockUIUnderEditState(spSendInv, spRecInv));
+                    .subscribe(pos -> spSendInv.setSelection(pos.intValue()), e -> Log.d("yff",e.getMessage()), () -> lockUIUnderEditState(spSendInv));
+        }
+
+
+        if (mUploadMsgEntity != null && !TextUtils.isEmpty(mUploadMsgEntity.recInvId)) {
+            Log.d("yff","recInvId = " + mUploadMsgEntity.recInvId);
+            Flowable.just(mRecInvs)
+                    .map(list -> {
+                        int pos = -1;
+                        for (InvEntity item : list) {
+                            ++pos;
+                            //注意请选择没有id
+                            if (mUploadMsgEntity.recInvId.equalsIgnoreCase(item.invId))
+                                return pos;
+                        }
+                        return pos;
+                    })
+                    .filter(pos -> pos.intValue() >= 0 && pos.intValue() < mRecInvs.size())
+                    .compose(TransformerHelper.io2main())
+                    .subscribe(pos -> spRecInv.setSelection(pos.intValue()), e -> Log.d("yff",e.getMessage()), () -> lockUIUnderEditState(spRecInv));
         }
     }
 
@@ -114,7 +136,19 @@ public class QHYTMSN311HeadFragment extends BaseMSNHeadFragment<MSNHeadPresenter
             mRefData.recWorkName = mRefData.workName;
             mRefData.recWorkCode = mRefData.workCode;
             mRefData.recWorkId = mRefData.workId;
+
         }
+    }
+
+    @Override
+    public void operationOnHeader(final String companyCode) {
+        if (mLocalHeaderResult == null) {
+            mLocalHeaderResult = new ResultEntity();
+        }
+        mLocalHeaderResult.voucherDate = getString(etTransferDate);
+        mLocalHeaderResult.transId = mUploadMsgEntity.transId;
+        mLocalHeaderResult.businessType = mBizType;
+        super.operationOnHeader(companyCode);
     }
 
 

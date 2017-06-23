@@ -10,11 +10,9 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
-import com.richfit.module_qhyt.R2;
 import com.richfit.sdk_wzyk.base_ms_edit.BaseMSEditFragment;
 import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
 
-import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
@@ -25,11 +23,8 @@ import io.reactivex.FlowableOnSubscribe;
 
 public class QHYTLUbSto351EditFragment extends BaseMSEditFragment<MSEditPresenterImp> {
 
-    @BindView(R2.id.et_send_location)
     RichEditText etSendLocation;
-    @BindView(R2.id.et_special_inv_flag)
     EditText etSpecialInvFlag;
-    @BindView(R2.id.et_special_inv_num)
     EditText etSpecialInvNum;
 
     @Override
@@ -44,13 +39,8 @@ public class QHYTLUbSto351EditFragment extends BaseMSEditFragment<MSEditPresente
 
     @Override
     public void initEvent() {
-        etSendLocation.setOnRichEditTouchListener((view, location) -> {
+        etSendLocation.setOnRichEditTouchListener((view, locationCombine) -> {
             hideKeyboard(view);
-            //获取缓存
-            String locationCombine = location;
-            if (!TextUtils.isEmpty(getString(etSpecialInvFlag)) && !TextUtils.isEmpty(getString(etSpecialInvNum))) {
-                locationCombine = location + "_" + getString(etSpecialInvFlag) + "_" + getString(etSpecialInvNum);
-            }
             mPresenter.getTransferInfoSingle(mRefData.refCodeId, mRefData.refType,
                     mRefData.bizType, mRefLineId, getString(tvBatchFlag), locationCombine
                     , "", -1, Global.USER_ID);
@@ -59,21 +49,21 @@ public class QHYTLUbSto351EditFragment extends BaseMSEditFragment<MSEditPresente
 
     @Override
     public void initView() {
+        etSendLocation = (RichEditText) mView.findViewById(R.id.et_send_location);
+        etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
+        etSpecialInvNum = (EditText) mView.findViewById(R.id.et_special_inv_num);
         spLocation.setEnabled(false);
     }
 
     @Override
     public void initData() {
         super.initData();
-        etSendLocation.setText(mSelectedLocation);
+        etSendLocation.setText(mSelectedLocationCombine);
         etSpecialInvFlag.setText(mSpecialInvFlag);
         etSpecialInvNum.setText(mSpecialInvNum);
 
         //获取缓存
-        String locationCombine = mSelectedLocation;
-        if (!TextUtils.isEmpty(getString(etSpecialInvFlag)) && !TextUtils.isEmpty(getString(etSpecialInvNum))) {
-            locationCombine = mSelectedLocation + "_" + getString(etSpecialInvFlag) + "_" + getString(etSpecialInvNum);
-        }
+        String locationCombine = mSelectedLocationCombine;
         mPresenter.getTransferInfoSingle(mRefData.refCodeId, mRefData.refType,
                 mRefData.bizType, mRefLineId, getString(tvBatchFlag), locationCombine
                 , "", -1, Global.USER_ID);
@@ -165,13 +155,4 @@ public class QHYTLUbSto351EditFragment extends BaseMSEditFragment<MSEditPresente
 
     }
 
-    @Override
-    protected String getInvType() {
-        return "01";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
 }

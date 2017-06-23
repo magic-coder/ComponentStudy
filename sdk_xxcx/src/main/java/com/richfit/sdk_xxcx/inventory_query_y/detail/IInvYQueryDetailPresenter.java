@@ -3,6 +3,8 @@ package com.richfit.sdk_xxcx.inventory_query_y.detail;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.IBaseDetailPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/3/16.
  */
@@ -20,6 +22,6 @@ public interface IInvYQueryDetailPresenter extends IBaseDetailPresenter<IInvYQue
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId);
+                          String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
 
 }

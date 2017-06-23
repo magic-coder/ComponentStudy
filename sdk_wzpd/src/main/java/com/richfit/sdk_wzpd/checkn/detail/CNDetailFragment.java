@@ -28,7 +28,6 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.adapter.CNDetailAdapter;
-import com.richfit.sdk_wzpd.checkn.detail.imp.CNDetailPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ import butterknife.BindView;
  * Created by monday on 2016/12/6.
  */
 
-public class CNDetailFragment extends BaseFragment<CNDetailPresenterImp>
+public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends BaseFragment<P>
         implements ICNDetailView, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener,
         IOnItemMove<InventoryEntity> {
 
@@ -99,10 +98,7 @@ public class CNDetailFragment extends BaseFragment<CNDetailPresenterImp>
         return R.layout.wzpd_fragment_cn_detail;
     }
 
-    @Override
-    public void initPresenter() {
-        mPresenter = new CNDetailPresenterImp(mActivity);
-    }
+
 
 
     @Override

@@ -111,6 +111,12 @@ public class ReferenceEntity {
     public String remark;
     public boolean qmFlag;
     public String userId;
+    //是否应急标识
+    public String invFlag;
+    //是否项目移交物资
+    public String specialInvFlag;
+    //工单号
+    public String jobNum;
 
     @Override
     public String toString() {

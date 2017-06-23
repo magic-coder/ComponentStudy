@@ -22,7 +22,7 @@ import java.util.List;
 
 public class BusinessServiceDao extends BaseDao implements IBusinessService {
 
-    public BusinessServiceDao( Context context) {
+    public BusinessServiceDao(Context context) {
         super(context);
     }
 
@@ -185,6 +185,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             cv.put("supplier_id", param.supplierId);
             cv.put("supplier_code", param.supplierNum);
             cv.put("created_by", param.userId);
+            cv.put("inv_type", param.invType);
             cv.put("creation_date", creationDate);
             long iResult = db.insert("mtl_transaction_headers", null, cv);
             if (iResult < 1) {
@@ -228,7 +229,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         clearStringBuffer();
         String[] selections;
         List<String> selectionList = new ArrayList<>();
-        sb.append("select L.id from mtl_transaction_lines L where L.trans_id = ?");
+        sb.append("select L.id from mtl_transaction_lines L where L.trans_id = ? ");
         selectionList.add(transId);
         switch (param.businessType) {
             case "16":// 其他入库-无参考
@@ -241,6 +242,10 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             case "46":// 无参考-202
             case "47":// 无参考-222
             case "94":// 代管料调拨-HRM
+                sb.append(" and L.material_id = ? and L.inv_id = ? and L.work_id = ?");
+                selectionList.add(param.materialId);
+                selectionList.add(param.invId);
+                selectionList.add(param.workId);
                 if (yk) {
                     sb.append(" and L.rec_inv_id = ? and L.rec_work_id = ? ");
                     selectionList.add(param.recInvId);
@@ -290,13 +295,12 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         cv.put("ref_line_num", param.refLineNum);
         cv.put("ref_doc", param.refDoc);
         cv.put("ref_doc_item", param.refDocItem);
-        cv.put("unit",param.unit);
-        cv.put("unit_rate",param.unitRate);
+        cv.put("unit", param.unit);
+        cv.put("unit_rate", param.unitRate);
         // 移库增加接收工厂、库存地点、接收批次
         if (yk) {
             cv.put("rec_work_id", param.recWorkId);
             cv.put("rec_inv_id", param.recInvId);
-            cv.put("rec_inv_id", param.invType);
         }
 
         if ("110".equals(param.businessType)) {

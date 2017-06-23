@@ -26,6 +26,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -363,9 +364,10 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
         tvLocQuantity.setText("");
         tvTotalQuantity.setText("");
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        mPresenter.getLocationList(getInventoryQueryType(), lineData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getLocationList(param.queryType, lineData.workId,
                 lineData.invId, lineData.workCode, lineData.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(tvBatchFlag), "", "", getInvType(), "", isDropDown);
+                lineData.materialId, "", "", "", "", param.invType, "", param.extraMap, isDropDown);
     }
 
 
@@ -415,9 +417,10 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
         final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
 
         //需要确定库存类型
-        mPresenter.getInventoryInfo("04", lineData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 lineData.invId, lineData.workCode, lineData.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(tvBatchFlag), "", "", lineData.invType, "");
+                lineData.materialId, "", getString(tvBatchFlag), "", "", lineData.invType, "", param.extraMap);
     }
 
     /**
@@ -521,11 +524,6 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
             return;
         }
 
-        if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
-            showMessage("请先输入批次");
-            return;
-        }
-
         if (TextUtils.isEmpty(location)) {
             showMessage("请先输入下架仓位");
             resetLocation();
@@ -555,7 +553,6 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
 
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
-        Log.d("yff", "isOpenBatchManager = " + isOpenBatchManager);
         if (cache != null) {
             tvTotalQuantity.setText(cache.totalQuantity);
             //匹配缓存
@@ -568,10 +565,10 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
             tvLocQuantity.setText("0");
             for (LocationInfoEntity cachedItem : locationInfos) {
                 boolean isMatch;
-                if(!TextUtils.isEmpty(batchFlag)) {
+                if (!TextUtils.isEmpty(batchFlag)) {
                     //如果有批次
-                    isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) &&  location.equalsIgnoreCase(cachedItem.location);
-                }else {
+                    isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) && location.equalsIgnoreCase(cachedItem.location);
+                } else {
                     isMatch = location.equalsIgnoreCase(cachedItem.location);
                 }
                 if (isMatch) {
@@ -608,7 +605,7 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvInv, tvInvType, tvLocQuantity,
                 etQuantity, tvLocQuantity, tvSpecialInvFlag, tvInvQuantity, tvTotalQuantity, cbSingle,
-                etMaterialNum, tvBatchFlag,etSLocation);
+                etMaterialNum, tvBatchFlag, etSLocation);
 
         //单据行
         if (mRefLineAdapter != null) {
@@ -739,6 +736,8 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -764,6 +763,7 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
             result.quantity = getString(etQuantity);
             result.modifyFlag = "N";
             result.specialConvert = "N";
+            result.invType = param.invType;
             result.refDoc = lineData.refDoc;
             result.refDocItem = lineData.refDocItem;
             result.supplierNum = mRefData.supplierNum;
@@ -818,18 +818,4 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
         mSLocationAdapter = null;
         mSLocationList.clear();
     }
-
-    /**
-     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
-     *
-     * @return
-     */
-    protected abstract String getInvType();
-
-    /**
-     * 子类返回库存查询类型
-     *
-     * @return
-     */
-    protected abstract String getInventoryQueryType();
 }

@@ -60,7 +60,7 @@ public class MSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 continue;
             RefDetailEntity node = mVisibleNodes.get(i);
             if (!node.materialNum.equals(materialNum) && !node.invId.equals(invId)) {
-                locations.add(flag == 0 ? node.location : node.recLocation);
+                locations.add(flag == 0 ? node.locationCombine : node.recLocation);
             }
         }
         return locations;

@@ -17,5 +17,4 @@ public interface ILQDetailView extends IBaseDetailView<InventoryEntity> {
      * @param list
      */
     void showInventory(List<InventoryEntity> list);
-    void loadInventoryFail(String message);
 }

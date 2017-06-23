@@ -1,7 +1,6 @@
 package com.richfit.common_lib.utils;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
@@ -21,28 +20,28 @@ import java.lang.reflect.WildcardType;
 
 public class RefUtil {
 
-    public static BaseFragment findFragment(FragmentManager fm, String tag, String companyCode, String moduleCode,
-                                            String bizType, String refType, int fragmentType, String title, Class clazz) throws Exception{
-        BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
-        if (fragment == null) {
-            fragment = newInstance(clazz, companyCode, moduleCode, bizType, refType, fragmentType, title);
-        }
-        return fragment;
-    }
-
-    public static BaseFragment findFragment(FragmentManager fm, String tag, Bundle arguments, String className) throws Exception {
-        BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
-        if (fragment == null) {
-            fragment = newInstance(className, arguments);
-        }
-        return fragment;
-    }
+//    public static BaseFragment findFragment(FragmentManager fm, String tag, String companyCode, String moduleCode,
+//                                            String bizType, String refType, int fragmentType, String title, Class clazz) throws Exception{
+//        BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
+//        if (fragment == null) {
+//            fragment = newInstance(clazz, companyCode, moduleCode, bizType, refType, fragmentType, title);
+//        }
+//        return fragment;
+//    }
+//
+//    public static BaseFragment findFragment(FragmentManager fm, String tag, Bundle arguments, String className) throws Exception {
+//        BaseFragment fragment = (BaseFragment) fm.findFragmentByTag(tag);
+//        if (fragment == null) {
+//            fragment = newInstance(className, arguments);
+//        }
+//        return fragment;
+//    }
 
     private static void setFieldValue(Class clazz, Object object, String value) {
         try {
             /**
-             * getDeclaredMethod*()获取的是类自身声明的所有方法，包含public、protected和private方法。
-             * getMethod*()获取的是类的所有共有方法，这就包括自身的所有public方法，和从基类继承的、从接口实现的所有public方法。
+             * getDeclaredMethod()获取的是类自身声明的所有方法，包含public、protected和private方法。
+             * getMethod()获取的是类的所有共有方法，这就包括自身的所有public方法，和从基类继承的、从接口实现的所有public方法。
              */
             Method method = clazz.getMethod("setTabTitle", String.class);
             method.setAccessible(true);
@@ -63,7 +62,7 @@ public class RefUtil {
      * @param <T>
      * @return
      */
-    private static <T extends BaseFragment> T newInstance(final Class<T> clazz, String companyCode, String moduleCode,
+    public static <T extends BaseFragment> T newInstance(final Class<T> clazz, String companyCode, String moduleCode,
                                                           String bizType, String refType, int fragmentType, String title)  throws  Exception  {
         T instance = clazz.newInstance();
         Bundle bundle = new Bundle();

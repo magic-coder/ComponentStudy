@@ -2,6 +2,8 @@ package com.richfit.module_qhyt.module_rg;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.richfit.sdk_wzck.base_ds_head.BaseDSHeadFragment;
 import com.richfit.sdk_wzck.base_ds_head.imp.DSHeadPresenterImp;
@@ -12,6 +14,8 @@ import com.richfit.sdk_wzck.base_ds_head.imp.DSHeadPresenterImp;
 
 public class QHYTRGHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
+    private TextView tvInvFlag;
+    private Spinner spGoodsTypes;
 
     @Override
     public void initPresenter() {

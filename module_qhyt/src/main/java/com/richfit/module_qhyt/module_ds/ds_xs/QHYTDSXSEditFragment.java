@@ -12,16 +12,6 @@ import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
 public class QHYTDSXSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     @Override
-    protected String getInvType() {
-        return "01";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
-    @Override
     public void initPresenter() {
         mPresenter = new DSEditPresenterImp(mActivity);
     }

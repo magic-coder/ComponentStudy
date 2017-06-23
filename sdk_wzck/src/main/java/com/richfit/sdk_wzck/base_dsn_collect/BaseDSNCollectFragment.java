@@ -20,6 +20,7 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -43,7 +44,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> extends BaseFragment<P>
         implements IDSNCollectView {
-
 
     @BindView(R2.id.et_material_num)
     RichEditText etMaterialNum;
@@ -281,10 +281,11 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         }
 
         final InvEntity invEntity = mInvs.get(position);
-        mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId, invEntity.invId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                 mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etBatchFlag), "", "", getInvType(), "");
+                getString(etBatchFlag), "", "", param.invType, "", param.extraMap);
     }
 
     /**
@@ -439,6 +440,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -460,7 +462,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
             result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
                     "Y" : "N";
-            result.invType = "1";
+            result.invType = param.invType;
+            result.invFlag = mRefData.invFlag;
             result.modifyFlag = "N";
             emitter.onNext(result);
             emitter.onComplete();
@@ -539,8 +542,4 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     public void networkConnectError(String retryAction) {
 
     }
-
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
 }

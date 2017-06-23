@@ -5,8 +5,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import com.richfit.barcodesystemproduct.BaseBarScannerActivity;
+
 import com.richfit.barcodesystemproduct.R;
+import com.richfit.barcodesystemproduct.barcodescan.BaseBarScannerActivity;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -39,6 +40,7 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
     /*所有明细行数据*/
     ArrayList<RefDetailEntity> mDatas;
 
+
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
         if (list != null && list.length == 1) {
@@ -60,6 +62,7 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
 
     @Override
     public void initVariables() {
+        super.initVariables();
         mBizTypes = new ArrayList<>();
         mDatas = new ArrayList<>();
     }
@@ -178,5 +181,6 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 }

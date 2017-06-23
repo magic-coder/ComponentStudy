@@ -60,7 +60,7 @@ public class MainPresenterImp extends BasePresenter<MainContract.View>
                             argument.putString(Global.EXTRA_REF_LINE_NUM_KEY, refLineNum);
                             if (uploadMsgEntity != null)
                                 argument.putParcelable(Global.EXTRA_UPLOAD_MSG_KEY, uploadMsgEntity);
-                            return RefUtil.findFragment(fragmentManager, config.fragmentTag, argument, config.className);
+                            return RefUtil.newInstance(config.className, argument);
                         })
                         .buffer(3)
                         .map(fragments -> {

@@ -3,6 +3,8 @@ package com.richfit.sdk_wzck.base_ds_edit;
 
 import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2016/11/21.
  */
@@ -22,7 +24,7 @@ public interface IDSEditPresenter extends IBaseEditPresenter<IDSEditView> {
                           String workCode, String invCode, String storageNum,
                           String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag,
-                          String specialInvNum, String invType, String deviceId);
+                          String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
 
     /**
      * 获取单条缓存

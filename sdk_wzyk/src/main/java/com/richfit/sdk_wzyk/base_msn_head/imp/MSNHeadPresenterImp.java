@@ -2,6 +2,7 @@ package com.richfit.sdk_wzyk.base_msn_head.imp;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -29,6 +30,7 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getWorks(int flag) {
+        Log.d("yff","getWorks");
         mView = getView();
         ResourceSubscriber<ArrayList<WorkEntity>> subscriber = mRepository.getWorks(flag)
                 .compose(TransformerHelper.io2main())
@@ -59,6 +61,7 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getRecInvsByWorkId(String workId, int flag) {
+        Log.d("yff","getRecInvsByWorkId");
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.loadRecInvsFail("请先选择接收工厂");
@@ -93,6 +96,7 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getSendInvsByWorkId(String workId, int flag) {
+        Log.d("yff","getSendInvsByWorkId");
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.loadSendInvsFail("请先选择发出工厂");

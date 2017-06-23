@@ -23,6 +23,7 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -218,7 +219,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void loadMaterialInfo(String materialNum,String batchFlag) {
+    public void loadMaterialInfo(String materialNum, String batchFlag) {
         if (!etMaterialNum.isEnabled()) {
             return;
         }
@@ -336,9 +337,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         final InvEntity invEntity = mInvDatas.get(position);
 
-        mPresenter.getInventoryInfo(getInventoryQueryType(), lineData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", getInvType(), "");
+                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap);
     }
 
     /**
@@ -452,7 +454,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 //缓存和输入的都为空或者都不为空而且相等
                 boolean isMatch;
 
-                isBatchValidate = !isOpenBatchManager ? true :  ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
+                isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
@@ -516,7 +518,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvLocQuantity, etQuantity, tvLocQuantity, tvInvQuantity,
-                tvTotalQuantity, cbSingle,etMaterialNum, etBatchFlag);
+                tvTotalQuantity, cbSingle, etMaterialNum, etBatchFlag);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -664,6 +666,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -689,6 +692,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             //寄售转自有的标识
             result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
                     "Y" : "N";
+            result.invType = param.invType;
             result.modifyFlag = "N";
             emitter.onNext(result);
             emitter.onComplete();
@@ -733,20 +737,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         super.retry(retryAction);
     }
 
-
-    /**
-     * 子类返回获取库存类型 "0"表示代管库存,"1"表示正常库存
-     *
-     * @return
-     */
-    protected abstract String getInvType();
-
-    /**
-     * 子类返回库存查询类型
-     *
-     * @return
-     */
-    protected abstract String getInventoryQueryType();
 
     protected abstract int getOrgFlag();
 

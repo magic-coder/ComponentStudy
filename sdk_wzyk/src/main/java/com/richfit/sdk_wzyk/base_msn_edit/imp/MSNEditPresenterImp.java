@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
@@ -123,12 +124,12 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                                  String invCode, String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId) {
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum,
-                        materialNum, materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId)
+                        materialNum, materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext) {
                             @Override
@@ -174,12 +175,12 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
                                               String invCode, String storageNum, String materialNum,
                                               String materialId, String location, String batchFlag,
                                               String specialInvFlag, String specialInvNum, String invType,
-                                              String deviceId) {
+                                              String deviceId,Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<String>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum, materialNum,
-                        materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId)
+                        materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                         .filter(list -> list != null && list.size() > 0)
                         .map(list -> convert2Strings(list))
                         .compose(TransformerHelper.io2main())

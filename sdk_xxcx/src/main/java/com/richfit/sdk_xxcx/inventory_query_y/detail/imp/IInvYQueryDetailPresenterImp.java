@@ -12,6 +12,7 @@ import com.richfit.sdk_xxcx.inventory_query_y.detail.IInvYQueryDetailPresenter;
 import com.richfit.sdk_xxcx.inventory_query_y.detail.IInvYQueryDetailView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/16.
@@ -29,7 +30,7 @@ public class IInvYQueryDetailPresenterImp extends BaseDetailPresenterImp<IInvYQu
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                                  String storageNum, String materialNum, String materialId, String location,
-                                 String batchFlag, String specialInvFlag, String specialInvNum, String invType,String deviceId) {
+                                 String batchFlag, String specialInvFlag, String specialInvNum, String invType,String deviceId,Map<String,Object> extraMap) {
 
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber;
@@ -38,7 +39,7 @@ public class IInvYQueryDetailPresenterImp extends BaseDetailPresenterImp<IInvYQu
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag,
-                            location, specialInvFlag, specialInvNum, invType,deviceId))
+                            location, specialInvFlag, specialInvNum, invType,deviceId,extraMap))
                     .filter(res -> res != null && res.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
@@ -46,7 +47,7 @@ public class IInvYQueryDetailPresenterImp extends BaseDetailPresenterImp<IInvYQu
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "",
-                    batchFlag, location, specialInvFlag, specialInvNum, invType,deviceId)
+                    batchFlag, location, specialInvFlag, specialInvNum, invType,deviceId,extraMap)
                     .filter(res -> res != null && res.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));

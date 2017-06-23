@@ -1,7 +1,8 @@
 package com.richfit.module_qhyt.module_rs.rsn;
 
 
-import com.richfit.module_qhyt.R;
+import android.text.TextUtils;
+
 import com.richfit.sdk_wzrs.base_rsn_collect.BaseRSNCollectFragment;
 import com.richfit.sdk_wzrs.base_rsn_collect.imp.RSNCollectPresenterImp;
 
@@ -28,12 +29,20 @@ public class QHYTRSNCollectFragment extends BaseRSNCollectFragment<RSNCollectPre
     }
 
     @Override
-    protected String getInvType() {
-        return "1";
-    }
+    public void initDataLazily() {
+        if (mRefData == null) {
+            showMessage("请先在抬头界面选择工厂");
+            return;
+        }
 
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
+        if ("46".equals(mBizType) && TextUtils.isEmpty(mRefData.costCenter)) {
+            showMessage("请先在抬头界面输入成本中心");
+            return;
+        }
+        if ("47".equals(mBizType) && TextUtils.isEmpty(mRefData.projectNum)) {
+            showMessage("请现在抬头界面输入项目编号");
+            return;
+        }
+        super.initDataLazily();
     }
 }

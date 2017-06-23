@@ -176,7 +176,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
         if (isOpenBatchManager) {
             mPresenter.getInventoryInfo("01", lineData.workId,
                     "", lineData.workCode, "", "", getString(tvMaterialNum),
-                    lineData.materialId, "", "", "O", mRefData.supplierNum, "1", "");
+                    lineData.materialId, "", "", "O", mRefData.supplierNum, "1", "",null);
         } else {
             //如果没有打开批次，直接获取缓存
             loadLocationQuantity("");

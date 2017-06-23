@@ -11,9 +11,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
-import com.richfit.barcodesystemproduct.BaseBarScannerActivity;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.MainPagerViewAdapter;
+import com.richfit.barcodesystemproduct.barcodescan.BaseBarScannerActivity;
 import com.richfit.common_lib.lib_interface.IBarcodeSystemMain;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.NoScrollViewPager;
@@ -21,12 +21,14 @@ import com.richfit.data.constant.Global;
 
 import butterknife.BindView;
 
+
+
 /**
  * Created by monday on 2017/3/10.
  */
 
 public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> implements
-        MainContract.View, ViewPager.OnPageChangeListener,IBarcodeSystemMain {
+        MainContract.View, ViewPager.OnPageChangeListener, IBarcodeSystemMain{
 
 
     /*当前选中的页签下表，用于恢复*/
@@ -46,6 +48,7 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
     int mCurrentPage = 0;
     int mode;
 
+
     @Override
     protected int getContentId() {
         return R.layout.activity_main;
@@ -58,6 +61,7 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
 
     @Override
     public void initVariables() {
+        super.initVariables();
         Intent intent = getIntent();
         if (intent != null) {
             Bundle bundle = intent.getExtras();
@@ -81,9 +85,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
 
     @Override
     public void initEvent() {
-//           RxView.clicks(mFloatingButton)
-//                .throttleFirst(500, TimeUnit.MILLISECONDS)
-//                .subscribe(a -> responseOnClick());
         mFloatingButton.setOnClickListener(v -> responseOnClick());
     }
 
@@ -164,6 +165,15 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
     }
 
     @Override
+    public void onDestroy() {
+        if (BarcodeSystemApplication.getRefWatcher() != null) {
+            BarcodeSystemApplication.getRefWatcher().watch(this);
+        }
+        super.onDestroy();
+    }
+
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             exitBy2Click();
@@ -171,6 +181,8 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
 
     /**
      * 获取一个Fragment实例对象
@@ -245,8 +257,12 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        if (list == null || list.length <= 0)
+            return;
         final BaseFragment fragment = getFragmentByPosition(mCurrentPage);
         if (fragment == null) {
             return;
@@ -266,11 +282,4 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         }
     }
 
-    @Override
-    public void onDestroy() {
-        if(BarcodeSystemApplication.getRefWatcher() != null) {
-            BarcodeSystemApplication.getRefWatcher().watch(this);
-        }
-        super.onDestroy();
-    }
 }

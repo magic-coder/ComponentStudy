@@ -280,10 +280,10 @@ public class RSNDetailPresenterImp extends BaseDetailPresenterImp<IRSNDetailView
                     data.quantity = loc.quantity;
                     data.recLocation = loc.recLocation;
                     data.recBatchFlag = loc.recBatchFlag;
-                    //Location_Id?
                     data.locationId = loc.id;
                     data.specialInvFlag = loc.specialInvFlag;
                     data.specialInvNum = loc.specialInvNum;
+                    data.locationCombine = loc.locationCombine;
                     datas.add(data);
                 }
             }

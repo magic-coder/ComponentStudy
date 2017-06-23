@@ -207,6 +207,9 @@ public interface IRepository {
      */
     Flowable<String> transferCheckData(String checkId, String userId, String bizType);
 
+    Flowable<String> uploadCheckData(String checkId, String userId, String bizType);
+
+
     Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location);
 
     /**

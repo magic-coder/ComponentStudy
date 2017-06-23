@@ -16,7 +16,6 @@ import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.WorkEntity;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -141,8 +139,10 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
         SPrefUtil.saveData(mBizType, "0");
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //如果是离线直接获取缓存，不能让用户删除缓存
-        if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal())
+        if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal()) {
+            mPresenter.getWorks(getOrgFlag());
             return;
+        }
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
     }
 
@@ -204,20 +204,29 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     private void selectedWork(List<WorkEntity> works, final String workId, Spinner sp) {
         if (works == null || works.size() == 0 || TextUtils.isEmpty(workId))
             return;
-        Flowable.just(works)
-                .map(list -> {
-                    int pos = -1;
-                    for (WorkEntity item : list) {
-                        ++pos;
-                        if (item.workId.equals(workId))
-                            return pos;
-                    }
-                    return pos;
-                })
-                .filter(pos -> pos.intValue() >= 0 && pos.intValue() < works.size())
-                .compose(TransformerHelper.io2main())
-                .subscribe(pos -> sp.setSelection(pos.intValue()), e -> {
-                }, () -> lockUIUnderEditState(spSendWork, spRecWork));
+        int pos = -1;
+        for (WorkEntity item : works) {
+            ++pos;
+            if (workId.equalsIgnoreCase(item.workId))
+                break;
+        }
+        if (pos > 0) {
+            sp.setSelection(pos);
+            lockUIUnderEditState(sp);
+        }
+//        Flowable.just(works)
+//                .map(list -> {
+//                    int pos = -1;
+//                    for (WorkEntity item : list) {
+//                        ++pos;
+//                        if (workId.equalsIgnoreCase(item.workId))
+//                            return pos;
+//                    }
+//                    return pos;
+//                })
+//                .filter(pos -> pos.intValue() >= 0 && pos.intValue() < works.size())
+//                .compose(TransformerHelper.io2main())
+//                .subscribe(pos -> sp.setSelection(pos.intValue()), e -> Log.d("yff", e.getMessage()), () -> lockUIUnderEditState(sp));
     }
 
     @Override

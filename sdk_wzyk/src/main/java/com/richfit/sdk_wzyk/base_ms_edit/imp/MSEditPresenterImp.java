@@ -13,6 +13,7 @@ import com.richfit.sdk_wzyk.base_ms_edit.IMSEditPresenter;
 import com.richfit.sdk_wzyk.base_ms_edit.IMSEditView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/13.
@@ -28,21 +29,21 @@ public class MSEditPresenterImp extends BaseEditPresenterImp<IMSEditView>
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId) {
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
             subscriber = mRepository.getStorageNum(workId, workCode, invId, invCode)
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
-                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location, specialInvFlag, storageNum, invType, deviceId))
+                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location, specialInvFlag, storageNum, invType, deviceId,extraMap))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, storageNum, invType, deviceId)
+                    specialInvFlag, storageNum, invType, deviceId,extraMap)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
         }

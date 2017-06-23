@@ -145,7 +145,7 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
         bundle.putString(Global.EXTRA_INV_ID_KEY, node.invId);
 
         //发出仓位
-        bundle.putString(Global.EXTRA_LOCATION_KEY, node.location);
+        bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
         bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
         bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
         //发出批次
@@ -350,6 +350,7 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
                     data.specialInvNum = loc.specialInvNum;
                     data.specialConvert = loc.specialConvert;
                     data.deviceId = loc.deviceId;
+                    data.locationCombine = loc.locationCombine;
                     datas.add(data);
                 }
             }

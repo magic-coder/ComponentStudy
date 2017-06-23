@@ -3,6 +3,8 @@ package com.richfit.sdk_wzck.base_dsn_collect;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/2/23.
  */
@@ -45,7 +47,7 @@ public interface IDSNCollectPresenter extends IPresenter<IDSNCollectView> {
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFag, String specialInvNum,
-                          String invType, String deviceId);
+                          String invType, String deviceId,Map<String,Object> extraMap);
 
     /**
      * 保存本次采集的数据

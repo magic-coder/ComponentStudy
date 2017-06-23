@@ -29,21 +29,21 @@ android {
 
     signingConfigs {
         //庆阳
-        sign_qingyang {
+        sign_qysh {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qingyang_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
         //青海
-        sign_qinghai {
+        sign_qhyt {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qinghai_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
         //西南管道
-        sign_xinangd {
+        sign_xngd {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_xinangd_key.jks')//签名文件路径
@@ -82,34 +82,34 @@ android {
 
 
     productFlavors {
-        qingyang {
+        qhsy {
             buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8092/lhbk_middleware/MobileProcess/"'
-            buildConfigField "String", "CONFIG_FILE_NAME", '"bizConfig_QingYang.json"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"QYSH_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qysh"'
-            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            buildConfigField "boolean", "ISSERVICEDL", 'true'
             versionCode 2
             versionName "1.1"
-            signingConfig signingConfigs.sign_qingyang
+            signingConfig signingConfigs.sign_qysh
         }
 
-        qinghai {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8087/ktbk_middleware/MobileProcess/"'
+        qhyt {
+            buildConfigField "String", "SERVER_URL", '"http://192.168.79.2:8087/ktbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"QHYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qhyt"'
-            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            buildConfigField "boolean", "ISSERVICEDL", 'true'
             versionCode 1
             versionName "1.0"
-            signingConfig signingConfigs.sign_qinghai
+            signingConfig signingConfigs.sign_qhyt
         }
 
         xngd {
             buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8085/gdbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"XNGD_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"xngd"'
-            buildConfigField "boolean", "ISSERVICEDL", 'true'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
             versionName "1.0"
-            signingConfig signingConfigs.sign_xinangd
+            signingConfig signingConfigs.sign_xngd
 
         }
     }
@@ -170,8 +170,8 @@ dependencies {
 //            compile project(':module_xngd')
             break
     }
-    compile project(':module_qhyt')
-
+//   compile project(':module_qhyt')
+    compile project(':module_xngd')
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

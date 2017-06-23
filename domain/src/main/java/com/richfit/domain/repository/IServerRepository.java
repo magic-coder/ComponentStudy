@@ -33,6 +33,8 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<LoadBasicDataWrapper> preparePageLoad(LoadBasicDataWrapper requestParam);
 
+    Flowable<String> resetPassword(String userId,String password);
+
     /**
      * 下载基础数据
      *
@@ -84,9 +86,10 @@ public interface IServerRepository extends IRepository {
      * @param materialDesc：物料描述
      * @param batchFlag:批次
      * @param location:仓位
-     * @param invType:库存类型 0 代管；1:正常
-     * @param specialInvFlag:特殊库存标识  N K
+     * @param invType:库存类型                                                             0 代管；1:正常
+     * @param specialInvFlag:特殊库存标识                                                    N K
      * @param specialInvNum:抬头界面的供应商编号
+     * @param extraMap:非标准情况下的扩展字段
      * @return
      */
     Flowable<List<InventoryEntity>> getInventoryInfo(String queryType, String workId, String invId,
@@ -94,7 +97,7 @@ public interface IServerRepository extends IRepository {
                                                      String materialNum, String materialId,
                                                      String materialGroup, String materialDesc, String batchFlag,
                                                      String location, String specialInvFlag, String specialInvNum,
-                                                     String invType, String deviceId);
+                                                     String invType, String deviceId, Map<String, Object> extraMap);
 
     /**
      * 数据上传
@@ -132,7 +135,6 @@ public interface IServerRepository extends IRepository {
     Flowable<String> uploadInspectionImage(ResultEntity result);
 
 
-
     /**
      * 获取最新的App的版本信息，用于更新
      *
@@ -163,6 +165,7 @@ public interface IServerRepository extends IRepository {
 
     /**
      * 获取设备相关的信息
+     *
      * @param deviceId:设备Id
      * @return
      */

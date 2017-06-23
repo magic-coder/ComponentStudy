@@ -67,7 +67,7 @@ public class IInvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetai
         String queryType = isEmpty(mRefData.location) ? "01" : "04";
         mPresenter.getInventoryInfo(queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", "1", "");
+                mRefData.batchFlag, "", "", "1", "",null);
     }
 
 

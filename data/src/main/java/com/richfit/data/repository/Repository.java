@@ -85,6 +85,7 @@ public final class Repository implements ILocalRepository, IServerRepository {
                     }
                     return Flowable.just(list);
                 }) : mServerRepository.getMenuInfo(loginId, mode);
+
 //                Flowable.concat(mLocalRepository.getMenuInfo(loginId, mode),
 //                        mServerRepository.getMenuInfo(loginId, mode))
 //                        .filter(list -> list != null && list.size() > 0)
@@ -117,6 +118,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
     @Override
     public Flowable<LoadBasicDataWrapper> preparePageLoad(LoadBasicDataWrapper param) {
         return mServerRepository.preparePageLoad(param);
+    }
+
+    @Override
+    public Flowable<String> resetPassword(String userId, String password) {
+        return mServerRepository.resetPassword(userId, password);
     }
 
     /**
@@ -235,9 +241,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
                                                             String materialNum, String materialId, String materialGroup,
                                                             String materialDesc, String batchFlag,
                                                             String location, String specialInvFlag, String specialInvNum,
-                                                            String invType, String deviceId) {
+                                                            String invType, String deviceId, Map<String, Object> extraMap) {
         return mServerRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum, materialNum, materialId, materialGroup,
-                materialDesc, CommonUtil.toUpperCase(batchFlag), CommonUtil.toUpperCase(location), specialInvFlag, specialInvNum, invType, deviceId);
+                materialDesc, CommonUtil.toUpperCase(batchFlag), CommonUtil.toUpperCase(location), specialInvFlag, specialInvNum, invType, deviceId, extraMap);
     }
 
     @Override
@@ -543,5 +549,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
     public Flowable<String> transferCheckData(String checkId, String userId, String bizType) {
         return isLocal ? mLocalRepository.transferCheckData(checkId, userId, bizType) :
                 mServerRepository.transferCheckData(checkId, userId, bizType);
+    }
+
+    @Override
+    public Flowable<String> uploadCheckData(String checkId, String userId, String bizType) {
+        return isLocal ? mLocalRepository.uploadCheckData(checkId, userId, bizType) :
+                mServerRepository.uploadCheckData(checkId, userId, bizType);
     }
 }

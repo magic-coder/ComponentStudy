@@ -7,6 +7,7 @@ import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/10.
@@ -68,7 +69,7 @@ public interface QHYTASWWCCollectContract {
          */
         void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                               String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                              String specialInvFlag, String specialInvNum, String invType, String deviceId);
+                              String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
         /**
          * 获取单条缓存。
          *

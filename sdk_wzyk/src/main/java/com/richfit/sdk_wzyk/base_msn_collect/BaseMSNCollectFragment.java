@@ -28,6 +28,7 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -391,10 +392,11 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         }
 
         final InvEntity invEntity = mSendInvs.get(position);
-        mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId, invEntity.invId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                 mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etSendBatchFlag), "", "", getInvType(), mDeviceId);
+                getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
     }
 
     /**
@@ -433,10 +435,11 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             showMessage("接收库位为空");
             return;
         }
-        mPresenter.getInventoryInfoOnRecLocation(getInventoryQueryType(), mRefData.recWorkId, mRefData.recInvId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                 mRefData.recWorkCode, mRefData.recInvCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etSendBatchFlag), "", "", getInvType(), mDeviceId);
+                getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
     }
 
 
@@ -447,6 +450,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     /**
      * 如果接收仓位存在库存，那么将接收仓位的缓存和库存组合起来作为接收仓位列表
+     *
      * @param recLocations
      */
     @Override
@@ -458,7 +462,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 List<LocationInfoEntity> locationList = detail.locationList;
                 if (locationList != null && locationList.size() > 0) {
                     for (LocationInfoEntity locationInfo : locationList) {
-                        if(!TextUtils.isEmpty(locationInfo.recLocation) &&!recLocations.contains(locationInfo.recLocation)) {
+                        if (!TextUtils.isEmpty(locationInfo.recLocation) && !recLocations.contains(locationInfo.recLocation)) {
                             tmp.add(locationInfo.recLocation);
                         }
                     }
@@ -471,6 +475,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     /**
      * 如果接收仓位没有库存，那么仅仅显示接收仓位的缓存仓位列表
+     *
      * @param message
      */
     @Override
@@ -483,7 +488,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 List<LocationInfoEntity> locationList = detail.locationList;
                 if (locationList != null && locationList.size() > 0) {
                     for (LocationInfoEntity locationInfo : locationList) {
-                        if(!TextUtils.isEmpty(locationInfo.recLocation)) {
+                        if (!TextUtils.isEmpty(locationInfo.recLocation)) {
                             tmp.add(locationInfo.recLocation);
                         }
                     }
@@ -713,6 +718,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -726,7 +732,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
             result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
             result.quantity = getString(etQuantity);
-            result.invType = getInvType();
+            result.invType = param.invType;
             result.modifyFlag = "N";
             //庆阳添加设备号
             result.deviceId = mDeviceId;
@@ -763,7 +769,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit,
-                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag, autoRecLoc,etMaterialNum, etSendBatchFlag);
+                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag, autoRecLoc, etMaterialNum, etSendBatchFlag);
 
         //发出库位(注意由于发出库位是一进来就加载的,所以不能清理)
         if (spSendInv.getAdapter() != null) {
@@ -816,22 +822,24 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     @Override
     public void retry(String retryAction) {
+        InventoryQueryParam param = provideInventoryQueryParam();
         switch (retryAction) {
             case Global.RETRY_LOAD_SINGLE_CACHE_ACTION:
                 loadMaterialInfo(getString(etMaterialNum), getString(etSendBatchFlag));
                 break;
             case Global.RETRY_LOAD_INVENTORY_ACTION:
                 final InvEntity invEntity = mSendInvs.get(spSendInv.getSelectedItemPosition());
-                mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId, invEntity.invId,
+                mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                         mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                         CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                        getString(etSendBatchFlag), "", "", getInvType(), mDeviceId);
+                        getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
                 break;
             case Global.RETRY_LOAD_REC_INVENTORY_ACTION:
-                mPresenter.getInventoryInfoOnRecLocation(getInventoryQueryType(), mRefData.recWorkId, mRefData.recInvId,
+
+                mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                         mRefData.recWorkCode, mRefData.recInvCode, "", getString(etMaterialNum),
                         CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                        getString(etSendBatchFlag), "", "", getInvType(), mDeviceId);
+                        getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
                 break;
         }
         super.retry(retryAction);
@@ -841,13 +849,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
      * 子类检查必要的抬头界面的字段
      */
     protected abstract boolean checkHeaderData();
-
-    /**
-     * 子类返回库存查询的类型
-     */
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
 
     /**
      * 子类实现是否打开WM管理。如果打开了WM，那么需要检查发出库位和接收库位

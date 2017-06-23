@@ -145,6 +145,9 @@ public interface IRequestApi {
     @GET("transferCheckData")
     Flowable<Map<String, Object>> transferCheckData(@Query("requestParam") String requestParam);
 
+    @GET("uploadCheckData")
+    Flowable<Map<String, Object>> uploadCheckData(@Query("requestParam") String requestParam);
+
     @GET("getDeviceInfo")
     Flowable<Response<ResultEntity>> getDeviceInfo(@Query("requestParam") String requestParam);
 

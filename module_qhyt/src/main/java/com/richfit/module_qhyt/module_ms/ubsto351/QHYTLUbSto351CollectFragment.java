@@ -10,11 +10,9 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
-import com.richfit.module_qhyt.R2;
 import com.richfit.sdk_wzyk.base_ms_collect.BaseMSCollectFragment;
 import com.richfit.sdk_wzyk.base_ms_collect.imp.MSCollectPresenterImp;
 
-import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
@@ -25,11 +23,8 @@ import io.reactivex.FlowableOnSubscribe;
 
 public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollectPresenterImp> {
 
-    @BindView(R2.id.et_send_location)
     RichEditText etSendLocation;
-    @BindView(R2.id.et_special_inv_flag)
     EditText etSpecialInvFlag;
-    @BindView(R2.id.et_special_inv_num)
     EditText etSpecialInvNum;
 
     @Override
@@ -45,6 +40,9 @@ public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollec
 
     @Override
     protected void initView() {
+        etSendLocation = (RichEditText) mView.findViewById(R.id.et_send_location);
+        etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
+        etSpecialInvNum = (EditText) mView.findViewById(R.id.et_special_inv_num);
         spSendLoc.setEnabled(false);
     }
 
@@ -221,14 +219,9 @@ public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollec
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
     }
 
-    @Override
-    protected String getInvType() {
-        return "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
+    protected void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etSendLocation,etSpecialInvFlag,etSpecialInvNum);
     }
 
     @Override

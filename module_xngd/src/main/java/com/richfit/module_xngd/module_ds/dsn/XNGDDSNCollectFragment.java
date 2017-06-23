@@ -3,25 +3,18 @@ package com.richfit.module_xngd.module_ds.dsn;
 
 import android.text.TextUtils;
 
-import com.richfit.module_xngd.R;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_wzck.base_dsn_collect.BaseDSNCollectFragment;
 import com.richfit.sdk_wzck.base_dsn_collect.imp.DSNCollectPresenterImp;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/27.
  */
 
 public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPresenterImp> {
-
-    @Override
-    protected String getInvType() {
-        return "1";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypePrecise);
-    }
 
     @Override
     public void initPresenter() {
@@ -63,6 +56,18 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
             return;
         }
         super.initDataLazily();
+    }
 
+
+    @Override
+    public InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam param = super.provideInventoryQueryParam();
+        param.queryType = "03";
+        param.invType = "1";
+        Map<String,Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag",mRefData.invFlag);
+        extraMap.put("specialInvFlag",mRefData.specialInvFlag);
+        param.extraMap = extraMap;
+        return param;
     }
 }

@@ -3,6 +3,8 @@ package com.richfit.sdk_wzck.base_dsn_edit;
 
 import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/2/27.
  */
@@ -37,5 +39,5 @@ public interface IDSNEditPresenter extends IBaseEditPresenter<IDSNEditView> {
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId);
+                          String invType, String deviceId,Map<String,Object> extraMap);
 }

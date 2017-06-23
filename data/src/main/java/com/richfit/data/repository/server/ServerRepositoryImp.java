@@ -377,6 +377,15 @@ public class ServerRepositoryImp implements IServerRepository {
 
     }
 
+    @Override
+    public Flowable<String> resetPassword(String userId, String password) {
+        mRequestParam.clear();
+        mRequestParam.put("userId", userId);
+        mRequestParam.put("password", password);
+        return mRequestApi.changeLoginInfo(JsonUtil.map2Json(mRequestParam))
+                .compose(TransformerHelper.MapTransformer);
+    }
+
     private Flowable<LoadBasicDataWrapper> wrapperTotalCount(String totalCount, boolean isByPage, String queryType) {
         LoadBasicDataWrapper item = new LoadBasicDataWrapper();
         item.totalCount = CommonUtil.convertToInt(totalCount, 0);
@@ -506,7 +515,7 @@ public class ServerRepositoryImp implements IServerRepository {
                                                             String materialNum, String materialId, String materialGroup,
                                                             String materialDesc, String batchFlag, String location,
                                                             String specialInvFlag, String specialInvNum, String invType,
-                                                            String deviceId) {
+                                                            String deviceId, Map<String, Object> extraMap) {
         mRequestParam.clear();
         mRequestParam.put("queryType", queryType);
         mRequestParam.put("workId", workId);
@@ -524,6 +533,9 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("specialInvFlag", specialInvFlag);
         mRequestParam.put("specialInvNum", specialInvNum);
         mRequestParam.put("deviceId", deviceId);
+        if (extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
         return mRequestApi.getInventoryInfo(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.handleResponse());
     }
@@ -644,6 +656,16 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("businessType", bizType);
         mRequestParam.put("userId", userId);
         return mRequestApi.transferCheckData(JsonUtil.map2Json(mRequestParam))
+                .compose(TransformerHelper.MapTransformer);
+    }
+
+    @Override
+    public Flowable<String> uploadCheckData(String checkId, String userId, String bizType) {
+        mRequestParam.clear();
+        mRequestParam.put("checkId", checkId);
+        mRequestParam.put("businessType", bizType);
+        mRequestParam.put("userId", userId);
+        return mRequestApi.uploadCheckData(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.MapTransformer);
     }
 

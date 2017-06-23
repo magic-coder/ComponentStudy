@@ -102,7 +102,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
     protected void getRefData(String refNum) {
         mRefData = null;
         clearAllUI();
-        mPresenter.getReference(refNum, mRefType, mBizType, getMoveType(),"", Global.USER_ID);
+        mPresenter.getReference(refNum, mRefType, mBizType, getMoveType(), "", Global.USER_ID);
     }
 
 
@@ -215,7 +215,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUI() {
-        clearCommonUI(tvRefNum, tvWork, tvInv);
+        clearCommonUI(etRefNum, tvRefNum, tvWork, tvInv);
     }
 
     @Override
@@ -238,7 +238,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
     public void retry(String retryAction) {
         switch (retryAction) {
             case Global.RETRY_LOAD_REFERENCE_ACTION:
-                mPresenter.getReference(getString(etRefNum), mRefType, mBizType, getMoveType(),"", Global.LOGIN_ID);
+                mPresenter.getReference(getString(etRefNum), mRefType, mBizType, getMoveType(), "", Global.LOGIN_ID);
                 break;
         }
         super.retry(retryAction);

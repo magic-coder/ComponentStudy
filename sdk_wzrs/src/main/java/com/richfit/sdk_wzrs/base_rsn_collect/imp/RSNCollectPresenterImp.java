@@ -18,6 +18,7 @@ import com.richfit.sdk_wzrs.base_rsn_collect.IRSNCollectView;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
@@ -39,7 +40,7 @@ public class RSNCollectPresenterImp extends BasePresenter<IRSNCollectView>
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
                                  String specialInvFlag, String specialInvNum, String invType, String deviceId,
-                                 boolean isDropDown) {
+                                 Map<String,Object> extraMap,boolean isDropDown) {
         mView = getView();
         if(isLocal())
             return;
@@ -49,7 +50,7 @@ public class RSNCollectPresenterImp extends BasePresenter<IRSNCollectView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId))
+                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
@@ -58,7 +59,7 @@ public class RSNCollectPresenterImp extends BasePresenter<IRSNCollectView>
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId)
+                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())

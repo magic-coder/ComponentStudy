@@ -139,6 +139,11 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
+    public Flowable<String> uploadCheckData(String checkId, String userId, String bizType) {
+        return null;
+    }
+
+    @Override
     public Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location) {
         return Flowable.just(queryType)
                 .flatMap(type -> {

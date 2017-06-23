@@ -1,6 +1,7 @@
 package com.richfit.sdk_wzck.base_ds_detail;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -111,7 +112,9 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
      */
     private void saveTurnFlag(final List<RefDetailEntity> nodes) {
         //仅仅检查子节点
+
         for (RefDetailEntity node : nodes) {
+            Log.d("yff","specialConvert = " + node.specialConvert + ";nodeType = " + node.getViewType());
             if (Global.CHILD_NODE_ITEM_TYPE == node.getViewType() &&
                     "Y".equalsIgnoreCase(node.specialConvert)) {
                 isNeedTurn = true;

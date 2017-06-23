@@ -3,6 +3,8 @@ package com.richfit.sdk_wzyk.base_msn_edit;
 
 import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2016/11/22.
  */
@@ -36,7 +38,7 @@ public interface IMSNEditPresenter extends IBaseEditPresenter<IMSNEditView> {
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId);
+                          String invType, String deviceId,Map<String,Object> extraMap);
 
     /**
      * 获取接收仓位的库存
@@ -58,7 +60,7 @@ public interface IMSNEditPresenter extends IBaseEditPresenter<IMSNEditView> {
     void getInventoryInfoOnRecLocation(String queryType, String workId, String invId, String workCode,
                                        String invCode, String storageNum, String materialNum, String materialId,
                                        String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                                       String invType, String deviceId);
+                                       String invType, String deviceId,Map<String,Object> extraMap);
 
 }
 

@@ -12,6 +12,7 @@ import com.richfit.sdk_wzck.base_dsn_edit.IDSNEditPresenter;
 import com.richfit.sdk_wzck.base_dsn_edit.IDSNEditView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/27.
@@ -75,13 +76,13 @@ public class DSNEditPresenterImp extends BaseEditPresenterImp<IDSNEditView>
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                                  String invCode, String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId) {
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum,
                         materialNum, materialId, "", "", batchFlag, location,
-                        specialInvFlag, specialInvNum, invType, deviceId)
+                        specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext) {
                             @Override

@@ -14,6 +14,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -58,9 +59,11 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     String mLocationId;
     String mQuantity;
     /*修改前的发出仓位*/
-    String mSelectedLocation;
+    String mSelectedLocationCombine;
+    protected  String mSpecialInvFlag;
+    protected  String mSpecialInvNum;
     /*修改前的其他子节点的发出仓位列表*/
-    ArrayList<String> mLocations;
+    ArrayList<String> mLocationCombines;
 
     /*库存列表*/
     private List<InventoryEntity> mInventoryDatas;
@@ -68,9 +71,6 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
 
     /*缓存的历史仓位数量*/
     private List<RefDetailEntity> mHistoryDetailList;
-
-    private String mSpecialInvFlag;
-    private String mSpecialInvNum;
 
 
     @Override
@@ -107,10 +107,9 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         //下架仓位
-        mSelectedLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
+        mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
         mSpecialInvNum = bundle.getString(Global.EXTRA_SPECIAL_INV_NUM_KEY);
-
         //发出批次
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         //接收仓位
@@ -120,7 +119,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         //移库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
         //其他子节点的发出仓位列表
-        mLocations = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
+        mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
         //绑定数据
         tvMaterialNum.setText(materialNum);
@@ -151,10 +150,11 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     @Override
     public void loadTransferSingleInfoComplete() {
         //获取库存信息
-        mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                 CommonUtil.Obj2String(tvInv.getTag()), mRefData.workCode, getString(tvInv),
                 "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                "", getString(tvBatchFlag), "", "", getInvType(), "");
+                "", getString(tvBatchFlag), "", "", param.invType, "", param.extraMap);
     }
 
     @Override
@@ -175,29 +175,17 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
 
         //自动选定用户修改前的发出仓位
         //默认选择已经下架的仓位
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             spLocation.setSelection(0);
             return;
-        }
-        String locationCombine = null;
-        if (!TextUtils.isEmpty(mSpecialInvFlag) && !TextUtils.isEmpty(mSpecialInvNum)) {
-            locationCombine = mSelectedLocation + mSpecialInvFlag + mSpecialInvNum;
-        } else {
-            locationCombine = mSelectedLocation;
         }
 
         int pos = -1;
         for (InventoryEntity loc : mInventoryDatas) {
             pos++;
-            if (mSelectedLocation.equals(locationCombine)) {
-                if (mSelectedLocation.equalsIgnoreCase(loc.location)) {
-                    break;
-                }
-            } else {
-                //如果在修改前选择的是寄售库存的仓位
-                if (locationCombine.equalsIgnoreCase(loc.locationCombine))
-                    break;
-            }
+            //如果在修改前选择的是寄售库存的仓位
+            if (mSelectedLocationCombine.equalsIgnoreCase(loc.locationCombine))
+                break;
         }
         if (pos >= 0 && pos < list.size()) {
             spLocation.setSelection(pos);
@@ -260,13 +248,13 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
      * @return
      */
     private boolean isValidatedSendLocation() {
-        if (TextUtils.isEmpty(mSelectedLocation)) {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             return false;
         }
-        if (mLocations == null || mLocations.size() == 0)
+        if (mLocationCombines == null || mLocationCombines.size() == 0)
             return true;
-        for (String location : mLocations) {
-            if (mSelectedLocation.equalsIgnoreCase(location)) {
+        for (String location : mLocationCombines) {
+            if (mSelectedLocationCombine.equalsIgnoreCase(location)) {
                 showMessage("您修改的仓位不合理,请重新输入");
                 spLocation.setSelection(0);
                 return false;
@@ -343,6 +331,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
                     "Y" : "N";
             result.quantity = getString(etQuantity);
             result.invType = "1";
+            result.invFlag = mRefData.invFlag;
             result.modifyFlag = "Y";
             emitter.onNext(result);
             emitter.onComplete();
@@ -355,6 +344,10 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     public void saveEditedDataSuccess(String message) {
         super.saveEditedDataSuccess(message);
         tvLocQuantity.setText(getString(etQuantity));
+        int locationPos = spLocation.getSelectedItemPosition();
+        if (locationPos >= 0 && locationPos < mInventoryDatas.size()) {
+            mSelectedLocationCombine = mInventoryDatas.get(locationPos).locationCombine;
+        }
     }
 
     @Override
@@ -376,9 +369,4 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         }
         super.retry(retryAction);
     }
-
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
-
 }

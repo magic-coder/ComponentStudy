@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.home.HomeActivity;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.utils.LocalFileUtil;
@@ -47,11 +48,15 @@ public class WelcomePresenterImp extends BasePresenter<WelcomeContract.View>
             return;
         }
 
-//        boolean initiatedFragmentConfig = (boolean) SPrefUtil.getData(Global.IS_INITED_FRAGMENT_CONFIG_KEY,false);
-//        if(initiatedFragmentConfig && mView != null) {
-//            mView.loadFragmentConfigSuccess();
-//            return;
-//        }
+        // 青海已经上线，所有的模块功能不应该有增加，如果上线后有增加应该将其注释掉。
+        // 这里利用标识目的就是Fragment页面的配置文件加载一次
+        if (Global.QINGHAI.equalsIgnoreCase(BuildConfig.APP_NAME)) {
+            boolean initiatedFragmentConfig = (boolean) SPrefUtil.getData(Global.IS_INITED_FRAGMENT_CONFIG_KEY, false);
+            if (initiatedFragmentConfig && mView != null) {
+                mView.loadFragmentConfigSuccess();
+                return;
+            }
+        }
         ResourceSubscriber<Boolean> subscriber =
                 Flowable.just(configFileName)
                         .map(name -> LocalFileUtil.getStringFormAsset(mContext, name))

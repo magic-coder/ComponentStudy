@@ -148,6 +148,9 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public boolean batchManagerStatus;
     /*上下架处理标识,S标识上架;H表示下架*/
     public String shkzg;
+    public String locationCombine;
+    //是否应急
+    public String invFlag;
 
 
     @Override
