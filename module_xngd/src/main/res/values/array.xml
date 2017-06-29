@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="xngd_inspection_types">
+        <item>请选择</item>
+        <item>安装</item>
+        <item>试用</item>
+        <item>使用</item>
+        <item>外观</item>
+        <item>目测</item>
+    </string-array>
+
+    <string-array name="xngd_inspection_status">
+        <item>请选择</item>
+        <item>完好</item>
+        <item>残缺</item>
+    </string-array>
+</resources>

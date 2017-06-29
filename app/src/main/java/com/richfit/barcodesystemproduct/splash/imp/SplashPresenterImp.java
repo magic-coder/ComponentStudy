@@ -2,6 +2,7 @@ package com.richfit.barcodesystemproduct.splash.imp;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -157,8 +158,8 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
         final String savePath = file.getAbsolutePath();
         final String url = BarcodeSystemApplication.baseUrl + "downloadInitialDB?macAddress=" + Global.MAC_ADDRESS;
         L.e("下载基础数据库的url = " + url);
+
         ResourceObserver<DownloadStatus> observer = mRxDownload.download(url, dbName, savePath)
-                .doOnComplete(() -> SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, false))
                 .doOnComplete(() -> saveLoadBasicDataTaskDate())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -220,7 +221,7 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
                 .map(name -> LocalFileUtil.getStringFormAsset(mContext, name))
                 .map(json -> parseJson(json))
                 .filter(list -> list != null && list.size() > 0)
-                .map(list -> wrapperMenuNodes(list,Global.OFFLINE_MODE))
+                .map(list -> wrapperMenuNodes(list, Global.OFFLINE_MODE))
                 .map(list -> mRepository.saveMenuInfo(list, "1", Global.OFFLINE_MODE))
                 .map(list -> {
                     final UserEntity userEntity = new UserEntity();
@@ -280,6 +281,7 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
 
 
     private void saveLoadBasicDataTaskDate() {
+        Log.d("yff", "下载基础DB完成;" + "saveLoadBasicDataTaskDate");
         final String currentDate = CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE4);
         ArrayList<String> queryTypes = new ArrayList<>();
         queryTypes.add("WL");

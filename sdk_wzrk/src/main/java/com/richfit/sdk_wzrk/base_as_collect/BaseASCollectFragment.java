@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog.Builder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -212,7 +211,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         RxAdapterView.itemSelections(spInv)
                 .filter(pos -> pos > 0)
                 .subscribe(pos -> {
-                    Log.d("yff","是否上架 = " + isNLocation);
                     if (isNLocation) {
                         //如果不上架
                         getTransferSingle(getString(etBatchFlag), getString(etLocation));
@@ -501,7 +499,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     /**
      * 不论扫描的是否是同一个物料，都清除控件的信息。
      */
-    private void clearAllUI() {
+    protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, etLocation, tvLocQuantity, etQuantity, tvLocQuantity,
                 tvTotalQuantity, cbSingle, tvInsLostQuantity,etMaterialNum, etBatchFlag,tvSpecialInvFlag);
 
@@ -597,7 +595,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      *
      * @param cachedInvId:缓存的库存地点
      */
-    private void lockInv(String cachedInvId) {
+    protected void lockInv(String cachedInvId) {
         //锁定库存地点
         if (!TextUtils.isEmpty(cachedInvId)) {
             int pos = -1;
@@ -655,6 +653,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
         if(!isNLocation && TextUtils.isEmpty(getString(tvLocQuantity))) {
             showMessage("请先获取仓位数量");
             return false;
@@ -690,6 +689,13 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             showMessage("请先输入物料条码");
             return false;
         }
+
+        //2017年06月28日，由于保存数据重新将批次的所有状态恢复到原始状态，这是
+        //为了兼容不同物料输入在保存单条数据成功后必须恢复。但是这样导致的不能连续输入。
+        //所以必须再次判断批次状态。
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
+
         //第一步检查是否需要输入批次。打开了批次管理，并且批次可以输入的情况下
         if (isOpenBatchManager && etBatchFlag.isEnabled()) {
             if (TextUtils.isEmpty(getString(etBatchFlag))) {
@@ -788,6 +794,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             isOpenBatchManager = true;
             etBatchFlag.setEnabled(true);
         }
+
     }
 
     @Override

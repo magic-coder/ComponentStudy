@@ -74,10 +74,10 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
     }
 
     @Override
-    public void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSap, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", userId),
+        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSap, extraHeaderMap))
 //                .retryWhen(new RetryWhenNetworkException(3, 3000))
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))

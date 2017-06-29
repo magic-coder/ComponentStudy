@@ -89,8 +89,8 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
      */
     @Override
     final public void refreshComplete() {
-        setRefreshing(true,"获取明细成功");
-        if(!isNeedTurn && isTurnSuccess) {
+        setRefreshing(true, "获取明细成功");
+        if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);
         }
@@ -218,7 +218,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             showMessage("本次采集已经过账,请先进行其他转储操作");
             return;
         }
-        mPresenter.submitData2BarcodeSystem(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

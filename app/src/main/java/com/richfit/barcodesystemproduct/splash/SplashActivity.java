@@ -4,18 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.login.LoginActivity;
 import com.richfit.barcodesystemproduct.splash.imp.SplashPresenterImp;
 import com.richfit.common_lib.lib_mvp.BaseActivity;
 import com.richfit.common_lib.utils.NetworkStateUtil;
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.utils.SysProp;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.LoadBasicDataWrapper;
 
 import java.util.ArrayList;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * 在启动app的时候，如果一个Activity所属的Application还没运行，系统会为这个Activity创建一个
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 public class SplashActivity extends BaseActivity<SplashPresenterImp> implements ISplashView {
 
     ArrayList<LoadBasicDataWrapper> mRequestParam;
+    Disposable mDisposable;
 
     @Override
     protected int getContentId() {
@@ -93,7 +98,6 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
         if (!NetworkStateUtil.isNetConnected(this.getApplicationContext()) && mPresenter != null) {
             mPresenter.setLocal(true);
             toLogin();
-//            mPresenter.loadFragmentConfigs();
             return;
         }
         //如果有网络那么直接进行基础数据更新
@@ -104,7 +108,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
     }
 
     /**
-     * 如果该地址能够连接到服务器
+     * 如果该地址能够连接到服务器。所有的地区公司不论是否存在离线业务都先下载数据库
      */
     @Override
     public void networkAvailable() {
@@ -121,7 +125,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      * 判断快捷扫描是否勾选   不勾选跳转到系统设置中进行设置
      */
     private boolean judgeProperty() {
-        if(!BuildConfig.ISSERVICEDL)
+        if (!BuildConfig.ISSERVICEDL)
             return false;
         String result = SysProp.get("persist.sys.keyreport", "false");
         return result.equals("false");
@@ -153,7 +157,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
 
         //如果需要二级单位的组织机构
         switch (BuildConfig.APP_NAME) {
-            case Global.QINGYANG:
+            case Global.QYSH:
                 task = new LoadBasicDataWrapper();
                 task.isByPage = false;
                 task.queryType = "ZZ2";
@@ -178,7 +182,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      */
     @Override
     public void syncDataError(String message) {
-        if (BuildConfig.LOG_DEBUG && BuildConfig.APP_NAME.equals(Global.QINGYANG)) {
+        if (BuildConfig.LOG_DEBUG && BuildConfig.APP_NAME.equals(Global.QYSH)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("提示")
                     .setMessage("同步基础数据出错:" + message);
@@ -197,12 +201,17 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      */
     @Override
     public void downDBComplete() {
+        Log.d("yff", "下载基础DB成功");
+        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, false);
         startSyncBasicData();
     }
 
     @Override
     public void downDBFail(String message) {
         showMessage(message);
+        Log.d("yff", "下载基础DB失败");
+        //如果下载错误，强制下次下载
+        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, true);
         toLogin();
     }
 
@@ -221,5 +230,13 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
         }
         //回调父方法关闭对话框
         super.retry(action);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.isDisposed();
+        }
+        super.onDestroy();
     }
 }

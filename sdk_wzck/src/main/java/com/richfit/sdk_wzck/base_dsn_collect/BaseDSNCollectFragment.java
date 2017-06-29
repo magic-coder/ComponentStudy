@@ -198,9 +198,9 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
 
     @Override
     public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
-        RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
+        RefDetailEntity data = refData.billDetailList.get(0);
         manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
@@ -414,6 +414,16 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             showMessage("仓位数量为空");
             return false;
         }
+        //2017年06月28日增加批次判断
+        if(mHistoryDetailList != null) {
+            RefDetailEntity data = mHistoryDetailList.get(0);
+            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
+            if(isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+                showMessage("请输入批次");
+                return false;
+            }
+        }
+
         //实发数量
         if (!refreshQuantity(getString(etQuantity))) {
             return false;

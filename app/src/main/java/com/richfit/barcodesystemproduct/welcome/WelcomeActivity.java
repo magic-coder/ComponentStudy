@@ -61,13 +61,13 @@ public class WelcomeActivity extends BaseActivity<WelcomePresenterImp> implement
     }
 
     /**
-     * debounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
-     * throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
+     * debounce:在时间T内，如果有N个事件，那么只取第N个
+     * throttleFirst:在时间T内，如果有N个事件，那么只取第1个
      */
     @Override
     public void initEvent() {
         switch (BuildConfig.APP_NAME) {
-            case Global.QINGYANG:
+            case Global.QYSH:
                 btnOfflineMode.setVisibility(View.GONE);
                 break;
         }

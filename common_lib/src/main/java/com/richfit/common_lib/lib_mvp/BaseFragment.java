@@ -32,8 +32,6 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
-import com.squareup.leakcanary.RefWatcher;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -145,23 +143,11 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     public void onDestroyView() {
         super.onDestroyView();
         if (mUnbinder != Unbinder.EMPTY) mUnbinder.unbind();
-//        if (mDisposable != null && !mDisposable.isDisposed())
-//            mDisposable.dispose();
         if (mPresenter != null) {
             mPresenter.detachView();
         }
         mView = null;
         mPresenter = null;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //注意这里release模式不打开性能检测
-        RefWatcher refWatcher = BaseApplication.getRefWatcher();
-        if (refWatcher != null) {
-            refWatcher.watch(this);
-        }
     }
 
     //获取布局文件

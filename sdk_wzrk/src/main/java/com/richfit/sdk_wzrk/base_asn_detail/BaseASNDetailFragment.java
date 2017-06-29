@@ -151,7 +151,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
             showMessage(getString(R.string.msg_detail_off_location));
             return;
         }
-        mPresenter.submitData2BarcodeSystem(mTransId, mBizType, mRefType, mRefData.voucherDate,
+        mPresenter.submitData2BarcodeSystem("",mTransId, mBizType, mRefType, mRefData.voucherDate,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

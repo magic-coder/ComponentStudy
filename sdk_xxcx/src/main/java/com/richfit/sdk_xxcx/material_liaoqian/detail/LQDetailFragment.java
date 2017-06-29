@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.adapter.LQDetailAdapter;
 import com.richfit.sdk_xxcx.material_liaoqian.detail.imp.LQDetailPresenterImp;
@@ -73,10 +74,10 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
 
     @Override
     public void onRefresh() {
-        String queryType = isEmpty(mRefData.location) ? "01" : "04";
-        mPresenter.getInventoryInfo(queryType, "", "", mRefData.workCode,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", "1", "",null);
+                mRefData.batchFlag, "", "", param.invType, "",param.extraMap);
     }
 
     @Override

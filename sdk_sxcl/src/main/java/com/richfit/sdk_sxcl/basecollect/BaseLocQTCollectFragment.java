@@ -199,7 +199,6 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
 
         //监听上架仓位输入
         RxTextView.textChanges(etSLocation)
-
                 .subscribe(a -> {
                     tvLocQuantity.setText("");
                     tvTotalQuantity.setText("");

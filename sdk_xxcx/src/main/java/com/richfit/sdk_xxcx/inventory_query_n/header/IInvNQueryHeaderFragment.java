@@ -1,16 +1,15 @@
 package com.richfit.sdk_xxcx.inventory_query_n.header;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.jakewharton.rxbinding2.view.RxView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.R2;
@@ -18,7 +17,6 @@ import com.richfit.sdk_xxcx.inventory_query_n.header.imp.IInvNQueryHeaderPresent
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
@@ -40,8 +38,7 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
     EditText etMaterialClass;
     @BindView(R2.id.et_material_desc)
     EditText etMaterialDesc;
-    @BindView(R2.id.floating_button)
-    FloatingActionButton mBtnQuery;
+
 
     /*工厂*/
     WorkAdapter mWorkAdapter;
@@ -75,9 +72,6 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
 
     @Override
     public void initEvent() {
-        RxView.clicks(mBtnQuery)
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(a -> startQueryInvInfo());
     }
 
     @Override
@@ -87,38 +81,6 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
 
     @Override
     public void initDataLazily() {
-
-    }
-
-    /**
-     * 开始查询库存信息
-     */
-    private void startQueryInvInfo() {
-        if (spWork.getSelectedItemPosition() <= 0) {
-            showMessage("请先选择工厂");
-            return;
-        }
-
-        if (spInv.getSelectedItemPosition() <= 0) {
-            showMessage("请先选择库存地点");
-            return;
-        }
-
-        String workId = mWorks.get(spWork.getSelectedItemPosition()).workId;
-        String workCode = mWorks.get(spWork.getSelectedItemPosition()).workCode;
-        String invId = mInvs.get(spInv.getSelectedItemPosition()).invCode;
-        String invCode = mInvs.get(spInv.getSelectedItemPosition()).invId;
-        String materialClass = getString(etMaterialClass);
-        String materialDesc = getString(etMaterialDesc);
-
-
-    }
-
-    /**
-     * 查询完毕
-     */
-    @Override
-    public void queryInvInfoComplete() {
 
     }
 
@@ -172,5 +134,23 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
         } else {
             mInvAdapter.notifyDataSetChanged();
         }
+    }
+
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if (spWork.getSelectedItemPosition() <= 0 || spInv.getSelectedItemPosition() <= 0)
+            return;
+        if (mRefData == null) {
+            mRefData = new ReferenceEntity();
+        }
+        mRefData.bizType = mBizType;
+        mRefData.materialGroup = getString(etMaterialClass);
+        mRefData.materialDesc = getString(etMaterialDesc);
+        mRefData.workId = mWorks.get(spWork.getSelectedItemPosition()).workId;
+        mRefData.workCode = mWorks.get(spWork.getSelectedItemPosition()).workCode;
+        mRefData.invId = mInvs.get(spInv.getSelectedItemPosition()).invCode;
+        mRefData.invCode = mInvs.get(spInv.getSelectedItemPosition()).invId;
     }
 }

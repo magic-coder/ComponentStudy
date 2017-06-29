@@ -58,7 +58,7 @@ public interface IBaseDetailPresenter<V extends IBaseDetailView> extends IPresen
      * @param bizType:业务类型
      * @param voucherDate:过账日期
      */
-    void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate,
+    void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                   String transToSAPFlag, Map<String, Object> extraHeaderMap);
 
     /**

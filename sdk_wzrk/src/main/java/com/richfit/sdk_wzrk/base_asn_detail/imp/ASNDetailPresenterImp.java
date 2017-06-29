@@ -166,11 +166,11 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
     }
 
     @Override
-    public void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                         String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
         RxSubscriber<String> subscriber =
-                mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "")
+                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", "")
                         .doOnError(e-> SPrefUtil.saveData(bizType,"0"))
                         .doOnComplete(()->SPrefUtil.saveData(bizType,"1"))
                         .compose(TransformerHelper.io2main())

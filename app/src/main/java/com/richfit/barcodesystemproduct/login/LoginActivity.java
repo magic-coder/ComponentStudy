@@ -26,6 +26,7 @@ import com.richfit.barcodesystemproduct.splash.SplashActivity;
 import com.richfit.barcodesystemproduct.welcome.WelcomeActivity;
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.lib_mvp.BaseActivity;
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -138,6 +139,7 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
                 .setMessage(message + ".该手持MAC地址是" + Global.MAC_ADDRESS + ".注意注册完成后系统将自动重启APP!")
                 .setPositiveButton("已经注册", (dialog1, which) -> {
                     dialog1.dismiss();
+                    SPrefUtil.saveData(Global.IS_APP_FIRST_KEY,true);
                     Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
                     startActivity(intent);
                     finish();

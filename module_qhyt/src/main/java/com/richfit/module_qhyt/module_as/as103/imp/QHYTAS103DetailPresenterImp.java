@@ -187,6 +187,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
             cachedEntity.materialGroup = node.materialGroup;
             cachedEntity.actQuantity = node.actQuantity;
             cachedEntity.workCode = node.workCode;
+            cachedEntity.batchFlag = node.batchFlag;
             //将仓位级别的数据保存到明细行级别中
             List<LocationInfoEntity> locationList = cachedEntity.locationList;
             if (locationList != null && locationList.size() > 0) {
@@ -197,6 +198,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                     cachedEntity.quantity = loc.quantity;
                     cachedEntity.transLineId = loc.transLineId;
                     cachedEntity.locationId = loc.id;
+                    cachedEntity.batchFlag = loc.batchFlag;
                 }
             }
             nodes.add(cachedEntity);

@@ -1,0 +1,4 @@
+<resources>
+    <string name="cqyt_quantity_custom">件数</string>
+    <string name="cqyt_total_quantity_custom">累计件数</string>
+</resources>

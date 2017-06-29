@@ -22,10 +22,10 @@ public class XNGDRSDetailPresenterImp extends ASDetailPresenterImp {
     }
 
     @Override
-    public void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", userId)
+        RxSubscriber<String> subscriber = mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId)
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                 .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
                 .compose(TransformerHelper.io2main())

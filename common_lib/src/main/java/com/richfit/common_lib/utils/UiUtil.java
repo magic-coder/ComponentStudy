@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Outline;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
+import android.text.TextUtils;
 import android.transition.Fade;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -19,8 +20,11 @@ import android.view.ViewPropertyAnimator;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.PathInterpolator;
+import android.widget.Spinner;
 
 import com.richfit.common_lib.R;
+
+import java.util.List;
 
 /**
  * Created by monday on 2016/1/7.
@@ -209,4 +213,24 @@ public class UiUtil {
         }
         return statusHeight;
     }
+
+    public static void setSelectionForSp(List<String> dataSet, String keyWord, Spinner sp) {
+        int position = -1;
+        if (TextUtils.isEmpty(keyWord))
+            return;
+        if (dataSet == null)
+            return;
+        if (sp.getAdapter() == null)
+            return;
+        if (dataSet != null) {
+            for (String item : dataSet) {
+                position++;
+                if (item.equalsIgnoreCase(keyWord)) {
+                    break;
+                }
+            }
+        }
+        sp.setSelection(position == -1 ? 0 : position);
+    }
+
 }

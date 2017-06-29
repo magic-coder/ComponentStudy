@@ -627,6 +627,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             showMessage("请先输入物料条码");
             return false;
         }
+
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
+
         //批次
         if (isOpenBatchManager && !isBatchValidate) {
             showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");

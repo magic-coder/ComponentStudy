@@ -32,7 +32,7 @@ public class DSYDetailAdapter extends MultiItemTypeTreeAdapter<RefDetailEntity> 
      *
      * @return
      */
-    public boolean isTransferValide() {
+    public boolean isTransferValid() {
         if (mVisibleNodes != null) {
             for (RefDetailEntity item : mVisibleNodes) {
                 //如果累计数量为空或者等于0，那么认为该明细没有采集过数据(注意必须仅检查父节点的totalQuantity)

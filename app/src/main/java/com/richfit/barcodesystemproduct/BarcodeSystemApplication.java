@@ -12,7 +12,6 @@ import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.repository.DataInjection;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
@@ -47,9 +46,9 @@ public class BarcodeSystemApplication extends BaseApplication {
         //初始化全局模块
         DataInjection.getRepository(this, baseUrl);
         //开启性能检测
-        if (BuildConfig.DEBUG) {
-            mRefWatcher = LeakCanary.install(this);
-        }
+//        if (BuildConfig.DEBUG) {
+//            mRefWatcher = LeakCanary.install(this);
+//        }
     }
 
     private String generateBaseUrl() {
@@ -63,17 +62,21 @@ public class BarcodeSystemApplication extends BaseApplication {
         //如果没有手动设置过Url
         if (BuildConfig.DEBUG) {
             switch (BuildConfig.APP_NAME) {
-                case Global.QINGYANG:
+                case Global.QYSH:
                     //庆阳测试地址
                     baseUrl = "http://11.11.177.100:8092/lhbk_middleware/MobileProcess/";
                     break;
-                case Global.QINGHAI:
-                    //培训系统
+                case Global.QHYT:
+                    //青海油田培训系统
                     baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
                     break;
-                case Global.XINANGD:
+                case Global.XNGD:
                     //西南管道
                     baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
+                    break;
+                case Global.CQYT:
+                    //长庆油田
+                    baseUrl = "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
                     break;
             }
         } else {

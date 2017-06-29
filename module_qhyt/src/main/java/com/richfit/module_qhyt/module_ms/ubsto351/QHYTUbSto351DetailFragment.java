@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
-import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.module_qhyt.R;
@@ -73,14 +72,4 @@ public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPre
         return "351移库";
     }
 
-
-    @Override
-    protected boolean checkTransStateBeforeRefresh() {
-        String transferKey = (String) SPrefUtil.getData(mBizType + mRefType, "0");
-        if ("1".equals(transferKey)) {
-            setRefreshing(false, "本次采集已经过账,请直接进行其他转储操作");
-            return false;
-        }
-        return true;
-    }
 }

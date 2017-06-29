@@ -64,6 +64,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     protected Spinner spSpecialInv;
     SpecialInvAdapter mAdapter;
     List<InventoryEntity> mInventoryDatas;
+    MaterialEntity mHistoryData;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -85,6 +86,10 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         }
     }
 
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
 
     @Override
     protected int getContentId() {
@@ -137,6 +142,11 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     }
 
     @Override
+    protected void initView() {
+
+    }
+
+    @Override
     public void initData() {
 
     }
@@ -153,21 +163,23 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             return;
         }
         clearAllUI();
+        mHistoryData = null;
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
         mPresenter.getMaterialInfo("01", materialNum, mRefData.workId);
     }
 
     @Override
-    public void getMaterialInfoSuccess(MaterialEntity materialEntity) {
-        etMaterialNum.setTag(materialEntity.id);
-        tvMaterialDesc.setText(materialEntity.materialDesc);
-        tvMaterialGroup.setText(materialEntity.materialGroup);
-        tvMaterialUnit.setText(materialEntity.unit);
-        manageBatchFlagStatus(etBatchFlag, materialEntity.batchManagerStatus);
+    public void getMaterialInfoSuccess(MaterialEntity data) {
+        etMaterialNum.setTag(data.id);
+        tvMaterialDesc.setText(data.materialDesc);
+        tvMaterialGroup.setText(data.materialGroup);
+        tvMaterialUnit.setText(data.unit);
+        manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-            etBatchFlag.setText(materialEntity.batchFlag);
+            etBatchFlag.setText(data.batchFlag);
         }
+        mHistoryData = data;
     }
 
     @Override
@@ -223,29 +235,6 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     }
 
     @Override
-    public void saveCollectedDataSuccess(String message) {
-        showSuccessDialog(message);
-        clearAllUI();
-        clearCommonUI(etMaterialNum, etBatchFlag);
-        isOpenBatchManager = true;
-        etBatchFlag.setEnabled(true);
-    }
-
-    @Override
-    public void saveCollectedDataFail(String message) {
-        showErrorDialog(message);
-    }
-
-    private void clearAllUI() {
-        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit, etSendLocation,
-                tvSendInvQuantity, etRecLocation, etRecQuantity);
-        if (mAdapter != null) {
-            mInventoryDatas.clear();
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
     public void showOperationMenuOnCollection(final String companyCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
         builder.setTitle("提示");
@@ -258,6 +247,20 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         builder.show();
     }
 
+    protected boolean refreshQuantity(final String quantity) {
+        if (Float.valueOf(quantity) <= 0.0f) {
+            showMessage("输入数量不合理");
+            return false;
+        }
+        final float recQuantityV = CommonUtil.convertToFloat(getString(etRecQuantity), 0.0f);
+        final float quantityV = CommonUtil.convertToFloat(quantity, 0.0f);
+        if (Float.compare(quantityV, recQuantityV) > 0.0f) {
+            showMessage("输入数量有误，请重新输入");
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean checkCollectedDataBeforeSave() {
         if (TextUtils.isEmpty(mRefData.bizType)) {
@@ -265,9 +268,12 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             return false;
         }
 
-        if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-            showMessage("请输入批次");
-            return false;
+        if (mHistoryData != null) {
+            manageBatchFlagStatus(etBatchFlag, mHistoryData.batchManagerStatus);
+            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+                showMessage("请输入批次");
+                return false;
+            }
         }
 
         if (TextUtils.isEmpty(mRefData.workId)) {
@@ -344,18 +350,27 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
     }
 
-    protected boolean refreshQuantity(final String quantity) {
-        if (Float.valueOf(quantity) <= 0.0f) {
-            showMessage("输入数量不合理");
-            return false;
+    @Override
+    public void saveCollectedDataSuccess(String message) {
+        showSuccessDialog(message);
+        clearAllUI();
+        clearCommonUI(etMaterialNum, etBatchFlag);
+        isOpenBatchManager = true;
+        etBatchFlag.setEnabled(true);
+    }
+
+    @Override
+    public void saveCollectedDataFail(String message) {
+        showErrorDialog(message);
+    }
+
+    private void clearAllUI() {
+        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit, etSendLocation,
+                tvSendInvQuantity, etRecLocation, etRecQuantity);
+        if (mAdapter != null) {
+            mInventoryDatas.clear();
+            mAdapter.notifyDataSetChanged();
         }
-        final float recQuantityV = CommonUtil.convertToFloat(getString(etRecQuantity), 0.0f);
-        final float quantityV = CommonUtil.convertToFloat(quantity, 0.0f);
-        if (Float.compare(quantityV, recQuantityV) > 0.0f) {
-            showMessage("输入数量有误，请重新输入");
-            return false;
-        }
-        return true;
     }
 
     @Override
@@ -371,15 +386,6 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         super.retry(action);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    protected void initView() {
-
-    }
 
     @Override
     public void _onPause() {

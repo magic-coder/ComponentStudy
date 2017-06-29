@@ -1,14 +1,16 @@
 apply plugin: 'com.android.library'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
+def config = rootProject.ext.android
+def librarys = rootProject.ext.supportDependencies
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -33,22 +35,22 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
+    compile librarys.supportAppcompat
+    compile librarys.recyclerview
+    compile librarys.cardview
+    compile librarys.suppoutDesign
 
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.jaredrummler:material-spinner:1.0.9'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+//    compile 'com.jaredrummler:material-spinner:1.0.9'
+//    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+//    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+//    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     compile 'com.ms-square:expandableTextView:0.1.4'
-    compile 'zlc.season:rxdownload2:2.0.2'
+    compile 'zlc.season:rxdownload2:2.0.3'
     compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+//    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.codbking:PickTime:v1.0.1'
     compile 'cn.pedant.sweetalert:library:1.3'
     compile 'ch.ielse:switchbutton:1.0.0'

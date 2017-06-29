@@ -49,7 +49,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
     }
 
     @Override
-    public void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate, String transToSapFlag, Map<String, Object> extraHeaderMap) {
+    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate, String transToSapFlag, Map<String, Object> extraHeaderMap) {
 
     }
 

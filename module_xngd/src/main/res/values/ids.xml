@@ -9,4 +9,18 @@
     <item name="xngd_tv_project_num" type="id"></item>
     <item name="xngd_tv_job_num" type="id"></item>
     <item name="xngd_sp_goods_type" type="id"></item>
+
+    <item name="xngd_et_all_quantity" type="id"></item>
+    <item name="xngd_et_part_quantity" type="id"></item>
+    <item name="xngd_sp_inspection_type" type="id"></item>
+    <item name="xngd_sp_inspection_status" type="id"></item>
+    <item name="xngd_et_process_result" type="id"></item>
+
+    <item name="xngd_allQuantity" type="id"></item>
+    <item name="xngd_partQuantity" type="id"></item>
+    <item name="xngd_inspectionType" type="id"></item>
+    <item name="xngd_inspectionStatus" type="id"></item>
+    <item name="xngd_processResult" type="id"></item>
+    <item name="xngd_sp_inv_flag" type="id"></item>
+
 </resources>

@@ -4,20 +4,25 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
+import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.module_xngd.R;
+import com.richfit.module_xngd.module_rg.imp.XNGDRDDetailPresenterImp;
 import com.richfit.sdk_wzck.base_ds_detail.BaseDSDetailFragment;
-import com.richfit.sdk_wzck.base_ds_detail.imp.DSDetailPresenterImp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by monday on 2017/6/20.
  */
 
-public class XNGDRGDetailFragment extends BaseDSDetailFragment<DSDetailPresenterImp> {
+public class XNGDRGDetailFragment extends BaseDSDetailFragment<XNGDRDDetailPresenterImp> {
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
 
     @Override
     protected void initView() {
@@ -45,23 +50,30 @@ public class XNGDRGDetailFragment extends BaseDSDetailFragment<DSDetailPresenter
 
     @Override
     public void initPresenter() {
-        mPresenter = new DSDetailPresenterImp(mActivity);
+        mPresenter = new XNGDRDDetailPresenterImp(mActivity);
     }
 
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
-        tmp.get(0).transToSapFlag = "01";
-        tmp.get(2).transToSapFlag = "05";
-        ArrayList menus = new ArrayList();
-        menus.add(tmp.get(0));
-        menus.add(tmp.get(2));
-        return menus;
+        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
+        return menus.subList(0, 1);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
 
+
+    /**
+     * 第一步过账成功后直接跳转
+     */
+    @Override
+    public void submitBarcodeSystemSuccess() {
+        showSuccessDialog(mTransNum);
+        if (mAdapter != null) {
+            mAdapter.removeAllVisibleNodes();
+        }
+        mRefData = null;
+        mTransNum = "";
+        mTransId = "";
+        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
     @Override

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "1",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_cwtz_header_fragment_tag",
+    "bizType": "100",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.sdk_cwtz.head.LAHeadFragment"
+  },
+  {
+    "id": "2",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_cwtz_collect_fragment_tag",
+    "bizType": "100",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 2,
+    "className": "com.richfit.sdk_cwtz.collect.LACollectFragment"
+  },
+  {
+    "id": "3",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_as103_head_fragment_tag",
+    "bizType": "12",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_as.CQYTAS103HeadFragment"
+  },
+  {
+    "id": "4",
+    "tabTitle": "数据明细",
+    "fragmentTag": "qhyt_as103_detail_fragment_tag",
+    "bizType": "12",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_qhyt.module_as.as103.QHYTAS103DetailFragment"
+  },
+  {
+    "id": "5",
+    "tabTitle": "数据采集",
+    "fragmentTag": "qhyt_as103_collct_fragment_tag",
+    "bizType": "12",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_as.CQYTAS103CollectFragment"
+  },
+  {
+    "id": "6",
+    "tabTitle": "数据修改",
+    "fragmentTag": "qhyt_as103_edit_fragment_tag",
+    "bizType": "12",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_qhyt.module_as.as103.QHYTAS103EditFragment"
+  },
+  {
+    "id": "7",
+    "tabTitle": "抬头",
+    "fragmentTag": "qhyt_y313_head_fragment_tag",
+    "bizType": "37",
+    "refType": "10",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_ms.y313.CQYTMSY313HeadFragment"
+  },
+  {
+    "id": "8",
+    "tabTitle": "数据明细",
+    "fragmentTag": "qhyt_y313_detail_fragment_tag",
+    "bizType": "37",
+    "refType": "10",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_ms.y313.CQYTMSY313DetailFragment"
+  }
+
+]

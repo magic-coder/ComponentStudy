@@ -53,6 +53,7 @@
     <item name="image" type="id"></item>
     <item name="sp_move_type" type="id"></item>
     <item name="et_supplier" type="id"></item>
+    <item name="ll_arrival_date" type="id"></item>
 
 
     <!--明细界面业务id-->
@@ -91,6 +92,7 @@
     <item name="sendLocation" type="id"></item>
     <item name="xLocation" type="id"></item>
     <item name="sLocation" type="id"></item>
+    <item name="ll_inspection_type" type="id"></item>
 
     <!--数据采集业务id-->
     <item name="sp_ref_line_num" type="id"></item>

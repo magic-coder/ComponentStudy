@@ -109,7 +109,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
      *
      * @param nodes
      */
-    private void saveTurnFlag(final List<RefDetailEntity> nodes) {
+    protected void saveTurnFlag(final List<RefDetailEntity> nodes) {
         //仅仅检查子节点
         for (RefDetailEntity node : nodes) {
             if (Global.CHILD_NODE_ITEM_TYPE == node.getViewType() &&
@@ -209,7 +209,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             return;
         }
         mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mTransId, mBizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId,mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 
@@ -332,6 +332,16 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
         showErrorDialog(TextUtils.isEmpty(message) ? "寄售转自有失败" : message);
         isTurnSuccess = false;
         isNeedTurn = true;
+    }
+
+    @Override
+    protected boolean checkTransStateBeforeRefresh() {
+        String transferKey = (String) SPrefUtil.getData(mBizType + mRefType, "0");
+        if ("1".equals(transferKey)) {
+            setRefreshing(false, "本次采集已经过账,请直接进行其他转储操作");
+            return false;
+        }
+        return true;
     }
 
     protected abstract String getSubFunName();

@@ -6,8 +6,6 @@ package com.richfit.data.constant;
 
 public class Global {
 
-    public final static String BASEURL =  "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
-
     public final static String RETURN_SUCCESS_CODE = "S";
     /*App是否第一次启动*/
     public final static String IS_APP_FIRST_KEY = "is_app_first";
@@ -53,24 +51,10 @@ public class Global {
     public static final int OFFLINE_MODE = 0x1;
 
     /*地区公司*/
-    public static final String QINGYANG = "qysh";
-    public static final String QINGHAI = "qhyt";
-    public static final String XINANGD = "xngd";
-
-    /*配置文件类型*/
-    public static final String HEADER_CONFIG_TYPE = "0";
-    public static final String DETAIL_PARENT_NODE_CONFIG_TYPE = "1";
-    public static final String DETAIL_CHILD_NODE_CONFIG_TYPE = "2";
-    public static final String COLLECT_CONFIG_TYPE = "3";
-    public static final String LOCATION_CONFIG_TYPE = "4";
-
-    /*配置字段，返回map的位置，1抬头，2行，3仓位*/
-    public static final String EXTRA_HEADER_MAP_TYPE = "1";
-    public static final String EXTRA_LINE_MAP_TYPE = "2";
-    public static final String EXTRA_LOCATION_MAP_TYPE = "3";
-
-    /*数据上传成功，跳转到抬头界面后清除抬头界面的数据*/
-    public static final String CLEAR_HEADER_UI = "clear_header_ui";
+    public static final String QYSH = "qysh";
+    public static final String QHYT = "qhyt";
+    public static final String XNGD = "xngd";
+    public static final String CQYT = "cqyt";
 
     /*全局日期格式*/
     public static final String GLOBAL_DATE_PATTERN_TYPE1 = "yyyyMMdd";
@@ -128,9 +112,6 @@ public class Global {
     /*子节点的起始id*/
     public static int CHILD_NODE_MAX_ID = 100000;
     public static int MAX_PATCH_LENGTH = 200;
-
-    //服务器返回的时间
-    public static final String SYNC_DATE_KEY = "syncDate";
 
     /*基础数据的key*/
     public static final String ID_KEY = "id";

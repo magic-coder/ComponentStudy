@@ -8,6 +8,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
@@ -154,9 +155,13 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
             return false;
         }
         //检查发出批次
-        if (isOpenBatchManager && TextUtils.isEmpty(getString(etSendBatchFlag))) {
-            showMessage("批次为空");
-            return false;
+        if (mHistoryDetailList != null) {
+            RefDetailEntity lineData = mHistoryDetailList.get(0);
+            manageBatchFlagStatus(etSendBatchFlag, lineData.batchManagerStatus);
+            if (isOpenBatchManager && TextUtils.isEmpty(getString(etSendBatchFlag))) {
+                showMessage("批次为空");
+                return false;
+            }
         }
 
         if (spSendLoc.getSelectedItemPosition() <= 0) {

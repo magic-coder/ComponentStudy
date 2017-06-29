@@ -5,6 +5,7 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     protected RichEditText etRefNum;
     @BindView(R2.id.tv_ref_num)
     protected TextView tvRefNum;
+    @BindView(R2.id.ll_inspection_type)
+    protected LinearLayout llInspectionType;
     @BindView(R2.id.sp_approval_type)
     Spinner spApprovalType;
     @BindView(R2.id.tv_supplier)
@@ -43,13 +46,14 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     TextView tvApprovalName;
     @BindView(R2.id.et_approval_date)
     protected RichEditText etApprovalDate;
-    //到货日期
+    @BindView(R2.id.ll_arrival_date)
+    protected LinearLayout llArrivalDate;
     @BindView(R2.id.et_arrival_date)
     protected RichEditText erArrivalDate;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
-        if(list != null && list.length >= 1) {
+        if (list != null && list.length >= 1) {
             getRefData(list[0]);
         }
     }
@@ -85,6 +89,7 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
         etApprovalDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etApprovalDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
 
+        //到货日期
         erArrivalDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etApprovalDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
     }
@@ -98,14 +103,14 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     protected void getRefData(String refNum) {
         mRefData = null;
         clearAllUI();
-        mPresenter.getReference(refNum, mRefType, getBizType(), getMoveType(), "", Global.USER_ID);
+        mPresenter.getReference(refNum, mRefType, mBizType, getMoveType(), "", Global.USER_ID);
     }
 
     @Override
     public void getReferenceSuccess(ReferenceEntity refData) {
         //过账标识，如果已经过账，那么不允许在明细刷新数据，也不运行在采集界面采集数据
         SPrefUtil.saveData(mBizType + mRefType, "0");
-        refData.bizType = getBizType();
+        refData.bizType = mBizType;
         refData.moveType = getMoveType();
         refData.refType = mRefType;
         mRefData = refData;
@@ -208,7 +213,7 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     public void retry(String action) {
         switch (action) {
             case Global.RETRY_LOAD_REFERENCE_ACTION:
-                mPresenter.getReference(getString(etRefNum), mRefType, getBizType(), getMoveType(), "", Global.LOGIN_ID);
+                mPresenter.getReference(getString(etRefNum), mRefType, mBizType, getMoveType(), "", Global.LOGIN_ID);
                 break;
         }
         super.retry(action);
@@ -219,11 +224,6 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
         return false;
     }
 
-    /*子类需实现的方法*/
-    /*返回业务类型*/
-    @CheckResult
-    @NonNull
-    protected abstract String getBizType();
 
     /*返回移动类型*/
     @CheckResult

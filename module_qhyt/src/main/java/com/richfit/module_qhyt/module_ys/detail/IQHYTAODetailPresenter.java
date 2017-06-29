@@ -37,16 +37,6 @@ public interface IQHYTAODetailPresenter extends IBaseDetailPresenter<IQHYTAODeta
     void deleteNode(String lineDeleteFlag, String refNum, String refLineNum, String refLineId,
                     String refType, String bizType, String userId, int position,
                     String companyCode, boolean isLocal);
-//
-//    /**
-//     * 修改子节点
-//     *
-//     * @param node：需要修改的子节点
-//     * @param ：subFunName子功能编码
-//     */
-//    void editNode(RefDetailEntity node, String companyCode, String bizType,
-//                  String refType, String subFunName, int position);
-
 
     /**
      * 过账验收数据

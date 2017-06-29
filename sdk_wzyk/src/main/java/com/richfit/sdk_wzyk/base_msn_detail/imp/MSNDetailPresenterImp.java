@@ -170,7 +170,7 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
     }
 
     @Override
-    public void submitData2BarcodeSystem(String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
         RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", userId),

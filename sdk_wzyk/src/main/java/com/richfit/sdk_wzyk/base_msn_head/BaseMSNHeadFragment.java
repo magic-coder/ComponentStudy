@@ -278,15 +278,15 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
 
     protected boolean checkData() {
         //检查是否填写了必要的字段
-        if (spSendWork != null && spSendWork.getSelectedItemPosition() == 0)
+        if (spSendWork != null && spSendWork.getSelectedItemPosition() <= 0)
             return false;
-        if (spSendInv != null && spSendInv.getSelectedItemPosition() == 0) {
+        if (spSendInv != null && spSendInv.getSelectedItemPosition() <= 0) {
             return false;
         }
-        if (spRecWork != null && spRecWork.getSelectedItemPosition() == 0)
+        if (spRecWork != null && spRecWork.getSelectedItemPosition() <= 0)
             return false;
 
-        if (spRecInv != null && spRecInv.getSelectedItemPosition() == 0)
+        if (spRecInv != null && spRecInv.getSelectedItemPosition() <= 0)
             return false;
         return true;
     }

@@ -170,7 +170,7 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
             return;
         }
         mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mTransId, mBizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId,mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

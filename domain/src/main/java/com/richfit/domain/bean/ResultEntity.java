@@ -149,4 +149,8 @@ public class ResultEntity extends TreeNode{
     public float unitRate;
     public String shkzg;
     public String invFlag;
+    public String allQuantity;
+    public String partQuantity;
+    public String inspectionStatus;
+    public String processResult;
 }

@@ -200,7 +200,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
         mExtraTansMap.clear();
         mExtraTansMap.put("centerCost", mRefData.costCenter);
         mExtraTansMap.put("projectNum", mRefData.projectNum);
-        mPresenter.submitData2BarcodeSystem(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, tranToSapFlag, mExtraTansMap);
     }
 

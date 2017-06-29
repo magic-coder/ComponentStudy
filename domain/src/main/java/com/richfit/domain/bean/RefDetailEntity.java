@@ -151,6 +151,13 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String locationCombine;
     //是否应急
     public String invFlag;
+    public String allQuantity;
+    public String partQuantity;
+    public String inspectionType;
+    public String inspectionStatus;
+    public String processResult;
+    public String totalQuantityCustom;
+    public String quantityCustom;
 
 
     @Override

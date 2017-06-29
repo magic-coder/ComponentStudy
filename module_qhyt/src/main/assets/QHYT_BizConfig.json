@@ -1133,7 +1133,7 @@
   {
     "id": "138",
     "tabTitle": "抬头",
-    "fragmentTag": "qhyt_lq_qeury_fragment_tag",
+    "fragmentTag": "qhyt_lq_qeury_head_fragment_tag",
     "bizType": "2000",
     "refType": "0",
     "mode": 0,
@@ -1143,7 +1143,7 @@
   {
     "id": "139",
     "tabTitle": "库存明细",
-    "fragmentTag": "qhyt_lq_qeury_fragment_tag",
+    "fragmentTag": "qhyt_lq_qeury_detail_fragment_tag",
     "bizType": "2000",
     "refType": "0",
     "mode": 0,

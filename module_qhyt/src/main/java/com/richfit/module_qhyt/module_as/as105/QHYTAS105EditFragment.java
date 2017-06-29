@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
@@ -15,8 +16,6 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
-
-import java.util.List;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -86,8 +85,8 @@ public class QHYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         }
         spStrategyCode.setEnabled(false);
         spMoveReason.setEnabled(false);
-        setSelection(spStrategyCode, getStringArray(R.array.qhyt_strategy_codes), decisionCode);
-        setSelection(spMoveReason, getStringArray(R.array.qhyt_move_reasons), moveCause);
+        UiUtil.setSelectionForSp(getStringArray(R.array.qhyt_strategy_codes), decisionCode, spStrategyCode);
+        UiUtil.setSelectionForSp(getStringArray(R.array.qhyt_move_reasons), moveCause, spMoveReason);
 
         super.initData();
     }
@@ -97,22 +96,6 @@ public class QHYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     }
 
-    private void setSelection(Spinner sp, List<String> list, String key) {
-        if (sp == null || TextUtils.isEmpty(key) || list == null || list.size() == 0) {
-            return;
-        }
-        int pos = -1;
-        for (int i = 0, size = list.size(); i < size; i++) {
-            pos++;
-            //注意这里仅仅匹配的是code
-            if (key.equalsIgnoreCase(list.get(i).split("_")[0])) {
-                break;
-            }
-        }
-        if (pos >= 0) {
-            sp.setSelection(pos);
-        }
-    }
 
     @Override
     public void saveCollectedData() {

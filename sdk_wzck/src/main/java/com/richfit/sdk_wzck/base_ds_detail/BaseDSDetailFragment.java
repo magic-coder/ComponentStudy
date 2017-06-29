@@ -114,7 +114,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
         //仅仅检查子节点
 
         for (RefDetailEntity node : nodes) {
-            Log.d("yff","specialConvert = " + node.specialConvert + ";nodeType = " + node.getViewType());
+            Log.d("yff", "specialConvert = " + node.specialConvert + ";nodeType = " + node.getViewType());
             if (Global.CHILD_NODE_ITEM_TYPE == node.getViewType() &&
                     "Y".equalsIgnoreCase(node.specialConvert)) {
                 isNeedTurn = true;
@@ -216,7 +216,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
             return;
         }
         mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mTransId, mBizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

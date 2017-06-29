@@ -50,7 +50,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
         } else {
             switch (BuildConfig.APP_NAME) {
                 //庆阳单独处理，而且必须保证前两个竖线没有任何值
-                case Global.QINGYANG:
+                case Global.QYSH:
                     if (TextUtils.isEmpty(info)) {
                         showMessage("单据条码信息为空");
                         return;

@@ -12,7 +12,9 @@ import com.richfit.domain.bean.TreeNode;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 import com.richfit.sdk_wzrk.adapter.ASYDetailAdapter;
+
 import java.util.List;
+
 import butterknife.BindView;
 
 
@@ -184,7 +186,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             return;
         }
         mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mTransId, mBizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

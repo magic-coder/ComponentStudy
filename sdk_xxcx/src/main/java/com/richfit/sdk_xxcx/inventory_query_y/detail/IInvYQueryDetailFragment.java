@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.adapter.LQDetailAdapter;
 import com.richfit.sdk_xxcx.inventory_query_y.detail.imp.IInvYQueryDetailPresenterImp;
@@ -16,7 +17,7 @@ import java.util.List;
  * Created by monday on 2017/3/16.
  */
 
-public class IInvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetailPresenterImp,InventoryEntity>
+public class IInvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetailPresenterImp, InventoryEntity>
         implements IInvYQueryDetailView {
 
     private LQDetailAdapter mLQDetailAdapter;
@@ -64,10 +65,10 @@ public class IInvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetai
 
     @Override
     public void onRefresh() {
-        String queryType = isEmpty(mRefData.location) ? "01" : "04";
-        mPresenter.getInventoryInfo(queryType, "", "", mRefData.workCode,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", "1", "",null);
+                mRefData.batchFlag, "", "", param.invType, "", param.extraMap);
     }
 
 

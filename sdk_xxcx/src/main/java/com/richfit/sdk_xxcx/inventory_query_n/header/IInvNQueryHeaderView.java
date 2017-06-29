@@ -24,5 +24,4 @@ public interface IInvNQueryHeaderView extends BaseView {
 
     void loadInvsComplete();
 
-    void queryInvInfoComplete();
 }

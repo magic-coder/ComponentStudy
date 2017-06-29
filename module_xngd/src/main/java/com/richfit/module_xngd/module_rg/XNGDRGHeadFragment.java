@@ -19,7 +19,9 @@ import java.util.ArrayList;
 
 public class XNGDRGHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
+    //是否应急
     private TextView tvInvFlag;
+    //退货物资类型
     private Spinner spRgGoodsTypes;
 
     @Override

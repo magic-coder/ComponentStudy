@@ -7,7 +7,7 @@ import com.richfit.sdk_wzrk.base_asn_collect.imp.ASNCollectPresenterImp;
  * Created by monday on 2017/6/23.
  */
 
-public class XNGDASCollectFragment extends BaseASNCollectFragment<ASNCollectPresenterImp> {
+public class XNGDASNCollectFragment extends BaseASNCollectFragment<ASNCollectPresenterImp> {
 
     @Override
     public void initPresenter() {

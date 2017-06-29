@@ -145,7 +145,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
         //注意这里由于不在请求接口，所以先执行了，然后执行了上面的监听
         RxAutoCompleteTextView.itemClickEvents(etLocation)
-                .delay(100,TimeUnit.MILLISECONDS)
+                .delay(100, TimeUnit.MILLISECONDS)
                 .subscribe(a -> {
                     Log.d("yff", "选择了上架仓位");
                     hideKeyboard(etLocation);
@@ -212,9 +212,9 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
 
     @Override
     public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
-        RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
+        RefDetailEntity data = refData.billDetailList.get(0);
         manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
@@ -350,11 +350,14 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             return false;
         }
         //批次
-        if (isOpenBatchManager)
-            if (TextUtils.isEmpty(getString(etBatchFlag))) {
+        if (mHistoryDetailList != null) {
+            RefDetailEntity data = mHistoryDetailList.get(0);
+            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
+            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
                 showMessage("请先输入批次");
                 return false;
             }
+        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");

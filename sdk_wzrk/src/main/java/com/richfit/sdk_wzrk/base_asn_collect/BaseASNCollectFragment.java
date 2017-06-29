@@ -73,7 +73,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
 
     private InvAdapter mInvAdapter;
     private List<InvEntity> mInvs;
-    private List<RefDetailEntity> mCachedDetailList;
+    private List<RefDetailEntity> mHistoryDetailList;
     /*上架仓位列表适配器*/
     ArrayAdapter<String> mLocationAdapter;
     List<String> mLocationList;
@@ -234,7 +234,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         tvMaterialUnit.setText(data.unit);
         tvSpecialInvFlag.setText("K");
         etBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag : batchFlag);
-        mCachedDetailList = refData.billDetailList;
+        mHistoryDetailList = refData.billDetailList;
     }
 
     @Override
@@ -305,7 +305,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             return;
         }
 
-        if (mCachedDetailList == null) {
+        if (mHistoryDetailList == null) {
             showMessage("请先获取物料信息");
             return;
         }
@@ -313,7 +313,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         String locQuantity = "0";
         tvLocQuantity.setText(locQuantity);
 
-        for (RefDetailEntity detail : mCachedDetailList) {
+        for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
@@ -332,7 +332,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
 
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvLocQuantity, tvLocQuantity, etQuantity, etLocation,
-                etMaterialNum,etBatchFlag);
+                etMaterialNum, etBatchFlag);
         //库存地点，注意这里不清除数据
         if (spInv.getAdapter() != null) {
             spInv.setSelection(0);
@@ -375,12 +375,14 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             showMessage("请先输入物料条码");
             return false;
         }
-        //批次
-        if (isOpenBatchManager)
-            if (TextUtils.isEmpty(getString(etBatchFlag))) {
+        //批次.2017年06月28日增加在每一次保存数据的前，重新再次判断是否打开了批次管理
+        if (mHistoryDetailList != null) {
+            manageBatchFlagStatus(etBatchFlag, mHistoryDetailList.get(0).batchManagerStatus);
+            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
                 showMessage("请先输入批次");
                 return false;
             }
+        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");

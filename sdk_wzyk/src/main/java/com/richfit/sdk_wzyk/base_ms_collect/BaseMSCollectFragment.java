@@ -667,6 +667,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             return false;
         }
 
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        manageBatchFlagStatus(etSendBatchFlag, lineData.batchManagerStatus);
+
         //批次
         if (isOpenBatchManager && !isBatchValidate) {
             showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");

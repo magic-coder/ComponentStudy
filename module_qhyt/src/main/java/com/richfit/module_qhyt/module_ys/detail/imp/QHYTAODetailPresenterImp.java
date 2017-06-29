@@ -295,6 +295,4 @@ public class QHYTAODetailPresenterImp extends BaseDetailPresenterImp<IQHYTAODeta
         }
         return results;
     }
-
-
 }

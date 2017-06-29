@@ -36,7 +36,7 @@ public class QHYTDSXSDetailFFragment extends BaseDSDetailFragment<DSDetailPresen
     protected void submit2BarcodeSystem(String tranToSapFlag) {
         if (mAdapter != null && DSYDetailAdapter.class.isInstance(mAdapter)) {
             final DSYDetailAdapter adapter = (DSYDetailAdapter) mAdapter;
-            if (!adapter.isTransferValide()) {
+            if (!adapter.isTransferValid()) {
                 showMessage("您必须对所有的明细采集数据后，才能过账");
                 return;
             }

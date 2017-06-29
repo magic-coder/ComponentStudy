@@ -50,7 +50,7 @@ public class WelcomePresenterImp extends BasePresenter<WelcomeContract.View>
 
         // 青海已经上线，所有的模块功能不应该有增加，如果上线后有增加应该将其注释掉。
         // 这里利用标识目的就是Fragment页面的配置文件加载一次
-        if (Global.QINGHAI.equalsIgnoreCase(BuildConfig.APP_NAME)) {
+        if (Global.QHYT.equalsIgnoreCase(BuildConfig.APP_NAME)) {
             boolean initiatedFragmentConfig = (boolean) SPrefUtil.getData(Global.IS_INITED_FRAGMENT_CONFIG_KEY, false);
             if (initiatedFragmentConfig && mView != null) {
                 mView.loadFragmentConfigSuccess();
