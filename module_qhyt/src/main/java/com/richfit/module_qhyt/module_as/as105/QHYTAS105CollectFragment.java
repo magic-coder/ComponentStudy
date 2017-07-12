@@ -164,7 +164,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         etReturnQuantity.setText(lineData.returnQuantity);
         etMoveCauseDesc.setText(lineData.moveCauseDesc);
         etProjectText.setText(lineData.projectText);
-        tvInsLostQuantity.setText(lineData.insLotQuantity);
+        tvInsLotQuantity.setText(lineData.insLotQuantity);
         if (spStrategyCode.getAdapter() != null) {
             spStrategyCode.setSelection(1);
         }

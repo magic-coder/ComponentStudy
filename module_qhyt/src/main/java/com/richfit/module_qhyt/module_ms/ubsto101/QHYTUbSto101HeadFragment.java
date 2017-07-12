@@ -8,7 +8,7 @@ import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 
 /**
  * 青海移库转储101抬头界面(采购订单)。相当于UbSto101转储接收，业务与有参考入库，注意显示字段
- * Created by monday on 2017/2/15.
+ * Created by monday on 2017/2/15。
  */
 
 public class QHYTUbSto101HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {

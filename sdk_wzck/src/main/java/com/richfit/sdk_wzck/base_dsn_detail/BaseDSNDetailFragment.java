@@ -279,7 +279,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      *
      * @param transToSapFlag
      */
-    private void startTurnOwnSupplies(String transToSapFlag) {
+    protected void startTurnOwnSupplies(String transToSapFlag) {
         if (isEmpty(mTransId)) {
             showMessage("未获取到缓存,请先获取采集数据");
             return;

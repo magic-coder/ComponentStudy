@@ -3,6 +3,7 @@ package com.richfit.sdk_wzyk.base_ms_edit;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -41,12 +42,8 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     TextView tvMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
-    @BindView(R2.id.tv_send_batch_flag_name)
-    protected TextView tvSendBatchFlagName;
     @BindView(R2.id.tv_batch_flag)
     protected TextView tvBatchFlag;
-    @BindView(R2.id.tv_send_inv_name)
-    protected TextView tvSendInvName;
     @BindView(R2.id.tv_inv)
     protected TextView tvInv;
     @BindView(R2.id.tv_act_quantity)
@@ -61,6 +58,14 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     TextView tvLocQuantity;
     @BindView(R2.id.tv_total_quantity)
     protected TextView tvTotalQuantity;
+    @BindView(R2.id.tv_rec_location)
+    protected TextView tvRecLoc;
+    @BindView(R2.id.tv_rec_batch_flag)
+    protected TextView tvRecBatchFlag;
+    @BindView(R2.id.ll_rec_location)
+    protected LinearLayout llRecLocation;
+    @BindView(R2.id.ll_rec_batch)
+    protected LinearLayout llRecBatch;
 
     protected String mRefLineId;
     protected String mLocationId;
@@ -129,11 +134,14 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
+        final String recBatchFlag = bundle.getString(Global.EXTRA_REC_BATCH_FLAG_KEY);
+        final String recLocation = bundle.getString(Global.EXTRA_REC_LOCATION_KEY);
         mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
         mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mRefLineId = bundle.getString(Global.EXTRA_REF_LINE_ID_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
+
 
         if (mRefData != null) {
             /*单据数据中的库存地点不一定有，而且用户可以录入新的库存地点，所以只有子节点的库存地点才是正确的*/
@@ -148,6 +156,9 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             tvInv.setTag(invId);
             etQuantity.setText(mQuantity);
             tvTotalQuantity.setText(totalQuantity);
+            //接收批次和接收仓位
+            tvRecBatchFlag.setText(recBatchFlag);
+            tvRecLoc.setText(recLocation);
             //初始化库存地点
             if (spLocation.isEnabled())
                 loadInventoryInfo(lineData.workId, invId, lineData.workCode, invCode, lineData.materialId, "", batchFlag);
@@ -299,6 +310,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -309,8 +321,10 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             result.userId = Global.USER_ID;
             result.refLineId = lineData.refLineId;
             result.workId = lineData.workId;
-            result.locationId = mLocationId;
             result.invId = CommonUtil.Obj2String(tvInv.getTag());
+            result.recWorkId = lineData.recWorkId;
+            result.recInvId = lineData.recInvId;
+            result.locationId = mLocationId;
             result.materialId = lineData.materialId;
             int locationPos = spLocation.getSelectedItemPosition();
             result.location = mInventoryDatas.get(locationPos).location;
@@ -323,6 +337,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
             result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
             result.modifyFlag = "Y";
+            result.invType = param.invType;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())

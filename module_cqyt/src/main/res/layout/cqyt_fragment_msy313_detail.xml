@@ -12,7 +12,7 @@
 
         <include
             android:id="@id/root_id"
-            layout="@layout/cqyt_item_msy313_detail_parent_header" />
+            layout="@layout/cqyt_item_msy313_detail_parent_head" />
 
         <com.richfit.common_lib.widget.AutoSwipeRefreshLayout
             android:id="@+id/base_detail_swipe_refresh_layout"

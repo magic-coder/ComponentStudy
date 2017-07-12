@@ -196,7 +196,6 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
-
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
                     activity.startActivity(intent);
@@ -209,7 +208,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
     public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId),
+        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                 .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
@@ -370,6 +369,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 childNode.transId = location.transId;
                 childNode.transLineId = location.transLineId;
                 childNode.locationId = location.id;
+                childNode.quantityCustom = location.quantityCustom;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

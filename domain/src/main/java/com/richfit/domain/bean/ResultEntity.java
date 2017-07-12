@@ -1,5 +1,7 @@
 package com.richfit.domain.bean;
 
+import java.util.HashMap;
+
 /**
  * Created by monday on 2016/9/22.
  */
@@ -153,4 +155,11 @@ public class ResultEntity extends TreeNode{
     public String partQuantity;
     public String inspectionStatus;
     public String processResult;
+    public String quantityCustom;
+    public HashMap<String, Object> mapIns;
+    public String unqualifiedQuantity;
+    public String deliveryOrder;
+    public String zzzdy9;
+    public String zzzxlb;
+    public String zzzxnr;
 }

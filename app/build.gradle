@@ -105,8 +105,8 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"QHYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qhyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
-            versionCode 1
-            versionName "1.0"
+            versionCode 2
+            versionName "1.1"
             signingConfig signingConfigs.sign_qhyt
         }
 
@@ -121,7 +121,7 @@ android {
         }
 
         cqyt {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8087/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:9087/ktbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
@@ -173,7 +173,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 
-//   compile project(':module_qhyt')
+//  compile project(':module_qhyt')
 //    compile project(':module_xngd')
     compile project(':module_cqyt')
 }

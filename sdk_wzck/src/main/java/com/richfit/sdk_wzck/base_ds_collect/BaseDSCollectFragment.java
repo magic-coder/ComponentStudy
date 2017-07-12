@@ -54,7 +54,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.sp_ref_line_num)
     Spinner spRefLine;
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_work)
@@ -64,11 +64,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.tv_act_quantity)
     protected TextView tvActQuantity;
     @BindView(R2.id.et_batch_flag)
-    EditText etBatchFlag;
+    protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected  Spinner spInv;
     @BindView(R2.id.sp_location)
-    Spinner spLocation;
+    protected  Spinner spLocation;
     @BindView(R2.id.tv_inv_quantity)
     protected TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
@@ -87,10 +87,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     private List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
     /*库存地点*/
-    private List<InvEntity> mInvDatas;
+    protected List<InvEntity> mInvDatas;
     private InvAdapter mInvAdapter;
     /*库存信息*/
-    private List<InventoryEntity> mInventoryDatas;
+    protected List<InventoryEntity> mInventoryDatas;
     private LocationAdapter mLocationAdapter;
     /*当前操作的明细行号*/
     protected String mSelectedRefLineNum;
@@ -663,7 +663,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void saveCollectedData() {
-
         if (!checkCollectedDataBeforeSave()) {
             return;
         }

@@ -24,7 +24,7 @@ public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPre
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int viewType) {
         switch (viewType) {
-            //隐藏子节点的发出批次和发出仓位
+            //隐藏子节点的接收仓位和接收批次
             case Global.CHILD_NODE_HEADER_TYPE:
             case Global.CHILD_NODE_ITEM_TYPE:
                 viewHolder.setVisible(R.id.recLocation, false)
@@ -35,7 +35,6 @@ public class QHYTUbSto351DetailFragment extends BaseMSDetailFragment<MSDetailPre
 
     @Override
     public void initEvent() {
-
     }
 
     @Override

@@ -139,6 +139,7 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
         }
     }
 
+
     /**
      * 为父节点增加节点的信息,以便方便树形显示
      */
@@ -151,7 +152,7 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
      * 为子节点增加树形结构的信息（主要是增加子节点的父节点id）
      */
     protected void addTreeInfo(RefDetailEntity parentNode, RefDetailEntity childNode,
-                               ArrayList<RefDetailEntity> collectedList) {
+                               List<RefDetailEntity> collectedList) {
         if (parentNode == null || childNode == null)
             return;
         //处理子节点

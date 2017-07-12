@@ -32,17 +32,17 @@
   {
     "id": "4",
     "tabTitle": "数据明细",
-    "fragmentTag": "qhyt_as103_detail_fragment_tag",
+    "fragmentTag": "cqyt_as103_detail_fragment_tag",
     "bizType": "12",
     "refType": "0",
     "mode": 0,
     "fragmentType": 1,
-    "className": "com.richfit.module_qhyt.module_as.as103.QHYTAS103DetailFragment"
+    "className": "com.richfit.module_cqyt.module_as.CQYTAS103DetailFragment"
   },
   {
     "id": "5",
     "tabTitle": "数据采集",
-    "fragmentTag": "qhyt_as103_collct_fragment_tag",
+    "fragmentTag": "cqyt_as103_collct_fragment_tag",
     "bizType": "12",
     "refType": "0",
     "mode": 0,
@@ -52,17 +52,17 @@
   {
     "id": "6",
     "tabTitle": "数据修改",
-    "fragmentTag": "qhyt_as103_edit_fragment_tag",
+    "fragmentTag": "cqyt_as103_edit_fragment_tag",
     "bizType": "12",
     "refType": "0",
     "mode": 0,
     "fragmentType": -1,
-    "className": "com.richfit.module_qhyt.module_as.as103.QHYTAS103EditFragment"
+    "className": "com.richfit.module_cqyt.module_as.CQYTAS103EditFragment"
   },
   {
     "id": "7",
     "tabTitle": "抬头",
-    "fragmentTag": "qhyt_y313_head_fragment_tag",
+    "fragmentTag": "cqyt_msy313_head_fragment_tag",
     "bizType": "37",
     "refType": "10",
     "mode": 0,
@@ -72,12 +72,252 @@
   {
     "id": "8",
     "tabTitle": "数据明细",
-    "fragmentTag": "qhyt_y313_detail_fragment_tag",
+    "fragmentTag": "cqyt_msy313_detail_fragment_tag",
     "bizType": "37",
     "refType": "10",
     "mode": 0,
     "fragmentType": 1,
     "className": "com.richfit.module_cqyt.module_ms.y313.CQYTMSY313DetailFragment"
+  },
+  {
+    "id": "9",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_msy313_collect_fragment_tag",
+    "bizType": "37",
+    "refType": "10",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_ms.y313.CQYTMSY313CollectFragment"
+  },
+  {
+    "id": "10",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_msy313_edit_fragment_tag",
+    "bizType": "37",
+    "refType": "10",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment"
+  },
+  {
+    "id": "11",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_msy315_head_fragment_tag",
+    "bizType": "310",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_ms.y315.CQYTMSY315HeadFragment"
+  },
+  {
+    "id": "12",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_msy315_detail_fragment_tag",
+    "bizType": "310",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_ms.y315.CQYTMSY315DetailFragment"
+  },
+  {
+    "id": "13",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_msy315_collect_fragment_tag",
+    "bizType": "310",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_ms.y315.CQYTMSY315CollectFragment"
+  },
+  {
+    "id": "14",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_msy315_edit_fragment_tag",
+    "bizType": "310",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_ms.y315.CQYTMSY315EditFragment"
+  },
+  {
+    "id": "15",
+    "tabTitle": "凭证查询",
+    "fragmentTag": "cqyt_vs_fragment_tag",
+    "bizType": "C1",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_vs.CQYTVSFragment"
+  },
+  {
+    "id": "16",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_xj_head_fragment_tag",
+    "bizType": "D1",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_xj.head.CQYTXJHeadFragment"
+  },
+  {
+    "id": "17",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_xj_collect_fragment_tag",
+    "bizType": "D1",
+    "refType": "9",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_xj.collect.CQYTXJCollectFragment"
+  },
+  {
+    "id": "18",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_ubsto_head_fragment_tag",
+    "bizType": "312",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_ms.ubsto.CQYTUbstoHeadFragment"
+  },
+  {
+    "id": "19",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_ubsto_detail_fragment_tag",
+    "bizType": "312",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_ms.ubsto.CQYTUbstoDetailFragment"
+  },
+  {
+    "id": "20",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_msy315_collect_fragment_tag",
+    "bizType": "312",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_ms.ubsto.CQYTUbstoCollectFragment"
+  },
+  {
+    "id": "21",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_ubsto_edit_fragment_tag",
+    "bizType": "312",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_ms.ubsto.CQYTUbstoEditFragment"
+  },
+  {
+    "id": "22",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_ao_head_fragment_tag",
+    "bizType": "110",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_ys.CQYTAOHeadFragment"
+  },
+  {
+    "id": "23",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_ao_detail_fragment_tag",
+    "bizType": "110",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_ys.CQYTAODetailFragment"
+  },
+  {
+    "id": "24",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_ao_collect_fragment_tag",
+    "bizType": "110",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_cqyt.module_ys.CQYTAOCollectFragment"
+  },
+  {
+    "id": "25",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_ao_edit_fragment_tag",
+    "bizType": "110",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_ys.CQYTAOEditFragment"
+  },
+  {
+    "id": "26",
+    "tabTitle": "物资条码信息查询",
+    "fragmentTag": "cqyt_material_info_qeury_fragment_tag",
+    "bizType": "1000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_xxcx.material_infoquery.MaterialInfoQueryFragment"
+  },
+  {
+    "id": "27",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_lq_qeury_head_fragment_tag",
+    "bizType": "2000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_xxcx.material_liaoqian.head.LQHeadFragment"
+  },
+  {
+    "id": "28",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_lq_qeury_detail_fragment_tag",
+    "bizType": "2000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_xxcx.material_liaoqian.detail.LQDetailFragment"
+  },
+  {
+    "id": "29",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_cn_header_fragment_tag",
+    "bizType": "C01",
+    "mode": 0,
+    "refType": "0",
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_wzpd.checkn.head.CNHeadFragment"
+  },
+  {
+    "id": "30",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_cn_detail_fragment_tag",
+    "bizType": "C01",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_pd.CQYTCNDetailFragment"
+  },
+  {
+    "id": "31",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_cn_collect_fragment_tag",
+    "bizType": "C01",
+    "mode": 0,
+    "refType": "0",
+    "fragmentType": 2,
+    "className": "com.richfit.sdk_wzpd.checkn.collect.CNCollectFragment"
+  },
+  {
+    "id": "32",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_cn_edit_fragment_tag",
+    "bizType": "C01",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.sdk_wzpd.checkn.edit.CNEditFragment"
   }
 
 ]

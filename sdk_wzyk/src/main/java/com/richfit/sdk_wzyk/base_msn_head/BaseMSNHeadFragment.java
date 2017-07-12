@@ -214,81 +214,49 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
             sp.setSelection(pos);
             lockUIUnderEditState(sp);
         }
-//        Flowable.just(works)
-//                .map(list -> {
-//                    int pos = -1;
-//                    for (WorkEntity item : list) {
-//                        ++pos;
-//                        if (workId.equalsIgnoreCase(item.workId))
-//                            return pos;
-//                    }
-//                    return pos;
-//                })
-//                .filter(pos -> pos.intValue() >= 0 && pos.intValue() < works.size())
-//                .compose(TransformerHelper.io2main())
-//                .subscribe(pos -> sp.setSelection(pos.intValue()), e -> Log.d("yff", e.getMessage()), () -> lockUIUnderEditState(sp));
     }
 
     @Override
     public void _onPause() {
-        if (checkData()) {
-            if (mRefData == null)
-                mRefData = new ReferenceEntity();
+        if (mRefData == null)
+            mRefData = new ReferenceEntity();
 
-            //发出工厂(工厂)
-            if (mSendWorks != null && mSendWorks.size() > 0 && spSendWork.getAdapter() != null) {
-                final int position = spSendWork.getSelectedItemPosition();
-                mRefData.workCode = mSendWorks.get(position).workCode;
-                mRefData.workName = mSendWorks.get(position).workName;
-                mRefData.workId = mSendWorks.get(position).workId;
-            }
+        //过账日期
+        mRefData.voucherDate = getString(etTransferDate);
+        mRefData.bizType = mBizType;
+        mRefData.moveType = getMoveType();
 
-            //发出库位
-            if (mSendInvs != null && mSendInvs.size() > 0 && spSendInv.getAdapter() != null) {
-                final int position = spSendInv.getSelectedItemPosition();
-                mRefData.invCode = mSendInvs.get(position).invCode;
-                mRefData.invName = mSendInvs.get(position).invName;
-                mRefData.invId = mSendInvs.get(position).invId;
-            }
-
-            //接收工厂
-            if (mRecWorks != null && mRecWorks.size() > 0 && spRecWork.getAdapter() != null) {
-                final int position = spRecWork.getSelectedItemPosition();
-                mRefData.recWorkName = mRecWorks.get(position).workName;
-                mRefData.recWorkCode = mRecWorks.get(position).workCode;
-                mRefData.recWorkId = mRecWorks.get(position).workId;
-            }
-
-            //接收库位
-            if (mRecInvs != null && mRecInvs.size() > 0 && spRecInv.getAdapter() != null) {
-                final int position = spRecInv.getSelectedItemPosition();
-                mRefData.recInvCode = mRecInvs.get(position).invCode;
-                mRefData.recInvName = mRecInvs.get(position).invName;
-                mRefData.recInvId = mRecInvs.get(position).invId;
-            }
-            //过账日期
-            mRefData.voucherDate = getString(etTransferDate);
-
-            mRefData.bizType = mBizType;
-            mRefData.moveType = getMoveType();
-        } else {
-            mRefData = null;
+        //发出工厂(工厂)
+        if (mSendWorks != null && mSendWorks.size() > 0 && spSendWork != null && spSendWork.getAdapter() != null) {
+            final int position = spSendWork.getSelectedItemPosition();
+            mRefData.workCode = mSendWorks.get(position).workCode;
+            mRefData.workName = mSendWorks.get(position).workName;
+            mRefData.workId = mSendWorks.get(position).workId;
         }
-    }
 
-    protected boolean checkData() {
-        //检查是否填写了必要的字段
-        if (spSendWork != null && spSendWork.getSelectedItemPosition() <= 0)
-            return false;
-        if (spSendInv != null && spSendInv.getSelectedItemPosition() <= 0) {
-            return false;
+        //发出库位
+        if (mSendInvs != null && mSendInvs.size() > 0 && spSendInv != null && spSendInv.getAdapter() != null) {
+            final int position = spSendInv.getSelectedItemPosition();
+            mRefData.invCode = mSendInvs.get(position).invCode;
+            mRefData.invName = mSendInvs.get(position).invName;
+            mRefData.invId = mSendInvs.get(position).invId;
         }
-        if (spRecWork != null && spRecWork.getSelectedItemPosition() <= 0)
-            return false;
 
-        if (spRecInv != null && spRecInv.getSelectedItemPosition() <= 0)
-            return false;
-        return true;
+        //接收工厂
+        if (mRecWorks != null && mRecWorks.size() > 0 && spRecWork != null && spRecWork.getAdapter() != null) {
+            final int position = spRecWork.getSelectedItemPosition();
+            mRefData.recWorkName = mRecWorks.get(position).workName;
+            mRefData.recWorkCode = mRecWorks.get(position).workCode;
+            mRefData.recWorkId = mRecWorks.get(position).workId;
+        }
+
+        //接收库位
+        if (mRecInvs != null && mRecInvs.size() > 0 && spRecInv != null && spRecInv.getAdapter() != null) {
+            final int position = spRecInv.getSelectedItemPosition();
+            mRefData.recInvCode = mRecInvs.get(position).invCode;
+            mRefData.recInvName = mRecInvs.get(position).invName;
+            mRefData.recInvId = mRecInvs.get(position).invId;
+        }
     }
 
     @Override

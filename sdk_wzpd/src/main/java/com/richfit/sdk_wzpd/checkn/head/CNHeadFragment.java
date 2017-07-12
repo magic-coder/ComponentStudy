@@ -326,11 +326,22 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
         mRefData = null;
         if (rbStorageNumLevel.isChecked()) {
             //库位级盘点
+            if (mStorageNums == null || mStorageNums.size() <= 0) {
+                showMessage("仓库号未初始化");
+                return;
+            }
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "01",
                     mSpecialFlag, mStorageNums.get(spStorageNum.getSelectedItemPosition()),
                     "", "", getString(etTransferDate));
         } else if (rbWarehouseLevel.isChecked()) {
             //库存级
+            if (mWorkDatas == null || mWorkDatas.size() == 0) {
+                showMessage("工厂未初始化");
+                return;
+            }
+            if (mInvDatas == null || mInvDatas.size() == 0) {
+                showMessage("困地点未初始化");
+            }
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "02",
                     mSpecialFlag, "",
                     mWorkDatas.get(spWork.getSelectedItemPosition()).workId,

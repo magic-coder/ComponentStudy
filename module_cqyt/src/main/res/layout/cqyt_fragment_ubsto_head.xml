@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@id/tmp"
+        layout="@layout/wzck_fragment_base_dsy_header"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/collect_row_padding">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/send_work" />
+
+        <TextView
+            android:id="@id/tv_send_work"
+            style="@style/RightTextViewItemStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/cqyt_shop_condition" />
+
+        <Spinner
+            android:id="@id/cqyt_sp_shop_condition"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/spinner_min_height"
+            android:layout_weight="2" />
+    </LinearLayout>
+
+</LinearLayout>

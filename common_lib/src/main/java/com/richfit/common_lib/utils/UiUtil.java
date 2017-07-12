@@ -31,7 +31,8 @@ import java.util.List;
  */
 public class UiUtil {
 
-    private UiUtil(){}
+    private UiUtil() {
+    }
 
     public static int getToolbarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
@@ -86,7 +87,7 @@ public class UiUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void configureFab (View fabButton) {
+    public static void configureFab(View fabButton) {
         int fabSize = fabButton.getContext().getResources()
                 .getDimensionPixelSize(R.dimen.fab_size);
         Outline fabOutLine = new Outline();
@@ -105,7 +106,7 @@ public class UiUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void hideRevealEffect (final View v, int centerX, int centerY, int initialRadius) {
+    public static void hideRevealEffect(final View v, int centerX, int centerY, int initialRadius) {
         v.setVisibility(View.VISIBLE);
         // create the animation (the final radius is zero)
         Animator anim = ViewAnimationUtils.createCircularReveal(
@@ -134,7 +135,6 @@ public class UiUtil {
     }
 
 
-
     public static void hideViewByScale(View view) {
         ViewPropertyAnimator propertyAnimator = view.animate().setStartDelay(SCALE_FACTOR)
                 .scaleX(0).scaleY(0);
@@ -148,7 +148,6 @@ public class UiUtil {
 
         propertyAnimator.start();
     }
-
 
 
     public static int lighterColor(int color, float factor) {
@@ -218,16 +217,14 @@ public class UiUtil {
         int position = -1;
         if (TextUtils.isEmpty(keyWord))
             return;
-        if (dataSet == null)
+        if (dataSet == null || dataSet.size() == 0)
             return;
         if (sp.getAdapter() == null)
             return;
-        if (dataSet != null) {
-            for (String item : dataSet) {
-                position++;
-                if (item.equalsIgnoreCase(keyWord)) {
-                    break;
-                }
+        for (String item : dataSet) {
+            position++;
+            if (keyWord.equals(item)) {
+                break;
             }
         }
         sp.setSelection(position == -1 ? 0 : position);

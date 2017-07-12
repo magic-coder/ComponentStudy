@@ -46,31 +46,31 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         implements IDSNCollectView {
 
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
     @BindView(R2.id.et_batch_flag)
-    EditText etBatchFlag;
+    protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected Spinner spInv;
     @BindView(R2.id.sp_location)
-    Spinner spLocation;
+    protected Spinner spLocation;
     @BindView(R2.id.tv_inv_quantity)
     TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
-    EditText etQuantity;
+    protected EditText etQuantity;
     @BindView(R2.id.cb_single)
     CheckBox cbSingle;
 
     /*库存地点*/
     InvAdapter mInvAdapter;
-    List<InvEntity> mInvs;
+    protected List<InvEntity> mInvs;
     /*下架仓位*/
-    List<InventoryEntity> mInventoryDatas;
+    protected List<InventoryEntity> mInventoryDatas;
     LocationAdapter mLocAdapter;
     /*缓存的历史仓位数量*/
     List<RefDetailEntity> mHistoryDetailList;

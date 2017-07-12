@@ -70,7 +70,7 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<String> uploadCollectionData(String refCodeId, String transId, String bizType, String refType,
                                           int inspectionType, String voucherDate,
-                                          String remark, String userId);
+                                          String remark, String userId,Map<String, Object> extraHeaderMap);
 
     Flowable<String> transferCollectionData(ResultEntity result);
 

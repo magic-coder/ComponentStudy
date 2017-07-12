@@ -53,7 +53,7 @@
         android:background="@drawable/detail_child_node_bg">
 
         <include
-            layout="@layout/cqyt_item_msy313_detail_child_header"/>
+            layout="@layout/cqyt_item_msy313_detail_child_head"/>
 
     </LinearLayout>
 </com.richfit.common_lib.widget.SwipeLayout>

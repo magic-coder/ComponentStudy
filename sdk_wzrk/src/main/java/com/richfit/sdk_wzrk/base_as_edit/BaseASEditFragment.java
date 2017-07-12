@@ -41,8 +41,8 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
     protected TextView tvInv;
-    @BindView(R2.id.tv_act_rec_quantity)
-    TextView tvActRecQuantity;
+    @BindView(R2.id.tv_act_quantity)
+    TextView tvActQuantity;
     @BindView(R2.id.act_quantity_name)
     protected TextView actQuantityName;
     @BindView(R2.id.quantity_name)
@@ -107,7 +107,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             tvRefLineNum.setText(lineData.lineNum);
             tvMaterialNum.setText(lineData.materialNum);
             tvMaterialDesc.setText(lineData.materialDesc);
-            tvActRecQuantity.setText(lineData.actQuantity);
+            tvActQuantity.setText(lineData.actQuantity);
             tvBatchFlag.setText(batchFlag);
             tvInv.setText(invCode);
             tvInv.setTag(invId);
@@ -160,7 +160,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             return false;
         }
 
-        float actQuantityV = CommonUtil.convertToFloat(getString(tvActRecQuantity), 0.0f);
+        float actQuantityV = CommonUtil.convertToFloat(getString(tvActQuantity), 0.0f);
         float totalQuantityV = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
         float collectedQuantity = CommonUtil.convertToFloat(mQuantity, 0.0f);
         float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
@@ -200,6 +200,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             result.invId = CommonUtil.Obj2String(tvInv.getTag());
             result.locationId = mLocationId;
             result.materialId = lineData.materialId;
+            result.locationId = mLocationId;
             result.location = isNLocation ? "BARCODE" : getString(etLocation);
             result.batchFlag = getString(tvBatchFlag);
             result.quantity = getString(etQuantity);

@@ -14,13 +14,14 @@ public class CQYTMSY313ParentHeaderItemDelegate extends MSYParentHeaderItemDeleg
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_msy313_detail_parent_header;
+        return R.layout.cqyt_item_msy313_detail_parent_head;
     }
 
 
     @Override
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
         super.convert(holder, item, position);
-        holder.setText(R.id.cqyt_total_quantity_custom,item.totalQuantityCustom);
+        //累计件数
+        holder.setText(R.id.cqyt_tv_total_quantity_custom, item.totalQuantityCustom);
     }
 }

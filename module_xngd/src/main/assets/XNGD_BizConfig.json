@@ -352,7 +352,7 @@
   {
     "id": "36",
     "tabTitle": "抬头",
-    "fragmentTag": "xngd_lq_qeury_head_fragment_tag",
+    "fragmentTag": "cqyt_lq_qeury_head_fragment_tag",
     "bizType": "2000",
     "refType": "0",
     "mode": 0,
@@ -362,12 +362,12 @@
   {
     "id": "37",
     "tabTitle": "数据明细",
-    "fragmentTag": "xngd_lq_qeury_detail_fragment_tag",
+    "fragmentTag": "cqyt_lq_qeury_detail_fragment_tag",
     "bizType": "2000",
     "refType": "0",
     "mode": 0,
     "fragmentType": 0,
-    "className": "com.richfit.module_xngd.module_xxcx.XNGDLQDetailFragment"
+    "className": "com.richfit.sdk_xxcx.material_liaoqian.detail.LQDetailFragment"
   }
 
 

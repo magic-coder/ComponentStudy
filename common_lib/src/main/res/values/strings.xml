@@ -183,6 +183,7 @@
     <string name="arrival_quantity">到货数量</string>
     <string name="gz_quantity">过账数量</string>
     <string name="enable_gz_quantity">允许过账数量</string>
+    <string name="total_gz_quantity">累计过账数量</string>
     <string name="has_located">已上架</string>
     <string name="take_photo">拍照</string>
 

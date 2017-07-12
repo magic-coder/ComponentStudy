@@ -39,6 +39,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
 
     /**
      * 注意这里无参考获取整单缓存，refData单据数据为null
+     *
      * @param refData：抬头界面获取的单据数据
      * @param refCodeId：单据id
      * @param bizType:业务类型
@@ -49,7 +50,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
      * @param recInvId
      */
     @Override
-    public void getTransferInfo(ReferenceEntity refData,String refCodeId, String bizType, String refType, String userId, String workId,
+    public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
                                 String invId, String recWorkId, String recInvId) {
         mView = getView();
         ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
@@ -126,7 +127,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,
                          ReferenceEntity refData, RefDetailEntity node,
-                         String companyCode, String bizType, String refType, String subFunName,int position) {
+                         String companyCode, String bizType, String refType, String subFunName, int position) {
         Intent intent = new Intent(mContext, EditActivity.class);
         Bundle bundle = new Bundle();
 
@@ -166,13 +167,13 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
     }
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
-                                        String transToSapFlag, Map<String, Object> extraHeaderMap) {
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
+                                         String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
         RxSubscriber<String> subscriber =
-                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", "")
-                        .doOnError(e-> SPrefUtil.saveData(bizType,"0"))
-                        .doOnComplete(()->SPrefUtil.saveData(bizType,"1"))
+                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", "", extraHeaderMap)
+                        .doOnError(e -> SPrefUtil.saveData(bizType, "0"))
+                        .doOnComplete(() -> SPrefUtil.saveData(bizType, "1"))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext, "正在过账数据...") {
                             @Override
@@ -219,7 +220,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
         mView = getView();
         RxSubscriber<String> subscriber = mRepository.transferCollectionData(transId, bizType, refType,
                 userId, voucherDate, transToSapFlag, extraHeaderMap)
-                .doOnComplete(()->SPrefUtil.saveData(bizType,"0"))
+                .doOnComplete(() -> SPrefUtil.saveData(bizType, "0"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
                     @Override

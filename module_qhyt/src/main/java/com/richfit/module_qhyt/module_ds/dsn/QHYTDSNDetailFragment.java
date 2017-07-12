@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.richfit.common_lib.utils.SPrefUtil;
+import com.richfit.data.constant.Global;
+import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzck.base_dsn_detail.BaseDSNDetailFragment;
 import com.richfit.sdk_wzck.base_dsn_detail.imp.DSNDetailPresenterImp;
 
@@ -49,5 +52,26 @@ public class QHYTDSNDetailFragment extends BaseDSNDetailFragment<DSNDetailPresen
             return;
         }
         super.initDataLazily();
+    }
+
+    protected void submit2BarcodeSystem(String tranToSapFlag) {
+        //如果需要寄售转自有但是没有成功过，都需要用户需要再次寄售转自有
+        if (isNeedTurn && !isTurnSuccess) {
+            startTurnOwnSupplies("07");
+            return;
+        }
+        String transferFlag = (String) SPrefUtil.getData(mBizType, "0");
+        if ("1".equals(transferFlag)) {
+            showMessage(getString(R.string.msg_detail_off_location));
+            return;
+        }
+        mExtraTansMap.clear();
+        mExtraTansMap.put("costCenter", mRefData.costCenter);
+        mExtraTansMap.put("projectNum", mRefData.projectNum);
+        mExtraTansMap.put("zzzdy9",mRefData.zzzdy9);
+        mExtraTansMap.put("zzzxlb",mRefData.zzzxlb);
+        mExtraTansMap.put("zzzxnr",mRefData.zzzxnr);
+        mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+                mRefData.voucherDate, tranToSapFlag, mExtraTansMap);
     }
 }

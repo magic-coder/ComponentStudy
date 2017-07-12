@@ -45,6 +45,8 @@ public class Global {
     public static final String DGYK = "115";
     //上下架处理
     public static final String SXCL = "116";
+    public static final String VSCX = "117";
+    public static final String KFXJ = "118";
 
     //用户选择的模式
     public static final int ONLINE_MODE = 0x0;

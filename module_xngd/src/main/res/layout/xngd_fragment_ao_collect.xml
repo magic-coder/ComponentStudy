@@ -110,7 +110,7 @@
                 android:text="@string/insLot_quantity" />
 
             <TextView
-                android:id="@id/tv_insLost_quantity"
+                android:id="@id/tv_insLot_quantity"
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 

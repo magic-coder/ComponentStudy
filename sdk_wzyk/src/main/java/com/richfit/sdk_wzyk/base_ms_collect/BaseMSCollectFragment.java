@@ -92,7 +92,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected List<InvEntity> mInvDatas;
     private InvAdapter mInvAdapter;
     /*库存信息*/
-    private List<InventoryEntity> mInventoryDatas;
+    protected List<InventoryEntity> mInventoryDatas;
     private LocationAdapter mLocationAdapter;
     /*当前操作的明细行号*/
     protected String mSelectedRefLineNum;
@@ -555,7 +555,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvSendWork, tvActQuantity, tvLocQuantity,
-                etQuantity, tvLocQuantity, tvInvQuantity, tvTotalQuantity, cbSingle, etMaterialNum, etSendBatchFlag);
+                etQuantity, tvLocQuantity, tvInvQuantity, tvTotalQuantity, cbSingle, etMaterialNum, etSendBatchFlag,
+                etRecBatchFlag,etRecLoc);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -707,8 +708,13 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             result.moveType = mRefData.moveType;
             result.userId = Global.USER_ID;
             result.refLineId = lineData.refLineId;
+            //发出工厂和库存地点
             result.workId = lineData.workId;
             result.invId = mInvDatas.get(spSendInv.getSelectedItemPosition()).invId;
+            //接收工厂和接收地点
+            result.recWorkId = lineData.recWorkId;
+            result.recInvId = lineData.recInvId;
+
             result.materialId = lineData.materialId;
             result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));

@@ -42,9 +42,9 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_batch_flag)
-    TextView tvBatchFlag;
+    protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
-    TextView tvInv;
+    protected TextView tvInv;
     @BindView(R2.id.tv_act_delivery_quantity)
     protected TextView tvActQuantity;
     @BindView(R2.id.et_quantity)

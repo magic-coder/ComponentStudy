@@ -204,8 +204,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
     @Override
     public Flowable<String> uploadCollectionData(String refCodeId, String transId, String bizType,
                                                  String refType, int inspectionType, String voucherDate,
-                                                 String remark, String userId) {
-        return mServerRepository.uploadCollectionData(refCodeId, transId, bizType, refType, inspectionType, voucherDate, remark, userId);
+                                                 String remark, String userId, Map<String, Object> extraHeaderMap) {
+        return mServerRepository.uploadCollectionData(refCodeId, transId, bizType, refType, inspectionType,
+                voucherDate, remark, userId, extraHeaderMap);
     }
 
     @Override

@@ -191,10 +191,10 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
     }
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId),
+        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                 .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
@@ -404,6 +404,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 childNode.specialInvNum = location.specialInvNum;
                 childNode.specialConvert = location.specialConvert;
                 childNode.locationCombine = location.locationCombine;
+                childNode.quantityCustom = location.quantityCustom;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

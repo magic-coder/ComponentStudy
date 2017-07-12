@@ -196,8 +196,6 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
             mRefData.workId = mWorks.get(position).workId;
             mRefData.workCode = mWorks.get(position).workCode;
             mRefData.workName = mWorks.get(position).workName;
-            mRefData.projectNum = getString(etAutoComp).split("_")[0];
-            mRefData.costCenter = getString(etAutoComp).split("_")[0];
             mRefData.bizType = mBizType;
             mRefData.voucherDate = getString(etTransferDate);
         }

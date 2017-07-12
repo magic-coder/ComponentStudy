@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/root_id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+   <include
+       android:id="@id/tmp"
+       layout="@layout/wzrk_fragment_base_asy_head"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/collect_row_padding">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/cqyt_delivery_order" />
+
+        <EditText
+            android:id="@id/cqyt_et_delivery_order"
+            style="@style/RightEditTextItemStyle" />
+
+    </LinearLayout>
+
+</LinearLayout>

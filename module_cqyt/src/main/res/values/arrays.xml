@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="cqyt_xj_types">
+        <item>班前检查</item>
+        <item>班后检查</item>
+    </array>
+
+
+    <array name="cqyt_xj_list1">
+        <item>有</item>
+        <item>无</item>
+    </array>
+
+    <array name="cqyt_xj_list2">
+        <item>是</item>
+        <item>否</item>
+    </array>
+
+    <array name="cqyt_inspection_results">
+        <item>合格</item>
+        <item>不合格</item>
+    </array>
+
+
+    <array name="cqyt_shop_conditions">
+        <item>自提</item>
+        <item>配送</item>
+    </array>
+
+</resources>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@id/root_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/len_40"
+            android:layout_marginBottom="@dimen/len_10"
+            android:layout_marginLeft="@dimen/len_52"
+            android:layout_marginRight="@dimen/len_52"
+            android:layout_marginTop="@dimen/len_10"
+            android:background="@drawable/wzpd_top_tab_bg"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@id/cqyt_rb_ins_before"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/wzpd_selector_top_tab_leftrb"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:text="班前检查" />
+
+            <RadioButton
+                android:id="@id/cqyt_rb_ins_after"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/wzpd_selector_top_tab_rightrb"
+                android:button="@null"
+                android:gravity="center"
+                android:text="班后检查" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_xj_date" />
+
+            <com.richfit.common_lib.widget.RichEditText
+                android:id="@id/cqyt_et_xj_date"
+                style="@style/RightRichEditTextItemStyle"
+                android:drawableRight="@mipmap/icon_find"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_xj_person" />
+
+            <TextView
+                android:id="@id/cqyt_tv_xj_person"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@id/cqyt_ll_xj_ins_before"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_door" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_door"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_material" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_material"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_equipe" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_equipe"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_location" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_location"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_safe" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_safe"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@id/cqyt_ll_xj_ins_after"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_document" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_document"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_office" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_office"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_exception" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_exception"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_power" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_power"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/LeftTextViewItemStyle"
+                        android:text="@string/cqyt_xj_ins_lock" />
+
+                    <Spinner
+                        android:id="@id/cqyt_sp_ins_lock"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/spinner_min_height"
+                        android:layout_weight="2" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/remark" />
+
+            <EditText
+                android:id="@id/et_remark"
+                style="@style/RightEditTextItemStyle" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

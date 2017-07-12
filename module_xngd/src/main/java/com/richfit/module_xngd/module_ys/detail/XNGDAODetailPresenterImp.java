@@ -42,7 +42,7 @@ public class XNGDAODetailPresenterImp extends ASDetailPresenterImp
         mView = getView();
 
         RxSubscriber<String> subscriber = Flowable.concat(uploadInspectedImages(refNum, refCodeId, transId, userId, "01", isLocal),
-                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId))
+                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap))
                 .doOnComplete(() -> mRepository.deleteInspectionImages(refNum, refCodeId, isLocal))
                 .doOnComplete(() -> FileUtil.deleteDir(FileUtil.getImageCacheDir(mContext.getApplicationContext(), refNum, false)))
                 .compose(TransformerHelper.io2main())

@@ -128,11 +128,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
@@ -198,11 +198,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
@@ -242,6 +242,40 @@
             <TextView
                 android:id="@id/tv_total_quantity"
                 style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_rec_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_loc" />
+
+            <TextView
+                android:id="@id/tv_rec_location"
+                style="@style/RightEditTextItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_rec_batch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_batch_flag" />
+
+            <TextView
+                android:id="@id/tv_rec_batch_flag"
+                style="@style/RightEditTextItemStyle" />
         </LinearLayout>
     </LinearLayout>
 

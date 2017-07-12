@@ -797,7 +797,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      */
     @Override
     public ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        Log.d("yff","workCode = " + workCode);
+        Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
             return list;
@@ -828,7 +828,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                         .append(defaultItemNum);
             }
 
-            Log.d("yff","查询sql = " + sb.toString());
+            Log.d("yff", "查询sql = " + sb.toString());
             cursor = db.rawQuery(sb.toString(), new String[]{workCode});
             while (cursor.moveToNext()) {
                 SimpleEntity entity = new SimpleEntity();
@@ -1033,8 +1033,8 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 }
                 sb.append(" ) ");
                 sb.append(" and org_level = ? ");
-                sb.append(")");
             }
+            sb.append(")");
             cursor = db.rawQuery(sb.toString(), new String[]{"3", "2"});
             list.add("请选择");
             while (cursor.moveToNext()) {

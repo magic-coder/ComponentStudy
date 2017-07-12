@@ -122,9 +122,10 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
     }
 
     /**
-     * 判断快捷扫描是否勾选   不勾选跳转到系统设置中进行设置
+     * 判断快捷扫描是否勾选。如果不勾选跳转到系统设置中进行设置
      */
     private boolean judgeProperty() {
+        //如果该渠道的isServiceDL为true说明使用的是SPEEDATA的手持
         if (!BuildConfig.ISSERVICEDL)
             return false;
         String result = SysProp.get("persist.sys.keyreport", "false");

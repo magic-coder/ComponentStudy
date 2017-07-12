@@ -101,6 +101,7 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@id/tv_batch_flag_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/batch_flag" />
 

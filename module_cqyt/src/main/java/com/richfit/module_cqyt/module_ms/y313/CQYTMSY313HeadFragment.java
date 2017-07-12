@@ -7,10 +7,12 @@ import com.richfit.sdk_wzyk.base_ms_head.BaseMSHeadFragment;
 import com.richfit.sdk_wzyk.base_ms_head.imp.MSHeadPresenterImp;
 
 /**
+ * 工厂内转储发出
  * Created by monday on 2017/6/29.
  */
 
 public class CQYTMSY313HeadFragment extends BaseMSHeadFragment<MSHeadPresenterImp>{
+
 
     @Override
     public void initPresenter() {

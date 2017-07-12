@@ -74,12 +74,11 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
     }
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSap, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId),
+        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSap, extraHeaderMap))
-//                .retryWhen(new RetryWhenNetworkException(3, 3000))
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                 .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
                 .compose(TransformerHelper.io2main())
@@ -166,6 +165,7 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
 
     /**
      * 注意这里需要根据是上架还是下架处理标识进行仓位的处理
+     *
      * @param sendLocations:对于没有父子节点的明细需要传入已经上架的仓位(发出仓位)
      * @param recLocations
      * @param refData：单据数据
@@ -174,7 +174,7 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
      * @param bizType
      * @param refType
      * @param subFunName:子功能编码
-     * @param position :父节点在明细中的位置，如果是父子节点结构的明细那么position为-1
+     * @param position                                   :父节点在明细中的位置，如果是父子节点结构的明细那么position为-1
      */
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,

@@ -33,6 +33,8 @@ public class LocationInfoEntity implements Cloneable{
 
     public String specialConvert;
     public String deviceId;
+    public String creationDate;
+    public String quantityCustom;
 
     @Override
     public LocationInfoEntity clone() {

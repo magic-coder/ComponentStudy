@@ -277,7 +277,7 @@
     "refType": "0",
     "mode": 0,
     "fragmentType": 0,
-    "className": "com.richfit.module_qhyt.module_ds.dsn.QHYTDSNHeadFragment"
+    "className": "com.richfit.module_qhyt.module_ds.dsn.QHYTDSNHead201Fragment"
   },
   {
     "id": "29",
@@ -497,7 +497,7 @@
     "refType": "0",
     "mode": 0,
     "fragmentType": 0,
-    "className": "com.richfit.module_qhyt.module_ds.dsn.QHYTDSNHeadFragment"
+    "className": "com.richfit.module_qhyt.module_ds.dsn.QHYTDSNHead202Fragment"
   },
   {
     "id": "51",

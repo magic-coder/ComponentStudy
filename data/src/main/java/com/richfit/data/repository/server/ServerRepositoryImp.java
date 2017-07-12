@@ -431,7 +431,8 @@ public class ServerRepositoryImp implements IServerRepository {
      */
     @Override
     public Flowable<String> uploadCollectionData(String refCodeId, String transId, String bizType,
-                                                 String refType, int inspectionType, String voucherDate, String remark, String userId) {
+                                                 String refType, int inspectionType, String voucherDate,
+                                                 String remark, String userId,Map<String, Object> extraHeaderMap) {
         mRequestParam.clear();
         mRequestParam.put("transId", transId);
         mRequestParam.put("businessType", bizType);
@@ -441,6 +442,9 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("inspectionType", inspectionType);
         mRequestParam.put("remark", remark);
         mRequestParam.put("userId", userId);
+        if(extraHeaderMap != null) {
+            mRequestParam.putAll(extraHeaderMap);
+        }
         return mRequestApi.uploadCollectionData(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.MapTransformer);
     }

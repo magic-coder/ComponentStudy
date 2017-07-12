@@ -110,9 +110,8 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
      *
      * @param nodes
      */
-    private void saveTurnFlag(final List<RefDetailEntity> nodes) {
+    protected void saveTurnFlag(final List<RefDetailEntity> nodes) {
         //仅仅检查子节点
-
         for (RefDetailEntity node : nodes) {
             Log.d("yff", "specialConvert = " + node.specialConvert + ";nodeType = " + node.getViewType());
             if (Global.CHILD_NODE_ITEM_TYPE == node.getViewType() &&
@@ -217,7 +216,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
         }
         mTransNum = "";
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
     /**
@@ -307,7 +306,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
      *
      * @param transToSapFlag
      */
-    private void startTurnOwnSupplies(String transToSapFlag) {
+    protected void startTurnOwnSupplies(String transToSapFlag) {
         if (isEmpty(mTransId)) {
             showMessage("未获取到缓存,请先获取采集数据");
             return;

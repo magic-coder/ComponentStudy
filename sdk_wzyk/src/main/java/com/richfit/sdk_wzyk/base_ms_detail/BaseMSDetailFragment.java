@@ -1,6 +1,7 @@
 package com.richfit.sdk_wzyk.base_ms_detail;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -29,12 +30,18 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
         implements IMSDetailView<RefDetailEntity> {
 
     /*移库有参考的公共组件*/
+    /*接收工厂*/
+    @BindView(R2.id.recWork)
+    protected TextView tvRecWork;
     /*发出工厂*/
     @BindView(R2.id.sendWork)
     protected TextView tvSendWork;
     /*发出库位*/
     @BindView(R2.id.sendInv)
     protected TextView tvSendInv;
+    /*接收库位*/
+    @BindView(R2.id.recInv)
+    protected TextView tvRecInv;
 
     /*处理寄售转自有业务。主要的逻辑是用户点击过账按钮之后系统自动检查该缓存(子节点)中是否有特殊库存标识是否
     * 等于K而且特殊库存编号不为空。如果满足以上的条件，那么系统自动调用转自有的接口。如果转自有成功修改成员变量
@@ -51,6 +58,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
 
     @Override
     public void initDataLazily() {
+
         if (mRefData == null) {
             showMessage("请现在抬头界面获取单据数据");
             return;
@@ -74,6 +82,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
         isNeedTurn = false;
         isTurnSuccess = false;
         startAutoRefresh();
+        Log.d("yff","initDataLazily");
     }
 
     /**

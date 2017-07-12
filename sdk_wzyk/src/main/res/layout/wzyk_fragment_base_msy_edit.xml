@@ -65,7 +65,6 @@
             android:padding="5dp">
 
             <TextView
-                android:id="@id/tv_send_batch_flag_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/send_batch_flag" />
 
@@ -82,7 +81,6 @@
             android:padding="5dp">
 
             <TextView
-                android:id="@id/tv_send_inv_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/send_inv" />
 
@@ -187,6 +185,40 @@
 
             <TextView
                 android:id="@+id/tv_total_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_rec_location"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_loc" />
+
+            <TextView
+                android:id="@id/tv_rec_location"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_rec_batch"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_batch_flag" />
+
+            <TextView
+                android:id="@id/tv_rec_batch_flag"
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
     </LinearLayout>

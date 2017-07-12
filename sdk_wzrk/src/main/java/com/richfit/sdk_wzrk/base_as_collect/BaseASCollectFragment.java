@@ -105,8 +105,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     protected LinearLayout llLocationQuantity;
     @BindView(R2.id.ll_inslot_quantity)
     protected LinearLayout llInsLostQuantity;
-    @BindView(R2.id.tv_insLost_quantity)
-    protected TextView tvInsLostQuantity;
+    @BindView(R2.id.tv_insLot_quantity)
+    protected TextView tvInsLotQuantity;
 
 
     /*当前匹配的行明细（行号）*/
@@ -206,7 +206,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         });
 
 
-
         //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
         RxAdapterView.itemSelections(spInv)
                 .filter(pos -> pos > 0)
@@ -229,7 +228,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
         RxAutoCompleteTextView.itemClickEvents(etLocation)
-                .delay(50,TimeUnit.MILLISECONDS)
+                .delay(50, TimeUnit.MILLISECONDS)
                 .filter(a -> !isNLocation)
                 .subscribe(a -> {
                     hideKeyboard(etLocation);
@@ -402,14 +401,14 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "",param.extraMap,isDropDown);
+                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap, isDropDown);
     }
 
 
     @Override
     public void loadInventoryFail(String message) {
         showMessage(message);
-        if(mLocationAdapter != null) {
+        if (mLocationAdapter != null) {
             mLocationList.clear();
             etLocation.setAdapter(null);
         }
@@ -501,7 +500,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      */
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, etLocation, tvLocQuantity, etQuantity, tvLocQuantity,
-                tvTotalQuantity, cbSingle, tvInsLostQuantity,etMaterialNum, etBatchFlag,tvSpecialInvFlag);
+                tvTotalQuantity, cbSingle, tvInsLotQuantity, etMaterialNum, etBatchFlag, tvSpecialInvFlag);
 
         //单据行
         if (mRefLineAdapter != null) {
@@ -654,7 +653,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @Override
     public boolean checkCollectedDataBeforeSave() {
 
-        if(!isNLocation && TextUtils.isEmpty(getString(tvLocQuantity))) {
+        if (!isNLocation && TextUtils.isEmpty(getString(tvLocQuantity))) {
             showMessage("请先获取仓位数量");
             return false;
         }
@@ -823,7 +822,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     public void onDestroy() {
         super.onDestroy();
         mLocationAdapter = null;
-        mLocationList.clear();
+        if (mLocationList != null) {
+            mLocationList.clear();
+        }
     }
 
     /**

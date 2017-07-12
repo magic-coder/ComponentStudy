@@ -2,7 +2,7 @@
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:fillViewport="false"
     android:fitsSystemWindows="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -10,7 +10,7 @@
     <LinearLayout
         android:id="@id/root_id"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,6 +20,7 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@id/tv_ref_line_num_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/ref_line_num" />
 
@@ -110,7 +111,7 @@
                 android:text="@string/insLot_quantity" />
 
             <TextView
-                android:id="@id/tv_insLost_quantity"
+                android:id="@id/tv_insLot_quantity"
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
@@ -155,6 +156,7 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@id/tv_inv_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/store_location" />
 

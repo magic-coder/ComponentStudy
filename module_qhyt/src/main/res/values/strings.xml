@@ -1,2 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="qhyt_custom_auxiliary_9">自定义辅助9</string>
+    <string name="qhyt_account_type">专项核算类别</string>
+    <string name="qhyt_account_content">专项核算内容</string>
+
 </resources>

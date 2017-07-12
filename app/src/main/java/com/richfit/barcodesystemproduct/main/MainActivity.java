@@ -10,7 +10,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.MainPagerViewAdapter;
 import com.richfit.barcodesystemproduct.barcodescan.BaseBarScannerActivity;
@@ -162,14 +161,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         if (fragment != null && fragment.getFragmentType() == BaseFragment.DETAIL_FRAGMENT_INDEX) {
             getFragmentByPosition(mCurrentPage).setUserVisibleHint(true);
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        if (BarcodeSystemApplication.getRefWatcher() != null) {
-            BarcodeSystemApplication.getRefWatcher().watch(this);
-        }
-        super.onDestroy();
     }
 
 

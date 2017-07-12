@@ -15,7 +15,7 @@ public class ReferenceEntity {
     public String checkNum;
     public String recordNum;
     /*验收抬头缓存标识*/
-    public String tempFlag ;
+    public String tempFlag;
     /*盘点缓存*/
     public String checkFlag;
     /*缓存抬头id*/
@@ -117,6 +117,26 @@ public class ReferenceEntity {
     public String specialInvFlag;
     //工单号
     public String jobNum;
+
+    public int insDoor;
+    public int insMaterial;
+    public int insEquipe;
+    public int insLocation;
+    public int insSafe;
+    public int insDocument;
+    public int insOffice;
+    public int insException;
+    public int insPower;
+    public int insLock;
+    public String deliveryOrder;
+    public String shopCondition;
+    /*自定义辅助9*/
+    public String zzzdy9;
+    /*专项核算类别*/
+    public String zzzxlb;
+    /*专项核算内容*/
+    public String zzzxnr;
+
 
     @Override
     public String toString() {

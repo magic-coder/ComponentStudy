@@ -1,12 +1,15 @@
 package com.richfit.barcodesystemproduct;
 
 import android.app.ActivityManager;
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
+import com.richfit.common_lib.lib_crash.CrashManager;
+import com.richfit.common_lib.lib_crash.HttpCrashReport;
 import com.richfit.common_lib.lib_mvp.BaseApplication;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
@@ -45,10 +48,10 @@ public class BarcodeSystemApplication extends BaseApplication {
         baseUrl = generateBaseUrl();
         //初始化全局模块
         DataInjection.getRepository(this, baseUrl);
-        //开启性能检测
-//        if (BuildConfig.DEBUG) {
-//            mRefWatcher = LeakCanary.install(this);
-//        }
+        //开启日志处理模块
+        if (!BuildConfig.DEBUG) {
+            initCrashManage(this);
+        }
     }
 
     private String generateBaseUrl() {
@@ -76,7 +79,7 @@ public class BarcodeSystemApplication extends BaseApplication {
                     break;
                 case Global.CQYT:
                     //长庆油田
-                    baseUrl = "http://11.11.47.29:8087/ktbk_middleware/MobileProcess/";
+                    baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
                     break;
             }
         } else {
@@ -85,6 +88,15 @@ public class BarcodeSystemApplication extends BaseApplication {
         }
 
         return baseUrl;
+    }
+
+    /**
+     * 初始化Crash日志收集
+     */
+    private void initCrashManage(Application application) {
+        CrashManager crashManager = CrashManager.getInstance();
+        HttpCrashReport httpCrashReport = new HttpCrashReport();
+        crashManager.init(application, httpCrashReport);
     }
 
 

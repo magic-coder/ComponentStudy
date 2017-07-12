@@ -11,7 +11,6 @@ import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
 public class QHYTUbSto351EditFragment extends BaseMSEditFragment {
 
 
-
     @Override
     public void initPresenter() {
         mPresenter = new MSEditPresenterImp(mActivity);

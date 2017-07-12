@@ -81,7 +81,7 @@ public class QHYTMSN311DetailFragment extends BaseMSNDetailFragment<MSNDetailPre
             showMessage("本次采集已经过账,请先进行其他转储操作");
             return;
         }
-        mPresenter.submitData2BarcodeSystem(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

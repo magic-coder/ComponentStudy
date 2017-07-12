@@ -718,6 +718,4 @@ public class QHYTAOCollectFragment extends BaseFragment<QHYTAOCollectPresenterIm
             spRefLine.setBackgroundColor(0);
         }
     }
-
-
 }

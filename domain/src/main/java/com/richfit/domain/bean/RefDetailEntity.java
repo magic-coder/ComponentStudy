@@ -158,7 +158,10 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String processResult;
     public String totalQuantityCustom;
     public String quantityCustom;
-
+    /*入库累计数量*/
+    public String quantityS;
+    /*出库累计数量*/
+    public String quantityH;
 
     @Override
     public RefDetailEntity clone() {

@@ -54,6 +54,8 @@
     <item name="sp_move_type" type="id"></item>
     <item name="et_supplier" type="id"></item>
     <item name="ll_arrival_date" type="id"></item>
+    <item name="ll_inspection_person" type="id"></item>
+    <item name="tv_ref_line_num_name" type="id"></item>
 
 
     <!--明细界面业务id-->
@@ -118,7 +120,7 @@
     <item name="ll_location" type="id"></item>
     <item name="ll_location_quantity" type="id"></item>
     <item name="ll_inslot_quantity" type="id"></item>
-    <item name="tv_insLost_quantity" type="id"></item>
+    <item name="tv_insLot_quantity" type="id"></item>
     <item name="et_return_quantity" type="id"></item>
     <item name="et_project_text" type="id"></item>
     <item name="et_move_cause_desc" type="id"></item>
@@ -239,6 +241,8 @@
     <item name="checkState" type="id"></item>
     <item name="et_material_class" type="id"></item>
     <item name="et_material_desc" type="id"></item>
-
+    <item name="tv_rec_location" type="id"></item>
+    <item name="recInv" type="id"></item>
+    <item name="tmp" type="id"></item>
 
 </resources>

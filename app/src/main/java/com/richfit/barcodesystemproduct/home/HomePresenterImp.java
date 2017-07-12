@@ -2,7 +2,6 @@ package com.richfit.barcodesystemproduct.home;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
@@ -178,6 +177,10 @@ public class HomePresenterImp extends BasePresenter<HomeContract.View>
                 return R.mipmap.icon_module16;
             case Global.SXCL:
                 return R.mipmap.icon_module14;
+            case Global.VSCX:
+                return R.mipmap.icon_module17;
+            case Global.KFXJ:
+                return R.mipmap.icon_module18;
         }
         return 0;
     }

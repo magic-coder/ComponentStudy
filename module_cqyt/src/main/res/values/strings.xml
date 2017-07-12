@@ -1,4 +1,26 @@
 <resources>
     <string name="cqyt_quantity_custom">件数</string>
     <string name="cqyt_total_quantity_custom">累计件数</string>
+    <string name="cqyt_ref_num">业务单据</string>
+    <string name="cqyt_s_total_quantity">入库累计数量</string>
+    <string name="cqyt_h_total_quantity">出库累计数量</string>
+    <string name="cqyt_xj_type">巡检类型</string>
+    <string name="cqyt_xj_date">巡检日期</string>
+    <string name="cqyt_xj_person">巡检人</string>
+    <string name="cqyt_xj_location">巡检货位</string>
+    <string name="cqyt_xj_path">巡检路线</string>
+    <string name="cqyt_xj_ins_door">库区、办公室门窗有无启动</string>
+    <string name="cqyt_xj_ins_material">物资有无异状</string>
+    <string name="cqyt_xj_ins_equipe">消防器材、苫垫、标牌是否完好</string>
+    <string name="cqyt_xj_ins_location">货架、场地是否整洁</string>
+    <string name="cqyt_xj_ins_safe">有无不安全因素</string>
+
+    <string name="cqyt_xj_ins_document">资料是否整理齐全</string>
+    <string name="cqyt_xj_ins_office">办公用品、工具是否归位</string>
+    <string name="cqyt_xj_ins_exception">物资有无异动</string>
+    <string name="cqyt_xj_ins_power">电源是否关闭</string>
+    <string name="cqyt_xj_ins_lock">库区、办公室门窗是否关严锁好</string>
+    <string name="cqyt_delivery_order">提货单</string>
+    <string name="cqyt_unqualified_quantity">不合格数量</string>
+    <string name="cqyt_shop_condition">装运条件</string>
 </resources>

@@ -154,7 +154,7 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
         mExtraTansMap.clear();
         mExtraTansMap.put("centerCost", mRefData.costCenter);
         mExtraTansMap.put("projectNum", mRefData.projectNum);
-        mPresenter.submitData2BarcodeSystem(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem("", mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
@@ -233,8 +233,6 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
         menus.get(1).transToSapFlag = "05";
         return menus.subList(0, 2);
     }
-
-
 }
 
 

@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="cqyt_quantity_custom" type="id" />
-    <item name="cqyt_total_quantity_custom" type="id" />
+    <item name="cqyt_et_quantity_custom" type="id" />
+    <item name="cqyt_tv_quantity_custom" type="id" />
+    <item name="cqyt_tv_total_quantity_custom" type="id"/>
+    <item name="cqyt_tv_ref_num" type="id"/>
+    <item name="cqyt_s_total_quantity" type="id"/>
+    <item name="cqyt_h_total_quantity" type="id"/>
+    <item name="cqyt_sp_xj_type" type="id"/>
+    <item name="cqyt_et_xj_date" type="id"/>
+    <item name="cqyt_tv_xj_person" type="id"/>
+    <item name="cqyt_ll_xj_ins_before" type="id"/>
+    <item name="cqyt_ll_xj_ins_after" type="id"/>
+    <item name="cqyt_et_ins_location" type="id"/>
+    <item name="cqyt_tv_ins_path" type="id"/>
+
+    <item name="cqyt_sp_ins_door" type="id"/>
+    <item name="cqyt_sp_ins_material" type="id"/>
+    <item name="cqyt_sp_ins_equipe" type="id"/>
+    <item name="cqyt_sp_ins_location" type="id"/>
+    <item name="cqyt_sp_ins_safe" type="id"/>
+
+    <item name="cqyt_sp_ins_document" type="id"/>
+    <item name="cqyt_sp_ins_office" type="id"/>
+    <item name="cqyt_sp_ins_exception" type="id"/>
+    <item name="cqyt_sp_ins_power" type="id"/>
+    <item name="cqyt_sp_ins_lock" type="id"/>
+
+    <item name="cqyt_rb_ins_before" type="id"/>
+    <item name="cqyt_rb_ins_after" type="id"/>
+    <item name="cqyt_et_delivery_order" type="id"/>
+    <item name="cqyt_tv_xj_location" type="id"/>
+    <item name="cqyt_tv_xj_path" type="id"/>
+    <item name="cqyt_et_unqualified_quantity" type="id"/>
+    <item name="cqyt_tv_unqualified_quantity" type="id"/>
+
+    <item name="cqyt_sp_shop_condition" type="id"/>
+
 </resources>

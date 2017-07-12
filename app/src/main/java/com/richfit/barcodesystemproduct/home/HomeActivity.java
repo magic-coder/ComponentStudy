@@ -341,32 +341,6 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
         startActivity(intent);
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        Log.d("yff","退出App");
-//        if (keyCode == KeyEvent.KEYCODE_BACK) {
-//            if (mBackDialog == null) {
-//                mBackDialog = new AlertView("温馨提示", "您真的退出App吗?", "取消", new String[]{"确定"}, null,
-//                        this, AlertView.Style.Alert, this);
-//            }
-//            mBackDialog.show();
-//            // 这里返回true表示后续依然可以后面的事件
-//            return true;
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-
-//    @Override
-//    public boolean dispatchKeyEvent(KeyEvent event) {
-//        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
-//                && event.getAction() == KeyEvent.ACTION_DOWN
-//                && event.getRepeatCount() == 0) {
-//            //具体的操作代码
-//        }
-//        return super.dispatchKeyEvent(event);
-//    }
-
-    @Override
     public void onBackPressed() {
         Log.d("yff","onBackPressed");
         if (mBackDialog == null) {
