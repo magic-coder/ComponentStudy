@@ -1,4 +1,4 @@
-package com.richfit.module_xngd.module_ds.ds_ll.imp;
+package com.richfit.module_xngd.module_ds.dsy.imp;
 
 import android.content.Context;
 
@@ -33,7 +33,7 @@ public class XNGDSLLDetailPresenterImp extends DSDetailPresenterImp {
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showTransferedVisa(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 

@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
@@ -193,6 +194,13 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
+
         //选择单据行
         RxAdapterView
                 .itemSelections(spRefLine)
@@ -358,6 +366,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         tvMaterialDesc.setText(lineData.materialDesc);
         //特殊库存标识
         tvSpecialInvFlag.setText(lineData.specialInvFlag);
+        //检验批数量
+        tvInsLotQuantity.setText(lineData.orderQuantity);
         //工厂
         tvWork.setText(lineData.workName);
         //应收数量
@@ -662,7 +672,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             return false;
         }
 
-        if (mRefData == null) {
+        if (mRefData == null || !etMaterialNum.isEnabled()) {
             showMessage("请先在抬头界面获取单据数据");
             return false;
         }
@@ -692,8 +702,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         //2017年06月28日，由于保存数据重新将批次的所有状态恢复到原始状态，这是
         //为了兼容不同物料输入在保存单条数据成功后必须恢复。但是这样导致的不能连续输入。
         //所以必须再次判断批次状态。
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
+        //2017年07月25日注释掉该行，因为对于同一条物料，保存后不在恢复批次状态
+//        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+//        manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
 
         //第一步检查是否需要输入批次。打开了批次管理，并且批次可以输入的情况下
         if (isOpenBatchManager && etBatchFlag.isEnabled()) {
@@ -750,6 +761,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -764,8 +777,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
             result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
             result.materialId = lineData.materialId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = getString(etBatchFlag);
+            result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
             result.quantity = getString(etQuantity);
             result.modifyFlag = "N";
             result.refDoc = lineData.refDoc;
@@ -780,20 +793,13 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @Override
     public void saveCollectedDataSuccess() {
         showMessage("保存数据成功");
-        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
-        final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
-        final float totalQuantity = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
-        tvTotalQuantity.setText(String.valueOf(totalQuantity + quantityV));
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
         if (!isNLocation) {
-            tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
+            tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
         }
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            //本次数据保存之后恢复批次
-            isOpenBatchManager = true;
-            etBatchFlag.setEnabled(true);
         }
-
     }
 
     @Override

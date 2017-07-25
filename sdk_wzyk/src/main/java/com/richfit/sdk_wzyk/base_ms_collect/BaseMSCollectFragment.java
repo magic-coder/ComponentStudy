@@ -16,6 +16,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
@@ -73,7 +74,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @BindView(R2.id.et_quantity)
     protected EditText etQuantity;
     @BindView(R2.id.cb_single)
-    CheckBox cbSingle;
+    protected CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
     TextView tvTotalQuantity;
     @BindView(R2.id.et_rec_location)
@@ -164,6 +165,13 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             hideKeyboard(etMaterialNum);
             loadMaterialInfo(materialNum, getString(etSendBatchFlag));
         });
+
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etSendBatchFlag.setEnabled(true);
+                });
 
         /*监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
          这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI。*/
@@ -556,7 +564,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvSendWork, tvActQuantity, tvLocQuantity,
                 etQuantity, tvLocQuantity, tvInvQuantity, tvTotalQuantity, cbSingle, etMaterialNum, etSendBatchFlag,
-                etRecBatchFlag,etRecLoc);
+                etRecBatchFlag, etRecLoc);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -652,6 +660,10 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
         //检查数据是否可以保存
         if (spRefLine.getSelectedItemPosition() <= 0) {
             showMessage("请先选择单据行");
@@ -668,8 +680,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             return false;
         }
 
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        manageBatchFlagStatus(etSendBatchFlag, lineData.batchManagerStatus);
+//        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+//        manageBatchFlagStatus(etSendBatchFlag, lineData.batchManagerStatus);
 
         //批次
         if (isOpenBatchManager && !isBatchValidate) {
@@ -716,7 +728,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             result.recInvId = lineData.recInvId;
 
             result.materialId = lineData.materialId;
-            result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : CommonUtil.toUpperCase(getString(etSendBatchFlag));
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
             result.recLocation = CommonUtil.toUpperCase(getString(etRecLoc));
             result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
@@ -739,15 +751,10 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @Override
     public void saveCollectedDataSuccess() {
         showMessage("保存数据成功");
-        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
-        final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
-        final float totalQuantityV = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
-        tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
-        tvTotalQuantity.setText(String.valueOf(totalQuantityV + quantityV));
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
+        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etSendBatchFlag.setEnabled(true);
         }
     }
 

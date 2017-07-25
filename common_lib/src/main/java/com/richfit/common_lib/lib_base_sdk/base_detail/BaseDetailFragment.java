@@ -35,7 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 所有明细界面公共基类。注意因为明细界面的控件已经固定，所以可以抽象出来
+ * 所有明细界面公共基类。注意因为明细界面的控件已经固定，所以可以抽象出来。
+ * 2017年7月20日进行修改，将数据上传，上架，下架等所有任务的消息(包括凭证和错误消息)
+ * 统一处理，子类字需要关心该任务正确时的处理。
  * Created by monday on 2017/3/17.
  */
 
@@ -53,12 +55,10 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
     protected MultiItemTypeTreeAdapter<T> mAdapter;
 
     /*过账和数据上传的公共字段和信息*/
-    /*第一步过账成功后返回的物料凭证*/
-    protected String mTransNum;
+    /*第一步过账成功后返回的物料凭证以及第二步(上架，下架，转储)成功后返回的验收单号等需要展示的信息*/
+    protected StringBuffer mShowMsg = new StringBuffer();
     /*缓存的抬头transId,用于上架处理*/
     protected String mTransId;
-    /*第二步(上架，下架，转储)成功后返回的验收单号*/
-    protected String mInspectionNum;
     /*底部提示菜单数据源*/
     protected List<BottomMenuEntity> mBottomMenus;
     /*数据上传01/05等业务，在开发后期需要增加的字段*/
@@ -73,7 +73,7 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         mSwipeRefreshLayout = (AutoSwipeRefreshLayout) mView.findViewById(R.id.base_detail_swipe_refresh_layout);
         mHorizontalScroll = (HorizontalScrollView) mView.findViewById(R.id.base_detail_horizontal_scroll);
         mExtraContainer = (LinearLayout) mView.findViewById(R.id.root_id);
-        return  mView;
+        return mView;
     }
 
     /**
@@ -119,7 +119,7 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         //清除缓存id
         mTransId = "";
         //清除过账凭证
-        mTransNum = "";
+        mShowMsg.setLength(0);
         //开始获取整单缓存，注意由于在获取缓存之前进行了必要的检查，而这里不管是否有参考
         //都调用的是同一个接口，所以在具体的业务时，子类必须检验响应的参数。
         mPresenter.getTransferInfo(mRefData, refCodeId, bizType, refType,
@@ -206,7 +206,7 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
                         //2. 上架(下架)
                         submit2SAP(mBottomMenus.get(position).transToSapFlag);
                         break;
-                    case 3:
+                    case 2:
                         //3. 转储
                         sapUpAndDownLocation(mBottomMenus.get(position).transToSapFlag);
                         break;
@@ -218,23 +218,54 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
 
 
     /**
-     * 第一步成功后记录物料凭证，以便显示
+     * 所有上传任务成功后记录物料凭证，以便显示。
+     * 注意由于有可能即可能显示凭证信息还要显示
+     * 错误信息，而且错误信息是一个列表，所以
+     * 这里需要将凭证信息做成列表，以便统一显示。
      *
      * @param message
      */
     @Override
-    public void showTransferedVisa(String message) {
-        mTransNum = message;
+    public void saveMsgFowShow(String message) {
+        adapterShowMsg(mShowMsg, message);
     }
 
     /**
-     * 第二步成功后记录过账凭证，以便显示
+     * 第一步失败，因为第一步可能涉及到图片，数据上传，01等步骤。
      *
-     * @param inspectionNum
+     * @param message
      */
     @Override
-    public void showInspectionNum(String inspectionNum) {
-        mInspectionNum = inspectionNum;
+    public void submitBarcodeSystemFail(String message) {
+        //注意这里如果不涉及到01，那么错误消息不是列表，
+        adapterShowMsg(mShowMsg, "错误消息列表:");
+        adapterShowMsg(mShowMsg, message);
+        showErrorDialog(mShowMsg);
+        mShowMsg.setLength(0);
+    }
+
+    /**
+     * 第二步上架失败显示失败信息
+     *
+     * @param messages
+     */
+    @Override
+    public void submitSAPFail(String messages) {
+        adapterShowMsg(mShowMsg, messages);
+        showErrorDialog(messages);
+        mShowMsg.setLength(0);
+    }
+
+    /**
+     * 第三步转储失败显示失败信息
+     *
+     * @param messages
+     */
+    @Override
+    public void upAndDownLocationFail(String messages) {
+        adapterShowMsg(mShowMsg, messages);
+        showErrorDialog(messages);
+        mShowMsg.setLength(0);
     }
 
     @Override
@@ -280,6 +311,16 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
             mAdapter.setOnItemClickListener(null);
             mAdapter.setOnItemEditAndDeleteListener(null);
         }
+    }
+
+    /**
+     * 将消息组装，以便统一显示
+     *
+     * @param sb
+     * @param message
+     */
+    protected void adapterShowMsg(StringBuffer sb, String message) {
+        sb.append(message).append("\n").append("______");
     }
 
     @Override

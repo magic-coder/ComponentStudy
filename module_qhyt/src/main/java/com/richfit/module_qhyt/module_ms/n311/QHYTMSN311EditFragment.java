@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_msn_edit.BaseMSNEditFragment;
 import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
 
@@ -96,6 +96,7 @@ public class QHYTMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresenter
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -116,23 +117,11 @@ public class QHYTMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresenter
             result.recBatchFlag = getString(tvRecBatchFlag);
             result.quantity = getString(etQuantity);
             result.modifyFlag = "Y";
-            result.invType = getInvType();
+            result.invType = param.invType;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER)
                 .compose(TransformerHelper.io2main())
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
     }
-
-
-    @Override
-    protected String getInvType() {
-        return  "";
-    }
-
-    @Override
-    protected String getInventoryQueryType() {
-        return getString(R.string.inventoryQueryTypeSAPLocation);
-    }
-
 }

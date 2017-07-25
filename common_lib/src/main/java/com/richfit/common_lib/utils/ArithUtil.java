@@ -1,5 +1,7 @@
 package com.richfit.common_lib.utils;
 
+import android.text.TextUtils;
+
 import java.math.BigDecimal;
 
 public class ArithUtil {
@@ -13,6 +15,18 @@ public class ArithUtil {
     public static float add(float value1, float value2) {
         BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
         BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
+        return b1.add(b2).floatValue();
+    }
+
+    public static float add(String value1, String value2) {
+        if (TextUtils.isEmpty(value1)) {
+            value1 = "0";
+        }
+        if (TextUtils.isEmpty(value2)) {
+            value2 = "0";
+        }
+        BigDecimal b1 = new BigDecimal(value1);
+        BigDecimal b2 = new BigDecimal(value2);
         return b1.add(b2).floatValue();
     }
 

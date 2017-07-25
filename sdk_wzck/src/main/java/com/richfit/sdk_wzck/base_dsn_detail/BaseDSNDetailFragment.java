@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
-import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -14,6 +13,8 @@ import com.richfit.sdk_wzck.adapter.DSNDetailAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.richfit.common_lib.utils.SPrefUtil.getData;
 
 /**
  * Created by monday on 2017/2/23.
@@ -51,7 +52,6 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
         isTurnSuccess = false;
         startAutoRefresh();
     }
-
 
 
     @Override
@@ -115,7 +115,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      */
     @Override
     public void editNode(final RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
+        String state = (String) getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许修改");
             return;
@@ -139,7 +139,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      */
     @Override
     public void deleteNode(final RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
+        String state = (String) getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许删除");
             return;
@@ -192,7 +192,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
             startTurnOwnSupplies("07");
             return;
         }
-        String transferFlag = (String) SPrefUtil.getData(mBizType, "0");
+        String transferFlag = (String) getData(mBizType, "0");
         if ("1".equals(transferFlag)) {
             showMessage(getString(R.string.msg_detail_off_location));
             return;
@@ -200,7 +200,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
         mExtraTansMap.clear();
         mExtraTansMap.put("centerCost", mRefData.costCenter);
         mExtraTansMap.put("projectNum", mRefData.projectNum);
-        mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem("", mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, tranToSapFlag, mExtraTansMap);
     }
 
@@ -209,18 +209,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    /**
-     * 第一步过账失败后清除物料凭证，显示错误信息
-     *
-     * @param message
-     */
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
 
@@ -228,7 +217,8 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      * 2.数据上传
      */
     protected void submit2SAP(String tranToSapFlag) {
-        if (TextUtils.isEmpty(mTransNum)) {
+        String state = (String) getData(mBizType, "0");
+        if ("0".equals(state)) {
             showMessage("请先过账");
             return;
         }
@@ -242,31 +232,25 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "下架成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
-    @Override
-    public void submitSAPFail(String[] messages) {
-        mInspectionNum = "";
-        showErrorDialog(messages);
-    }
-
+    /**
+     * 第三步转储入口
+     * @param tranToSapFlag
+     */
     @Override
     protected void sapUpAndDownLocation(String tranToSapFlag) {
 
     }
 
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
 
     @Override
     public void upAndDownLocationSuccess() {
@@ -284,7 +268,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
             showMessage("未获取到缓存,请先获取采集数据");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.turnOwnSupplies(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null, -1);
     }
@@ -323,7 +307,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
 
     @Override
     protected boolean checkTransStateBeforeRefresh() {
-        String transferKey = (String) SPrefUtil.getData(mBizType, "0");
+        String transferKey = (String) getData(mBizType, "0");
         if ("1".equals(transferKey)) {
             setRefreshing(false, getString(R.string.msg_detail_off_location));
             return false;

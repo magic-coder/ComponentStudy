@@ -57,7 +57,6 @@ public class BarcodeSystemApplication extends BaseApplication {
     private String generateBaseUrl() {
         String baseUrl = null;
         baseUrl = (String) SPrefUtil.getData("base_url", "");
-        L.e("appName = " + BuildConfig.APP_NAME + "; serverUrl = " + baseUrl);
         if (!TextUtils.isEmpty(baseUrl)) {
             //说明用户手动设置过Url
             return baseUrl;
@@ -75,7 +74,8 @@ public class BarcodeSystemApplication extends BaseApplication {
                     break;
                 case Global.XNGD:
                     //西南管道
-                    baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
+//                    baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
+                    baseUrl = "http://10.88.53.9:8080/gdbk_middleware/MobileProcess/";
                     break;
                 case Global.CQYT:
                     //长庆油田

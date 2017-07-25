@@ -15,10 +15,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
@@ -41,9 +42,9 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     Spinner spInspectionResult;
     EditText etUnqualifiedQuantity;
-    EditText etRemark;
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
+    EditText etDeclaredQuantity;
 
     @Override
     public int getContentId() {
@@ -59,9 +60,9 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     protected void initView() {
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
         etUnqualifiedQuantity = (EditText) mView.findViewById(R.id.cqyt_et_unqualified_quantity);
-        etRemark = (EditText) mView.findViewById(R.id.et_remark);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
+        etDeclaredQuantity = (EditText) mView.findViewById(R.id.cqyt_et_declared_quantity);
     }
 
     @Override
@@ -164,6 +165,7 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -187,11 +189,31 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
             result.supplierNum = mRefData.supplierNum;
             result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
             result.unqualifiedQuantity = getString(etUnqualifiedQuantity);
-            result.remark = getString(etRemark);
+            //到货日期
+            result.arrivalDate = mRefData.arrivalDate;
+            //报检日期
+            result.inspectionDate = mRefData.inspectionDate;
             //提货单
             result.deliveryOrder = mRefData.deliveryOrder;
             //件数
             result.quantityCustom = getString(etQuantityCustom);
+            //报检数量
+            result.declaredQuantity = getString(etDeclaredQuantity);
+            //报检单位
+            result.declaredUnit = mRefData.declaredUnit;
+            // 班
+            result.team = mRefData.team;
+            // 岗位
+            result.post = mRefData.post;
+            // 生产厂家
+            result.manufacture = mRefData.manufacture;
+            //检验单位
+            result.inspectionUnit = mRefData.inspectionUnit;
+            // 备注
+            result.remark = mRefData.remark;
+            // 检验标准及特殊要求
+            result.inspectionStandard = mRefData.inspectionStandard;
+            result.invType = param.invType;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
@@ -202,9 +224,11 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     @Override
     public void saveCollectedDataSuccess() {
         super.saveCollectedDataSuccess();
-        float quantityCustomQ = CommonUtil.convertToFloat(getString(etQuantityCustom), 0.0F);
-        float totalQuantityCustomQ = CommonUtil.convertToFloat(getString(tvTotalQuantityCustom), 0.0F);
-        tvTotalQuantityCustom.setText(String.valueOf(quantityCustomQ + totalQuantityCustomQ));
+        if (!cbSingle.isChecked()) {
+            etQuantityCustom.setText("");
+        }
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
+                getString(tvTotalQuantityCustom))));
     }
 
     @Override
@@ -273,6 +297,16 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         menu.takePhotoType = 4;
         menus.add(menu);
         return menus;
+    }
+
+
+    @Override
+    public void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etQuantityCustom, etUnqualifiedQuantity, tvTotalQuantityCustom);
+        if (spInspectionResult.getAdapter() != null) {
+            spInspectionResult.setSelection(0);
+        }
     }
 
 }

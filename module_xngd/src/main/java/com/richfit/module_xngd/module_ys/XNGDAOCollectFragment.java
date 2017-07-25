@@ -166,6 +166,10 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             showMessage("请输入上架仓位");
             return false;
         }
+        if (!isNLocation && getString(etLocation).split("\\.").length != 4) {
+            showMessage("您输入的仓位格式不正确");
+            return false;
+        }
         return super.checkCollectedDataBeforeSave();
     }
 
@@ -353,13 +357,12 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         param.queryType = "03";
         param.invType = "1";
         Map<String, Object> extraMap = new HashMap<>();
-        //是否应急
         extraMap.put("invFlag", mRefData.invFlag);
-        extraMap.put("specialInvFlag", lineData.specialInvFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -39,14 +40,14 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
     @Override
     protected void initView() {
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
-        tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.tv_ref_line_num_name);
+        tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
         TextView tvBatchFlagName = (TextView) mView.findViewById(R.id.tv_batch_flag_name);
         tvBatchFlagName.setText("发出批次");
     }
 
     @Override
     public void initData() {
-
+        isSplitBatchFlag = true;
     }
 
 
@@ -87,10 +88,21 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
             result.invType = param.invType;
             result.modifyFlag = "N";
             result.quantityCustom = getString(etQuantityCustom);
+            result.shopCondition = mRefData.shopCondition;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    }
+
+    @Override
+    public void saveCollectedDataSuccess() {
+        super.saveCollectedDataSuccess();
+        if (!cbSingle.isChecked()) {
+            etQuantityCustom.setText("");
+        }
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
+                getString(tvTotalQuantityCustom))));
     }
 
     @Override

@@ -50,8 +50,26 @@
             style="@style/LeftTextViewItemStyle"
             android:text="@string/xngd_is_inv_flag" />
 
+        <CheckBox
+            android:id="@id/xngd_cb_inv_flag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
         <TextView
-            android:id="@id/xngd_tv_inv_flag"
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/xngd_project_flag" />
+
+        <TextView
+            android:id="@id/xngd_tv_project_flag"
             style="@style/RightTextViewItemStyle" />
 
     </LinearLayout>

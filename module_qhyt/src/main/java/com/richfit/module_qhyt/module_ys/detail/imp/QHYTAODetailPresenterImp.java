@@ -211,7 +211,7 @@ public class QHYTAODetailPresenterImp extends BaseDetailPresenterImp<IQHYTAODeta
                     @Override
                     public void _onNext(String transNum) {
                         if (mView != null) {
-                            mView.showTransferedVisa(transNum);
+                            mView.saveMsgFowShow(transNum);
                         }
                     }
 

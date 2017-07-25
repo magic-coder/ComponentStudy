@@ -11,6 +11,7 @@ import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
@@ -36,7 +37,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     Spinner spInspectionResult;
     EditText etUnqualifiedQuantity;
-    EditText etRemark;
     EditText etQuantityCustom;
 
     @Override
@@ -58,7 +58,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
     @Override
     protected void initView() {
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
-        etRemark = (EditText) mView.findViewById(R.id.et_remark);
         etUnqualifiedQuantity = (EditText) mView.findViewById(R.id.cqyt_et_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
     }
@@ -75,7 +74,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             String inspectionResult = bundle.getString(extra_inspection_result_key);
             String remark = bundle.getString(extra_remark_key);
             String unqualifiedQuantity = bundle.getString(extra_unqualified_key);
-            etRemark.setText(remark);
             etUnqualifiedQuantity.setText(unqualifiedQuantity);
             etQuantityCustom.setText(quantityCustom);
             UiUtil.setSelectionForSp(items, inspectionResult, spInspectionResult);
@@ -115,6 +113,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -139,11 +138,11 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             result.supplierNum = mRefData.supplierNum;
             result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
             result.unqualifiedQuantity = getString(etUnqualifiedQuantity);
-            result.remark = getString(etRemark);
             //提货单
             result.deliveryOrder = mRefData.deliveryOrder;
             //件数
             result.quantityCustom = getString(etQuantityCustom);
+            result.invType = param.invType;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())

@@ -1,5 +1,6 @@
 package com.richfit.module_cqyt.module_ms.ubsto;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
+import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.BaseDSEditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
 
@@ -45,6 +47,16 @@ public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp
     @Override
     public void initDataLazily() {
 
+    }
+
+    @Override
+    public void initData() {
+        super.initData();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String quantityCustom = bundle.getString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY);
+            etQuantityCustom.setText(quantityCustom);
+        }
     }
 
     @Override

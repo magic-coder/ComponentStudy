@@ -36,6 +36,10 @@ public class QHYTAS105DetailFragment extends BaseASDetailFragment<QHYTAS105Detai
         mPresenter = new QHYTAS105DetailPresenterImp(mActivity);
     }
 
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
 
     @Override
     public void initEvent() {
@@ -79,8 +83,5 @@ public class QHYTAS105DetailFragment extends BaseASDetailFragment<QHYTAS105Detai
         return menus.subList(0, 2);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
 
-    }
 }

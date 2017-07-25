@@ -332,7 +332,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
             result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
                     "Y" : "N";
-            result.batchFlag = getString(tvBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
             result.quantity = getString(etQuantity);
             result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
             result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;

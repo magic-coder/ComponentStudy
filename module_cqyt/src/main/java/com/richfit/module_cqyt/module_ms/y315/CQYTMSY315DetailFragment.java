@@ -68,7 +68,7 @@ public class CQYTMSY315DetailFragment extends BaseASDetailFragment<CQYTMSY315Det
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
         tmp.get(0).transToSapFlag = "01";
-        tmp.get(2).transToSapFlag = "05";
+        tmp.get(1).transToSapFlag = "05";
         ArrayList menus = new ArrayList();
         menus.add(tmp.get(0));
         menus.add(tmp.get(1));

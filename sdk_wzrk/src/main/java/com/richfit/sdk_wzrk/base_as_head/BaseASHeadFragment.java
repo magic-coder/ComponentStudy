@@ -13,11 +13,14 @@ import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
+import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -252,6 +255,21 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
         mLocalHeaderResult.businessType = mBizType;
         mLocalHeaderResult.voucherDate = getString(etTransferDate);
         super.operationOnHeader(companyCode);
+    }
+
+    @Override
+    public void loadInvsFail(String message) {
+
+    }
+
+    @Override
+    public void showInvs(List<InvEntity> list) {
+
+    }
+
+    @Override
+    public void loadInvsComplete() {
+
     }
 
     /**

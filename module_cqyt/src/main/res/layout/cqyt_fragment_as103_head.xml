@@ -1,29 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/root_id"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-   <include
-       android:id="@id/tmp"
-       layout="@layout/wzrk_fragment_base_asy_head"/>
-
-
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@id/root_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/collect_row_padding">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/LeftTextViewItemStyle"
-            android:text="@string/cqyt_delivery_order" />
+        <include
+            android:id="@id/tmp"
+            layout="@layout/wzrk_fragment_base_asy_head" />
 
-        <EditText
-            android:id="@id/cqyt_et_delivery_order"
-            style="@style/RightEditTextItemStyle" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/arrival_date" />
+
+            <com.richfit.common_lib.widget.RichEditText
+                android:id="@id/et_arrival_date"
+                style="@style/RightRichEditTextItemStyle"
+                android:drawableRight="@mipmap/icon_find"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_inspection_date" />
+
+            <com.richfit.common_lib.widget.RichEditText
+                android:id="@id/cqyt_et_inspection_date"
+                style="@style/RightRichEditTextItemStyle"
+                android:drawableRight="@mipmap/icon_find"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_delivery_order" />
+
+            <EditText
+                android:id="@id/cqyt_et_delivery_order"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_declared_unit" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_declared_unit"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_class" />
+
+            <EditText
+                android:id="@id/cqyt_et_class"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_post" />
+
+            <EditText
+                android:id="@id/cqyt_et_post"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_manufacturer" />
+
+            <EditText
+                android:id="@id/cqyt_et_manufacturer"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_inspection_unit" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_inspection_unit"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/remark" />
+
+            <EditText
+                android:id="@id/et_remark"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/collect_row_padding">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_inspection_standard" />
+
+            <EditText
+                android:id="@id/cqyt_et_inspection_standard"
+                style="@style/RightEditTextItemStyle" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

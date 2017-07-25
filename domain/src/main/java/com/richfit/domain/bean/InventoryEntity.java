@@ -54,7 +54,8 @@ public class InventoryEntity extends TreeNode{
     public String userId;
     public String checkId;
     public String invFlag;
-
+    public String projectFlag;
+    public String projectNum;
 
     @Override
     public String toString() {

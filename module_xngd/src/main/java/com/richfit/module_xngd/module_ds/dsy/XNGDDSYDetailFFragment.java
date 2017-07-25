@@ -1,11 +1,11 @@
-package com.richfit.module_xngd.module_ds.ds_ll;
+package com.richfit.module_xngd.module_ds.dsy;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.BottomMenuEntity;
-import com.richfit.module_xngd.module_ds.ds_ll.imp.XNGDSLLDetailPresenterImp;
+import com.richfit.module_xngd.module_ds.dsy.imp.XNGDSLLDetailPresenterImp;
 import com.richfit.sdk_wzck.base_ds_detail.BaseDSDetailFragment;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by monday on 2017/1/20.
  */
 
-public class XNGDDSLLDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPresenterImp> {
+public class XNGDDSYDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPresenterImp> {
 
 
     @Override
@@ -30,7 +30,6 @@ public class XNGDDSLLDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailP
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
-
     }
 
     @Override
@@ -55,12 +54,12 @@ public class XNGDDSLLDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailP
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }

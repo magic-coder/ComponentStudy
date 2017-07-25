@@ -90,7 +90,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                             @Override
                             public void _onNext(String s) {
                                 if (mView != null) {
-                                    mView.showTransferedVisa(s);
+                                    mView.saveMsgFowShow(s);
                                 }
                             }
 

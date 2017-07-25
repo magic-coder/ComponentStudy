@@ -8,6 +8,7 @@ import android.widget.EditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
@@ -81,6 +82,8 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;

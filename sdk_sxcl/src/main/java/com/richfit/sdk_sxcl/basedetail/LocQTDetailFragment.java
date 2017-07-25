@@ -169,29 +169,23 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
             showMessage(getString(R.string.msg_detail_off_location));
             return;
         }
-        mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId,mTransId, mBizType, mRefType, Global.USER_ID,
+        mShowMsg.setLength(0);
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 
     @Override
     public void submitBarcodeSystemSuccess() {
         setRefreshing(false, "下架成功");
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         //注意这里必须清除单据数据
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
-    }
-
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(message);
     }
 
     @Override
@@ -199,15 +193,6 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
 
     }
 
-    @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
 
     @Override
     public void upAndDownLocationSuccess() {

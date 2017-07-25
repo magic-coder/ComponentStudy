@@ -84,7 +84,7 @@ public class QHYTAODetailFragment extends BaseDetailFragment<QHYTAODetailPresent
         //清除缓存标识
         mTransId = "";
         //清除过账凭证
-        mTransNum = "";
+        mShowMsg.setLength(0);
         //获取缓存累计数量缓存
         mPresenter.getReference(mRefData, recordNum, refType, bizType, moveType, "", Global.USER_ID);
     }
@@ -225,7 +225,7 @@ public class QHYTAODetailFragment extends BaseDetailFragment<QHYTAODetailPresent
             showMessage("请先采集数据");
             return;
         }
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mPresenter.transferCollectionData(mRefData.recordNum, mRefData.refCodeId, mTransId, mBizType,
                 mRefType, mRefData.inspectionType, Global.USER_ID, false,
                 mRefData.voucherDate, transToSapFlag, null);
@@ -237,17 +237,11 @@ public class QHYTAODetailFragment extends BaseDetailFragment<QHYTAODetailPresent
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         mTransId = "";
-        mTransNum = "";
+        mShowMsg .setLength(0);
         mRefData = null;
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
-    }
-
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
     }
 
     /**
@@ -272,16 +266,6 @@ public class QHYTAODetailFragment extends BaseDetailFragment<QHYTAODetailPresent
 
     @Override
     public void submitSAPSuccess() {
-
-    }
-
-    @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
     }
 

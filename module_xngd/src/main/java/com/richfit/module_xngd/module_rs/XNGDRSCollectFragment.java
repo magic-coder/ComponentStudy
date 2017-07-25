@@ -1,7 +1,8 @@
 package com.richfit.module_xngd.module_rs;
 
+import android.text.TextUtils;
+
 import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
@@ -43,13 +44,26 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         param.queryType = "03";
         param.invType = "1";
-        Map<String,Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag",lineData.invFlag);
-        extraMap.put("specialInvFlag",lineData.specialInvFlag);
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
+    }
+
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+        if (!isNLocation && TextUtils.isEmpty(getString(etLocation))) {
+            showMessage("请先输入上架仓位");
+            return false;
+        }
+        if (!isNLocation && getString(etLocation).split("\\.").length != 4) {
+            showMessage("您输入的仓位格式不正确");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
     }
 }

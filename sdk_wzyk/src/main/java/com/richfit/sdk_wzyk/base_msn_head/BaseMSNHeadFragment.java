@@ -96,7 +96,7 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
      */
     @Override
     public void initEvent() {
-        /*选择日期*/
+        //过账日期
         etTransferDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
 
@@ -265,6 +265,16 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
         spSendInv.setSelection(0);
         spRecWork.setSelection(0);
         spRecInv.setSelection(0);
+    }
+
+    @Override
+    public void showProjectNums(ArrayList<String> projectNums) {
+
+    }
+
+    @Override
+    public void loadProjectNumsFail(String message) {
+
     }
 
     protected abstract String getMoveType();

@@ -133,6 +133,14 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        //监听物料恢复批次状态
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
+
         /*监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息*/
         /**
          * debounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
@@ -415,14 +423,14 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             return false;
         }
         //2017年06月28日增加批次判断
-        if(mHistoryDetailList != null) {
-            RefDetailEntity data = mHistoryDetailList.get(0);
-            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
-            if(isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-                showMessage("请输入批次");
-                return false;
-            }
-        }
+//        if(mHistoryDetailList != null) {
+//            RefDetailEntity data = mHistoryDetailList.get(0);
+//            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
+//            if(isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+//                showMessage("请输入批次");
+//                return false;
+//            }
+//        }
 
         //实发数量
         if (!refreshQuantity(getString(etQuantity))) {
@@ -460,7 +468,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = getString(etBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
             result.location = mInventoryDatas.get(spLocation.getSelectedItemPosition()).location;
             result.quantity = getString(etQuantity);
             result.costCenter = mRefData.costCenter;
@@ -490,8 +498,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etBatchFlag.setEnabled(true);
         }
     }
 

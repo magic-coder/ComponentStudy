@@ -18,6 +18,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -189,10 +190,11 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     @Override
     public void loadTransferSingleInfoComplete() {
         //获取库存信息
-        mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                 CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
                 "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                "", getString(tvSendBatchFlag), "", "", getInvType(), "", null);
+                "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
     }
 
     @Override
@@ -251,10 +253,11 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
             showMessage("接收库位为空");
             return;
         }
-        mPresenter.getInventoryInfoOnRecLocation(getInventoryQueryType(), mRefData.recWorkId, mRefData.recInvId,
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                 mRefData.recWorkCode, mRefData.recInvCode, "", getString(tvMaterialNum),
                 CommonUtil.Obj2String(tvMaterialNum.getTag()), "",
-                getString(tvSendBatchFlag), "", "", getInvType(), mDeviceId, null);
+                getString(tvSendBatchFlag), "", "", param.invType, mDeviceId, null);
     }
 
     @Override
@@ -452,6 +455,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -462,7 +466,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
-            result.batchFlag = getString(tvSendBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvSendBatchFlag);
             result.deviceId = mDeviceId;
             int locationPos = spSendLoc.getSelectedItemPosition();
             result.location = mInventoryDatas.get(locationPos).location;
@@ -474,7 +478,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
             result.recBatchFlag = getString(tvRecBatchFlag);
             result.quantity = getString(etQuantity);
             result.modifyFlag = "Y";
-            result.invType = getInvType();
+            result.invType = param.invType;
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER)
@@ -495,6 +499,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
 
     @Override
     public void retry(String retryAction) {
+        InventoryQueryParam param = provideInventoryQueryParam();
         switch (retryAction) {
             case Global.RETRY_LOAD_SINGLE_CACHE_ACTION:
                 mPresenter.getTransferInfoSingle(mRefData.bizType, getString(tvMaterialNum),
@@ -505,27 +510,20 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
                 saveCollectedData();
                 break;
             case Global.RETRY_LOAD_INVENTORY_ACTION:
-                mPresenter.getInventoryInfo(getInventoryQueryType(), mRefData.workId,
+
+                mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                         CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
                         "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                        "", getString(tvSendBatchFlag), "", "", getInvType(), "", null);
+                        "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
                 break;
             case Global.RETRY_LOAD_REC_INVENTORY_ACTION:
-                mPresenter.getInventoryInfoOnRecLocation(getInventoryQueryType(), mRefData.recWorkId, mRefData.recInvId,
+                mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                         mRefData.recWorkCode, mRefData.recInvCode, "", getString(tvMaterialNum),
                         CommonUtil.Obj2String(tvMaterialNum.getTag()), "",
-                        getString(tvSendBatchFlag), "", "", getInvType(), mDeviceId, null);
+                        getString(tvSendBatchFlag), "", "", param.invType, mDeviceId, null);
                 break;
         }
         super.retry(retryAction);
     }
-
-    /**
-     * 子类返回获取库存的类型
-     * 0:表示代管库存,1:表示正常库存
-     */
-    protected abstract String getInvType();
-
-    protected abstract String getInventoryQueryType();
 }
 

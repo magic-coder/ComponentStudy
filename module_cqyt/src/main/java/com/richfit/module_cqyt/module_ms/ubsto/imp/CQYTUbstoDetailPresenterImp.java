@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -58,18 +57,18 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
         if (extraHeaderMap != null) {
             final String refNum = CommonUtil.Obj2String(extraHeaderMap.get("refNum"));
             addSubscriber(Flowable.concat(uploadInspectedImages(refNum, refCodeId, transId, userId, "01", false),
-                    mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "",extraHeaderMap))
-                    .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
+                    mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "", extraHeaderMap))
+//                    .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                     .doOnComplete(() -> mRepository.deleteInspectionImages(refNum, refCodeId, false))
                     .doOnComplete(() -> FileUtil.deleteDir(FileUtil.getImageCacheDir(mContext.getApplicationContext(), refNum, false)))
-                    .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
+//                    .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new RxSubscriber<String>(mContext, "正在保存数据...") {
 
                         @Override
                         public void _onNext(String transNum) {
                             if (mView != null) {
-                                mView.showTransferedVisa(transNum);
+                                mView.saveMsgFowShow(transNum);
                             }
                         }
 
@@ -106,6 +105,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
 
     /**
      * 06
+     *
      * @param transId
      * @param bizType
      * @param refType
@@ -127,7 +127,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showTransferedVisa(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
@@ -140,15 +140,15 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
 
                     @Override
                     public void _onCommonError(String message) {
-                        if (mView != null && !TextUtils.isEmpty(message)) {
-                            mView.submitSAPFail(message.split("_"));
+                        if (mView != null) {
+                            mView.submitSAPFail(message);
                         }
                     }
 
                     @Override
                     public void _onServerError(String code, String message) {
                         if (mView != null) {
-                            mView.submitSAPFail(new String[]{message});
+                            mView.submitSAPFail(message);
                         }
                     }
 
@@ -165,6 +165,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
 
     /**
      * 05
+     *
      * @param transId
      * @param bizType
      * @param refType
@@ -179,10 +180,8 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
                                      Map<String, Object> extraHeaderMap, int submitFlag) {
         mView = getView();
         RxSubscriber<String> subscriber =
-                Flowable.concat(mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate,
-                        transToSapFlag, extraHeaderMap),
-                        mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate,
-                                transToSapFlag, extraHeaderMap))
+                mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate,
+                        transToSapFlag, extraHeaderMap)
                         .compose(TransformerHelper.io2main())
                         .doOnError(str -> SPrefUtil.saveData(bizType + refType, "2"))
                         .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "0"))
@@ -190,7 +189,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
                             @Override
                             public void _onNext(String message) {
                                 if (mView != null) {
-                                    mView.showInspectionNum(message);
+                                    mView.saveMsgFowShow(message);
                                 }
                             }
 
@@ -204,14 +203,14 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
                             @Override
                             public void _onCommonError(String message) {
                                 if (mView != null) {
-                                    mView.upAndDownLocationFail(message.split("_"));
+                                    mView.upAndDownLocationFail(message);
                                 }
                             }
 
                             @Override
                             public void _onServerError(String code, String message) {
                                 if (mView != null) {
-                                    mView.upAndDownLocationFail(message.split("_"));
+                                    mView.upAndDownLocationFail(message);
                                 }
                             }
 

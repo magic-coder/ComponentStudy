@@ -118,16 +118,6 @@ public class InvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetail
     }
 
     @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
-
-    @Override
     public void upAndDownLocationSuccess() {
 
     }

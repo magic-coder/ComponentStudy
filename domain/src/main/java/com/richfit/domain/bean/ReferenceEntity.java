@@ -136,7 +136,17 @@ public class ReferenceEntity {
     public String zzzxlb;
     /*专项核算内容*/
     public String zzzxnr;
-
+    public String team;
+    public String inspectionUnit;
+    public String arrivalDate;
+    public String inspectionDate;
+    public String inspectionStandard;
+    public String post;
+    public String manufacture;
+    //项目移交物资
+    public String projectFlag;
+    //报检单位
+    public String declaredUnit;
 
     @Override
     public String toString() {

@@ -2,30 +2,25 @@ package com.richfit.module_cqyt.module_ys;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.LinearLayout;
 
-import com.richfit.module_cqyt.R;
-import com.richfit.sdk_wzys.basehead.BaseApprovalHeadFragment;
-import com.richfit.sdk_wzys.basehead.imp.ApprovalHeadPresenterImp;
+import com.richfit.sdk_wzrk.base_as_head.BaseASHeadFragment;
+import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 
 /**
  * Created by monday on 2017/7/5.
  */
 
-public class CQYTAOHeadFragment extends BaseApprovalHeadFragment {
+public class CQYTAOHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
 
     @Override
     public void initPresenter() {
-        mPresenter = new ApprovalHeadPresenterImp(mActivity);
+        mPresenter = new ASHeadPresenterImp(mActivity);
     }
 
     @Override
     public void initView() {
+        llSupplier.setVisibility(View.VISIBLE);
         super.initView();
-        llArrivalDate.setVisibility(View.GONE);
-        LinearLayout llInspectionPerson = (LinearLayout) mView.findViewById(R.id.ll_inspection_person);
-        llInspectionPerson.setVisibility(View.GONE);
-        llInspectionType.setVisibility(View.GONE);
     }
 
     @Override

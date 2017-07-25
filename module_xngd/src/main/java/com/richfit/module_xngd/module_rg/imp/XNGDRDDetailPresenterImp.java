@@ -34,7 +34,7 @@ public class XNGDRDDetailPresenterImp extends DSDetailPresenterImp {
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showTransferedVisa(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 

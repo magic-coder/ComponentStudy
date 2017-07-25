@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@id/tmp"
+        layout="@layout/wzrk_fragment_asn_edit"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/xngd_money" />
+
+        <EditText
+            android:id="@id/xngd_et_money"
+            style="@style/RightEditTextItemStyle" />
+    </LinearLayout>
+</LinearLayout>

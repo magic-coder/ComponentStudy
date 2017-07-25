@@ -160,13 +160,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
     /**
@@ -174,7 +168,8 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
      */
     @Override
     protected void submit2SAP(String tranToSapFlag) {
-        if (TextUtils.isEmpty(mTransNum)) {
+        String state = (String) getData(mBizType, "0");
+        if ("0".equals(state)) {
             showMessage("请先过账");
             return;
         }
@@ -192,19 +187,9 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
-    }
-
-    /**
-     * 上架失败
-     *
-     * @param messages
-     */
-    @Override
-    public void submitSAPFail(String[] messages) {
-        showErrorDialog(messages);
     }
 
     /**
@@ -220,12 +205,6 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
 
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
-
-    }
-
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
     }
 

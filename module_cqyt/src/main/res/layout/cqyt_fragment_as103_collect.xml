@@ -29,7 +29,8 @@
 
             <EditText
                 android:id="@id/cqyt_et_quantity_custom"
-                style="@style/RightEditTextItemStyle" />
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal" />
 
         </LinearLayout>
 
@@ -78,7 +79,8 @@
 
             <EditText
                 android:id="@id/cqyt_et_unqualified_quantity"
-                style="@style/RightEditTextItemStyle" />
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal" />
         </LinearLayout>
 
         <LinearLayout
@@ -89,11 +91,12 @@
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
-                android:text="@string/remark" />
+                android:text="@string/cqyt_declared_quantity" />
 
             <EditText
-                android:id="@id/et_remark"
-                style="@style/RightEditTextItemStyle" />
+                android:id="@id/cqyt_et_declared_quantity"
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal" />
         </LinearLayout>
 
     </LinearLayout>

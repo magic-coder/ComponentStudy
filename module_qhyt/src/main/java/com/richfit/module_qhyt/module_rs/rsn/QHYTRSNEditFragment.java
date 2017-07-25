@@ -34,8 +34,4 @@ public class QHYTRSNEditFragment extends BaseRSNEditFragment<RSNEditPresenterImp
 
     }
 
-    @Override
-    protected String getInventoryQueryType() {
-        return null;
-    }
 }

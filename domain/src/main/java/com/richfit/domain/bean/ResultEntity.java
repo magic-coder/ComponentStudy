@@ -162,4 +162,15 @@ public class ResultEntity extends TreeNode{
     public String zzzdy9;
     public String zzzxlb;
     public String zzzxnr;
+    public String shopCondition;
+    public String declaredQuantity;
+    public String team;
+    public String inspectionUnit;
+    public String arrivalDate;
+    public String inspectionDate;
+    public String inspectionStandard;
+    public String post;
+    public String manufacture;
+    public String declaredUnit;
+    public String money;
 }

@@ -123,6 +123,13 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
+
         //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
         RxAdapterView.itemSelections(spInv)
                 .filter(pos -> pos > 0)
@@ -333,6 +340,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
         //库存地点
         if (spInv.getSelectedItemPosition() <= 0) {
             showMessage("请先选择库存地点");
@@ -349,15 +357,15 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             showMessage("请先输入物料条码");
             return false;
         }
-        //批次
-        if (mHistoryDetailList != null) {
-            RefDetailEntity data = mHistoryDetailList.get(0);
-            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
-            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-                showMessage("请先输入批次");
-                return false;
-            }
-        }
+//        //批次
+//        if (mHistoryDetailList != null) {
+//            RefDetailEntity data = mHistoryDetailList.get(0);
+//            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
+//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+//                showMessage("请先输入批次");
+//                return false;
+//            }
+//        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");
@@ -395,7 +403,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = getString(etBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
             result.location = getString(etLocation);
             result.quantity = getString(etQuantity);
             result.specialInvFlag = getString(tvSpecialInvFlag);
@@ -431,8 +439,6 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         tvLocQuantity.setText(getString(etQuantity));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etBatchFlag.setEnabled(true);
         }
     }
 

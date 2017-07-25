@@ -319,7 +319,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
             result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
                     "Y" : "N";
-            result.batchFlag = getString(tvBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
             result.quantity = getString(etQuantity);
             result.invType = param.invType;
             result.modifyFlag = "Y";

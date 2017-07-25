@@ -91,6 +91,7 @@
         android:padding="@dimen/collect_row_padding">
 
         <TextView
+            android:id="@id/tv_transfer_date"
             style="@style/LeftTextViewItemStyle"
             android:text="@string/transfer_date" />
 
@@ -98,4 +99,6 @@
             android:id="@id/et_transfer_date"
             style="@style/RightRichEditTextItemStyle" />
     </LinearLayout>
+
+
 </LinearLayout>

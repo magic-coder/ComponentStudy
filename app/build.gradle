@@ -105,8 +105,8 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"QHYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qhyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
-            versionCode 2
-            versionName "1.1"
+            versionCode 3
+            versionName "1.11"
             signingConfig signingConfigs.sign_qhyt
         }
 
@@ -174,8 +174,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 
 //  compile project(':module_qhyt')
-//    compile project(':module_xngd')
-    compile project(':module_cqyt')
+    compile project(':module_xngd')
+//    compile project(':module_cqyt')
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

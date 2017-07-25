@@ -98,7 +98,7 @@ public class XNGDAODetailFragment extends BaseASDetailFragment<XNGDAODetailPrese
             showMessage(getString(R.string.msg_detail_on_location));
             return;
         }
-        mTransNum = "";
+        mShowMsg.setLength(0);
         //这里需要refCodeId;
         mPresenter.transferCollectionData(mRefData.recordNum,mRefData.refCodeId,mTransId, mBizType,
                 mRefType,mRefData.inspectionType, Global.USER_ID,false, mRefData.voucherDate, transToSapFlag, null);
@@ -109,12 +109,12 @@ public class XNGDAODetailFragment extends BaseASDetailFragment<XNGDAODetailPrese
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }

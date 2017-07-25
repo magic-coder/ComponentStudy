@@ -5,11 +5,28 @@ import android.text.TextUtils;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_cwtz.collect.LACollectFragment;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by monday on 2017/6/15.
  */
 
-public class CNGDLACollectFragment extends LACollectFragment {
+public class XNGDLACollectFragment extends LACollectFragment {
+
+    @Override
+    public void initDataLazily() {
+        etMaterialNum.setEnabled(false);
+        if (mRefData == null) {
+            showMessage("在先在抬头界面选择相关的信息");
+            return;
+        }
+        if ("1".equals(mRefData.invType) && TextUtils.isEmpty(mRefData.projectNum)) {
+            showMessage("请现在抬头界面输入项目编号");
+            return;
+        }
+        super.initDataLazily();
+    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -45,13 +62,13 @@ public class CNGDLACollectFragment extends LACollectFragment {
         }
 
         final String location = getString(etSendLocation);
-        if (TextUtils.isEmpty(location) || location.length() > 11) {
+        if (TextUtils.isEmpty(location) || location.split(".").length != 4) {
             showMessage("源仓位不合理");
             return false;
         }
 
         final String recLocation = getString(etRecLocation);
-        if (TextUtils.isEmpty(recLocation) || recLocation.length() > 11) {
+        if (TextUtils.isEmpty(recLocation) || location.split(".").length != 4) {
             showMessage("目标仓位不合理");
             return false;
         }
@@ -73,6 +90,11 @@ public class CNGDLACollectFragment extends LACollectFragment {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
         param.invType = "1";
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum",mRefData.projectNum);
+        param.extraMap = extraMap;
         return param;
     }
 

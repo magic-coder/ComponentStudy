@@ -11,6 +11,7 @@ import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzrk.R;
@@ -42,7 +43,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     @BindView(R2.id.tv_inv)
     protected TextView tvInv;
     @BindView(R2.id.tv_act_quantity)
-    TextView tvActQuantity;
+    protected TextView tvActQuantity;
     @BindView(R2.id.act_quantity_name)
     protected TextView actQuantityName;
     @BindView(R2.id.quantity_name)
@@ -54,7 +55,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     @BindView(R2.id.tv_location_quantity)
     protected TextView tvLocationQuantity;
     @BindView(R2.id.tv_total_quantity)
-    TextView tvTotalQuantity;
+    protected TextView tvTotalQuantity;
     @BindView(R2.id.ll_location)
     protected LinearLayout llLocation;
     @BindView(R2.id.ll_location_quantity)
@@ -67,7 +68,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     String mRefLineId;
     protected String mLocationId;
     /*修改之前用户数的数量*/
-    String mQuantity;
+    protected String mQuantity;
     /*要修改的子节点的父节点所在明细数据集的索引*/
     protected int mPosition;
     //是否上架（直接通过父节点的标志位判断即可）
@@ -188,6 +189,8 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.voucherDate = mRefData.voucherDate;
@@ -201,14 +204,15 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             result.locationId = mLocationId;
             result.materialId = lineData.materialId;
             result.locationId = mLocationId;
-            result.location = isNLocation ? "BARCODE" : getString(etLocation);
-            result.batchFlag = getString(tvBatchFlag);
+            result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
             result.quantity = getString(etQuantity);
             result.refDoc = lineData.refDoc;
             result.refDocItem = lineData.refDocItem;
             result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
             result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
             result.modifyFlag = "Y";
+
             emitter.onNext(result);
             emitter.onComplete();
         }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())

@@ -1,8 +1,7 @@
-package com.richfit.module_xngd.module_ds.ds_ll;
+package com.richfit.module_xngd.module_ds.dsy;
 
 
 import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
 import com.richfit.sdk_wzck.base_ds_collect.imp.DSCollectPresenterImp;
@@ -14,7 +13,7 @@ import java.util.Map;
  * Created by monday on 2017/1/20.
  */
 
-public class XNGDDSLLCollectFragment extends BaseDSCollectFragment<DSCollectPresenterImp> {
+public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPresenterImp> {
 
     @Override
     public void initPresenter() {
@@ -37,18 +36,20 @@ public class XNGDDSLLCollectFragment extends BaseDSCollectFragment<DSCollectPres
         return getInteger(R.integer.orgNorm);
     }
 
-
+    /**
+     * 这里需要重写获取库存的参数，因为抬头选择是否应急，获取库存必须考虑
+     * @return
+     */
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         param.queryType = "03";
         param.invType = "1";
-        Map<String,Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag",lineData.invFlag);
-        extraMap.put("specialInvFlag",lineData.specialInvFlag);
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }
-
 }

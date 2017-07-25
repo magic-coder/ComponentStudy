@@ -23,10 +23,10 @@ public class DSYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
 
     @Override
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
-        holder.setText(R.id.location,item.location);
-        holder.setText(R.id.batchFlag,item.batchFlag);
-        holder.setText(R.id.quantity,item.quantity);
-        holder.setText(R.id.specialInvFlag,item.specialInvFlag);
-        holder.setText(R.id.specialInvNum,item.specialInvNum);
+        holder.setText(R.id.location, item.location);
+        holder.setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag);
+        holder.setText(R.id.quantity, item.quantity);
+        holder.setText(R.id.specialInvFlag, item.specialInvFlag);
+        holder.setText(R.id.specialInvNum, item.specialInvNum);
     }
 }

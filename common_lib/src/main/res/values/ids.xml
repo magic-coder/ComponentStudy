@@ -184,7 +184,9 @@
     <item name="damagedQuantity" type="id"></item>
 
 
+
     <!--数据修改业务id-->
+    <item name="tv_transfer_date" type="id"></item>
     <item name="tv_ref_line_num" type="id"></item>
     <item name="tv_material_num" type="id"></item>
     <item name="tv_batch_flag" type="id"></item>

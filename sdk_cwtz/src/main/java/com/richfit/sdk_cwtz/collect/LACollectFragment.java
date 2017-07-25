@@ -9,6 +9,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
@@ -63,7 +64,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     @BindView(R2.id.sp_special_inv)
     protected Spinner spSpecialInv;
     SpecialInvAdapter mAdapter;
-    List<InventoryEntity> mInventoryDatas;
+    protected List<InventoryEntity> mInventoryDatas;
     MaterialEntity mHistoryData;
 
     @Override
@@ -71,8 +72,6 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         if (list != null && list.length > 2) {
             final String materialNum = list[Global.MATERIAL_POS];
             final String batchFlag = list[Global.BATCHFALG_POS];
-            etMaterialNum.setText(materialNum);
-            etBatchFlag.setText(batchFlag);
             loadMaterialInfo(materialNum, batchFlag);
         } else {
             final String location = list[Global.LOCATION_POS];
@@ -133,6 +132,13 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     public void initEvent() {
         //获取物料
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> loadMaterialInfo(materialNum, getString(etBatchFlag)));
+        //监听物料恢复批次状态
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
         //获取仓位的库存
         etSendLocation.setOnRichEditTouchListener((view, location) -> loadInventoryInfo(location));
         //选择下拉
@@ -163,6 +169,8 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             return;
         }
         clearAllUI();
+        etMaterialNum.setText(materialNum);
+        etBatchFlag.setText(batchFlag);
         mHistoryData = null;
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
@@ -263,18 +271,24 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
+
         if (TextUtils.isEmpty(mRefData.bizType)) {
             showMessage("业务类型为空");
             return false;
         }
 
-        if (mHistoryData != null) {
-            manageBatchFlagStatus(etBatchFlag, mHistoryData.batchManagerStatus);
-            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-                showMessage("请输入批次");
-                return false;
-            }
-        }
+//        if (mHistoryData != null) {
+//            manageBatchFlagStatus(etBatchFlag, mHistoryData.batchManagerStatus);
+//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+//                showMessage("请输入批次");
+//                return false;
+//            }
+//        }
 
         if (TextUtils.isEmpty(mRefData.workId)) {
             showMessage("请先在抬头界面选择工厂");
@@ -355,8 +369,6 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
         showSuccessDialog(message);
         clearAllUI();
         clearCommonUI(etMaterialNum, etBatchFlag);
-        isOpenBatchManager = true;
-        etBatchFlag.setEnabled(true);
     }
 
     @Override

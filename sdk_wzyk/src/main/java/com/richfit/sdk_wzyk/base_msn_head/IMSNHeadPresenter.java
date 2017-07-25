@@ -29,4 +29,15 @@ public interface IMSNHeadPresenter extends IBaseHeadPresenter<IMSNHeadView> {
      */
     void deleteCollectionData(String refType, String bizType, String userId,
                               String companyCode);
+
+    /**
+     * 获取项目编号列表
+     * @param workCode
+     * @param keyWord
+     * @param defaultItemNum
+     * @param flag
+     * @param bizType
+     */
+    void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
+
 }

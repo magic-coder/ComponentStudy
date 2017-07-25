@@ -21,7 +21,7 @@ import java.util.List;
 public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, InventoryEntity>
         implements ILQDetailView {
 
-    private LQDetailAdapter mLQDetailAdapter;
+    protected LQDetailAdapter mLQDetailAdapter;
 
     @Override
     protected int getContentId() {
@@ -149,16 +149,6 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
 
     @Override
     public void submitSAPSuccess() {
-
-    }
-
-    @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
     }
 

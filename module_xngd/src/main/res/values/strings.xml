@@ -1,6 +1,6 @@
 <resources>
     <string name="xngd_app_name">module_xngd</string>
-    <string name="xngd_is_inv_flag">是否应急</string>
+    <string name="xngd_is_inv_flag">应急物资</string>
     <string name="xngd_project_flag">项目移交物资</string>
     <string name="xngd_job_num">工单号</string>
     <string name="xngd_rg_goods_type">退货物资类型</string>
@@ -10,4 +10,6 @@
     <string name="xngd_inspection_type">检验方法</string>
     <string name="xngd_inspection_status">检验状况</string>
     <string name="xngd_process_result">处理情况</string>
+    <string name="xngd_inv_flag">应急物资</string>
+    <string name="xngd_money">本位币金额</string>
 </resources>

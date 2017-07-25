@@ -64,9 +64,10 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
         param.invType = "1";
-        Map<String,Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag",mRefData.invFlag);
-        extraMap.put("specialInvFlag",mRefData.specialInvFlag);
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

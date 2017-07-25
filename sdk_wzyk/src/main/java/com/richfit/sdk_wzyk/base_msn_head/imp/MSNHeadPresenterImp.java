@@ -2,17 +2,18 @@ package com.richfit.sdk_wzyk.base_msn_head.imp;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzyk.base_msn_head.IMSNHeadPresenter;
 import com.richfit.sdk_wzyk.base_msn_head.IMSNHeadView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -30,7 +31,6 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getWorks(int flag) {
-        Log.d("yff","getWorks");
         mView = getView();
         ResourceSubscriber<ArrayList<WorkEntity>> subscriber = mRepository.getWorks(flag)
                 .compose(TransformerHelper.io2main())
@@ -61,7 +61,6 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getRecInvsByWorkId(String workId, int flag) {
-        Log.d("yff","getRecInvsByWorkId");
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.loadRecInvsFail("请先选择接收工厂");
@@ -96,7 +95,6 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
 
     @Override
     public void getSendInvsByWorkId(String workId, int flag) {
-        Log.d("yff","getSendInvsByWorkId");
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.loadSendInvsFail("请先选择发出工厂");
@@ -170,5 +168,44 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
                     }
                 });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
+        mView = getView();
+        ResourceSubscriber<ArrayList<String>> subscriber =
+                mRepository.getSupplierList(workCode, keyWord, defaultItemNum, flag)
+                        .filter(list -> list != null && list.size() > 0)
+                        .map(list -> convert2StrList(list))
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new ResourceSubscriber<ArrayList<String>>() {
+                            @Override
+                            public void onNext(ArrayList<String> list) {
+                                if (mView != null) {
+                                    mView.showProjectNums(list);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.loadProjectNumsFail(t.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
+    private ArrayList<String> convert2StrList(List<SimpleEntity> list) {
+        ArrayList<String> strs = new ArrayList<>();
+        for (SimpleEntity item : list) {
+            strs.add(item.code + "_" + item.name);
+        }
+        return strs;
     }
 }

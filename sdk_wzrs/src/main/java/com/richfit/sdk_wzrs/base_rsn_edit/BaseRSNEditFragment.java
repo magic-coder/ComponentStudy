@@ -12,6 +12,7 @@ import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -217,6 +218,8 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         }
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
             result.businessType = mRefData.bizType;
             result.voucherDate = mRefData.voucherDate;
             result.moveType = mRefData.moveType;
@@ -226,14 +229,13 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
-            result.batchFlag = getString(tvBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
             result.location = getString(etLocation);
             result.locationId = mLocationId;
             result.quantity = getString(etQuantity);
             result.supplierId = mRefData.supplierId;
             result.costCenter = mRefData.costCenter;
             result.projectNum = mRefData.projectNum;
-            result.invType = getInventoryQueryType();
             result.modifyFlag = "Y";
             emitter.onNext(result);
             emitter.onComplete();
@@ -263,6 +265,4 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         }
         super.retry(retryAction);
     }
-
-    protected abstract String getInventoryQueryType();
 }

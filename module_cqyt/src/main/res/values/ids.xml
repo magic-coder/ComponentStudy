@@ -36,5 +36,15 @@
     <item name="cqyt_tv_unqualified_quantity" type="id"/>
 
     <item name="cqyt_sp_shop_condition" type="id"/>
+    <item name="cqyt_et_declared_quantity" type="id"/>
+    <item name="cqyt_tv_declared_quantity" type="id"/>
+    <item name="cqyt_tv_declared_unit" type="id"/>
+    <item name="cqyt_et_class" type="id"/>
+    <item name="cqyt_et_post" type="id"/>
+    <item name="cqyt_et_manufacturer" type="id"/>
+    <item name="cqyt_sp_inspection_unit" type="id"/>
+    <item name="cqyt_et_inspection_date" type="id"/>
+    <item name="cqyt_et_inspection_standard" type="id"/>
+    <item name="cqyt_sp_declared_unit" type="id"/>
 
 </resources>

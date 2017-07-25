@@ -1,7 +1,6 @@
 package com.richfit.sdk_wzyk.base_ms_detail;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -82,7 +81,6 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
         isNeedTurn = false;
         isTurnSuccess = false;
         startAutoRefresh();
-        Log.d("yff","initDataLazily");
     }
 
     /**
@@ -106,8 +104,8 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
 
     @Override
     public void refreshComplete() {
-        setRefreshing(true,"获取明细成功");
-        if(!isNeedTurn && isTurnSuccess) {
+        setRefreshing(true, "获取明细成功");
+        if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);
         }
@@ -217,8 +215,8 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             showMessage("已经过账成功,请进行其他转储");
             return;
         }
-        mTransNum = "";
-        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId,mTransId, mBizType, mRefType, Global.USER_ID,
+        mShowMsg.setLength(0);
+        mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 
@@ -228,18 +226,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    /**
-     * 第一步的过账(Transfer 01)失败后，必须清除状态标识。
-     *
-     * @param message
-     */
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
     /**
@@ -252,14 +239,9 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             showMessage("请先过账");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
-    }
-
-    @Override
-    public void showInspectionNum(String inspectionNum) {
-        mInspectionNum = inspectionNum;
     }
 
     /**
@@ -268,27 +250,16 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "转储成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
-
-    /**
-     * 第二步记账失败显示失败信息
-     *
-     * @param messages
-     */
-    @Override
-    public void submitSAPFail(String[] messages) {
-        mInspectionNum = "";
-        showErrorDialog(messages);
-    }
 
     /**
      * 3. 如果submitFlag:2那么分三步进行转储处理
@@ -303,10 +274,6 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
 
     }
 
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
 
     /**
      * 开始寄售转自有
@@ -318,7 +285,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             showMessage("未获取到缓存,请先获取采集数据");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.turnOwnSupplies(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null, -1);
     }

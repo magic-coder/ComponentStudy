@@ -25,6 +25,26 @@ import java.util.List;
 
 public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103DetailPresenterImp> {
 
+    @Override
+    public void initPresenter() {
+        mPresenter = new QHYTAS103DetailPresenterImp(mActivity);
+    }
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void initEvent() {
+
+    }
+
+    @Override
+    public void initData() {
+
+    }
+
     /**
      * 注意这必须从重写该方法，尽管明细界面和标准的一致，但是缺少删除和修改功能，所以必须重新
      * 给出一个新的适配器。另外103的业务是有参考单据，但是没有父子节点所以删除的时候需要特别
@@ -52,7 +72,7 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
      */
     @Override
     public void deleteNode(final RefDetailEntity node, int position) {
-        if (!TextUtils.isEmpty(mTransNum)) {
+        if (!TextUtils.isEmpty(mShowMsg)) {
             showMessage("已经过账,不允许删除");
             return;
         }
@@ -71,8 +91,8 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
      */
     @Override
     public void editNode(final RefDetailEntity node, int position) {
-        if (!TextUtils.isEmpty(mTransNum)) {
-            showMessage("本次入库已经过账,不允许修改");
+        if (!TextUtils.isEmpty(mShowMsg)) {
+            showMessage("已经过账,不允许修改");
             return;
         }
         if (TextUtils.isEmpty(node.transLineId)) {
@@ -95,12 +115,12 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
     @Override
     public void submitBarcodeSystemSuccess() {
         showMessage("过账成功");
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
@@ -112,24 +132,10 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
     }
 
     @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
-
-    @Override
     public void upAndDownLocationSuccess() {
 
     }
 
-    @Override
-    public void initPresenter() {
-        mPresenter = new QHYTAS103DetailPresenterImp(mActivity);
-    }
 
     /**
      * 只有过账按钮
@@ -143,20 +149,7 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
         return menus.subList(0, 1);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
 
-    }
-
-    @Override
-    public void initEvent() {
-
-    }
-
-    @Override
-    public void initData() {
-
-    }
 
     @Override
     public boolean checkTransStateBeforeRefresh() {

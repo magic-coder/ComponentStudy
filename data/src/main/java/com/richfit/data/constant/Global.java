@@ -52,6 +52,11 @@ public class Global {
     public static final int ONLINE_MODE = 0x0;
     public static final int OFFLINE_MODE = 0x1;
 
+    /*批次默认值*/
+    public static final String DEFAULT_BATCHFLAG = "batchFlag";
+    /*仓位默认值*/
+    public static final String DEFAULT_LOCATION = "barcode";
+
     /*地区公司*/
     public static final String QYSH = "qysh";
     public static final String QHYT = "qhyt";

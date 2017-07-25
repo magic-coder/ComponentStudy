@@ -32,6 +32,7 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -220,10 +221,19 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         return TextUtils.isEmpty(str);
     }
 
-    protected void showSuccessDialog(String message) {
+    protected void showSuccessDialog(CharSequence message) {
+        //注意这里需要处理\n和-----分割符
+        if(TextUtils.isEmpty(message))
+            return;
+        String[] msgs = message.toString().split("______");
+        StringBuffer msg = new StringBuffer();
+        for (String s : msgs) {
+            msg.append(s);
+        }
+        msgs = null;
         new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("温馨提示")
-                .setContentText(message)
+                .setContentText(msg.toString())
                 .show();
     }
 
@@ -234,8 +244,10 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
                 .show();
     }
 
-    protected void showErrorDialog(String message) {
-        String[] errors = message.split("______");
+    protected void showErrorDialog(CharSequence message) {
+        if(TextUtils.isEmpty(message))
+            return;
+        String[] errors = message.toString().split("______");
         //注意这里使用多态性质，父类AppCompatActivity中的FragmentManager
         AppCompatActivity activity = (AppCompatActivity) mActivity;
         FragmentManager fm = activity.getSupportFragmentManager();
@@ -243,12 +255,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         dialog.show(fm, "nms_show_error_messages");
     }
 
-    protected void showErrorDialog(String[] messages) {
-        AppCompatActivity activity = (AppCompatActivity) mActivity;
-        FragmentManager fm = activity.getSupportFragmentManager();
-        ShowErrorMessageDialog dialog = ShowErrorMessageDialog.newInstance(messages);
-        dialog.show(fm, "nms_show_error_messages");
-    }
 
     protected void setAutoCompleteConfig(AutoCompleteTextView autoComplete) {
         autoComplete.setThreshold(1);
@@ -452,7 +458,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected void manageBatchFlagStatus(TextView batchFlagView, boolean batchManagerStatus) {
         //如果该业务打开了批次管理，那么检查该物料是否打开了批次管理
         isOpenBatchManager = batchManagerStatus;
-        Log.d("yff","是否打开了批次管理 = " + isOpenBatchManager);
+        Log.e("yff","是否打开了批次管理 = " + isOpenBatchManager);
         batchFlagView.setEnabled(isOpenBatchManager);
         if (!isOpenBatchManager) {
             batchFlagView.setText("");

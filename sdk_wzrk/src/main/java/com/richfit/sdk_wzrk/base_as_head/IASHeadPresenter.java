@@ -1,7 +1,10 @@
 package com.richfit.sdk_wzrk.base_as_head;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
+import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+
+import java.util.List;
 
 
 /**
@@ -33,5 +36,8 @@ public interface IASHeadPresenter extends IBaseHeadPresenter<IASHeadView> {
      */
     void deleteCollectionData(String refNum, String transId, String refCodeId, String refType, String bizType,
                               String userId, String companyCode);
+
+    void getInvsByWorkId(String workId, int flag);
+
 
 }

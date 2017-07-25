@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
@@ -21,7 +20,6 @@ import com.richfit.sdk_wzrk.base_asn_detail.IASNDetailView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -179,7 +177,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
                             @Override
                             public void _onNext(String s) {
                                 if (mView != null) {
-                                    mView.showTransferedVisa(s);
+                                    mView.saveMsgFowShow(s);
                                 }
                             }
 
@@ -225,7 +223,9 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
                     @Override
                     public void _onNext(String s) {
-
+                        if(mView != null) {
+                            mView.saveMsgFowShow(s);
+                        }
                     }
 
                     @Override
@@ -237,15 +237,15 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
 
                     @Override
                     public void _onCommonError(String message) {
-                        if (mView != null && !TextUtils.isEmpty(message)) {
-                            mView.submitSAPFail(message.split("_"));
+                        if (mView != null ) {
+                            mView.submitSAPFail(message);
                         }
                     }
 
                     @Override
                     public void _onServerError(String code, String message) {
                         if (mView != null) {
-                            mView.submitSAPFail(new String[]{message});
+                            mView.submitSAPFail(message);
                         }
                     }
 
@@ -267,30 +267,31 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
     private ArrayList<RefDetailEntity> trans2Detail(ReferenceEntity refData) {
         ArrayList<RefDetailEntity> datas = new ArrayList<>();
         List<RefDetailEntity> billDetailList = refData.billDetailList;
-        for (RefDetailEntity target : billDetailList) {
-            List<LocationInfoEntity> locationList = target.locationList;
+        for (RefDetailEntity lineData : billDetailList) {
+            List<LocationInfoEntity> locationList = lineData.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity loc : locationList) {
                     RefDetailEntity data = new RefDetailEntity();
-                    //父节点的数据
-                    data.materialId = target.materialId;
-                    data.materialNum = target.materialNum;
-                    data.materialDesc = target.materialDesc;
-                    data.materialGroup = target.materialGroup;
-                    data.unit = target.unit;
-                    data.price = target.price;
-                    data.totalQuantity = target.totalQuantity;
-                    data.transLineId = target.transLineId;
-                    data.invId = target.invId;
-                    data.invCode = target.invCode;
-                    //子节点的数据
+                    //行明细数据
+                    data.materialId = lineData.materialId;
+                    data.materialNum = lineData.materialNum;
+                    data.materialDesc = lineData.materialDesc;
+                    data.materialGroup = lineData.materialGroup;
+                    data.unit = lineData.unit;
+                    data.price = lineData.price;
+                    data.totalQuantity = lineData.totalQuantity;
+                    data.transLineId = lineData.transLineId;
+                    data.invId = lineData.invId;
+                    data.invCode = lineData.invCode;
+                    //仓位级别数据
                     data.transId = loc.transId;
                     data.location = loc.location;
                     data.batchFlag = loc.batchFlag;
                     data.quantity = loc.quantity;
                     data.recLocation = loc.recLocation;
                     data.recBatchFlag = loc.recBatchFlag;
-                    //Location_Id?
+                    //本位金额(注意行明细的是本位金额的总和)
+                    data.money = loc.money;
                     data.locationId = loc.id;
                     datas.add(data);
                 }

@@ -140,16 +140,6 @@ public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailP
     }
 
     @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
-
-    @Override
     public void upAndDownLocationSuccess() {
 
     }

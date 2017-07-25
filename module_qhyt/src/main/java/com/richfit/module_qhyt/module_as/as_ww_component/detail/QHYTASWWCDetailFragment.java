@@ -102,7 +102,7 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
         //清除缓存id
         mTransId = "";
         //清除过账凭证
-        mTransNum = "";
+        mShowMsg.setLength(0);
         //获取缓存累计数量不对
         mRefDetail = null;
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
@@ -219,16 +219,6 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
 
     @Override
     public void submitSAPSuccess() {
-
-    }
-
-    @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
     }
 

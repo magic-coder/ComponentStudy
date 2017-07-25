@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_tree_rv.CommonTreeAdapter;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.sdk_wzrk.R;
 
@@ -24,13 +25,12 @@ public class ASNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
     @Override
     protected void convert(ViewHolder holder, RefDetailEntity item, int position) {
         holder.setVisible(R.id.batchFlag, false);
-        holder.setVisible(R.id.location, false);
         holder.setText(R.id.rowNum, String.valueOf(position + 1))
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
                 //批次
-                .setText(R.id.batchFlag, item.batchFlag)
+                .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 //库存地点
                 .setText(R.id.inv, item.invCode)
                 //上架仓位

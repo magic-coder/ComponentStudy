@@ -3,7 +3,6 @@ package com.richfit.module_cqyt.module_vs;
 import android.content.Context;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
-import com.richfit.common_lib.lib_tree_rv.RecycleTreeViewHelper;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -158,12 +156,12 @@ public class CQYTPresenterImp extends BaseHeadPresenterImp<CQYTVSContract.View>
      * @param nodes
      */
     private List<RefDetailEntity> calculateQuantity(List<RefDetailEntity> nodes) {
-        float quantityS = 0.F;
-        float quantityH = 0.F;
+
         for (RefDetailEntity parentNode : nodes) {
             if (parentNode.getViewType() == Global.PARENT_NODE_HEADER_TYPE) {
+                float quantityS = 0.F;
+                float quantityH = 0.F;
                 List<TreeNode> children = parentNode.getChildren();
-
                 if (children == null || children.size() == 0) {
                     continue;
                 }
@@ -181,11 +179,8 @@ public class CQYTPresenterImp extends BaseHeadPresenterImp<CQYTVSContract.View>
                         }
                     }
                 }
-                if ("S".equals(parentNode.shkzg)) {
-                    parentNode.quantityS = String.valueOf(quantityS);
-                } else {
-                    parentNode.quantityH = String.valueOf(quantityH);
-                }
+                parentNode.quantityS = String.valueOf(quantityS);
+                parentNode.quantityH = String.valueOf(quantityH);
             }
         }
         return nodes;
@@ -265,39 +260,6 @@ public class CQYTPresenterImp extends BaseHeadPresenterImp<CQYTVSContract.View>
         return null;
     }
 
-    /**
-     * 重写树排序方法，目的是计算父节点的累计数量
-     *
-     * @param nodes
-     * @return
-     */
-    protected Flowable<ArrayList<RefDetailEntity>> sortNodes(final ArrayList<RefDetailEntity> nodes) {
-        return Flowable.create(emitter -> {
-            try {
-                ArrayList<RefDetailEntity> allNodes = RecycleTreeViewHelper.getSortedNodes(nodes, 1);
-                for (RefDetailEntity node : allNodes) {
-                    if (node.getViewType() == Global.PARENT_NODE_HEADER_TYPE) {
-                        List<TreeNode> children = node.getChildren();
-                        if (children != null && children.size() > 0) {
-                            float parentNodeTotalQuantity = 0.F;
-                            for (TreeNode child : children) {
-                                if (child instanceof RefDetailEntity) {
-                                    RefDetailEntity tmp = (RefDetailEntity) child;
-                                    parentNodeTotalQuantity += CommonUtil.convertToFloat(tmp.orderQuantity, 0.F);
-                                }
-                            }
-                            node.totalQuantity = String.valueOf(parentNodeTotalQuantity);
-                        }
-                    }
-                }
-                emitter.onNext(allNodes);
-                emitter.onComplete();
-            } catch (Exception e) {
-                e.printStackTrace();
-                emitter.onError(new Throwable(e.getMessage()));
-            }
-        }, BackpressureStrategy.BUFFER);
-    }
 
     //配置节点信息
     int treeId = 1;

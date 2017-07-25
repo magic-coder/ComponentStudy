@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_tree_rv.CommonTreeAdapter;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.sdk_wzck.R;
 
@@ -28,7 +29,7 @@ public class DSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
-                .setText(R.id.batchFlag, item.batchFlag)
+                .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 .setText(R.id.inv, item.invCode)
                 .setText(R.id.location, item.location)
                 .setText(R.id.quantity, item.totalQuantity)

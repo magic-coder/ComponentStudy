@@ -8,8 +8,8 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.adapter.CQYTAODetailAdapter;
-import com.richfit.module_cqyt.module_ys.detail.CQYTAODetailPresenterImp;
 import com.richfit.sdk_wzrk.base_as_detail.BaseASDetailFragment;
+import com.richfit.sdk_wzrk.base_as_detail.imp.ASDetailPresenterImp;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by monday on 2017/5/26.
  */
 
-public class CQYTAODetailFragment extends BaseASDetailFragment<CQYTAODetailPresenterImp> {
+public class CQYTAODetailFragment extends BaseASDetailFragment<ASDetailPresenterImp> {
 
     @Override
     protected int getContentId() {
@@ -27,7 +27,7 @@ public class CQYTAODetailFragment extends BaseASDetailFragment<CQYTAODetailPrese
 
     @Override
     public void initPresenter() {
-        mPresenter = new CQYTAODetailPresenterImp(mActivity);
+        mPresenter = new ASDetailPresenterImp(mActivity);
     }
 
     @Override
@@ -82,8 +82,8 @@ public class CQYTAODetailFragment extends BaseASDetailFragment<CQYTAODetailPrese
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
-        menus.get(0).transToSapFlag = "Z02";
-        menus.get(1).transToSapFlag = "Z03";
+        menus.get(0).transToSapFlag = "09";
+        menus.get(1).transToSapFlag = "05";
         return menus.subList(0, 2);
     }
     @Override

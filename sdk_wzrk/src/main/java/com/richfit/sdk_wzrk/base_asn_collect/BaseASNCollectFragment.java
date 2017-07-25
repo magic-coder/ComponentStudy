@@ -49,7 +49,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         implements IASNCollectView {
 
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
@@ -57,22 +57,22 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     @BindView(R2.id.tv_material_unit)
     TextView tvMaterialUnit;
     @BindView(R2.id.tv_special_inv_flag)
-    TextView tvSpecialInvFlag;
+    protected TextView tvSpecialInvFlag;
     @BindView(R2.id.et_batch_flag)
-    EditText etBatchFlag;
+    protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected Spinner spInv;
     @BindView(R2.id.et_location)
-    RichAutoEditText etLocation;
+    protected RichAutoEditText etLocation;
     @BindView(R2.id.tv_location_quantity)
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
-    EditText etQuantity;
+    protected EditText etQuantity;
     @BindView(R2.id.cb_single)
     CheckBox cbSingle;
 
     private InvAdapter mInvAdapter;
-    private List<InvEntity> mInvs;
+    protected List<InvEntity> mInvs;
     private List<RefDetailEntity> mHistoryDetailList;
     /*上架仓位列表适配器*/
     ArrayAdapter<String> mLocationAdapter;
@@ -123,6 +123,15 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             hideKeyboard(view);
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
+
+        //监听物料的改变，清除当前物料的批次状态(2017年修改，这里能够保证保存当前物料后，用户可以手动修改物料并且输入批次)
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
+
 
         //上架仓位,匹配缓存的历史仓位数量
         etLocation.setOnRichAutoEditTouchListener((view, location) -> {
@@ -183,6 +192,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
 
         etMaterialNum.setEnabled(true);
         etLocation.setEnabled(!isNLocation);
+        //恢复批次
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
         //加载发出工厂下的发出库位
@@ -232,7 +242,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
         tvMaterialUnit.setText(data.unit);
-        tvSpecialInvFlag.setText("K");
+        tvSpecialInvFlag.setText(mRefData.specialInvFlag);
         etBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag : batchFlag);
         mHistoryDetailList = refData.billDetailList;
     }
@@ -295,6 +305,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
      */
     private void matchLocationQuantity(final String batchFlag, final String location) {
 
+
         if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
             showMessage("批次为空");
             return;
@@ -330,9 +341,9 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         tvLocQuantity.setText(locQuantity);
     }
 
-    private void clearAllUI() {
+    protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvLocQuantity, tvLocQuantity, etQuantity, etLocation,
-                etMaterialNum, etBatchFlag);
+                etMaterialNum, etBatchFlag, tvSpecialInvFlag, tvMaterialUnit);
         //库存地点，注意这里不清除数据
         if (spInv.getAdapter() != null) {
             spInv.setSelection(0);
@@ -347,6 +358,11 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
 
         if (mRefData == null) {
             showMessage("请先在抬头界面输入必要的数据");
@@ -376,13 +392,13 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             return false;
         }
         //批次.2017年06月28日增加在每一次保存数据的前，重新再次判断是否打开了批次管理
-        if (mHistoryDetailList != null) {
-            manageBatchFlagStatus(etBatchFlag, mHistoryDetailList.get(0).batchManagerStatus);
-            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-                showMessage("请先输入批次");
-                return false;
-            }
-        }
+//        if (mHistoryDetailList != null) {
+//            manageBatchFlagStatus(etBatchFlag, mHistoryDetailList.get(0).batchManagerStatus);
+//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
+//                showMessage("请先输入批次");
+//                return false;
+//            }
+//        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");
@@ -420,8 +436,8 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = getString(etBatchFlag);
-            result.location = !isNLocation ? getString(etLocation) : "barcode";
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
+            result.location = !isNLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
             result.quantity = getString(etQuantity);
             result.specialInvFlag = getString(tvSpecialInvFlag);
             result.supplierId = mRefData.supplierId;
@@ -449,8 +465,6 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             tvLocQuantity.setText(getString(etQuantity));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etBatchFlag.setEnabled(true);
         }
     }
 

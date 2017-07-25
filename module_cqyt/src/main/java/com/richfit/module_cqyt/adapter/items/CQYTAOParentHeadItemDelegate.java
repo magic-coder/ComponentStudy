@@ -39,7 +39,7 @@ public class CQYTAOParentHeadItemDelegate implements ItemViewDelegate<RefDetailE
         //库存地点
         holder.setText(R.id.inv, item.invCode);
         //检验批数量
-        holder.setText(R.id.tv_insLot_quantity,item.insLotQuantity);
+        holder.setText(R.id.tv_insLot_quantity,item.orderQuantity);
 
     }
 }

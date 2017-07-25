@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
@@ -178,14 +177,14 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
         RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
                 .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
+                .doOnError(str -> SPrefUtil.saveData(bizType, "0"))
+                .doOnComplete(() -> SPrefUtil.saveData(bizType, "1"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showTransferedVisa(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
@@ -227,13 +226,13 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
         RxSubscriber<String> subscriber = mRepository.transferCollectionData(transId, bizType, refType, userId,
                 voucherDate, transToSapFlag, extraHeaderMap)
                 .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "0"))
+                .doOnComplete(() -> SPrefUtil.saveData(bizType, "0"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showInspectionNum(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
@@ -246,15 +245,15 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
 
                     @Override
                     public void _onCommonError(String message) {
-                        if (mView != null && !TextUtils.isEmpty(message)) {
-                            mView.submitSAPFail(message.split("_"));
+                        if (mView != null ) {
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
                     @Override
                     public void _onServerError(String code, String message) {
                         if (mView != null) {
-                            mView.submitSAPFail(new String[]{message});
+                            mView.saveMsgFowShow(message);
                         }
                     }
 

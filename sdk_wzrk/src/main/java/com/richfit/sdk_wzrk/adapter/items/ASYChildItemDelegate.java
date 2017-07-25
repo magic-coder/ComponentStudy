@@ -25,7 +25,7 @@ public class ASYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
     @Override
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
 
-        holder.setText(R.id.location, "barcode".equalsIgnoreCase(item.location) ? "" : item.location);
+        holder.setText(R.id.location, Global.DEFAULT_LOCATION.equalsIgnoreCase(item.location) ? "" : item.location);
         holder.setText(R.id.batchFlag, item.batchFlag);
         holder.setText(R.id.quantity, item.quantity);
     }

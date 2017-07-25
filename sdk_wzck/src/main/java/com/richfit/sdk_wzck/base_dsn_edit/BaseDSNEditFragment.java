@@ -321,7 +321,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = tvMaterialNum.getTag().toString();
-            result.batchFlag = getString(tvBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
             result.costCenter = mRefData.costCenter;
             result.projectNum = mRefData.projectNum;
             final int position = spLocation.getSelectedItemPosition();

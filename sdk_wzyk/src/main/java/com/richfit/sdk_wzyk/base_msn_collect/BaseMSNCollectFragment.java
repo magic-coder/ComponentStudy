@@ -171,6 +171,14 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             loadMaterialInfo(materialNum, getString(etSendBatchFlag));
         });
 
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etSendBatchFlag.setEnabled(true);
+                });
+
+
         //监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息
         // dedounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
         // throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
@@ -728,7 +736,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             result.recWorkId = mRefData.recWorkId;
             result.recInvId = mRefData.recInvId;
             result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
+            result.batchFlag =!isOpenBatchManager ? Global.DEFAULT_BATCHFLAG :  CommonUtil.toUpperCase(getString(etSendBatchFlag));
             result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
             result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
             result.quantity = getString(etQuantity);
@@ -757,8 +765,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etSendBatchFlag.setEnabled(true);
         }
     }
 

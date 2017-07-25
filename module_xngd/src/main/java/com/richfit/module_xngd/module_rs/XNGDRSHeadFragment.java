@@ -1,6 +1,7 @@
 package com.richfit.module_xngd.module_rs;
 
 import android.support.annotation.NonNull;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.richfit.module_xngd.R;
@@ -13,9 +14,15 @@ import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 
 public class XNGDRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
 
-    private TextView tvInvFlag;
+    private CheckBox cbInvFlag;
+    //成本中心
     private TextView tvCostCenter;
+    //项目编号
     private TextView tvProjectNum;
+    //工单号
+    private TextView tvJobNum;
+    //项目移交物资
+    private TextView tvProjectFlag;
 
 
     @Override
@@ -26,9 +33,11 @@ public class XNGDRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
     @Override
     public void initView() {
         super.initView();
-        tvInvFlag = (TextView) mView.findViewById(R.id.xngd_tv_inv_flag);
+        cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
         tvCostCenter = (TextView) mView.findViewById(R.id.xngd_tv_cost_center);
         tvProjectNum = (TextView) mView.findViewById(R.id.xngd_tv_project_num);
+        tvJobNum = (TextView) mView.findViewById(R.id.xngd_tv_job_num);
+        tvProjectFlag = (TextView) mView.findViewById(R.id.xngd_tv_project_flag);
     }
 
 
@@ -53,9 +62,18 @@ public class XNGDRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
     public void bindCommonHeaderUI() {
         super.bindCommonHeaderUI();
         if (mRefData != null) {
-            tvInvFlag.setText(mRefData.invFlag);
             tvProjectNum.setText(mRefData.projectNum);
             tvCostCenter.setText(mRefData.costCenter);
+            tvJobNum.setText(mRefData.jobNum);
+            tvProjectFlag.setText(mRefData.projectFlag);
+        }
+    }
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if (mRefData != null) {
+            mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
         }
     }
 }

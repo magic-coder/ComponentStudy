@@ -2,7 +2,10 @@ package com.richfit.sdk_wzrk.base_as_head;
 
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
+import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+
+import java.util.List;
 
 /**
  * Created by monday on 2016/11/11.
@@ -61,5 +64,9 @@ public interface IASHeadView extends IBaseHeadView {
      * @param message
      */
     void getTransferInfoFail(String message);
+
+    void loadInvsFail(String message);
+    void showInvs(List<InvEntity> list);
+    void loadInvsComplete();
 
 }

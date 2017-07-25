@@ -38,7 +38,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         implements IASNHeadView {
 
     @BindView(R2.id.sp_work)
-    Spinner spWork;
+    protected Spinner spWork;
     @BindView(R2.id.sp_move_type)
     Spinner spMoveType;
     @BindView(R2.id.ll_supplier)
@@ -46,12 +46,12 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     @BindView(R2.id.et_supplier)
     AutoCompleteTextView etSupplier;
     @BindView(R2.id.et_transfer_date)
-    RichEditText etTransferDate;
+    protected RichEditText etTransferDate;
 
     //工厂类型
     private WorkAdapter mWorkAdapter;
     private MoveTypeAdapter mMoveTypeAdapter;
-    private ArrayList<WorkEntity> mWorks;
+    protected ArrayList<WorkEntity> mWorks;
     private ArrayList<String> mMoveTypes;
     private ArrayList<SimpleEntity> mSuppliers;
 

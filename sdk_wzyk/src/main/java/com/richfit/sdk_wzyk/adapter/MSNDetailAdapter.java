@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_tree_rv.CommonTreeAdapter;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.sdk_wzyk.R;
 
@@ -32,7 +33,7 @@ public class MSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
         //发出仓位
         holder.setText(R.id.sendLoc, item.location);
         //发出批次
-        holder.setText(R.id.sendBatchFlag, item.batchFlag);
+        holder.setText(R.id.sendBatchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag);
         //移库数量
         holder.setText(R.id.quantity, item.quantity);
         //接收仓位

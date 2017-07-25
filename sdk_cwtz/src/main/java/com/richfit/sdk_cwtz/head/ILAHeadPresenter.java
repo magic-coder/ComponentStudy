@@ -14,4 +14,7 @@ public interface ILAHeadPresenter extends IPresenter<ILAHeadView> {
     void getInvsByWorkId(String workId, int flag);
 
     void getStorageNum(String workId, String workCode, String invId, String invCode);
+
+    void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
+
 }

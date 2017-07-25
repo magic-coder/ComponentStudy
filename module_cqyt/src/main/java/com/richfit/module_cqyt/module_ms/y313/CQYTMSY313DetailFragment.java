@@ -10,8 +10,8 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.adapter.CQYTMSY313DetailAdapter;
+import com.richfit.module_cqyt.module_ms.y313.imp.CQYTMYS313DetailPresenterImp;
 import com.richfit.sdk_wzyk.base_ms_detail.BaseMSDetailFragment;
-import com.richfit.sdk_wzyk.base_ms_detail.imp.MSDetailPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by monday on 2017/6/29.
  */
 
-public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<MSDetailPresenterImp> {
+public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<CQYTMYS313DetailPresenterImp> {
 
     @Override
     public int getContentId() {
@@ -29,7 +29,7 @@ public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<MSDetailPrese
 
     @Override
     public void initPresenter() {
-        mPresenter = new MSDetailPresenterImp(mActivity);
+        mPresenter = new CQYTMYS313DetailPresenterImp(mActivity);
     }
 
     @Override
@@ -94,6 +94,7 @@ public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<MSDetailPrese
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
         tmp.get(0).transToSapFlag = "01";
+        //下架
         tmp.get(2).transToSapFlag = "05";
         ArrayList menus = new ArrayList();
         menus.add(tmp.get(0));

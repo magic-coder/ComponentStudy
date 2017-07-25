@@ -56,7 +56,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                         @Override
                         public void _onNext(String transNum) {
                             if (mView != null) {
-                                mView.showTransferedVisa(transNum);
+                                mView.saveMsgFowShow(transNum);
                             }
                         }
 
@@ -173,13 +173,13 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
                     //验收结果
-                    bundle.putString(CQYTAS103EditFragment.extra_inspection_result_key, node.inspectionResult);
+                    bundle.putString(CQYTAS103EditFragment.extra_inspection_result_key, parentNode.inspectionResult);
 
                     //不合格数量
-                    bundle.putString(CQYTAS103EditFragment.extra_unqualified_key, node.unqualifiedQuantity);
+                    bundle.putString(CQYTAS103EditFragment.extra_unqualified_key, parentNode.unqualifiedQuantity);
 
                     //备注
-                    bundle.putString(CQYTAS103EditFragment.extra_remark_key, node.remark);
+                    bundle.putString(CQYTAS103EditFragment.extra_remark_key, parentNode.remark);
 
                     //件数
                     bundle.putString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
@@ -222,7 +222,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
         result.imageName = image.imageName;
         result.refType = image.refType;
         result.businessType = image.bizType;
-        result.bizPart = "2";
+        result.bizPart = "1";
         result.imagePath = image.imageDir + File.separator + result.imageName;
         result.createdBy = image.createBy;
         result.imageDate = image.createDate;

@@ -41,10 +41,12 @@
             android:name=".login.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <activity android:name=".welcome.WelcomeActivity"/>
-        <activity android:name=".home.HomeActivity"/>
-        <activity android:name=".setting.SettingActivity"/>
-        <activity android:name=".main.MainActivity"/>
+        <activity android:name=".welcome.WelcomeActivity" />
+        <activity android:name=".home.HomeActivity" />
+        <activity android:name=".setting.SettingActivity" />
+        <activity
+            android:name=".main.MainActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <activity android:name=".upload.UploadActivity" />
 

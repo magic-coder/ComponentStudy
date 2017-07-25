@@ -15,6 +15,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
@@ -66,9 +67,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.et_batch_flag)
     protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
-    protected  Spinner spInv;
+    protected Spinner spInv;
     @BindView(R2.id.sp_location)
-    protected  Spinner spLocation;
+    protected Spinner spLocation;
     @BindView(R2.id.tv_inv_quantity)
     protected TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
@@ -78,7 +79,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.et_quantity)
     protected EditText etQuantity;
     @BindView(R2.id.cb_single)
-    CheckBox cbSingle;
+    protected CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
     protected TextView tvTotalQuantity;
 
@@ -96,6 +97,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected String mSelectedRefLineNum;
     /*批次一致性检查*/
     protected boolean isBatchValidate = true;
+    /*批次拆分。默认是不进行批次拆分*/
+    protected boolean isSplitBatchFlag = false;
 
     @Override
     protected int getContentId() {
@@ -138,6 +141,14 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             hideKeyboard(etMaterialNum);
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
+
+        //监听物料恢复批次状态
+        RxTextView.textChanges(etMaterialNum)
+                .filter(str -> !TextUtils.isEmpty(str))
+                .subscribe(e -> {
+                    isOpenBatchManager = true;
+                    etBatchFlag.setEnabled(true);
+                });
 
         //监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
         //这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI
@@ -344,7 +355,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     /**
-     * 加载库存成功
+     * 加载库存成功。
+     * location + specialInvFlag + specialInvNum
      *
      * @param list
      */
@@ -474,8 +486,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                     break;
                 }
             }
-
-            if (!isBatchValidate) {
+            //2017年07月19日增加批次拆分标识。如果不进行批次拆分那么批次必须保持一致。
+            if (!isSplitBatchFlag && !isBatchValidate) {
                 showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");
             }
             //锁定库存地点
@@ -606,6 +618,12 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
+
         //检查数据是否可以保存
         if (spRefLine.getSelectedItemPosition() <= 0) {
             showMessage("请先选择单据行");
@@ -628,11 +646,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             return false;
         }
 
-        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        manageBatchFlagStatus(etBatchFlag, lineData.batchManagerStatus);
-
         //批次
-        if (isOpenBatchManager && !isBatchValidate) {
+        if (!isSplitBatchFlag && isOpenBatchManager && !isBatchValidate) {
             showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");
             return false;
         }
@@ -682,7 +697,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             result.workId = lineData.workId;
             result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
             result.materialId = lineData.materialId;
-            result.batchFlag = getString(etBatchFlag);
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
             result.quantity = getString(etQuantity);
             result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
             result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
@@ -706,15 +721,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @Override
     public void saveCollectedDataSuccess() {
         showMessage("保存数据成功");
-        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
-        final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
-        final float totalQuantityV = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
-        tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
-        tvTotalQuantity.setText(String.valueOf(totalQuantityV + quantityV));
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
+        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
-            isOpenBatchManager = true;
-            etBatchFlag.setEnabled(true);
         }
     }
 

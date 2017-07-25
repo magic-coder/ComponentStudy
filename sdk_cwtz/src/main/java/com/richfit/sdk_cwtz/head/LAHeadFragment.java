@@ -30,12 +30,12 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
         implements ILAHeadView {
 
     @BindView(R2.id.sp_work)
-    Spinner spWork;
+    protected Spinner spWork;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected Spinner spInv;
 
-    List<WorkEntity> mWorks;
-    List<InvEntity> mInvs;
+    protected List<WorkEntity> mWorks;
+    protected  List<InvEntity> mInvs;
 
     WorkAdapter mWorkAdapter;
     InvAdapter mInvAdapter;
@@ -122,6 +122,21 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     @Override
     public void loadInvsFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    public void loadInvsComplete() {
+
+    }
+
+    @Override
+    public void showProjectNums(ArrayList<String> projectNums) {
+
+    }
+
+    @Override
+    public void loadProjectNumsFail(String message) {
+
     }
 
     @Override

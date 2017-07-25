@@ -160,20 +160,15 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
 
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
     /**
      * 2.数据上传
      */
     protected void submit2SAP(String transToSapFlag) {
-        if (TextUtils.isEmpty(mTransNum)) {
+        String state = (String) SPrefUtil.getData(mBizType, "0");
+        if ("0".equals(state)) {
             showMessage("请先过账");
             return;
         }
@@ -185,31 +180,22 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "数据上传成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
-    @Override
-    public void submitSAPFail(String[] messages) {
-        showErrorDialog(messages);
-        mInspectionNum = "";
-    }
 
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
 
     }
 
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
 
     @Override
     public void upAndDownLocationSuccess() {

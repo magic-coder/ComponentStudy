@@ -295,16 +295,6 @@ public abstract class BaseUploadFragment<P extends UploadContract.Presenter> ext
     }
 
     @Override
-    public void submitSAPFail(String[] messages) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
-
-    @Override
     public void upAndDownLocationSuccess() {
 
     }

@@ -4,6 +4,7 @@ package com.richfit.module_xngd.module_ds.dsn;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_ds.dsn.imp.XNGDDSNHeadPresenterImp;
@@ -23,6 +24,8 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
     private Spinner spMoveType;
     private CheckBox cbInvFlag;
     private CheckBox cbProjectFlag;
+    //过账日期
+    private TextView tvTransferDateName;
 
     private List<String> mMoveTypes;
 
@@ -36,8 +39,10 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
         mPresenter = new XNGDDSNHeadPresenterImp(mActivity);
     }
 
+
     @Override
     protected void initView() {
+        tvTransferDateName = (TextView) mView.findViewById(R.id.tv_transfer_date);
         spMoveType = (Spinner) mView.findViewById(R.id.xngd_sp_move_type);
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
         cbProjectFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_project_flag);
@@ -46,6 +51,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
     @Override
     public void initData() {
         super.initData();
+        tvTransferDateName.setText("领料日期");
         if (mMoveTypes == null) {
             mMoveTypes = new ArrayList<>();
         }

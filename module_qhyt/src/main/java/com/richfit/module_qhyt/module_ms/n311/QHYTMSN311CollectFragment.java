@@ -199,7 +199,6 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
             result.quantity = getString(etQuantity);
             result.invType = param.invType;
             result.modifyFlag = "N";
-
             result.deviceId = mDeviceId;
             int locationPos = spSendLoc.getSelectedItemPosition();
             result.location = mInventoryDatas.get(locationPos).location;

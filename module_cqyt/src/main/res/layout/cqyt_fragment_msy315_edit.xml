@@ -26,7 +26,6 @@
             <EditText
                 android:id="@id/cqyt_et_quantity_custom"
                 style="@style/RightEditTextItemStyle"
-                android:gravity="center_horizontal"
                 android:inputType="numberDecimal" />
 
         </LinearLayout>

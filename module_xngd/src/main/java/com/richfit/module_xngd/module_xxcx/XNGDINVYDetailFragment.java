@@ -8,6 +8,7 @@ import com.richfit.sdk_xxcx.inventory_query_y.detail.InvYQueryDetailFragment;
  */
 
 public class XNGDINVYDetailFragment extends InvYQueryDetailFragment {
+
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();

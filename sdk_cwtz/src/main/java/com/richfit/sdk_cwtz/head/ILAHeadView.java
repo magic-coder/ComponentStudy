@@ -4,6 +4,7 @@ import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.WorkEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +18,11 @@ public interface ILAHeadView extends BaseView {
 
     void showInvs(List<InvEntity> invs);
     void loadInvsFail(String message);
+    void loadInvsComplete();
+
+
+    void showProjectNums(ArrayList<String> projectNums);
+    void loadProjectNumsFail(String message);
 
     void getStorageNumSuccess(String storageNum);
     void getStorageNumFail(String message);

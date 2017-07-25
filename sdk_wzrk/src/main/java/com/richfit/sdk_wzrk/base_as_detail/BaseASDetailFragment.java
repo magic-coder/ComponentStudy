@@ -185,7 +185,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             showMessage(getString(R.string.msg_detail_on_location));
             return;
         }
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -195,19 +195,9 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
     }
 
-    /**
-     * 第一步过账失败显示错误信息
-     *
-     * @param message
-     */
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
-    }
 
     /**
      * 2.数据上传
@@ -218,7 +208,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             showMessage("请先过账");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -229,36 +219,25 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "上架成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         //注意这里必须清除单据数据
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
     /**
-     * 第二步上架失败显示失败信息
-     *
-     * @param messages
+     * 第三步转储入口
+     * @param transToSapFlag
      */
-    @Override
-    public void submitSAPFail(String[] messages) {
-        mInspectionNum = "";
-        showErrorDialog(messages);
-    }
-
     protected void sapUpAndDownLocation(String transToSapFlag) {
 
     }
 
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
-
-    }
 
     @Override
     public void upAndDownLocationSuccess() {

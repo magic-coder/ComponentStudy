@@ -47,7 +47,6 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
 
     @Override
     public void initView() {
-//        llBatchFlag.setVisibility(View.GONE);
         llLocation.setVisibility(View.GONE);
         llLocationQuantity.setVisibility(View.GONE);
     }

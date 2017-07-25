@@ -11,6 +11,7 @@ import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -24,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -36,27 +36,27 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         implements IASNEditView {
 
     @BindView(R2.id.tv_material_num)
-    TextView tvMaterialNum;
+    protected TextView tvMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
     @BindView(R2.id.tv_batch_flag)
-    TextView tvBatchFlag;
+    protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
-    TextView tvInv;
+    protected TextView tvInv;
     @BindView(R2.id.et_location)
-    EditText etLocation;
+    protected EditText etLocation;
     @BindView(R2.id.tv_location_quantity)
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
-    EditText etQuantity;
+    protected EditText etQuantity;
 
     String mQuantity;
     List<RefDetailEntity> mHistoryDetailList;
     String mLocation;
 
-    boolean isLocation = false;
+    protected boolean isLocation = false;
 
     @Override
     protected int getContentId() {
@@ -97,6 +97,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         tvInv.setText(invCode);
         tvInv.setTag(invId);
         etQuantity.setText(mQuantity);
+        tvLocQuantity.setText(mQuantity);
         tvBatchFlag.setText(batchFlag);
 
         etLocation.setEnabled(false);
@@ -213,26 +214,25 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         if (!checkCollectedDataBeforeSave()) {
             return;
         }
-        Flowable.create(new FlowableOnSubscribe<ResultEntity>() {
-            @Override
-            public void subscribe(FlowableEmitter<ResultEntity> emitter) throws Exception {
-                ResultEntity result = new ResultEntity();
-                result.businessType = mRefData.bizType;
-                result.voucherDate = mRefData.voucherDate;
-                result.moveType = mRefData.moveType;
-                result.userId = Global.USER_ID;
-                result.workId = mRefData.workId;
-                result.invId = tvInv.getTag().toString();
-                result.recWorkId = mRefData.recWorkId;
-                result.recInvId = mRefData.recInvId;
-                result.materialId = tvMaterialNum.getTag().toString();
-                result.batchFlag = getString(tvBatchFlag);
-                result.location = isLocation ? getString(etLocation) : "barcode";
-                result.quantity = getString(etQuantity);
-                result.modifyFlag = "Y";
-                emitter.onNext(result);
-                emitter.onComplete();
-            }
+        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
+            ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
+            result.businessType = mRefData.bizType;
+            result.voucherDate = mRefData.voucherDate;
+            result.moveType = mRefData.moveType;
+            result.userId = Global.USER_ID;
+            result.workId = mRefData.workId;
+            result.invId = tvInv.getTag().toString();
+            result.recWorkId = mRefData.recWorkId;
+            result.recInvId = mRefData.recInvId;
+            result.materialId = tvMaterialNum.getTag().toString();
+            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
+            result.location = isLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
+            result.quantity = getString(etQuantity);
+            result.modifyFlag = "Y";
+            emitter.onNext(result);
+            emitter.onComplete();
         }, BackpressureStrategy.BUFFER)
                 .compose(TransformerHelper.io2main())
                 .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));

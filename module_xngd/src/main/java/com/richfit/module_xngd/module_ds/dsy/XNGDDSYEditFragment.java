@@ -1,4 +1,4 @@
-package com.richfit.module_xngd.module_ds.ds_ll;
+package com.richfit.module_xngd.module_ds.dsy;
 
 
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by monday on 2017/1/20.
  */
 
-public class XNGDDSLLEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
+public class XNGDDSYEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
 
     @Override

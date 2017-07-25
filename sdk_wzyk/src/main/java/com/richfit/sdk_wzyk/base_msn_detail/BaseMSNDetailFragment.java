@@ -18,6 +18,8 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.richfit.common_lib.utils.SPrefUtil.getData;
+
 /**
  * 注意对于无参考的明细界面，默认给出的PARENT_ITEM_NODE类型的节点。
  * 但是节点中并不存在节点类型信息。
@@ -127,7 +129,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
      */
     @Override
     public void editNode(final RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
+        String state = (String) getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许删除");
             return;
@@ -150,7 +152,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
      */
     @Override
     public void deleteNode(final RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
+        String state = (String) getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许删除");
             return;
@@ -213,7 +215,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             startTurnOwnSupplies("07");
             return;
         }
-        String transferFlag = (String) SPrefUtil.getData(mBizType, "0");
+        String transferFlag = (String) getData(mBizType, "0");
         if ("1".equals(transferFlag)) {
             showMessage("本次采集已经过账,请先进行其他转储操作");
             return;
@@ -228,25 +230,15 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    /**
-     * 第一步过账失败后清除物料凭证，显示错误信息
-     *
-     * @param message
-     */
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
     /**
      * 2.数据上传
      */
     protected void submit2SAP(String transToSapFlag) {
-        if (TextUtils.isEmpty(mTransNum)) {
+        String state = (String) SPrefUtil.getData(mBizType, "0");
+        if ("0".equals(state)) {
             showMessage("请先过账");
             return;
         }
@@ -261,29 +253,19 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "转储成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
-    @Override
-    public void submitSAPFail(String[] messages) {
-        mInspectionNum = "";
-        showErrorDialog(messages);
-    }
 
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
-
-    }
-
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
     }
 
@@ -303,7 +285,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             return;
         }
 
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.turnOwnSupplies(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null, -1);
     }

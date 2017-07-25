@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
@@ -167,6 +168,7 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
             //手动输入没有批次
             loadMaterialInfo(materialNum, getString(tvBatchFlag));
         });
+
 
         //选择单据行
         RxAdapterView
@@ -628,6 +630,12 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
+
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
+
         //检查数据是否可以保存
         if (spRefLine.getSelectedItemPosition() <= 0) {
             showMessage("请先选择单据行");
@@ -775,11 +783,8 @@ public abstract class BaseLocQTCollectFragment extends BaseFragment<LocQTCollect
     @Override
     public void saveCollectedDataSuccess() {
         showMessage("保存数据成功");
-        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
-        final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
-        final float totalQuantity = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
-        tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
-        tvTotalQuantity.setText(String.valueOf(totalQuantity + quantityV));
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
+        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
         }

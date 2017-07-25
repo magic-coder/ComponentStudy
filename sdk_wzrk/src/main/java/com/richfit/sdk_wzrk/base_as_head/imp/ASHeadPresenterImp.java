@@ -8,9 +8,12 @@ import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadPresenter;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadView;
+
+import java.util.ArrayList;
 
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
@@ -83,6 +86,40 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
 
                             }
                         });
+        addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getInvsByWorkId(String workId, int flag) {
+        mView = getView();
+        if (TextUtils.isEmpty(workId) && mView != null) {
+            mView.loadInvsFail("单据中不存在工厂信息");
+            return;
+        }
+        ResourceSubscriber<ArrayList<InvEntity>> subscriber = mRepository.getInvsByWorkId(workId, flag)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<ArrayList<InvEntity>>() {
+                    @Override
+                    public void onNext(ArrayList<InvEntity> invs) {
+                        if (mView != null) {
+                            mView.showInvs(invs);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadInvsFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.loadInvsComplete();
+                        }
+                    }
+                });
         addSubscriber(subscriber);
     }
 
@@ -171,6 +208,22 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
      */
     private ReferenceEntity createHeaderByCache(ReferenceEntity cache, ReferenceEntity data) {
         data.voucherDate = cache.voucherDate;
+        // 长庆油田增加提货单缓存
+        data.deliveryOrder = cache.deliveryOrder;
+        // 报检单位
+        data.declaredUnit = cache.declaredUnit;
+        // 班
+        data.team = cache.team;
+        // 岗位
+        data.post = cache.post;
+        // 生产厂家
+        data.manufacture = cache.manufacture;
+        //检验单位
+        data.inspectionUnit = cache.inspectionUnit;
+        // 备注
+        data.remark = cache.remark;
+        // 检验标准及特殊要求
+        data.inspectionStandard = cache.inspectionStandard;
         return data;
     }
 }

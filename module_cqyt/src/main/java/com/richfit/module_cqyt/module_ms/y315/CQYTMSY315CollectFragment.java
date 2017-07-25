@@ -4,11 +4,12 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
@@ -109,6 +110,8 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
         Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
             RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             ResultEntity result = new ResultEntity();
+            InventoryQueryParam param = provideInventoryQueryParam();
+            result.invType = param.invType;
             result.businessType = mRefData.bizType;
             result.refCodeId = mRefData.refCodeId;
             result.refCode = mRefData.recordNum;
@@ -140,9 +143,11 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
     @Override
     public void saveCollectedDataSuccess() {
         super.saveCollectedDataSuccess();
-        float quantityCustomQ = CommonUtil.convertToFloat(getString(etQuantityCustom), 0.0F);
-        float totalQuantityCustomQ = CommonUtil.convertToFloat(getString(tvTotalQuantityCustom), 0.0F);
-        tvTotalQuantityCustom.setText(String.valueOf(quantityCustomQ + totalQuantityCustomQ));
+        if (!cbSingle.isChecked()) {
+            etQuantityCustom.setText("");
+        }
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
+                getString(tvTotalQuantityCustom))));
     }
 
     @Override

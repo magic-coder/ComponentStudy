@@ -23,4 +23,12 @@
     <string name="cqyt_delivery_order">提货单</string>
     <string name="cqyt_unqualified_quantity">不合格数量</string>
     <string name="cqyt_shop_condition">装运条件</string>
+    <string name="cqyt_declared_quantity">报检数量</string>
+    <string name="cqyt_declared_unit">报检单位</string>
+    <string name="cqyt_class">班</string>
+    <string name="cqyt_post">岗位</string>
+    <string name="cqyt_manufacturer">生产厂家</string>
+    <string name="cqyt_inspection_unit">检验单位</string>
+    <string name="cqyt_inspection_date">报检时间</string>
+    <string name="cqyt_inspection_standard">检验标准及特殊要求</string>
 </resources>

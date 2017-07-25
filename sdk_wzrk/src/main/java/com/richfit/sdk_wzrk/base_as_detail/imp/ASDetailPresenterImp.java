@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
@@ -217,7 +216,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showTransferedVisa(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
@@ -264,7 +263,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                     @Override
                     public void _onNext(String message) {
                         if (mView != null) {
-                            mView.showInspectionNum(message);
+                            mView.saveMsgFowShow(message);
                         }
                     }
 
@@ -277,15 +276,15 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
 
                     @Override
                     public void _onCommonError(String message) {
-                        if (mView != null && !TextUtils.isEmpty(message)) {
-                            mView.submitSAPFail(message.split("_"));
+                        if (mView != null) {
+                            mView.submitSAPFail(message);
                         }
                     }
 
                     @Override
                     public void _onServerError(String code, String message) {
                         if (mView != null) {
-                            mView.submitSAPFail(new String[]{message});
+                            mView.submitSAPFail(message);
                         }
                     }
 
@@ -340,6 +339,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 //注意单据中有lineNum105
                 cachedData.lineNum105 = data.lineNum105;
                 cachedData.insLot = data.insLot;
+                cachedData.orderQuantity = data.orderQuantity;
                 nodes.add(cachedData);
             }
         }

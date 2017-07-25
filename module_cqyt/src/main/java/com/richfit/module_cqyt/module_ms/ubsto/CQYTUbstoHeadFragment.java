@@ -18,7 +18,6 @@ import java.util.List;
 
 public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
-    Spinner spShopCondition;
     TextView tvSendWork;
 
     @Override
@@ -34,16 +33,12 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
     @Override
     public void initView() {
         super.initView();
-        spShopCondition = (Spinner) mView.findViewById(R.id.cqyt_sp_shop_condition);
         tvSendWork = (TextView) mView.findViewById(R.id.tv_send_work);
         llCreator.setVisibility(View.GONE);
     }
 
     @Override
     public void initData() {
-        List<String> items = getStringArray(R.array.cqyt_shop_conditions);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, items);
-        spShopCondition.setAdapter(adapter);
     }
 
 
@@ -66,13 +61,6 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
         return "3";
     }
 
-    @Override
-    public void _onPause() {
-        super._onPause();
-        if (mRefData != null) {
-            mRefData.shopCondition = spShopCondition.getSelectedItemPosition() == 0 ? "01" : "02";
-        }
-    }
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {

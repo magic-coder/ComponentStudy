@@ -175,7 +175,7 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
         if (mRefData != null) {
             //更新UI
             tvRefNum.setText(mRefData.recordNum);
-            tvSupplier.setText(mRefData.supplierNum);
+            tvSupplier.setText(mRefData.supplierNum + "_" + mRefData.supplierDesc);
             tvApprovalName.setText(Global.LOGIN_ID);
         }
     }

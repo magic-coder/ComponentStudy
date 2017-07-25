@@ -6,6 +6,8 @@ import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_cqyt.R;
 
+import static android.icu.lang.UCharacter.JoiningGroup.E;
+
 /**
  * Created by monday on 2017/7/4.
  */
@@ -33,14 +35,16 @@ public class CQYTAS103ParentHeadItemDelegate implements ItemViewDelegate<RefDeta
         //累计数量
         holder.setText(R.id.totalQuantity, item.totalQuantity);
         //累计件数
-        holder.setText(R.id.cqyt_tv_total_quantity_custom,item.totalQuantityCustom);
+        holder.setText(R.id.cqyt_tv_total_quantity_custom, item.totalQuantityCustom);
         //工厂
         holder.setText(R.id.work, item.workCode);
         //库存地点
         holder.setText(R.id.inv, item.invCode);
         //验收结果
-        holder.setText(R.id.inspectionResult,item.inspectionResult);
+        holder.setText(R.id.inspectionResult, item.inspectionResult);
         //不合格数量
-        holder.setText(R.id.cqyt_tv_unqualified_quantity,item.unqualifiedQuantity);
+        holder.setText(R.id.cqyt_tv_unqualified_quantity, item.unqualifiedQuantity);
+        //报检数量
+        holder.setText(R.id.cqyt_tv_declared_quantity,item.declaredQuantity);
     }
 }

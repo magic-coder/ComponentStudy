@@ -22,6 +22,7 @@ import java.util.List;
 
 public class CQYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103DetailPresenterImp> {
 
+
     @Override
     public int getContentId() {
         return R.layout.cqyt_fragment_as103_detail;
@@ -82,24 +83,25 @@ public class CQYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
             showMessage(getString(R.string.msg_detail_on_location));
             return;
         }
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mExtraTansMap.clear();
         mExtraTansMap.put("refNum", mRefData.recordNum);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
+
     /**
      * 第一步过账成功后直接跳转
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }

@@ -1,7 +1,6 @@
 package com.richfit.sdk_wzck.base_ds_detail;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -113,7 +112,6 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
     protected void saveTurnFlag(final List<RefDetailEntity> nodes) {
         //仅仅检查子节点
         for (RefDetailEntity node : nodes) {
-            Log.d("yff", "specialConvert = " + node.specialConvert + ";nodeType = " + node.getViewType());
             if (Global.CHILD_NODE_ITEM_TYPE == node.getViewType() &&
                     "Y".equalsIgnoreCase(node.specialConvert)) {
                 isNeedTurn = true;
@@ -214,7 +212,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
             showMessage(getString(R.string.msg_detail_off_location));
             return;
         }
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
@@ -224,18 +222,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
-    }
-
-    /**
-     * 第一步过账失败显示错误信息
-     *
-     * @param message
-     */
-    @Override
-    public void submitBarcodeSystemFail(String message) {
-        mTransNum = "";
-        showErrorDialog(TextUtils.isEmpty(message) ? "过账失败" : message);
+        showSuccessDialog(mShowMsg);
     }
 
     /**
@@ -247,7 +234,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
             showMessage("请先过账");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -258,13 +245,13 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "下架成功");
-        showSuccessDialog(mInspectionNum);
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
         //注意这里必须清除单据数据
         mRefData = null;
-        mTransNum = "";
+        mShowMsg.setLength(0);
         mTransId = "";
         //两步成功后将寄售转自有标识清空
         isNeedTurn = false;
@@ -273,28 +260,13 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
     }
 
     /**
-     * 第二步上架失败显示失败信息
-     *
-     * @param messages
-     */
-    @Override
-    public void submitSAPFail(String[] messages) {
-        mInspectionNum = "";
-        showErrorDialog(messages);
-    }
-
-
-    /**
      * 3. 如果submitFlag:2那么分三步进行转储处理
      */
     protected void sapUpAndDownLocation(String transToSapFlag) {
 
     }
 
-    @Override
-    public void upAndDownLocationFail(String[] messages) {
 
-    }
 
     @Override
     public void upAndDownLocationSuccess() {
@@ -311,7 +283,7 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
             showMessage("未获取到缓存,请先获取采集数据");
             return;
         }
-        mInspectionNum = "";
+        mShowMsg.setLength(0);
         mPresenter.turnOwnSupplies(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null, -1);
     }

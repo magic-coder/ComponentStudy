@@ -30,6 +30,11 @@ public class QHYTAS105NDetailFragment extends BaseASDetailFragment<QHYTAS105NDet
 
 
     @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
     protected void initView() {
         super.initView();
         tvLineNum105 = (TextView) mView.findViewById(R.id.lineNum105);
@@ -69,10 +74,5 @@ public class QHYTAS105NDetailFragment extends BaseASDetailFragment<QHYTAS105NDet
         menus.get(0).transToSapFlag = "01";
         menus.get(1).transToSapFlag = "05";
         return menus.subList(0, 2);
-    }
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
     }
 }

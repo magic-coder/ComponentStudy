@@ -24,17 +24,7 @@ public class QHYTASWWDetailFragment extends BaseASDetailFragment<ASDetailPresent
         mPresenter = new ASDetailPresenterImp(mActivity);
     }
 
-    @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
-        menus.get(0).transToSapFlag = "01";
-        menus.get(1).transToSapFlag = "05";
-        if (mRefData == null) {
-            return menus;
-        }
-        //如果全部是必检物资那么不需要上架
-        return menus.subList(0, mRefData.qmFlag ? 1 : 2);
-    }
+
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
@@ -56,7 +46,7 @@ public class QHYTASWWDetailFragment extends BaseASDetailFragment<ASDetailPresent
      */
     @Override
     public void submitBarcodeSystemSuccess() {
-        showSuccessDialog(mTransNum);
+        showSuccessDialog(mShowMsg);
         if (mRefData.qmFlag) {
             setRefreshing(false, "过账成功");
             if (mAdapter != null) {
@@ -64,11 +54,23 @@ public class QHYTASWWDetailFragment extends BaseASDetailFragment<ASDetailPresent
             }
             //注意这里必须清除单据数据
             mRefData = null;
-            mTransNum = "";
+            mShowMsg.setLength(0);
             mTransId = "";
             SPrefUtil.saveData(mBizType + mRefType, "0");
             mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
         }
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
+        menus.get(0).transToSapFlag = "01";
+        menus.get(1).transToSapFlag = "05";
+        if (mRefData == null) {
+            return menus;
+        }
+        //如果全部是必检物资那么不需要上架
+        return menus.subList(0, mRefData.qmFlag ? 1 : 2);
     }
 
     @Override
