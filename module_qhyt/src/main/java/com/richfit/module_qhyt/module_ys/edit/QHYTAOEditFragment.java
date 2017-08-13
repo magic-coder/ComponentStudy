@@ -13,7 +13,6 @@ import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -25,9 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 import static com.richfit.module_qhyt.module_ys.collect.QHYTAOCollectFragment.DEFUALT_CHOOSED_FLAG;
 
@@ -265,9 +261,9 @@ public class QHYTAOEditFragment extends BaseEditFragment<QHYTAOEditPresenterImp>
         if (Float.compare(sampleQuantityV, quantityV) > 0.0f) {
             showMessage("抽检数量不能大于实收数量");
             return false;
-       }
+        }
         //完好数量
-        final float qualifiedQuantityV =  CommonUtil.convertToFloat(getString(etQualifiedQuantity), 0.0f);
+        final float qualifiedQuantityV = CommonUtil.convertToFloat(getString(etQualifiedQuantity), 0.0f);
         //腐蚀
         final float rustCorrosionQuantityV = CommonUtil.convertToFloat(getString(etRustQuantity), 0.0f);
         //损坏
@@ -306,64 +302,57 @@ public class QHYTAOEditFragment extends BaseEditFragment<QHYTAOEditPresenterImp>
 
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            result.refCodeId = mRefData.refCodeId;
-            result.refLineId = lineData.refLineId;
-            result.refLineNum = lineData.lineNum;
-            result.materialId = lineData.materialId;
-            result.businessType = mRefData.bizType;
-            result.companyCode = Global.COMPANY_CODE;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.inspectionType = mRefData.inspectionType;
-            result.inspectionPerson = Global.USER_ID;
-            result.workId = lineData.workId;
-            result.userId = Global.USER_ID;
-            result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
-            //制造商
-            result.manufacturer = getString(etManufacturer);
-            //实收数量
-            result.quantity = getString(etQuantity);
-            //抽检数量
-            result.randomQuantity = getString(etSampleQuantity);
-            //完好数量
-            result.qualifiedQuantity = getString(etQualifiedQuantity);
-            //损坏数量
-            result.damagedQuantity = getString(etDamagedQuantity);
-            //送检数量
-            result.inspectionQuantity = getString(etInspectionQuantity);
-            //锈蚀数量
-            result.rustQuantity = getString(etRustQuantity);
-            //变质
-            result.badQuantity = getString(etBadQuantity);
-            //其他数量
-            result.otherQuantity = getString(etOtherQuantity);
-            //包装情况
-            result.sapPackage = String.valueOf(spSapPackage.getSelectedItemPosition() + 1);
-            //质检单号
-            result.qmNum = getString(etQmNum);
-            //索赔单号
-            result.claimNum = getString(etClaimNum);
-            //合格证
-            result.certificate = cbCertificate.isChecked() ? "X" : "";
-            //说明书
-            result.instructions = cbInstructions.isChecked() ? "X" : "";
-            //质检证书
-            result.qmCertificate = cbQmCertificate.isChecked() ? "X" : "";
-            //检验结果
-            result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
-            result.modifyFlag = "Y";
-            result.remark = getString(etRemark);
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        ResultEntity result = new ResultEntity();
+        result.refCodeId = mRefData.refCodeId;
+        result.refLineId = lineData.refLineId;
+        result.refLineNum = lineData.lineNum;
+        result.materialId = lineData.materialId;
+        result.businessType = mRefData.bizType;
+        result.companyCode = Global.COMPANY_CODE;
+        result.refType = mRefData.refType;
+        result.moveType = mRefData.moveType;
+        result.inspectionType = mRefData.inspectionType;
+        result.inspectionPerson = Global.USER_ID;
+        result.workId = lineData.workId;
+        result.userId = Global.USER_ID;
+        result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+        //制造商
+        result.manufacturer = getString(etManufacturer);
+        //实收数量
+        result.quantity = getString(etQuantity);
+        //抽检数量
+        result.randomQuantity = getString(etSampleQuantity);
+        //完好数量
+        result.qualifiedQuantity = getString(etQualifiedQuantity);
+        //损坏数量
+        result.damagedQuantity = getString(etDamagedQuantity);
+        //送检数量
+        result.inspectionQuantity = getString(etInspectionQuantity);
+        //锈蚀数量
+        result.rustQuantity = getString(etRustQuantity);
+        //变质
+        result.badQuantity = getString(etBadQuantity);
+        //其他数量
+        result.otherQuantity = getString(etOtherQuantity);
+        //包装情况
+        result.sapPackage = String.valueOf(spSapPackage.getSelectedItemPosition() + 1);
+        //质检单号
+        result.qmNum = getString(etQmNum);
+        //索赔单号
+        result.claimNum = getString(etClaimNum);
+        //合格证
+        result.certificate = cbCertificate.isChecked() ? "X" : "";
+        //说明书
+        result.instructions = cbInstructions.isChecked() ? "X" : "";
+        //质检证书
+        result.qmCertificate = cbQmCertificate.isChecked() ? "X" : "";
+        //检验结果
+        result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
+        result.modifyFlag = "Y";
+        result.remark = getString(etRemark);
+        return result;
     }
 
     @Override

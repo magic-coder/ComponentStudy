@@ -67,6 +67,21 @@
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
+                android:text="@string/material_unit" />
+
+            <TextView
+                android:id="@id/tv_material_unit"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
                 android:text="@string/batch_flag" />
 
             <EditText

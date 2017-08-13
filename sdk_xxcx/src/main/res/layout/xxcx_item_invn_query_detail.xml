@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/detail_parent_node_bg"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@id/materialNum"
@@ -25,7 +26,6 @@
         style="@style/TableHeaderStyle"
         android:layout_width="240dp"
         android:text="@string/material_desc" />
-
 
 
     <View style="@style/ItemSeperatorLayout" />

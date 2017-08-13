@@ -3,6 +3,7 @@ package com.richfit.domain.repository;
 import com.richfit.domain.bean.ImageEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 
 public interface IInspectionServiceDao {
+
     /**
      * 删除该张单据的所有验收图片
      * @param refNum

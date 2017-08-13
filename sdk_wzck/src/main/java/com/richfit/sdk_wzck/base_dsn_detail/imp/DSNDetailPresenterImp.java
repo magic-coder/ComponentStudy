@@ -345,6 +345,7 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
                     data.transLineId = loc.transLineId;
                     data.location = loc.location;
                     data.batchFlag = loc.batchFlag;
+                    data.quantity = loc.quantity;
                     data.totalQuantity = loc.quantity;
                     data.recLocation = loc.recLocation;
                     data.recBatchFlag = loc.recBatchFlag;

@@ -14,11 +14,12 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.TransformerHelper;
+import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
@@ -35,9 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -45,7 +43,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/11/27.
  */
 
-public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> extends BaseFragment<P>
+public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> extends BaseCollectFragment<P>
         implements IASNCollectView {
 
     @BindView(R2.id.et_material_num)
@@ -88,6 +86,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
      */
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             if (!etMaterialNum.isEnabled()) {
                 showMessage("请先在抬头界面获取相关数据");
@@ -101,6 +100,11 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             } else {
                 loadMaterialInfo(materialNum, batchFlag);
             }
+        } else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
+            final String location = list[0];
+            clearCommonUI(etLocation);
+            etLocation.setText(location);
+            getTransferSingle(getString(etBatchFlag), location);
         }
     }
 
@@ -138,7 +142,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             hideKeyboard(etLocation);
             if (cbSingle.isChecked())
                 return;
-            matchLocationQuantity(getString(etBatchFlag), location);
+            getTransferSingle(getString(etBatchFlag), location);
         });
 
         //监听库存地点，加载上架仓位
@@ -162,7 +166,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         RxAutoCompleteTextView.itemClickEvents(etLocation)
                 .subscribe(a -> {
                     hideKeyboard(etLocation);
-                    matchLocationQuantity(getString(etBatchFlag), getString(etLocation));
+                    getTransferSingle(getString(etBatchFlag), getString(etLocation));
                 });
 
         //点击自动提示控件，显示默认列表
@@ -232,7 +236,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     }
 
     @Override
-    public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
+    public void bindCommonCollectUI(ReferenceEntity refData, String batchFlag) {
         RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
@@ -303,7 +307,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     /**
      * 匹配历史仓位数量
      */
-    private void matchLocationQuantity(final String batchFlag, final String location) {
+    private void getTransferSingle(final String batchFlag, final String location) {
 
 
         if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
@@ -420,35 +424,28 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         builder.show();
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
-            result.location = !isNLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
-            result.quantity = getString(etQuantity);
-            result.specialInvFlag = getString(tvSpecialInvFlag);
-            result.supplierId = mRefData.supplierId;
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
+        result.location = !isNLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
+        result.quantity = getString(etQuantity);
+        result.specialInvFlag = getString(tvSpecialInvFlag);
+        result.projectNum = mRefData.projectNum;
+        result.supplierId = mRefData.supplierId;
+        result.invType = param.invType;
+        result.modifyFlag = "N";
+        return result;
     }
 
     @Override
@@ -459,8 +456,8 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         if (!isNLocation)
             tvLocQuantity.setText(getString(etQuantity));
         if (!cbSingle.isChecked()) {

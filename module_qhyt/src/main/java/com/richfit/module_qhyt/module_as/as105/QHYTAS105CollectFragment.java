@@ -6,10 +6,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.richfit.data.constant.Global;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
@@ -19,9 +17,7 @@ import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 注意该业务比较特别，每一个单据的所有的行明细都是由一行生成拆分出来的，这就意味着
@@ -37,7 +33,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
     EditText etProjectText;
     EditText etMoveCauseDesc;
     Spinner spStrategyCode;
-    Spinner spMoveReason;
+    Spinner spMoveCause;
 
     @Override
     protected int getContentId() {
@@ -58,7 +54,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         etProjectText = (EditText) mActivity.findViewById(R.id.et_project_text);
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
         spStrategyCode = (Spinner) mActivity.findViewById(R.id.sp_strategy_code);
-        spMoveReason = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
+        spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
 
     }
 
@@ -76,10 +72,10 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
                     getStringArray(R.array.qhyt_strategy_codes));
             spStrategyCode.setAdapter(adapter);
         }
-        if (spMoveReason != null) {
+        if (spMoveCause != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
                     getStringArray(R.array.qhyt_move_reasons));
-            spMoveReason.setAdapter(adapter);
+            spMoveCause.setAdapter(adapter);
         }
     }
 
@@ -180,25 +176,8 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
             etProjectText.setText(cache.projectText);
             etMoveCauseDesc.setText(cache.moveCauseDesc);
             //决策代码和移动原因
-            setSelection(spMoveReason, getStringArray(R.array.qhyt_move_reasons), cache.moveCause);
-            setSelection(spStrategyCode, getStringArray(R.array.qhyt_strategy_codes), cache.decisionCode);
-        }
-    }
-
-    private void setSelection(Spinner sp, List<String> list, String key) {
-        if (sp == null || TextUtils.isEmpty(key) || list == null || list.size() == 0) {
-            return;
-        }
-        int pos = -1;
-        for (int i = 0, size = list.size(); i < size; i++) {
-            pos++;
-            //注意这里仅仅匹配的是code
-            if (key.equalsIgnoreCase(list.get(i).split("_")[0])) {
-                break;
-            }
-        }
-        if (pos >= 0) {
-            sp.setSelection(pos);
+            UiUtil.setSelectionForSp( getStringArray(R.array.qhyt_move_reasons),cache.moveCause,spMoveCause);
+            UiUtil.setSelectionForSp( getStringArray(R.array.qhyt_strategy_codes),cache.decisionCode,spStrategyCode);
         }
     }
 
@@ -274,65 +253,31 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         return super.checkCollectedDataBeforeSave();
     }
 
-    @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.location = CommonUtil.toUpperCase(isNLocation ? "barcode" : getString(etLocation));
-            result.batchFlag = CommonUtil.toUpperCase(getString(etBatchFlag));
-            result.quantity = getString(etQuantity);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.modifyFlag = "N";
-            //物料凭证
-            result.refDoc = lineData.refDoc;
-            //物料凭证单据行
-            result.refDocItem = lineData.refDocItem;
-            //退货交货数量
-            result.returnQuantity = getString(etReturnQuantity);
-            //检验批数量
-            result.insLot = lineData.insLot;
-            //移动原因描述
-            result.moveCauseDesc = getString(etMoveCauseDesc);
-            //项目文本
-            result.projectText = getString(etProjectText);
-            //决策代码
-            if (spStrategyCode.getSelectedItemPosition() > 0) {
-                Object object = spStrategyCode.getSelectedItem();
-                if (object != null) {
-                    result.decisionCode = object.toString().split("_")[0];
-                }
-            }
-            //移动原因
-            if (spMoveReason.getSelectedItemPosition() > 0) {
-                Object selectedItem = spMoveReason.getSelectedItem();
-                if (selectedItem != null)
-                    result.moveCause = selectedItem.toString().split("_")[0];
-            }
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-    }
 
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //退货交货数量
+        result.returnQuantity = getString(etReturnQuantity);
+        //移动原因描述
+        result.moveCauseDesc = getString(etMoveCauseDesc);
+        //项目文本
+        result.projectText = getString(etProjectText);
+        //决策代码
+        if (spStrategyCode.getSelectedItemPosition() > 0) {
+            Object object = spStrategyCode.getSelectedItem();
+            if (object != null) {
+                result.decisionCode = object.toString().split("_")[0];
+            }
+        }
+        //移动原因
+        if (spMoveCause.getSelectedItemPosition() > 0) {
+            Object selectedItem = spMoveCause.getSelectedItem();
+            if (selectedItem != null)
+                result.moveCause = selectedItem.toString().split("_")[0];
+        }
+        return result;
+    }
 
     @Override
     protected int getOrgFlag() {
@@ -341,12 +286,12 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     @Override
     public void _onPause() {
-        clearCommonUI(etReturnQuantity,etProjectText, etMoveCauseDesc);
+        clearCommonUI(etReturnQuantity, etProjectText, etMoveCauseDesc);
         if (spStrategyCode.getAdapter() != null) {
             spStrategyCode.setSelection(0);
         }
-        if (spMoveReason.getAdapter() != null) {
-            spMoveReason.setSelection(0);
+        if (spMoveCause.getAdapter() != null) {
+            spMoveCause.setSelection(0);
         }
         super._onPause();
     }

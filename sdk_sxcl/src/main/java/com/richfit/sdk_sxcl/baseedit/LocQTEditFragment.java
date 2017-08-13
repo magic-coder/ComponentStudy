@@ -13,7 +13,6 @@ import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
@@ -27,9 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/5/26.
@@ -46,6 +42,8 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_batch_flag)
     TextView tvBatchFlag;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_work)
     TextView tvWork;
     @BindView(R2.id.tv_inv)
@@ -143,6 +141,7 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
             tvRefLineNum.setText(lineData.lineNum);
             tvMaterialNum.setText(lineData.materialNum);
             tvMaterialDesc.setText(lineData.materialDesc);
+            tvMaterialUnit.setText(lineData.materialUnit);
             tvActQuantity.setText(lineData.actQuantity);
             tvBatchFlag.setText(batchFlag);
             tvInv.setText(invCode);
@@ -150,7 +149,7 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
 
             etQuantity.setText(mQuantity);
             tvTotalQuantity.setText(totalQuantity);
-            if("S".equalsIgnoreCase(lineData.shkzg)) {
+            if ("S".equalsIgnoreCase(lineData.shkzg)) {
                 spXLoc.setEnabled(false);
                 //上架仓位
                 etSLocation.setText(mSelectedLocation);
@@ -223,7 +222,7 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
             return;
         }
         mPresenter.getInventoryInfo("04", workId, invId, workCode, invCode, "",
-                getString(tvMaterialNum), materialId, location, batchFlag, "", "", "", "",null);
+                getString(tvMaterialNum), materialId, location, batchFlag, "", "", "", "", null);
     }
 
     @Override
@@ -356,48 +355,42 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
         return true;
     }
 
+
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.invType = param.invType;
+        result.businessType = mRefData.bizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefData.refType;
+        result.refLineNum = lineData.lineNum;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.refLineId = lineData.refLineId;
+        result.workId = lineData.workId;
+        result.invId = CommonUtil.Obj2String(tvInv.getTag());
+        result.locationId = mLocationId;
+        result.materialId = lineData.materialId;
+        if ("S".equalsIgnoreCase(lineData.shkzg)) {
+            //上架仓位
+            result.location = getString(etSLocation);
+        } else {
+            //下架仓位
+            result.location = mInventoryDatas.get(spXLoc.getSelectedItemPosition()).location;
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.refLineNum = lineData.lineNum;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.locationId = mLocationId;
-            result.materialId = lineData.materialId;
-            if ("S".equalsIgnoreCase(lineData.shkzg)) {
-                //上架仓位
-                result.location = getString(etSLocation);
-            } else {
-                //下架仓位
-                result.location = mInventoryDatas.get(spXLoc.getSelectedItemPosition()).location;
-            }
-            result.batchFlag = getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.specialConvert = "N";
-            result.modifyFlag = "Y";
-            result.shkzg = lineData.shkzg;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+        result.batchFlag = getString(tvBatchFlag);
+        result.quantity = getString(etQuantity);
+        result.refDoc = lineData.refDoc;
+        result.refDocItem = lineData.refDocItem;
+        result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
+        result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
+        result.specialConvert = "N";
+        result.modifyFlag = "Y";
+        result.shkzg = lineData.shkzg;
+        return result;
     }
 
     @Override

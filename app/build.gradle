@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
+//apply plugin: 'com.dodola.rocoofix'
+
 //获取产品的名字
 def getProductName() {
     return "bcs"
@@ -174,8 +176,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 
 //  compile project(':module_qhyt')
-    compile project(':module_xngd')
-//    compile project(':module_cqyt')
+//    compile project(':module_xngd')
+    compile project(':module_cqyt')
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

@@ -7,34 +7,33 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_adapter_rv.MultiItemTypeAdapter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.lib_rv_animation.Animation.animators.FadeInDownAnimator;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.adapter.XJDetailAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/7/3.
  */
 
-public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterImp>
-        implements CQYTXJCollectContract.View {
+public class CQYTXJCollectFragment extends BaseCollectFragment<CQYTXJCollectPresenterImp>
+        implements CQYTXJCollectContract.View, MultiItemTypeAdapter.OnItemClickListener {
 
     EditText etInsLocation;
     RecyclerView rvLocations;
     XJDetailAdapter mAdapter;
+    List<LocationInfoEntity> mDatas;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -44,7 +43,6 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
             saveCollectedData();
         }
     }
-
 
     @Override
     protected int getContentId() {
@@ -66,8 +64,8 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
         etInsLocation = (EditText) mView.findViewById(R.id.cqyt_et_ins_location);
         rvLocations = (RecyclerView) mView.findViewById(R.id.base_detail_recycler_view);
         //设置布局管理器
-        RecyclerView.LayoutManager lm = new GridLayoutManager(mActivity,3);
-        rvLocations .setLayoutManager(lm);
+        RecyclerView.LayoutManager lm = new GridLayoutManager(mActivity, 2);
+        rvLocations.setLayoutManager(lm);
         rvLocations.setItemAnimator(new FadeInDownAnimator());
     }
 
@@ -123,46 +121,40 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
         builder.show();
     }
 
+
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        result.businessType = mBizType;
+        result.location = getString(etInsLocation);
+        result.voucherDate = mRefData.voucherDate;
+        result.userId = Global.USER_ID;
+        result.inspectionType = mRefData.inspectionType;
+        result.mapIns = new HashMap<>();
+        if (0 == mRefData.inspectionType) {
+            //班前
+            result.mapIns.put("insDoor", mRefData.insDoor);
+            result.mapIns.put("insMaterial", mRefData.insMaterial);
+            result.mapIns.put("insEquipe", mRefData.insEquipe);
+            result.mapIns.put("insLocation", mRefData.insLocation);
+            result.mapIns.put("insSafe", mRefData.insSafe);
+            result.mapIns.put("remark", mRefData.remark);
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            result.businessType = mBizType;
-            result.location = getString(etInsLocation);
-            result.voucherDate = mRefData.voucherDate;
-            result.userId = Global.USER_ID;
-            result.inspectionType = mRefData.inspectionType;
-            result.mapIns = new HashMap<>();
-            if (0 == mRefData.inspectionType) {
-                //班前
-                result.mapIns.put("insDoor", mRefData.insDoor);
-                result.mapIns.put("insMaterial", mRefData.insMaterial);
-                result.mapIns.put("insEquipe", mRefData.insEquipe);
-                result.mapIns.put("insLocation", mRefData.insLocation);
-                result.mapIns.put("insSafe", mRefData.insSafe);
-                result.mapIns.put("remark", mRefData.remark);
-            }
-            if (1 == mRefData.inspectionType) {
-                //班后
-                result.mapIns.put("insDocument", mRefData.insDocument);
-                result.mapIns.put("insOffice", mRefData.insOffice);
-                result.mapIns.put("insException", mRefData.insException);
-                result.mapIns.put("insPower", mRefData.insPower);
-                result.mapIns.put("insLock", mRefData.insLock);
-                result.mapIns.put("remark", mRefData.remark);
-            }
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+        if (1 == mRefData.inspectionType) {
+            //班后
+            result.mapIns.put("insDocument", mRefData.insDocument);
+            result.mapIns.put("insOffice", mRefData.insOffice);
+            result.mapIns.put("insException", mRefData.insException);
+            result.mapIns.put("insPower", mRefData.insPower);
+            result.mapIns.put("insLock", mRefData.insLock);
+            result.mapIns.put("remark", mRefData.remark);
+        }
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存数据成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         clearAllUI();
         //调用缓存
         mPresenter.getTransferInfo(null, "", mBizType, "", Global.USER_ID,
@@ -176,9 +168,14 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
 
     @Override
     public void showLocations(List<LocationInfoEntity> locations) {
-        Log.d("yff", "location size = " + locations.size());
+        if (mDatas == null) {
+            mDatas = new ArrayList<>();
+        }
+        mDatas.clear();
+        mDatas.addAll(locations);
         if (mAdapter == null) {
             mAdapter = new XJDetailAdapter(mActivity, R.layout.cqyt_item_xj, locations);
+            mAdapter.setOnItemClickListener(this);
             rvLocations.setAdapter(mAdapter);
         } else {
             mAdapter.addAll(locations);
@@ -193,6 +190,19 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
         }
     }
 
+    @Override
+    public void deleteNodeSuccess(int position) {
+        showMessage("删除成功");
+        //获取最新缓存，刷新界面
+        mPresenter.getTransferInfo(null, "", mBizType, "", Global.USER_ID,
+                "", "", "", "");
+    }
+
+    @Override
+    public void deleteNodeFail(String message) {
+        showMessage(message);
+    }
+
     private void clearAllUI() {
         clearCommonUI(etInsLocation);
     }
@@ -201,5 +211,33 @@ public class CQYTXJCollectFragment extends BaseFragment<CQYTXJCollectPresenterIm
     public void _onPause() {
         super._onPause();
         clearCommonUI();
+    }
+
+    /**
+     * 点击提示删除
+     *
+     * @param view
+     * @param holder
+     * @param position
+     */
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle("警告");
+        builder.setIcon(com.richfit.common_lib.R.mipmap.icon_warning);
+        builder.setMessage("您真的要删除该条数据?点击确定删除.");
+        builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            final LocationInfoEntity node = mDatas.get(position);
+            mPresenter.deleteNode("N", node.transId, node.transLineId, node.location, mRefType,
+                    mBizType, position, Global.COMPANY_ID);
+
+        });
+        builder.show();
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 }

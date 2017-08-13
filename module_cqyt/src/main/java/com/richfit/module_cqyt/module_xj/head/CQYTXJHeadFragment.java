@@ -315,7 +315,7 @@ public class CQYTXJHeadFragment extends BaseHeadFragment<CQYTXJHeadPresenterImp>
         List<BottomMenuEntity> menus = new ArrayList<>();
 
         BottomMenuEntity menu = new BottomMenuEntity();
-        menu.menuName = "外观拍照";
+        menu.menuName = "巡检拍照";
         menu.takePhotoType = 4;
         menu.menuImageRes = R.mipmap.icon_take_photo4;
         menus.add(menu);

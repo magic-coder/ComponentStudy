@@ -35,6 +35,7 @@ import butterknife.BindView;
  * 青海201,221(对应的bizType是26,27)无参考出库。201和221的
  * 区别在于移动类型不同，系统根据BizType自动生成供应商(26)或者
  * 项目编号(27)。
+ * 2017年8月1日增加总账科目和订单两类基础数据
  * Created by monday on 2017/2/23.
  */
 
@@ -43,19 +44,19 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
 
     @BindView(R2.id.sp_work)
-    Spinner spWork;
+    protected Spinner spWork;
     @BindView(R2.id.et_auto_comp)
     protected AutoCompleteTextView etAutoComp;
-    @BindView(R2.id.et_auto_comp_name)
+    @BindView(R2.id.tv_auto_comp_name)
     protected TextView tvAutoCompName;
     @BindView(R2.id.et_transfer_date)
-    RichEditText etTransferDate;
+    protected   RichEditText etTransferDate;
 
     WorkAdapter mWorkAdapter;
-    List<WorkEntity> mWorks;
+    protected List<WorkEntity> mWorks;
 
-    List<String> mAutoDatas;
-    ArrayAdapter mAutoAdapter;
+    protected List<String> mAutoDatas;
+    protected ArrayAdapter mAutoAdapter;
 
 
     @Override
@@ -99,7 +100,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         RxTextView.textChanges(etAutoComp)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null &&
-                        mAutoDatas.size() > 0 && !filterKeyWord(str) && spWork.getSelectedItemPosition() > 0)
+                        mAutoDatas.size() > 0 && !filterKeyWord(str,mAutoDatas) && spWork.getSelectedItemPosition() > 0)
                 .subscribe(a -> mPresenter.getAutoCompleteList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
                         getString(etAutoComp), 100, getOrgFlag(), mBizType));
 
@@ -174,9 +175,9 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
      * @param keyWord
      * @return
      */
-    private boolean filterKeyWord(CharSequence keyWord) {
+    protected boolean filterKeyWord(CharSequence keyWord,List<String> data) {
         Pattern pattern = Pattern.compile("^" + keyWord.toString().toUpperCase());
-        for (String item : mAutoDatas) {
+        for (String item : data) {
             Matcher matcher = pattern.matcher(item);
             while (matcher.find()) {
                 return true;
@@ -199,6 +200,11 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
             mRefData.bizType = mBizType;
             mRefData.voucherDate = getString(etTransferDate);
         }
+    }
+
+    @Override
+    public void showGLAccounts(List<String> glAccounts) {
+
     }
 
     @Override

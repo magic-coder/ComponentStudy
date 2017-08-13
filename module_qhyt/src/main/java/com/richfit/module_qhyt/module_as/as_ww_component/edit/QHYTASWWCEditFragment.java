@@ -9,16 +9,12 @@ import android.widget.TextView;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.module_qhyt.R2;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/3/13.
@@ -149,39 +145,31 @@ public class QHYTASWWCEditFragment extends BaseEditFragment<QHYTASWWCEditPresent
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefDetail.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mBizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.materialId = lineData.materialId;
-            result.locationId = mLocationId;
-            result.location = "barcode";
-            result.batchFlag = getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            result.specialInvFlag = getString(tvSpecialInvFlag);
-            result.specialInvNum = mRefData.supplierNum;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = mRefDetail.get(mPosition);
+        ResultEntity result = new ResultEntity();
+        result.businessType = mBizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.refCode = mRefData.recordNum;
+        result.refLineNum = lineData.lineNum;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefData.refType;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.refLineId = lineData.refLineId;
+        result.workId = lineData.workId;
+        result.materialId = lineData.materialId;
+        result.locationId = mLocationId;
+        result.location = "barcode";
+        result.batchFlag = getString(tvBatchFlag);
+        result.quantity = getString(etQuantity);
+        result.modifyFlag = "Y";
+        result.refDoc = lineData.refDoc;
+        result.refDocItem = lineData.refDocItem;
+        result.supplierNum = mRefData.supplierNum;
+        result.specialInvFlag = getString(tvSpecialInvFlag);
+        result.specialInvNum = mRefData.supplierNum;
+        return result;
     }
 
 

@@ -1,6 +1,6 @@
 package com.richfit.sdk_wzrk.base_asn_collect;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by monday on 2016/11/27.
  */
 
-public interface IASNCollectView extends BaseView {
+public interface IASNCollectView extends IBaseCollectView {
     /**
      * 显示库存地点
      *
@@ -33,12 +33,6 @@ public interface IASNCollectView extends BaseView {
      * @param refData
      * @param batchFlag
      */
-    void onBindCommonUI(ReferenceEntity refData, String batchFlag);
+    void bindCommonCollectUI(ReferenceEntity refData, String batchFlag);
     void loadTransferSingleInfoFail(String message);
-
-    /**
-     * 保存单条数据
-     */
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
 }

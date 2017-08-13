@@ -23,6 +23,6 @@ public class CQYTAS103ChildHeadItemDelegate implements ItemViewDelegate<RefDetai
 
     @Override
     public void convert(ViewHolder holder, RefDetailEntity refDetailEntity, int position) {
-
+        holder.setText(R.id.quantity,"到货数量");
     }
 }

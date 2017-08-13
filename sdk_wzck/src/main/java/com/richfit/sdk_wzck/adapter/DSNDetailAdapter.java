@@ -29,6 +29,7 @@ public class DSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
+                .setText(R.id.materialUnit,item.unit)
                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 .setText(R.id.inv, item.invCode)
                 .setText(R.id.location, item.location)

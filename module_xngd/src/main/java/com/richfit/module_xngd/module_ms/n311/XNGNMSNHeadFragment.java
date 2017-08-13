@@ -36,9 +36,9 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
     //应急物资
     CheckBox cbInvFlag;
     //项目移交物资
-    CheckBox cbProjectFlag;
+    CheckBox cbInvType;
     //库存类型
-    Spinner spInvType;
+    Spinner spSpecialInvType;
     //项目编号
     RichAutoEditText etProjectNum;
     List<String> mAutoDatas;
@@ -59,10 +59,12 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         //工厂内没有接收工厂，并且将发出工厂修改为工厂
         llRecWork.setVisibility(View.GONE);
         tvSendWorkName.setText("工厂");
+        //应急物资
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
-        cbProjectFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_project_flag);
+        //项目移交物资
+        cbInvType = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_type);
         //库存类型
-        spInvType = (Spinner) mView.findViewById(R.id.xngd_sp_inv_type);
+        spSpecialInvType = (Spinner) mView.findViewById(R.id.xngd_sp_special_inv_type);
         //项目编号
         etProjectNum = (RichAutoEditText) mView.findViewById(R.id.xngd_et_project_num);
     }
@@ -96,10 +98,10 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         mAutoDatas = new ArrayList<>();
         //初始化库存类型，注意当用户选择项目物资的时候，项目编号必输
         ArrayList<String> items = new ArrayList<>();
-        items.add("生成物资");
+        items.add("生产物资");
         items.add("项目物资");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, items);
-        spInvType.setAdapter(adapter);
+        spSpecialInvType.setAdapter(adapter);
     }
 
     @Override
@@ -198,10 +200,17 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
             mRefData.recWorkName = mRefData.workName;
             mRefData.recWorkCode = mRefData.workCode;
             mRefData.recWorkId = mRefData.workId;
+            //应急物资
             mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
-            mRefData.specialInvFlag = cbProjectFlag.isChecked() ? "Q" : "N";
-            mRefData.invType = String.valueOf(spInvType.getSelectedItemPosition());
-            mRefData.projectNum = getString(etProjectNum).split("_")[0];
+            //库存类型
+            mRefData.specialInvFlag = spSpecialInvType.getSelectedItemPosition() == 0 ? "N" :
+                    "Q";
+            //项目移交物资
+            mRefData.invType = cbInvType.isChecked() ? "0" : "1";
+            String projectNum = getString(etProjectNum);
+            if(!TextUtils.isEmpty(projectNum)) {
+                mRefData.projectNum = projectNum.split("_")[0];
+            }
         }
     }
 

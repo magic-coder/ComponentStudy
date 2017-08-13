@@ -53,7 +53,7 @@ public class Global {
     public static final int OFFLINE_MODE = 0x1;
 
     /*批次默认值*/
-    public static final String DEFAULT_BATCHFLAG = "batchFlag";
+    public static final String DEFAULT_BATCHFLAG = "20170101";
     /*仓位默认值*/
     public static final String DEFAULT_LOCATION = "barcode";
 

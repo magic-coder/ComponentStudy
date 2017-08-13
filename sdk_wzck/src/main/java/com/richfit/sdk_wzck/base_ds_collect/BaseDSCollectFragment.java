@@ -14,10 +14,11 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -36,9 +37,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -49,15 +47,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/11/19.
  */
 
-public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> extends BaseFragment<P>
+public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> extends BaseCollectFragment<P>
         implements IDSCollectView {
 
     @BindView(R2.id.sp_ref_line_num)
-    Spinner spRefLine;
+    protected Spinner spRefLine;
     @BindView(R2.id.et_material_num)
     protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_work)
     TextView tvWork;
     @BindView(R2.id.act_quantity_name)
@@ -85,7 +85,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
 
     /*单据行选项*/
-    private List<String> mRefLines;
+    protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
     /*库存地点*/
     protected List<InvEntity> mInvDatas;
@@ -107,6 +107,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             if (!etMaterialNum.isEnabled()) {
                 showMessage("请先在抬头界面获取相关数据");
@@ -119,6 +120,12 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             } else {
                 //在非单品模式下，扫描不同的物料。注意这里必须用新的物料和批次更新UI
                 loadMaterialInfo(materialNum, batchFlag);
+            }
+        } else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
+            //仓位处理
+            if (mInventoryDatas != null && spLocation.getAdapter() != null) {
+                final String location = list[0];
+                UiUtil.setSelectionForLocation(mInventoryDatas, location, spLocation);
             }
         }
     }
@@ -293,6 +300,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         etQuantity.setText("");
         //物资描述
         tvMaterialDesc.setText(lineData.materialDesc);
+        //计量单位
+        tvMaterialUnit.setText(lineData.unit);
         //工厂
         tvWork.setText(lineData.workName);
         //应收数量
@@ -327,6 +336,15 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         }
         //默认选择第一个
         spInv.setSelection(0);
+    }
+
+
+    @Override
+    public void loadInvComplete() {
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        if (mInvDatas != null && mInvAdapter != null && !TextUtils.isEmpty(lineData.invCode)) {
+            UiUtil.setSelectionForInv(mInvDatas, lineData.invCode, spInv);
+        }
     }
 
     private void loadInventory(int position) {
@@ -530,7 +548,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvLocQuantity, etQuantity, tvLocQuantity, tvInvQuantity,
-                tvTotalQuantity, cbSingle, etMaterialNum, etBatchFlag);
+                tvTotalQuantity, cbSingle, etMaterialNum, etBatchFlag, tvMaterialUnit);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();
@@ -676,51 +694,45 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         builder.show();
     }
 
+
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            //库存相关的字段回传
-            int locationPos = spLocation.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.supplierNum = mRefData.supplierNum;
-            //寄售转自有的标识
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.refCode = mRefData.recordNum;
+        result.refLineNum = lineData.lineNum;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefData.refType;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.refLineId = lineData.refLineId;
+        result.workId = lineData.workId;
+        result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
+        result.materialId = lineData.materialId;
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
+        result.quantity = getString(etQuantity);
+        result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
+        result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
+        //库存相关的字段回传
+        int locationPos = spLocation.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(locationPos).location;
+        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        result.supplierNum = mRefData.supplierNum;
+        //寄售转自有的标识
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        result.invType = param.invType;
+        result.modifyFlag = "N";
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存数据成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
         tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
         if (!cbSingle.isChecked()) {

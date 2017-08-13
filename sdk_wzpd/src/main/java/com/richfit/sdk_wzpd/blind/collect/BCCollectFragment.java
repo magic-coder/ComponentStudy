@@ -15,7 +15,6 @@ import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.MaterialEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.R;
@@ -23,9 +22,6 @@ import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.blind.collect.imp.BlindCollectPresenterImp;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 当盘点级别为02(库存级)是盘点仓位不显示。这里通过盘点仓位的etCheckLocation控件的属性
@@ -54,6 +50,7 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             final String materialNum = list[Global.MATERIAL_POS];
             if (cbSingle.isChecked() && materialNum.equalsIgnoreCase(getString(etMaterialNum))) {
@@ -63,8 +60,8 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
                 getCheckTransferInfoSingle(materialNum, getString(etCheckLocation));
             }
 
-        } else if (list != null && list.length == 2 & !cbSingle.isChecked() && etCheckLocation.isEnabled()) {
-            final String location = list[1];
+        } else if (list != null && list.length == 1 & !cbSingle.isChecked() && etCheckLocation.isEnabled()) {
+            final String location = list[0];
             etCheckLocation.setText("");
             etCheckLocation.setText(location);
         }
@@ -219,7 +216,7 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
             return false;
         }
 
-        if(TextUtils.isEmpty(mRefData.checkLevel)) {
+        if (TextUtils.isEmpty(mRefData.checkLevel)) {
             showMessage("未获取到盘点级别");
             return false;
         }
@@ -228,7 +225,7 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
             showMessage("请先在抬头界面初始化本次盘点");
             return false;
         }
-        if("01".equals(mRefData.checkLevel) && TextUtils.isEmpty(mRefData.storageNum)) {
+        if ("01".equals(mRefData.checkLevel) && TextUtils.isEmpty(mRefData.storageNum)) {
             showMessage("未获取到仓库号");
             return false;
         }
@@ -253,32 +250,38 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
         if (!checkCollectedDataBeforeSave()) {
             return;
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.checkId = mRefData.checkId;
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.storageNum = mRefData.storageNum;
-            result.location =  CommonUtil.toUpperCase(getString(etCheckLocation));
-            result.voucherDate = mRefData.voucherDate;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.checkLevel = mRefData.checkLevel;
-            result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCheckDataSingle(result));
+        ResultEntity result = provideResult();
+        if (result == null) {
+            showMessage("未获取到上传的数据");
+            return;
+        }
+        mPresenter.uploadCheckDataSingle(result);
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        result.businessType = mRefData.bizType;
+        result.checkId = mRefData.checkId;
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.storageNum = mRefData.storageNum;
+        result.location = CommonUtil.toUpperCase(getString(etCheckLocation));
+        result.voucherDate = mRefData.voucherDate;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.checkLevel = mRefData.checkLevel;
+        result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
+        result.quantity = getString(etQuantity);
+        result.modifyFlag = "N";
+        return result;
     }
 
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("盘点成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
         }
@@ -290,14 +293,14 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
     }
 
     private void clearAllUI() {
-        clearCommonUI(tvMaterialDesc, tvMaterialGroup, etQuantity);
+        clearCommonUI(tvMaterialDesc, tvMaterialGroup, etQuantity, cbSingle);
     }
 
     @Override
     public void _onPause() {
         super._onPause();
         clearAllUI();
-        clearCommonUI(etMaterialNum,etCheckLocation);
+        clearCommonUI(etMaterialNum, etCheckLocation);
     }
 
     @Override

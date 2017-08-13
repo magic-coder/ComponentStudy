@@ -47,4 +47,5 @@ dependencies {
     compile project(':sdk_wzys')
     compile project(':sdk_xxcx')
     compile project(':sdk_wzyk')
+    compile project(':sdk_sxcl')
 }

@@ -14,6 +14,7 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
 import com.richfit.common_lib.utils.DateChooseHelper;
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -96,6 +97,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
 
     @Override
     public void initData() {
+        SPrefUtil.saveData(mBizType, "0");
         //初始化工厂
         mPresenter.getWorks(0);
     }

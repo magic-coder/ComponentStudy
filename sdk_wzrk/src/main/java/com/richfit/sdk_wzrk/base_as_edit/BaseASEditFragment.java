@@ -10,7 +10,6 @@ import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -20,9 +19,6 @@ import com.richfit.sdk_wzrk.R2;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 
 /**
@@ -38,6 +34,8 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     TextView tvMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_batch_flag)
     protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
@@ -108,6 +106,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             tvRefLineNum.setText(lineData.lineNum);
             tvMaterialNum.setText(lineData.materialNum);
             tvMaterialDesc.setText(lineData.materialDesc);
+            tvMaterialUnit.setText(lineData.unit);
             tvActQuantity.setText(lineData.actQuantity);
             tvBatchFlag.setText(batchFlag);
             tvInv.setText(invCode);
@@ -166,13 +165,13 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         float collectedQuantity = CommonUtil.convertToFloat(mQuantity, 0.0f);
         float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         if (Float.compare(quantityV, 0.0f) <= 0.0f) {
-            showMessage("输入数量不合理");
+            showMessage("实收数量输入不合理");
             etQuantity.setText("");
             return false;
         }
         float residualQuantity = totalQuantityV - collectedQuantity + quantityV;//减去已经录入的数量
         if (Float.compare(residualQuantity, actQuantityV) > 0.0f) {
-            showMessage("输入实收数量有误");
+            showMessage("实收数量输入有误");
             etQuantity.setText("");
             return false;
         }
@@ -182,41 +181,38 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.refLineNum = lineData.lineNum;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.locationId = mLocationId;
-            result.materialId = lineData.materialId;
-            result.locationId = mLocationId;
-            result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.modifyFlag = "Y";
-
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.invType = param.invType;
+        result.businessType = mRefData.bizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefData.refType;
+        result.refLineNum = lineData.lineNum;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.refLineId = lineData.refLineId;
+        result.workId = lineData.workId;
+        result.invId = CommonUtil.Obj2String(tvInv.getTag());
+        result.locationId = mLocationId;
+        result.materialId = lineData.materialId;
+        result.locationId = mLocationId;
+        result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
+        result.quantity = getString(etQuantity);
+        //物料凭证
+        result.refDoc = lineData.refDoc;
+        //物料凭证单据行
+        result.refDocItem = lineData.refDocItem;
+        //检验批数量
+        result.insLot = lineData.insLot;
+        result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
+        result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
+        result.supplierNum = mRefData.supplierNum;
+        result.modifyFlag = "Y";
+        return result;
     }
 
     @Override

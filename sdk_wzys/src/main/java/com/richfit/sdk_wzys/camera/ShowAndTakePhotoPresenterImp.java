@@ -86,15 +86,15 @@ public class ShowAndTakePhotoPresenterImp extends BasePresenter<ShowAndTakePhoto
                 return;
             }
         }
-        final ArrayList<Integer> deletePositions = new ArrayList<>();
-        for (int i = 0, size = images.size(); i < size; i++) {
-            if (images.get(i).isSelected) {
-                //注意这里的将进行自动装箱
-                deletePositions.add(i);
+        boolean isEmpty = true;
+        for (ImageEntity image : images) {
+            if(image.isSelected) {
+                isEmpty = false;
+                image.isDelete = true;
             }
         }
 
-        if (deletePositions.size() == 0 && mView != null) {
+        if (isEmpty && mView != null) {
             mView.deleteImageFail("请先选择您要删除的图片");
             return;
         }
@@ -117,7 +117,7 @@ public class ShowAndTakePhotoPresenterImp extends BasePresenter<ShowAndTakePhoto
                             @Override
                             public void onComplete() {
                                 if (mView != null) {
-                                    mView.deleteImageSuccess(deletePositions);
+                                    mView.deleteImageSuccess();
                                 }
                             }
                         });

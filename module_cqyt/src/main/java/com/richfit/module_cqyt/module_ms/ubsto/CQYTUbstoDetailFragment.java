@@ -122,17 +122,17 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
     public void submitBarcodeSystemSuccess() {
         showSuccessDialog(mShowMsg);
         setRefreshing(false, "数据保存成功!");
-        if (mAdapter != null) {
-            mAdapter.removeAllVisibleNodes();
-        }
-        //注意这里必须清除单据数据
-        mRefData = null;
-        mShowMsg.setLength(0);
-        mTransId = "";
-        //两步成功后将寄售转自有标识清空
-        isNeedTurn = false;
-        isTurnSuccess = false;
-        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
+//        if (mAdapter != null) {
+//            mAdapter.removeAllVisibleNodes();
+//        }
+//        //注意这里必须清除单据数据
+//        mRefData = null;
+//        mShowMsg.setLength(0);
+//        mTransId = "";
+//        //两步成功后将寄售转自有标识清空
+//        isNeedTurn = false;
+//        isTurnSuccess = false;
+//        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
 
@@ -209,17 +209,26 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
 
     @Override
     protected String getSubFunName() {
-        return "UBSTO-转储发出";
+        return "物资出库";
     }
 
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> defaultMenus = super.provideDefaultBottomMenu();
         //保存
         BottomMenuEntity menu = new BottomMenuEntity();
         menu.menuName = "保存";
         menu.menuImageRes = R.mipmap.icon_save_data;
+        //过账
+        defaultMenus.get(0).transToSapFlag = "05";
+        //下架
+        defaultMenus.get(2).transToSapFlag = "06";
+
+        //保存菜单
         ArrayList menus = new ArrayList();
         menus.add(menu);
+        menus.add(defaultMenus.get(0));
+        menus.add(defaultMenus.get(2));
         return menus;
     }
 }

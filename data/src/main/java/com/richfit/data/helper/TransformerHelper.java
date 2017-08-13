@@ -9,6 +9,7 @@ import com.richfit.domain.bean.Response;
 
 import org.reactivestreams.Publisher;
 
+import java.nio.channels.FileLock;
 import java.util.List;
 import java.util.Map;
 
@@ -50,9 +51,13 @@ public class TransformerHelper {
                         if (t == null || (t instanceof List && ((List) t).size() == 0)) {
                             return Flowable.error(new ResponseNullException("返回的数据实体为空"));
                         } else {
-                            //返回S表示请求成功
-                            if (Global.RETURN_SUCCESS_CODE.equals(t.retCode)) {
+
+                            if (Global.RETURN_SUCCESS_CODE.equals(t.retCode) && t.data != null) {
+                                //返回S表示请求成功，而且实体有数据
                                 return Flowable.just(t.data);
+                            } else if (Global.RETURN_SUCCESS_CODE.equals(t.retCode) && t.data == null) {
+                                //返回S但是实体没有数据
+                                return Flowable.error(new Throwable("未获取到有效数据"));
                             } else {
                                 //返回服务器返回的错误信息
                                 return Flowable.error(new ServerException(t.retCode, t.retMsg));

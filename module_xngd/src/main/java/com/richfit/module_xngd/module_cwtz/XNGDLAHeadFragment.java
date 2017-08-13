@@ -27,9 +27,9 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
     //应急物资
     private CheckBox cbInvFlag;
     //项目移交物资
-    private CheckBox cbProjectFlag;
+    private CheckBox cbInvType;
     //库存类型
-    private Spinner spInvType;
+    private Spinner spSpecialInvType;
     //项目编号
     private RichAutoEditText etProjectNum;
 
@@ -68,9 +68,9 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
         //应急物资
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
         //项目移交物资
-        cbProjectFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_project_flag);
+        cbInvType = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_type);
         //库存类型
-        spInvType = (Spinner) mView.findViewById(R.id.xngd_sp_inv_type);
+        spSpecialInvType = (Spinner) mView.findViewById(R.id.xngd_sp_inv_type);
         //项目编号
         etProjectNum = (RichAutoEditText) mView.findViewById(R.id.xngd_et_project_num);
     }
@@ -81,11 +81,11 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
         mAutoDatas = new ArrayList<>();
         //初始化库存类型，注意当用户选择项目物资的时候，项目文本必输
         ArrayList<String> items = new ArrayList<>();
-        items.add("生成物资");
+        items.add("生产物资");
         items.add("项目物资");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, items);
-        spInvType.setAdapter(adapter);
+        spSpecialInvType.setAdapter(adapter);
     }
 
     @Override
@@ -95,11 +95,15 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
             //应急物资
             mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
             //项目移交物资
-            mRefData.specialInvFlag = cbProjectFlag.isChecked() ? "Q" : "N";
+            mRefData.invType = cbInvType.isChecked() ? "0" : "1";
             //库存类型
-            mRefData.invType = String.valueOf(spInvType.getSelectedItemPosition());
+            mRefData.specialInvFlag = spSpecialInvType.getSelectedItemPosition() == 0 ? "N" :
+                    "Q";
             //项目编号
-            mRefData.projectNum = getString(etProjectNum).split("_")[0];
+            String projectNum = getString(etProjectNum);
+            if(!TextUtils.isEmpty(projectNum)) {
+                mRefData.projectNum = projectNum.split("_")[0];
+            }
         }
     }
 

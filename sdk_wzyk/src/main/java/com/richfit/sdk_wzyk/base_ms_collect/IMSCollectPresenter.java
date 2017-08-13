@@ -1,7 +1,7 @@
 package com.richfit.sdk_wzyk.base_ms_collect;
 
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by monday on 2017/2/10.
  */
 
-public interface IMSCollectPresenter extends IPresenter<IMSCollectView> {
+public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectView> {
 
 
     /**
@@ -49,10 +49,4 @@ public interface IMSCollectPresenter extends IPresenter<IMSCollectView> {
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
 
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
 }

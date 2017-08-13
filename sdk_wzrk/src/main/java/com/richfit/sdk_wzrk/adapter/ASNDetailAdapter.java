@@ -29,6 +29,7 @@ public class ASNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
+                .setText(R.id.materialUnit,item.unit)
                 //批次
                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 //库存地点

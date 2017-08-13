@@ -16,7 +16,6 @@ import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
@@ -31,9 +30,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 注意从明细界面过来的发出仓位是LocationCombine集合，接收仓位是location集合
@@ -49,6 +45,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_send_inv)
     protected TextView tvSendInv;
     @BindView(R2.id.et_quantity)
@@ -179,6 +177,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
             tvMaterialNum.setTag(data.materialId);
             tvMaterialDesc.setText(data.materialDesc);
             tvMaterialGroup.setText(data.materialGroup);
+            tvMaterialUnit.setText(data.unit);
             tvSendBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
                     batchFlag);
             tvRecBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
@@ -448,42 +447,35 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         return true;
     }
 
+
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.locationId = mLocationId;
-            result.invType = result.invId = CommonUtil.Obj2String(tvSendInv.getTag());
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvSendBatchFlag);
-            result.deviceId = mDeviceId;
-            int locationPos = spSendLoc.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.recLocation = getString(autoRecLoc);
-            result.recBatchFlag = getString(tvRecBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            result.invType = param.invType;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.locationId = mLocationId;
+        result.invType = result.invId = CommonUtil.Obj2String(tvSendInv.getTag());
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvSendBatchFlag);
+        result.deviceId = mDeviceId;
+        int locationPos = spSendLoc.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(locationPos).location;
+        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        result.recLocation = getString(autoRecLoc);
+        result.recBatchFlag = getString(tvRecBatchFlag);
+        result.quantity = getString(etQuantity);
+        result.modifyFlag = "Y";
+        result.invType = param.invType;
+        return result;
     }
 
     @Override

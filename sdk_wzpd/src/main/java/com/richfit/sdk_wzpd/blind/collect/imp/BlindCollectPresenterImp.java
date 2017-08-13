@@ -3,7 +3,7 @@ package com.richfit.sdk_wzpd.blind.collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
@@ -18,10 +18,9 @@ import io.reactivex.Flowable;
  * Created by monday on 2017/3/3.
  */
 
-public class BlindCollectPresenterImp extends BasePresenter<IBlindCollectView>
+public class BlindCollectPresenterImp extends BaseCollectPresenterImp<IBlindCollectView>
         implements IBlindCollectPresenter {
 
-    IBlindCollectView mView;
 
     public BlindCollectPresenterImp(Context context) {
         super(context);
@@ -95,7 +94,9 @@ public class BlindCollectPresenterImp extends BasePresenter<IBlindCollectView>
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在保存本次盘点数量...") {
                     @Override
                     public void _onNext(String s) {
-
+                        if (mView != null) {
+                            mView.saveCollectedDataSuccess(s);
+                        }
                     }
 
                     @Override
@@ -121,9 +122,7 @@ public class BlindCollectPresenterImp extends BasePresenter<IBlindCollectView>
 
                     @Override
                     public void _onComplete() {
-                        if (mView != null) {
-                            mView.saveCollectedDataSuccess();
-                        }
+
                     }
                 });
         addSubscriber(subscriber);

@@ -7,6 +7,7 @@ import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.R2;
 import com.richfit.sdk_xxcx.adapter.InvYQueryRefDetailAdapter;

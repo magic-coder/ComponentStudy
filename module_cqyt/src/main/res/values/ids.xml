@@ -46,5 +46,8 @@
     <item name="cqyt_et_inspection_date" type="id"/>
     <item name="cqyt_et_inspection_standard" type="id"/>
     <item name="cqyt_sp_declared_unit" type="id"/>
+    <item name="cqyt_et_material_num" type="id"/>
+    <item name="cqyt_et_material_desc" type="id"/>
+    <item name="cqyt_tv_quantity" type="id"/>
 
 </resources>

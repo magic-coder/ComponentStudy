@@ -95,4 +95,8 @@ public abstract class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadV
     }
 
 
+    @Override
+    public void getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
+
+    }
 }

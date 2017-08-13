@@ -23,6 +23,8 @@ import android.view.animation.PathInterpolator;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.R;
+import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryEntity;
 
 import java.util.List;
 
@@ -224,6 +226,46 @@ public class UiUtil {
         for (String item : dataSet) {
             position++;
             if (keyWord.equals(item)) {
+                break;
+            }
+        }
+        sp.setSelection(position == -1 ? 0 : position);
+    }
+
+    public static void setSelectionForLocation(List<InventoryEntity> dataSet,String keyWord,Spinner sp) {
+        int position = -1;
+        if (TextUtils.isEmpty(keyWord))
+            return;
+        if (dataSet == null || dataSet.size() == 0)
+            return;
+        if (sp.getAdapter() == null)
+            return;
+        for (InventoryEntity item : dataSet) {
+            position++;
+            if (keyWord.equals(item.location)) {
+                break;
+            }
+        }
+        sp.setSelection(position == -1 ? 0 : position);
+    }
+
+    /**
+     *
+     * @param dataSet
+     * @param keyWord
+     * @param sp
+     */
+    public static void setSelectionForInv(List<InvEntity> dataSet, String keyWord, Spinner sp) {
+        int position = -1;
+        if (TextUtils.isEmpty(keyWord))
+            return;
+        if (dataSet == null || dataSet.size() == 0)
+            return;
+        if (sp.getAdapter() == null)
+            return;
+        for (InvEntity item : dataSet) {
+            position++;
+            if (keyWord.equals(item.invCode)) {
                 break;
             }
         }

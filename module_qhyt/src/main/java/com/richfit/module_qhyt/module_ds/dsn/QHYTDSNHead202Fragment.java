@@ -1,6 +1,8 @@
 package com.richfit.module_qhyt.module_ds.dsn;
 
 
+import android.text.TextUtils;
+
 import com.richfit.module_qhyt.module_ds.dsn.imp.QHYTDSNHeadPresenterImp;
 import com.richfit.sdk_wzck.base_dsn_head.BaseDSNHeadFragment;
 
@@ -35,7 +37,10 @@ public class QHYTDSNHead202Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPrese
     public void _onPause() {
         super._onPause();
         if(mRefData != null) {
-            mRefData.projectNum = getString(etAutoComp).split("_")[0];
+            String projectNum = getString(etAutoComp);
+            if(!TextUtils.isEmpty(projectNum)) {
+                mRefData.projectNum = projectNum.split("_")[0];
+            }
         }
     }
 }

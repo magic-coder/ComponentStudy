@@ -25,7 +25,8 @@ public class CQYTAS103ChildItemDelegate implements ItemViewDelegate<RefDetailEnt
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
        holder.setText(R.id.location,item.location)
                .setText(R.id.batchFlag,item.batchFlag)
-               .setText(R.id.quantity,item.quantity)
+               //显示到货数量
+               .setText(R.id.quantity,item.arrivalQuantity)
                .setText(R.id.cqyt_tv_quantity_custom,item.quantityCustom);
     }
 }

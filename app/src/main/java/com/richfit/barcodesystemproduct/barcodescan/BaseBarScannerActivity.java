@@ -39,6 +39,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
      * 条码类型|物料编码|批次|验收人|采购订单号
      */
     private void filerBarCodeInfo(String info) {
+
         if (TextUtils.isEmpty(info)) {
             return;
         }

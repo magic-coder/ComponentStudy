@@ -3,18 +3,22 @@ package com.richfit.module_xngd.module_ms.n311;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.module_xngd.module_ms.n311.imp.XNGDMSN311DetailPresenterImp;
 import com.richfit.sdk_wzyk.base_msn_detail.BaseMSNDetailFragment;
-import com.richfit.sdk_wzyk.base_msn_detail.imp.MSNDetailPresenterImp;
+
+import java.util.List;
 
 /**
  * Created by monday on 2017/7/20.
  */
 
-public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<MSNDetailPresenterImp>{
+public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<XNGDMSN311DetailPresenterImp>{
 
     @Override
     public void initPresenter() {
-        mPresenter = new MSNDetailPresenterImp(mActivity);
+        mPresenter = new XNGDMSN311DetailPresenterImp(mActivity);
     }
 
     @Override
@@ -40,5 +44,27 @@ public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<MSNDetailPresen
     @Override
     protected boolean checkTransStateBeforeRefresh() {
         return true;
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0,1);
+    }
+
+
+    /**
+     * 第一步过账成功后直接跳转
+     */
+    @Override
+    public void submitBarcodeSystemSuccess() {
+        showSuccessDialog(mShowMsg);
+        if (mAdapter != null) {
+            mAdapter.removeAllVisibleNodes();
+        }
+        mRefData = null;
+        mShowMsg.setLength(0);
+        mTransId = "";
+        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 }

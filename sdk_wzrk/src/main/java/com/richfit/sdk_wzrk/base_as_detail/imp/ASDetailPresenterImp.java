@@ -367,6 +367,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 childNode.batchFlag = location.batchFlag;
                 childNode.quantity = location.quantity;
                 childNode.transId = location.transId;
+                childNode.arrivalQuantity = location.arrivalQuantity;
                 childNode.transLineId = location.transLineId;
                 childNode.locationId = location.id;
                 childNode.quantityCustom = location.quantityCustom;

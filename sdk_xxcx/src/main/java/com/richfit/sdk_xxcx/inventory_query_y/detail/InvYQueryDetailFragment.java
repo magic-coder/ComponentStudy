@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.adapter.LQDetailAdapter;
 import com.richfit.sdk_xxcx.inventory_query_y.detail.imp.IInvYQueryDetailPresenterImp;
@@ -61,7 +62,6 @@ public class InvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetail
         //开始刷新
         startAutoRefresh();
     }
-
 
     @Override
     public void onRefresh() {

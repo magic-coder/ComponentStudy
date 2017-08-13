@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +39,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import io.reactivex.Flowable;
 
 
 /**
@@ -428,86 +425,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         }
     }
 
-    /**
-     * 通过单据单位计算库存数量
-     *
-     * @param quantity
-     * @param recordUnit
-     * @param unitRate
-     * @return
-     */
-    protected String calQuantityByUnitRate(String quantity, String recordUnit, float unitRate) {
-        if (TextUtils.isEmpty(quantity)) {
-            return "0";
-        }
-        float q = CommonUtil.convertToFloat(quantity, 0.0f);
-        if (!TextUtils.isEmpty(recordUnit) && unitRate != 0) {
-            q /= unitRate;
-        }
-        DecimalFormat df = new DecimalFormat("#.###");
-        return df.format(q);
-    }
-
-    /**
-     * 管理批次。注意这里通过是否打开了批次管理改变你enable属性，所以
-     * 如果要强制不让用户输入必须在bindCommonCollectUI中强制设置；
-     *
-     * @param batchFlagView:接收批次信息输入的控件
-     * @param batchManagerStatus:当前物料的批次管理状态
-     */
-    protected void manageBatchFlagStatus(TextView batchFlagView, boolean batchManagerStatus) {
-        //如果该业务打开了批次管理，那么检查该物料是否打开了批次管理
-        isOpenBatchManager = batchManagerStatus;
-        Log.e("yff","是否打开了批次管理 = " + isOpenBatchManager);
-        batchFlagView.setEnabled(isOpenBatchManager);
-        if (!isOpenBatchManager) {
-            batchFlagView.setText("");
-        }
-    }
-
-
-    /**
-     * 通过物资条码信息和批次信息匹配
-     * 这里的逻辑是：如果启用了批次管理那么明细里面可能有也可能没有批次，如果没有启用批次管理，那么
-     * 明细一定没有批次
-     *
-     * @return:与该物料匹配的行号集合
-     */
-    protected Flowable<ArrayList<String>> matchMaterialInfo(final String materialNum, final String batchFlag) {
-        if (mRefData == null || mRefData.billDetailList == null ||
-                mRefData.billDetailList.size() == 0 || TextUtils.isEmpty(materialNum)) {
-            return Flowable.error(new Throwable("请先获取单据信息"));
-        }
-        ArrayList<String> lineNums = new ArrayList<>();
-        List<RefDetailEntity> list = mRefData.billDetailList;
-        for (RefDetailEntity entity : list) {
-            if (entity.batchManagerStatus) {
-                final String lineNum = entity.lineNum;
-                //如果打开了批次，那么在看明细中是否有批次
-                if (!TextUtils.isEmpty(entity.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
-                    if (materialNum.equalsIgnoreCase(entity.materialNum) &&
-                            batchFlag.equalsIgnoreCase(entity.batchFlag) &&
-                            !TextUtils.isEmpty(lineNum))
-
-                        lineNums.add(lineNum);
-                } else {
-                    if (materialNum.equalsIgnoreCase(entity.materialNum) &&
-                            !TextUtils.isEmpty(lineNum))
-                        lineNums.add(lineNum);
-                }
-            } else {
-                final String lineNum = entity.lineNum;
-                //如果明细中没有打开了批次管理,那么只匹配物料编码
-                if (materialNum.equalsIgnoreCase(entity.materialNum) && !TextUtils.isEmpty(lineNum))
-                    lineNums.add(entity.lineNum);
-
-            }
-        }
-        if (lineNums.size() == 0) {
-            return Flowable.error(new Throwable("未获取到匹配的物料"));
-        }
-        return Flowable.just(lineNums);
-    }
 
     /**
      * 通过单据行的行号得到该行在单据明细列表中的位置
@@ -546,4 +463,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         }
         return mRefData.billDetailList.get(lineIndex);
     }
+
+
 }

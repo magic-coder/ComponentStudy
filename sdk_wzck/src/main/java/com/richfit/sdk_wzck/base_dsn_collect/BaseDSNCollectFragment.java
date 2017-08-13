@@ -13,11 +13,11 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -33,16 +33,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by monday on 2017/2/23.
  */
 
-public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> extends BaseFragment<P>
+public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> extends BaseCollectFragment<P>
         implements IDSNCollectView {
 
     @BindView(R2.id.et_material_num)
@@ -51,6 +48,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.et_batch_flag)
     protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
@@ -83,6 +82,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
      */
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             if (!etMaterialNum.isEnabled()) {
                 showMessage("请先在抬头界面获取相关数据");
@@ -96,17 +96,11 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             } else {
                 loadMaterialInfo(materialNum, batchFlag);
             }
-        } else if (list != null && list.length == 2 & !cbSingle.isChecked()) {
-            final String location = list[1];
-            //扫描仓位
-            if (spLocation.getAdapter() != null) {
-                final int size = mInventoryDatas.size();
-                for (int i = 0; i < size; i++) {
-                    if (mInventoryDatas.get(i).location.equalsIgnoreCase(location)) {
-                        spLocation.setSelection(i);
-                        break;
-                    }
-                }
+        } else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
+            //仓位处理
+            if (mInventoryDatas != null && spLocation.getAdapter() != null) {
+                final String location = list[0];
+                UiUtil.setSelectionForLocation(mInventoryDatas, location, spLocation);
             }
         }
     }
@@ -205,7 +199,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     }
 
     @Override
-    public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
+    public void bindCommonCollectUI(ReferenceEntity refData, String batchFlag) {
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
         RefDetailEntity data = refData.billDetailList.get(0);
@@ -214,6 +208,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         etMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
+        tvMaterialUnit.setText(data.unit);
         //如果打开了批次管理，那么以当前输入的为准，如果没有那么获取单据中的批次
         if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
             etBatchFlag.setText(data.batchFlag);
@@ -452,47 +447,40 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         builder.show();
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
-            result.location = mInventoryDatas.get(spLocation.getSelectedItemPosition()).location;
-            result.quantity = getString(etQuantity);
-            result.costCenter = mRefData.costCenter;
-            result.projectNum = mRefData.projectNum;
-            //库存相关的字段回传
-            int locationPos = spLocation.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.invType = param.invType;
-            result.invFlag = mRefData.invFlag;
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = etMaterialNum.getTag().toString();
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
+        result.location = mInventoryDatas.get(spLocation.getSelectedItemPosition()).location;
+        result.quantity = getString(etQuantity);
+        result.costCenter = mRefData.costCenter;
+        result.projectNum = mRefData.projectNum;
+        //库存相关的字段回传
+        int locationPos = spLocation.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(locationPos).location;
+        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        result.invType = param.invType;
+        result.invFlag = mRefData.invFlag;
+        result.modifyFlag = "N";
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));
@@ -508,7 +496,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
 
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvInvQuantity, tvLocQuantity,
-                etQuantity, etMaterialNum, etBatchFlag);
+                etQuantity, etMaterialNum, etBatchFlag, tvMaterialUnit);
 
         //库存地点
         if (spInv.getAdapter() != null) {

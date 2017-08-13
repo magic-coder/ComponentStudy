@@ -54,6 +54,7 @@ public class QHYTDSNDetailFragment extends BaseDSNDetailFragment<DSNDetailPresen
         super.initDataLazily();
     }
 
+    @Override
     protected void submit2BarcodeSystem(String tranToSapFlag) {
         //如果需要寄售转自有但是没有成功过，都需要用户需要再次寄售转自有
         if (isNeedTurn && !isTurnSuccess) {

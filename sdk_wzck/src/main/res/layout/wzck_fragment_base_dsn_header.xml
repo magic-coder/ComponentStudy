@@ -29,7 +29,7 @@
         android:padding="@dimen/collect_row_padding">
 
         <TextView
-            android:id="@id/et_auto_comp_name"
+            android:id="@id/tv_auto_comp_name"
             style="@style/LeftTextViewItemStyle"
             android:text="@string/cost_center" />
 

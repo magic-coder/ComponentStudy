@@ -27,16 +27,21 @@ public class XNGDAOParentHeaderItemDelegate implements ItemViewDelegate<RefDetai
                 .setText(R.id.materialNum, data.materialNum)
                 .setText(R.id.materialDesc, data.materialDesc)
                 .setText(R.id.materialGroup, data.materialGroup)
+                .setText(R.id.materialUnit,data.unit)
                 .setText(R.id.specialInvFlag, data.specialInvFlag)
                 .setText(R.id.orderQuantity, data.orderQuantity)
                 .setText(R.id.actQuantity, data.actQuantity)
                 .setText(R.id.totalQuantity, data.totalQuantity)
                 .setText(R.id.xngd_allQuantity, data.allQuantity)
                 .setText(R.id.xngd_partQuantity, data.partQuantity)
-                .setText(R.id.xngd_inspectionType, data.inspectionType)
-                .setText(R.id.xngd_inspectionStatus, data.inspectionStatus)
+                //检验方法
+                .setText(R.id.xngd_inspectionType, data.inspectionTypeName)
+                //检验状况
+                .setText(R.id.xngd_inspectionStatus, data.inspectionStatusName)
+                //处理情况
                 .setText(R.id.xngd_processResult, data.processResult)
                 .setText(R.id.work, data.workCode)
                 .setText(R.id.inv, data.invCode);
     }
+
 }

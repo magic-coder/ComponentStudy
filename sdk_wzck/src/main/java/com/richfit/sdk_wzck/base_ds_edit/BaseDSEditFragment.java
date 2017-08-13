@@ -11,7 +11,6 @@ import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
@@ -24,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2016/11/21.
@@ -41,6 +37,8 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     TextView tvMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_batch_flag)
     protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
@@ -138,6 +136,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             tvRefLineNum.setText(lineData.lineNum);
             tvMaterialNum.setText(lineData.materialNum);
             tvMaterialDesc.setText(lineData.materialDesc);
+            tvMaterialUnit.setText(lineData.unit);
             tvActQuantity.setText(lineData.actQuantity);
             tvBatchFlag.setText(batchFlag);
             tvInv.setText(invCode);
@@ -290,44 +289,36 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            InventoryQueryParam param = provideInventoryQueryParam();
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.locationId = mLocationId;
-            result.refLineNum = lineData.lineNum;
-            result.invId = tvInv.getTag().toString();
-            result.materialId = lineData.materialId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            //库存相关的字段回传
-            int locationPos = spLocation.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.invType = param.invType;
-            result.modifyFlag = "Y";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        InventoryQueryParam param = provideInventoryQueryParam();
+        ResultEntity result = new ResultEntity();
+        result.businessType = mRefData.bizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefData.refType;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.refLineId = lineData.refLineId;
+        result.workId = lineData.workId;
+        result.locationId = mLocationId;
+        result.refLineNum = lineData.lineNum;
+        result.invId = tvInv.getTag().toString();
+        result.materialId = lineData.materialId;
+        result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
+        result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
+        //库存相关的字段回传
+        int locationPos = spLocation.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(locationPos).location;
+        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
+        result.quantity = getString(etQuantity);
+        result.invType = param.invType;
+        result.modifyFlag = "Y";
+        return result;
     }
 
     @Override

@@ -20,7 +20,5 @@ public interface IInvNQueryHeaderPresenter extends IPresenter<IInvNQueryHeaderVi
      */
     void getInvsByWorkId(String workId, int flag);
 
-    void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
-                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId);
+
 }

@@ -2,7 +2,7 @@ package com.richfit.sdk_cwtz.collect.imp;
 
 import android.content.Context;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
@@ -22,10 +22,8 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/2/7.
  */
 
-public class LACollectPresenterImp extends BasePresenter<ILACollectView>
+public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectView>
         implements ILACollectPresenter {
-
-    ILACollectView mView;
 
     public LACollectPresenterImp(Context context) {
         super(context);
@@ -127,7 +125,10 @@ public class LACollectPresenterImp extends BasePresenter<ILACollectView>
         addSubscriber(subscriber);
     }
 
-
+    /**
+     * 注意仓位调整比较特殊，直接将数据保存到sap
+     * @param result:用户采集的数据(json格式)
+     */
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
@@ -170,18 +171,4 @@ public class LACollectPresenterImp extends BasePresenter<ILACollectView>
                         });
         addSubscriber(subscriber);
     }
-
-    protected MaterialEntity addBatchManagerStatus(MaterialEntity data,String workId) {
-        if ("Y".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
-            data.batchManagerStatus = true;
-        } else if ("N".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
-            data.batchManagerStatus = false;
-        } else if ("T".equalsIgnoreCase(Global.BATCHMANAGERSTATUS)) {
-            String batchManagerStatus = mRepository.getBatchManagerStatus(workId, data.id);
-            //如果是X那么表示打开了批次管理
-            data.batchManagerStatus = "X".equalsIgnoreCase(batchManagerStatus);
-        }
-        return data;
-    }
-
 }

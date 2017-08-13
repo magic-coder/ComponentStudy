@@ -2,7 +2,9 @@ package com.richfit.module_xngd.module_rs;
 
 import android.text.TextUtils;
 
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
@@ -10,10 +12,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 退库申请单退库，库存地点不让修改---张颖
  * Created by monday on 2017/6/21.
  */
 
-public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp>{
+public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new ASCollectPresenterImp(mActivity);
@@ -37,6 +41,12 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     }
 
     @Override
+    public void loadInvComplete() {
+        super.loadInvComplete();
+        spInv.setEnabled(false);
+    }
+
+    @Override
     protected int getOrgFlag() {
         return 0;
     }
@@ -49,7 +59,7 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
-        extraMap.put("projectNum",mRefData.projectNum);
+        extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

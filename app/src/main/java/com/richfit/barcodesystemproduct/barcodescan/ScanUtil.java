@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -51,6 +52,7 @@ public class ScanUtil {
         public void onReceive(Context context,
                               Intent intent) {
             String action = intent.getAction();
+            Log.e("yff","action = " + action);
             if (action.equals(WZ_RECT_DATA_ACTION)) {
                 String data = intent.getStringExtra("Scan_context");
                 if (listener != null) {

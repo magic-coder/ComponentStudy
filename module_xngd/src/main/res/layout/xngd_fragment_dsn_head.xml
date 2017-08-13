@@ -61,7 +61,7 @@
             android:text="@string/xngd_project_flag" />
 
         <CheckBox
-            android:id="@id/xngd_cb_project_flag"
+            android:id="@id/xngd_cb_inv_type"
             android:layout_width="0dp"
             android:layout_height="@dimen/spinner_min_height"
             android:layout_weight="1" />
@@ -74,12 +74,28 @@
         android:padding="@dimen/collect_row_padding">
 
         <TextView
-            android:id="@id/et_auto_comp_name"
+            android:id="@id/tv_auto_comp_name"
             style="@style/LeftTextViewItemStyle"
             android:text="@string/cost_center" />
 
         <AutoCompleteTextView
-            android:id="@+id/et_auto_comp"
+            android:id="@id/et_auto_comp"
+            style="@style/RightEditTextItemStyle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/collect_row_padding">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/xngd_gl_account" />
+
+        <AutoCompleteTextView
+            android:id="@+id/xngd_et_gl_account"
             style="@style/RightEditTextItemStyle" />
 
     </LinearLayout>

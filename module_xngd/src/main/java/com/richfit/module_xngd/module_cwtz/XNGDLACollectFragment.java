@@ -21,8 +21,9 @@ public class XNGDLACollectFragment extends LACollectFragment {
             showMessage("在先在抬头界面选择相关的信息");
             return;
         }
-        if ("1".equals(mRefData.invType) && TextUtils.isEmpty(mRefData.projectNum)) {
-            showMessage("请现在抬头界面输入项目编号");
+        //如果用户选择的是项目物资，那么必须检查编号必输
+        if ("Q".equals(mRefData.specialInvFlag) && TextUtils.isEmpty(mRefData.projectNum)) {
+            showMessage("请现在抬头输入项目编号");
             return;
         }
         super.initDataLazily();
@@ -62,13 +63,13 @@ public class XNGDLACollectFragment extends LACollectFragment {
         }
 
         final String location = getString(etSendLocation);
-        if (TextUtils.isEmpty(location) || location.split(".").length != 4) {
+        if (TextUtils.isEmpty(location) || location.split("\\.").length != 4) {
             showMessage("源仓位不合理");
             return false;
         }
 
         final String recLocation = getString(etRecLocation);
-        if (TextUtils.isEmpty(recLocation) || location.split(".").length != 4) {
+        if (TextUtils.isEmpty(recLocation) || location.split("\\.").length != 4) {
             showMessage("目标仓位不合理");
             return false;
         }

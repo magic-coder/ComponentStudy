@@ -2,7 +2,7 @@ package com.richfit.sdk_wzck.base_ds_collect;
 
 import android.support.annotation.NonNull;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by monday on 2016/11/19.
  */
 
-public interface IDSCollectView extends BaseView {
+public interface IDSCollectView extends IBaseCollectView {
 
     /**
      * 获取匹配的物料信息
@@ -44,6 +44,7 @@ public interface IDSCollectView extends BaseView {
      */
     void showInvs(ArrayList<InvEntity> list);
 
+    void loadInvComplete();
 
     /**
      * 显示库存
@@ -61,7 +62,4 @@ public interface IDSCollectView extends BaseView {
     void onBindCache(RefDetailEntity cache, String batchFlag, String location);
     void loadCacheSuccess();
     void loadCacheFail(String message);
-
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
 }

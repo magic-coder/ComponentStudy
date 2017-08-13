@@ -48,6 +48,22 @@
                 android:layout_weight="2" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/arrival_quantity" />
+
+            <EditText
+                android:id="@id/arrival_quantity"
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal" />
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,9 +75,12 @@
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/cqyt_unqualified_quantity" />
 
-            <EditText
-                android:id="@id/cqyt_et_unqualified_quantity"
-                style="@style/RightEditTextItemStyle" />
+            <TextView
+                android:id="@id/cqyt_tv_unqualified_quantity"
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
+
+
+
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

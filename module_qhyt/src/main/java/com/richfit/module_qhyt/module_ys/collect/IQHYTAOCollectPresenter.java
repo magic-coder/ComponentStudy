@@ -1,13 +1,13 @@
 package com.richfit.module_qhyt.module_ys.collect;
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 /**
  * Created by monday on 2017/2/28.
  */
 
-public interface IQHYTAOCollectPresenter extends IPresenter<IQHYTAOCollectView> {
+public interface IQHYTAOCollectPresenter extends IBaseCollectPresenter<IQHYTAOCollectView> {
 
 
     /**
@@ -25,9 +25,4 @@ public interface IQHYTAOCollectPresenter extends IPresenter<IQHYTAOCollectView> 
 
     void getInvsByWorkId(String workId, int flag);
 
-    /**
-     * 上传本次采集验收数据
-     * @param result
-     */
-    void uploadInspectionDataSingle(ResultEntity result);
 }

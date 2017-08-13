@@ -1,22 +1,31 @@
 package com.richfit.module_cqyt.module_ms.ubsto;
 
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
 import com.richfit.sdk_wzck.base_ds_collect.imp.DSCollectPresenterImp;
+import com.richfit.sdk_wzys.camera.TakephotoActivity;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by monday on 2017/7/5.
@@ -26,6 +35,12 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
 
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        mLineNumForFilter = list[list.length - 1];
+        super.handleBarCodeScanResult(type, list);
+    }
 
     @Override
     public int getContentId() {
@@ -50,60 +65,177 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
         isSplitBatchFlag = true;
     }
 
-
+    /**
+     * 设置单据行信息之前，过滤掉
+     *
+     * @param refLines
+     */
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
+    public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if (!TextUtils.isEmpty(mLineNumForFilter)) {
+            //过滤掉重复行号
+            ArrayList<String> lines = new ArrayList<>();
+            for (String refLine : refLines) {
+                if(refLine.equalsIgnoreCase(mLineNumForFilter)) {
+                    lines.add(refLine);
+                }
+            }
+            if(lines.size() == 0) {
+                showMessage("未获取到条码的单据行信息");
+            }
+            super.setupRefLineAdapter(lines);
             return;
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.batchFlag = getString(etBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            //库存相关的字段回传
-            int locationPos = spLocation.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.supplierNum = mRefData.supplierNum;
-            //寄售转自有的标识
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            result.quantityCustom = getString(etQuantityCustom);
-            result.shopCondition = mRefData.shopCondition;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+        //如果单据中没有过滤行信息那么直接显示所有的行信息
+        super.setupRefLineAdapter(refLines);
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
+    public void bindCommonCollectUI() {
+        mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        if (!TextUtils.isEmpty(lineData.dangerFlag)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("温馨提示").setMessage(lineData.dangerFlag)
+                    .setPositiveButton("继续采集", (dialog, which) -> {
+                        super.bindCommonCollectUI();
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("放弃采集", (dialog, which) -> {
+                        dialog.dismiss();
+                    }).show();
+            return;
+        }
+        super.bindCommonCollectUI();
+    }
+
+
+    @Override
+    public void showOperationMenuOnCollection(final String companyCode) {
+        View rootView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_bottom_menu, null);
+        GridView menu = (GridView) rootView.findViewById(R.id.gd_menus);
+        final List<BottomMenuEntity> menus = provideDefaultBottomMenu();
+        BottomDialogMenuAdapter adapter = new BottomDialogMenuAdapter(mActivity, R.layout.item_dialog_bottom_menu, menus);
+        menu.setAdapter(adapter);
+
+        final Dialog dialog = new Dialog(mActivity, R.style.MaterialDialogSheet);
+        dialog.setContentView(rootView);
+        dialog.setCancelable(true);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        dialog.show();
+
+        menu.setOnItemClickListener((adapterView, view, position, id) -> {
+            switch (position) {
+                case 0:
+                    //保存本次数据
+                    saveCollectedData();
+                    break;
+                case 1:
+                    //拍照
+                    toTakePhoto(menus.get(position).menuName, menus.get(position).takePhotoType);
+                    break;
+            }
+            dialog.dismiss();
+        });
+    }
+
+
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+
+        final String quantityCustom = getString(etQuantityCustom);
+        if (TextUtils.isEmpty(quantityCustom)) {
+            showMessage("请先输入件数");
+            return false;
+        }
+        if (Float.valueOf(quantityCustom) < 0.0f) {
+            showMessage("件数不合理");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.quantityCustom = getString(etQuantityCustom);
+        result.shopCondition = mRefData.shopCondition;
+        return result;
+    }
+
+    @Override
+    public void saveCollectedDataSuccess(String message) {
+        super.saveCollectedDataSuccess(message);
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }
         tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
                 getString(tvTotalQuantityCustom))));
     }
+
+    private void toTakePhoto(String menuName, int takePhotoType) {
+        if (!checkBeforeTakePhoto()) {
+            return;
+        }
+        Intent intent = new Intent(mActivity, TakephotoActivity.class);
+        Bundle bundle = new Bundle();
+        //入库的子菜单的名称
+        bundle.putString(Global.EXTRA_TITLE_KEY, "外向交货单出库-" + menuName);
+        //拍照类型
+        bundle.putInt(Global.EXTRA_TAKE_PHOTO_TYPE, takePhotoType);
+        //单据号
+        bundle.putString(Global.EXTRA_REF_NUM_KEY, mRefData.recordNum);
+
+        bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, mBizType);
+        bundle.putString(Global.EXTRA_REF_TYPE_KEY, mRefType);
+        //单据行号
+        final int selectedLineNum = getIndexByLineNum(mSelectedRefLineNum);
+        final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        //行号
+        bundle.putString(Global.EXTRA_REF_LINE_NUM_KEY, lineData.lineNum);
+        //行id
+        bundle.putString(Global.EXTRA_REF_LINE_ID_KEY, lineData.refLineId);
+        bundle.putInt(Global.EXTRA_POSITION_KEY, selectedLineNum);
+        bundle.putBoolean(Global.EXTRA_IS_LOCAL_KEY, mPresenter.isLocal());
+        intent.putExtras(bundle);
+        mActivity.startActivity(intent);
+    }
+
+    /**
+     * 拍照之前做必要的检查
+     *
+     * @return
+     */
+    private boolean checkBeforeTakePhoto() {
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取单据数据");
+            return false;
+        }
+        if (TextUtils.isEmpty(mSelectedRefLineNum)) {
+            showMessage("请先选择单据行");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> menus = new ArrayList<>();
+
+        BottomMenuEntity menu = new BottomMenuEntity();
+        menu.menuName = "保存数据";
+        menu.menuImageRes = R.mipmap.icon_save_data;
+        menus.add(menu);
+
+        menu = new BottomMenuEntity();
+        menu.menuName = "外观拍照";
+        menu.menuImageRes = R.mipmap.icon_take_photo4;
+        menu.takePhotoType = 4;
+        menus.add(menu);
+        return menus;
+    }
+
 
     @Override
     protected int getOrgFlag() {

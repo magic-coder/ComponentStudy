@@ -20,12 +20,12 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.SPrefUtil;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -41,9 +41,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -53,7 +50,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/11/20.
  */
 
-public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> extends BaseFragment<P>
+public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> extends BaseCollectFragment<P>
         implements IMSNCollectView {
 
     @BindView(R2.id.et_material_num)
@@ -123,6 +120,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
      */
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             if (!etMaterialNum.isEnabled()) {
                 showMessage("请先在抬头界面获取相关数据");
@@ -139,18 +137,12 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         } else if (list != null && list.length == 1 & !cbSingle.isChecked()) {
             final String location = list[0];
             if (autoRecLoc.isFocused()) {
+                clearCommonUI(autoRecLoc);
                 autoRecLoc.setText(location);
                 return;
-            }
-            //扫描发出仓位
-            if (spSendLoc.getAdapter() != null) {
-                final int size = mInventoryDatas.size();
-                for (int i = 0; i < size; i++) {
-                    if (mInventoryDatas.get(i).location.equalsIgnoreCase(location)) {
-                        spSendLoc.setSelection(i);
-                        break;
-                    }
-                }
+            } else if (mInventoryDatas != null && spSendLoc.getAdapter() != null) {
+                //扫描发出仓位
+                UiUtil.setSelectionForLocation(mInventoryDatas, location, spSendLoc);
             }
         }
     }
@@ -213,7 +205,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 .itemSelections(spSendLoc)
                 .filter(position -> (mInventoryDatas != null && mInventoryDatas.size() > 0 &&
                         position.intValue() < mInventoryDatas.size()))
-                .subscribe(position -> loadLocationQuantity(position));
+                .subscribe(position -> getTransferSingle(position));
 
         //单品(注意单品仅仅控制实收数量，累计数量是由行信息里面控制)
         cbSingle.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -280,7 +272,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     }
 
     @Override
-    public void onBindCommonUI(ReferenceEntity refData, String batchFlag) {
+    public void bindCommonCollectUI(ReferenceEntity refData, String batchFlag) {
         RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
         etSendBatchFlag.setEnabled(true);
@@ -526,7 +518,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     /**
      * 用户选择发出仓位，匹配该仓位上的仓位数量
      */
-    protected void loadLocationQuantity(int position) {
+    protected void getTransferSingle(int position) {
         if (position <= 0) {
             resetSendLocation();
             return;
@@ -720,46 +712,40 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         builder.show();
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mSendInvs.get(spSendInv.getSelectedItemPosition()).invId;
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag =!isOpenBatchManager ? Global.DEFAULT_BATCHFLAG :  CommonUtil.toUpperCase(getString(etSendBatchFlag));
-            result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
-            result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
-            result.quantity = getString(etQuantity);
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            //庆阳添加设备号
-            result.deviceId = mDeviceId;
-            int locationPos = spSendLoc.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = mSendInvs.get(spSendInv.getSelectedItemPosition()).invId;
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = etMaterialNum.getTag().toString();
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : CommonUtil.toUpperCase(getString(etSendBatchFlag));
+        result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
+        result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
+        result.quantity = getString(etQuantity);
+        result.invType = param.invType;
+        result.modifyFlag = "N";
+        //庆阳添加设备号
+        result.deviceId = mDeviceId;
+        int locationPos = spSendLoc.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(locationPos).location;
+        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         final float locQuantityV = CommonUtil.convertToFloat(getString(tvLocQuantity), 0.0f);
         tvLocQuantity.setText(String.valueOf(quantityV + locQuantityV));

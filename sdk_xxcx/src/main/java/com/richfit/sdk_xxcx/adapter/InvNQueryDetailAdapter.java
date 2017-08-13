@@ -25,6 +25,7 @@ public class InvNQueryDetailAdapter extends CommonTreeAdapter<InventoryEntity> {
                 .setText(R.id.materialGroup,item.materialGroup)
                 .setText(R.id.materialDesc,item.materialDesc)
                 .setText(R.id.materialUnit,item.unit)
+                .setText(R.id.batchFlag,item.batchFlag)
                 .setText(R.id.work,item.workCode)
                 .setText(R.id.inv,item.invCode)
                 .setText(R.id.location,item.location)

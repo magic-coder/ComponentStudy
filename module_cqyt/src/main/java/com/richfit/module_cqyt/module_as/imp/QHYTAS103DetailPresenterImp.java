@@ -46,7 +46,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
         if (extraHeaderMap != null) {
             final String refNum = CommonUtil.Obj2String(extraHeaderMap.get("refNum"));
             addSubscriber(Flowable.concat(uploadInspectedImages(refNum, refCodeId, transId, userId, "01", false),
-                    mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "",extraHeaderMap),
+                    mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "", extraHeaderMap),
                     mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
                     .doOnComplete(() -> mRepository.deleteInspectionImages(refNum, refCodeId, false))
                     .doOnComplete(() -> FileUtil.deleteDir(FileUtil.getImageCacheDir(mContext.getApplicationContext(), refNum, false)))
@@ -173,17 +173,22 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
                     //验收结果
-                    bundle.putString(CQYTAS103EditFragment.extra_inspection_result_key, parentNode.inspectionResult);
+                    bundle.putString(CQYTAS103EditFragment.EXTRA_INSPECTION_RESULT_KEY, parentNode.inspectionResult);
+
+                    //到货数量
+                    bundle.putString(CQYTAS103EditFragment.EXTRA_ARRIVAL_QUANTITY_KEY, node.arrivalQuantity);
 
                     //不合格数量
-                    bundle.putString(CQYTAS103EditFragment.extra_unqualified_key, parentNode.unqualifiedQuantity);
+                    bundle.putString(CQYTAS103EditFragment.EXTRA_UNQUALIFIED_KEY, parentNode.unqualifiedQuantity);
 
                     //备注
-                    bundle.putString(CQYTAS103EditFragment.extra_remark_key, parentNode.remark);
+                    bundle.putString(CQYTAS103EditFragment.EXTRA_REMARK_KEY, parentNode.remark);
 
-                    //件数
+                    //件数(注意这里使用的是313的关键字)
                     bundle.putString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
 
+                    //报检数量
+                    bundle.putString(CQYTAS103EditFragment.EXTRA_DECLARED_QUANTITY_KEY, node.declaredQuantity);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
@@ -211,6 +216,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
     /**
      * 图片上传。将imageEntity装换成上传ResultEntity实体类
      * bizPart:1验收，2出入库，3巡检
+     *
      * @return
      */
     private ResultEntity wrapperImageInternal(ImageEntity image, String refCodeId, String transId, String userId,

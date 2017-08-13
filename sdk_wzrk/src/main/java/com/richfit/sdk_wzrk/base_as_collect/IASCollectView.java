@@ -2,7 +2,7 @@ package com.richfit.sdk_wzrk.base_as_collect;
 
 import android.support.annotation.NonNull;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by monday on 2016/11/15.
  */
 
-public interface IASCollectView extends BaseView {
+public interface IASCollectView extends IBaseCollectView {
 
     /**
      * 获取匹配的物料信息
@@ -42,6 +42,8 @@ public interface IASCollectView extends BaseView {
      */
     void showInvs(ArrayList<InvEntity> list);
 
+    void loadInvComplete();
+
     /**
      * 加载上架仓位
      */
@@ -68,10 +70,6 @@ public interface IASCollectView extends BaseView {
      * @param message
      */
     void loadCacheFail(String message);
-
-
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
 
     /**
      * 显示库存

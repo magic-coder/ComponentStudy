@@ -64,7 +64,6 @@ public class XNGDASNDetailFragment extends BaseASNDetailFragment<ASNDetailPresen
                 break;
             }
         }
-        Log.e("yff","size = " + nodes.size());
         if (mAdapter == null) {
             mAdapter = new XNGDASNDetailAdapter(mActivity, R.layout.xngd_item_asn_parent_item, nodes);
             mRecyclerView.setAdapter(mAdapter);

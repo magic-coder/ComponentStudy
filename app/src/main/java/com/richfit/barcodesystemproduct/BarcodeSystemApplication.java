@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import com.richfit.common_lib.lib_crash.CrashManager;
 import com.richfit.common_lib.lib_crash.HttpCrashReport;
 import com.richfit.common_lib.lib_mvp.BaseApplication;
-import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.repository.DataInjection;
@@ -74,8 +73,8 @@ public class BarcodeSystemApplication extends BaseApplication {
                     break;
                 case Global.XNGD:
                     //西南管道
-//                    baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
-                    baseUrl = "http://10.88.53.9:8080/gdbk_middleware/MobileProcess/";
+                    baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
+//                    baseUrl = "http://10.88.53.9:8080/gdbk_middleware/MobileProcess/";
                     break;
                 case Global.CQYT:
                     //长庆油田

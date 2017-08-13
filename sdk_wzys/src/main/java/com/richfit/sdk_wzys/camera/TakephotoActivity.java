@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.richfit.common_lib.lib_eventbus.Event;
 import com.richfit.common_lib.lib_eventbus.EventBusUtil;
 import com.richfit.common_lib.lib_eventbus.EventCode;
@@ -32,6 +33,7 @@ import com.richfit.sdk_wzys.R2;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +44,7 @@ import butterknife.Unbinder;
  * Created by monday on 2016/11/26.
  */
 
-public class TakephotoActivity extends AppCompatActivity implements View.OnClickListener {
+public class TakephotoActivity extends AppCompatActivity {
 
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
@@ -69,12 +71,18 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
         initVariable();
         setupToolbar();
         setupFragment();
-        mBtnTakePhoto.setOnClickListener(this);
         StatusBarCompat.compat(this, AppCompat.getColor(R.color.colorPrimaryDark, this));
         Event<Boolean> event = new Event<>(EventCode.EVENT_BARCODEREADER_CODE);
         event.setData(true);
         EventBusUtil.sendEvent(event);
 
+        //注册调器相机事件
+        RxView.clicks(mBtnTakePhoto)
+                .throttleFirst(2000, TimeUnit.MILLISECONDS)
+                .subscribe(a -> {
+                    final Intent intent = getIntent();
+                    toTake(intent, mTakePhotoMode);
+                });
     }
 
     @Override
@@ -239,9 +247,4 @@ public class TakephotoActivity extends AppCompatActivity implements View.OnClick
 //        }
 //    }
 
-    @Override
-    public void onClick(View v) {
-        final Intent intent = getIntent();
-        toTake(intent, mTakePhotoMode);
-    }
 }

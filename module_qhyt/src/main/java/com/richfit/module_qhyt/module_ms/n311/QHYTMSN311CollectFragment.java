@@ -4,21 +4,14 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
-
 /**
- * 工厂内311移库，不需要接收批次。接收仓位默认与发出仓位一直，允许修改，但是不提供拉下选择和搜索
+ * 工厂内311移库，不需要接收批次。接收仓位默认与发出仓位一直，允许修改，但是不提供拉下选择和搜索。
+ * 增加用户控制是否寄售转自有的权限
  * Created by monday on 2017/2/16.
  */
 
@@ -107,9 +100,9 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
 
 
     @Override
-    protected void loadLocationQuantity(int position) {
+    protected void getTransferSingle(int position) {
         //调用父类方法，将缓存中的发出仓位数量匹配出来
-        super.loadLocationQuantity(position);
+        super.getTransferSingle(position);
         //接收仓位默认为发出仓位
 //        autoRecLoc.setText(mInventoryDatas.get(position).location);
     }
@@ -177,39 +170,12 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
         return super.checkCollectedDataBeforeSave();
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mSendInvs.get(spSendInv.getSelectedItemPosition()).invId;
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
-            result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
-            result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
-            result.quantity = getString(etQuantity);
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            result.deviceId = mDeviceId;
-            int locationPos = spSendLoc.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(locationPos).location;
-            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-            result.specialConvert = specialConvert;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.specialConvert = specialConvert;
+        return result;
     }
 
     @Override

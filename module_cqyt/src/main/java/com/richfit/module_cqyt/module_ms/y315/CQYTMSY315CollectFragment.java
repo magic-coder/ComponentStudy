@@ -1,15 +1,13 @@
 package com.richfit.module_cqyt.module_ms.y315;
 
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.UiUtil;
-import com.richfit.data.constant.Global;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
@@ -17,10 +15,6 @@ import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
 import java.util.ArrayList;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 注意这里使用的313的布局文件，因为长庆的移库都是在标准的基础上增加了一个件数的字段
@@ -31,6 +25,12 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
 
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        mLineNumForFilter = list[list.length - 1];
+        super.handleBarCodeScanResult(type, list);
+    }
 
     @Override
     public int getContentId() {
@@ -87,6 +87,49 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
     }
 
 
+    /**
+     * 设置单据行信息之前，过滤掉
+     *
+     * @param refLines
+     */
+    @Override
+    public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if (!TextUtils.isEmpty(mLineNumForFilter)) {
+            //过滤掉重复行号
+            ArrayList<String> lines = new ArrayList<>();
+            for (String refLine : refLines) {
+                if(refLine.equalsIgnoreCase(mLineNumForFilter)) {
+                    lines.add(refLine);
+                }
+            }
+            if(lines.size() == 0) {
+                showMessage("未获取到条码的单据行信息");
+            }
+            super.setupRefLineAdapter(lines);
+            return;
+        }
+        //如果单据中没有过滤行信息那么直接显示所有的行信息
+        super.setupRefLineAdapter(refLines);
+    }
+
+    @Override
+    public void bindCommonCollectUI() {
+        mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        if (!TextUtils.isEmpty(lineData.dangerFlag)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("温馨提示").setMessage(lineData.dangerFlag)
+                    .setPositiveButton("继续采集", (dialog, which) -> {
+                        super.bindCommonCollectUI();
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("放弃采集", (dialog, which) -> {
+                        dialog.dismiss();
+                    }).show();
+            return;
+        }
+        super.bindCommonCollectUI();
+    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -103,46 +146,15 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = getString(etBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            result.quantityCustom = getString(etQuantityCustom);
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.quantityCustom = getString(etQuantityCustom);
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
+    public void saveCollectedDataSuccess(String message) {
+        super.saveCollectedDataSuccess(message);
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }

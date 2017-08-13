@@ -10,12 +10,15 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadPresenter;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.functions.Function;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
@@ -121,6 +124,35 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
                     }
                 });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getDictionaryData(String code) {
+        mView = getView();
+        mRepository.getDictionaryData(code)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<List<SimpleEntity>>() {
+                    @Override
+                    public void onNext(List<SimpleEntity> strings) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(strings);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
 

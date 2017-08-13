@@ -42,7 +42,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/10/27.
  */
 
-public class LoginActivity extends BaseActivity<LoginPresenterImp> implements LoginContract.View, OnItemClickListener {
+public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements LoginContract.View, OnItemClickListener {
 
     @BindView(R.id.et_username)
     RichAutoEditText etUsername;

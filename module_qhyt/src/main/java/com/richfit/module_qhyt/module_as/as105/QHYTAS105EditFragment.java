@@ -2,25 +2,16 @@ package com.richfit.module_qhyt.module_as.as105;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/3/8.
@@ -97,49 +88,15 @@ public class QHYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     }
 
-
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.locationId = mLocationId;
-            result.materialId = lineData.materialId;
-            result.location = getString(etLocation);
-            result.batchFlag = getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            //物料凭证
-            result.refDoc = lineData.refDoc;
-            //物料凭证单据行
-            result.refDocItem = lineData.refDocItem;
-            //退货交货数量
-            result.returnQuantity = getString(etReturnQuantity);
-            //检验批数量
-            result.insLot = lineData.insLot;
-            //项目文本
-            result.projectText = getString(etProjectText);
-            //移动原因说明
-            result.moveCauseDesc = getString(etMoveCauseDesc);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : 0.f;
-            result.modifyFlag = "Y";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //退货交货数量
+        result.returnQuantity = getString(etReturnQuantity);
+        //项目文本
+        result.projectText = getString(etProjectText);
+        //移动原因说明
+        result.moveCauseDesc = getString(etMoveCauseDesc);
+        return result;
     }
 }

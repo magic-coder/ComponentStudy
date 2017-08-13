@@ -53,9 +53,7 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
 
                             @Override
                             public void onComplete() {
-                                if(mView != null) {
-                                    mView.loadInvsComplete();
-                                }
+
                             }
                         });
         addSubscriber(subscriber);
@@ -88,7 +86,9 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
 
                             @Override
                             public void onComplete() {
-
+                                if(mView != null) {
+                                    mView.loadInvsComplete();
+                                }
                             }
                         });
         addSubscriber(subscriber);
@@ -136,7 +136,7 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
     public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
         mView = getView();
         ResourceSubscriber<ArrayList<String>> subscriber =
-                mRepository.getSupplierList(workCode, keyWord, defaultItemNum, flag)
+                mRepository.getProjectNumList(workCode, keyWord, defaultItemNum, flag)
                         .filter(list -> list != null && list.size() > 0)
                         .map(list -> convert2StrList(list))
                         .compose(TransformerHelper.io2main())

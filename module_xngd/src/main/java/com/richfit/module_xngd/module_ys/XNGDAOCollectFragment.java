@@ -17,7 +17,6 @@ import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -31,10 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/5/26.
@@ -174,6 +169,27 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     }
 
     @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //是否应急
+        result.invFlag = mRefData.invFlag;
+        //全检数量
+        result.allQuantity = getString(etAllQuantity);
+        //抽检数量
+        result.partQuantity = getString(etPartQuantity);
+        //检验方法
+        if (spInspectionType.getSelectedItemPosition() > 0)
+            result.inspectionType = spInspectionType.getSelectedItemPosition();
+        //检验状况
+        if (spInspectionStatus.getSelectedItemPosition() > 0) {
+            result.inspectionStatus = String.valueOf(spInspectionStatus.getSelectedItemPosition());
+        }
+        //处理情况
+        result.processResult = getString(etProcessResult);
+        return result;
+    }
+
+    @Override
     public void showOperationMenuOnCollection(final String companyCode) {
         View rootView = LayoutInflater.from(mActivity).inflate(R.layout.dialog_bottom_menu, null);
         GridView menu = (GridView) rootView.findViewById(R.id.gd_menus);
@@ -218,61 +234,6 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         menu.takePhotoType = 4;
         menus.add(menu);
         return menus;
-    }
-
-    @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.companyCode = Global.COMPANY_CODE;
-            result.inspectionPerson = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = "20170101";
-            result.specialInvFlag = "N";
-            result.invType = "1";
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            //是否应急
-            result.invFlag = mRefData.invFlag;
-            //全检数量
-            result.allQuantity = getString(etAllQuantity);
-            //抽检数量
-            result.partQuantity = getString(etPartQuantity);
-            //检验方法
-            if (spInspectionType.getSelectedItemPosition() > 0)
-                result.inspectionType = spInspectionType.getSelectedItemPosition();
-            //检验状况
-            if (spInspectionStatus.getSelectedItemPosition() > 0) {
-                result.inspectionStatus = String.valueOf(spInspectionStatus.getSelectedItemPosition());
-            }
-            //处理情况
-            result.processResult = getString(etProcessResult);
-
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
     }
 
     /**

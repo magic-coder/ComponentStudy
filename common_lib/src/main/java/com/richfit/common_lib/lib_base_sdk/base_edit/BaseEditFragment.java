@@ -3,6 +3,7 @@ package com.richfit.common_lib.lib_base_sdk.base_edit;
 import android.support.v7.app.AlertDialog;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.domain.bean.ResultEntity;
 
 
 /**
@@ -27,6 +28,24 @@ public abstract class BaseEditFragment<P extends IBaseEditPresenter> extends Bas
             });
         }
         mDialog.show();
+    }
+
+    @Override
+    public void saveCollectedData() {
+        if (!checkCollectedDataBeforeSave()) {
+            return;
+        }
+        ResultEntity result = provideResult();
+        if (result == null) {
+            showMessage("未获取到条件的数据");
+            return;
+        }
+        mPresenter.uploadCollectionDataSingle(result);
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        return null;
     }
 
     @Override

@@ -4,13 +4,17 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_xxcx.inventory_query_n.header.IInvNQueryHeaderPresenter;
 import com.richfit.sdk_xxcx.inventory_query_n.header.IInvNQueryHeaderView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -18,40 +22,43 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/5/25.
  */
 
-public class IInvNQueryHeaderPresenterImp extends BasePresenter<IInvNQueryHeaderView>
+public class InvNQueryHeaderPresenterImp extends BasePresenter<IInvNQueryHeaderView>
         implements IInvNQueryHeaderPresenter {
 
     IInvNQueryHeaderView mView;
 
-    public IInvNQueryHeaderPresenterImp(Context context) {
+    public InvNQueryHeaderPresenterImp(Context context) {
         super(context);
     }
 
     @Override
     public void getWorks(int flag) {
         mView = getView();
-        ResourceSubscriber<ArrayList<WorkEntity>> subscriber = mRepository.getWorks(flag)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<ArrayList<WorkEntity>>() {
-                    @Override
-                    public void onNext(ArrayList<WorkEntity> works) {
-                        if (mView != null) {
-                            mView.showWorks(works);
-                        }
-                    }
+        ResourceSubscriber<ArrayList<WorkEntity>> subscriber =
+                mRepository.getWorks(flag)
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new ResourceSubscriber<ArrayList<WorkEntity>>() {
+                            @Override
+                            public void onNext(ArrayList<WorkEntity> works) {
+                                if (mView != null) {
+                                    mView.showWorks(works);
+                                }
+                            }
 
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadWorksFail(t.getMessage());
-                        }
-                    }
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.loadWorksFail(t.getMessage());
+                                }
+                            }
 
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                            @Override
+                            public void onComplete() {
+                                if(mView != null) {
+                                    mView.loadWorksComplete();
+                                }
+                            }
+                        });
         addSubscriber(subscriber);
     }
 
@@ -87,11 +94,6 @@ public class IInvNQueryHeaderPresenterImp extends BasePresenter<IInvNQueryHeader
                     }
                 });
         addSubscriber(subscriber);
-    }
-
-    @Override
-    public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum, String materialNum, String materialId, String location, String batchFlag, String specialInvFlag, String specialInvNum, String invType, String deviceId) {
-
     }
 
 }

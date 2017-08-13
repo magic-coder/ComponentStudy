@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by monday on 2017/5/25.
  */
 
-public interface IInvNQueryDetailPresenter extends IBaseDetailPresenter<InvNQueryDetailView> {
+public interface IInvNQueryDetailPresenter extends IBaseDetailPresenter<IInvNQueryDetailView> {
 
     /**
      * 获取库存信息

@@ -18,4 +18,7 @@ public interface IDSNHeadView extends IBaseHeadView {
 
     void deleteCacheSuccess(String message);
     void deleteCacheFail(String message);
+
+    void showGLAccounts(List<String> glAccounts);
+
 }

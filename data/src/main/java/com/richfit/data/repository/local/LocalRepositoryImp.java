@@ -167,6 +167,11 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
+    public Flowable<List<SimpleEntity>> getDictionaryData(String code) {
+        return Flowable.just(mBasicServiceDao.getDictionaryData(code));
+    }
+
+    @Override
     public Flowable<ArrayList<String>> readUserInfo(String userName, String password) {
         UserEntity userEntity = new UserEntity();
         userEntity.userName = userName;
@@ -258,6 +263,17 @@ public class LocalRepositoryImp implements ILocalRepository {
             ArrayList<SimpleEntity> list = mBasicServiceDao.getProjectNumList(workCode, key, defaultItemNum, flag);
             if (list == null || list.size() == 0) {
                 return Flowable.error(new Throwable("未获取到项目编号,请检查是否您选择的工厂是否正确或者是否在设置界面同步过项目编号"));
+            }
+            return Flowable.just(list);
+        });
+    }
+
+    @Override
+    public Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        return Flowable.just(keyWord).flatMap(key -> {
+            ArrayList<SimpleEntity> list = mBasicServiceDao.getGLAccountList(workCode, key, defaultItemNum, flag);
+            if (list == null || list.size() == 0) {
+                return Flowable.error(new Throwable("未获取到总账科目,请检查是否您选择的工厂是否正确或者是否在设置界面同步过项目编号"));
             }
             return Flowable.just(list);
         });
@@ -482,20 +498,20 @@ public class LocalRepositoryImp implements ILocalRepository {
         switch (bizType) {
             //出入库
             case "0":
-            //验收
+                //验收
             case "1":
                 mBusinessServiceDao.deleteOfflineDataAfterUploadSuccess(transId, bizType, refType, userId);
-                mInspectionServiceDao.deleteOfflineDataAfterUploadSuccess(transId,bizType,refType,userId);
+                mInspectionServiceDao.deleteOfflineDataAfterUploadSuccess(transId, bizType, refType, userId);
                 break;
             //盘点
             case "2":
-                mCheckServiceDao.deleteOfflineDataAfterUploadSuccess(transId,bizType,refType,userId);
+                mCheckServiceDao.deleteOfflineDataAfterUploadSuccess(transId, bizType, refType, userId);
                 break;
         }
     }
 
     @Override
-    public Flowable<String> setTransFlag(String bizType, String transId,String transFlag) {
+    public Flowable<String> setTransFlag(String bizType, String transId, String transFlag) {
         if (TextUtils.isEmpty(bizType) || TextUtils.isEmpty(transId)) {
             return Flowable.error(new Throwable("修改失败"));
         }
@@ -505,18 +521,18 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "01":
                 //验收
                 flowable = Flowable.just(transId)
-                        .flatMap(id -> Flowable.just(mInspectionServiceDao.setTransFlag(id,transFlag)));
+                        .flatMap(id -> Flowable.just(mInspectionServiceDao.setTransFlag(id, transFlag)));
                 break;
             case "C01":
             case "C02":
                 //盘点
                 flowable = Flowable.just(transId)
-                        .flatMap(id -> Flowable.just(mCheckServiceDao.setTransFlag(id,transFlag)));
+                        .flatMap(id -> Flowable.just(mCheckServiceDao.setTransFlag(id, transFlag)));
                 break;
             default:
                 //出入库业务
                 flowable = Flowable.just(transId)
-                        .flatMap(id -> Flowable.just(mBusinessServiceDao.setTransFlag(id,transFlag)));
+                        .flatMap(id -> Flowable.just(mBusinessServiceDao.setTransFlag(id, transFlag)));
                 break;
         }
         return flowable.flatMap(flag -> {
@@ -553,7 +569,7 @@ public class LocalRepositoryImp implements ILocalRepository {
 
     @Override
     public String getBatchManagerStatus(String workId, String materialId) {
-        return mBasicServiceDao.getBatchManagerStatus(workId,materialId);
+        return mBasicServiceDao.getBatchManagerStatus(workId, materialId);
     }
 
 

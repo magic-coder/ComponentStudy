@@ -240,6 +240,7 @@
     <string name="bad">变质</string>
     <string name="quality_problem">其他质量问题</string>
     <string name="qm_num">质检单号</string>
+    <string name="total_arrival_quantity">累计到货数量</string>
 
 
 </resources>

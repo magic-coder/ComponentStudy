@@ -1,5 +1,6 @@
 package com.richfit.module_qhyt.module_ds.dsn;
 
+import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.richfit.module_qhyt.R;
@@ -52,7 +53,10 @@ public class QHYTDSNHead201Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPrese
             mRefData.zzzdy9 = getString(etAuxiliary9);
             mRefData.zzzxlb = getString(etAccountType);
             mRefData.zzzxnr = getString(etAccountContent);
-            mRefData.costCenter = getString(etAutoComp).split("_")[0];
+            String costCenter = getString(etAutoComp);
+            if (!TextUtils.isEmpty(costCenter)) {
+                mRefData.costCenter = costCenter.split("_")[0];
+            }
         }
     }
 }

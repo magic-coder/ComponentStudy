@@ -193,8 +193,8 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
+    public void saveCollectedDataSuccess(String message) {
+        super.saveCollectedDataSuccess(message);
         //强制修改enable
         etBatchFlag.setEnabled(false);
     }

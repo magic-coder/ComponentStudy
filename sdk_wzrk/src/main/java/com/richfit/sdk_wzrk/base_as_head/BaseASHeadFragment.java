@@ -17,6 +17,7 @@ import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
@@ -270,6 +271,16 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     @Override
     public void loadInvsComplete() {
 
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(List<SimpleEntity> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 
     /**

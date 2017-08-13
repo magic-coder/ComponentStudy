@@ -89,6 +89,17 @@ create table BASE_COST_CENTER
   end_date          DATE
 );
 
+create table BASE_GL_ACCOUNT
+(
+  id                VARCHAR2(32) PRIMARY KEY NOT NULL,
+  account           TEXT,
+  org_id            VARCHAR2(32),
+  gl_account        TEXT,
+  gl_account_desc   TEXT,
+  detail_flag       TEXT,
+  status            TEXT
+);
+
 
 create table BASE_UNIT_CODE
 (

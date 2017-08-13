@@ -1,7 +1,7 @@
 package com.richfit.sdk_wzyk.base_msn_collect;
 
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by monday on 2016/11/20.
  */
 
-public interface IMSNCollectPresenter extends IPresenter<IMSNCollectView> {
+public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectView> {
     /**
      * 获取发出库存地点列表
      *
@@ -71,13 +71,6 @@ public interface IMSNCollectPresenter extends IPresenter<IMSNCollectView> {
                                        String invCode, String storageNum, String materialNum, String materialId,
                                        String location, String batchFlag, String specialInvFlag, String specialInvNum,
                                        String invType, String deviceId,Map<String,Object> extraMap);
-
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
 
     /**
      * 检查ERP仓库号是否一致

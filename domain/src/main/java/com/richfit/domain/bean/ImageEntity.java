@@ -18,6 +18,8 @@ public class ImageEntity {
     //单据行id
     public String refLineId;
     public String id;
+    //是否将其删除
+    public boolean isDelete;
 
     @Override
     public String toString() {

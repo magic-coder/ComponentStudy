@@ -47,15 +47,19 @@
     <item name="rv_show_photo" type="id"></item>
     <item name="id_delete_image" type="id"></item>
     <item name="id_select_all_image" type="id"></item>
+    <item name="et_arrival_quantity" type="id"></item>
     <item name="fl_sp_magnified" type="id"></item>
     <item name="smooth_imageview" type="id"></item>
     <item name="image_button" type="id"></item>
+    <item name="totalArrivalQuantity" type="id"></item>
     <item name="image" type="id"></item>
     <item name="sp_move_type" type="id"></item>
     <item name="et_supplier" type="id"></item>
     <item name="ll_arrival_date" type="id"></item>
     <item name="ll_inspection_person" type="id"></item>
     <item name="tv_ref_line_num_name" type="id"></item>
+    <item name="ll_check_guide" type="id"></item>
+    <item name="arrival_quantity" type="id"></item>
 
 
     <!--明细界面业务id-->
@@ -246,5 +250,6 @@
     <item name="tv_rec_location" type="id"></item>
     <item name="recInv" type="id"></item>
     <item name="tmp" type="id"></item>
-
+    <item name="ll_material_class" type="id"></item>
+    <item name="ll_material_desc" type="id"></item>
 </resources>

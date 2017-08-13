@@ -14,6 +14,7 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_wzrk.base_as_head.BaseASHeadFragment;
 import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 注意这里是获取单据数据后，通过单据里面的工厂信息初始化报检单位
  * Created by monday on 2017/6/29.
  */
 
@@ -81,6 +83,8 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
     @Override
     public void initEvent() {
         super.initEvent();
+        //提货单修改成日期格式，默认当天
+        etDeliveryOrder.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         etArrivalDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etArrivalDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
 
@@ -93,74 +97,8 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
         super.initData();
         etArrivalDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         etInspectionDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
-        mInspectionUnits = new ArrayList<>();
-        mInspectionUnits.add("物资供应处商检所");
-        mInspectionUnits.add("中国石油天然气集团公司管材研究所");
-        mInspectionUnits.add("长庆油田分公司技术监测中心");
-        mInspectionUnits.add("西安摩尔石油工程实验室");
-        mInspectionUnits.add("西安未来检测技术有限公司");
-        mInspectionUnits.add("西安三维应力工程技术有限公司");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, mInspectionUnits);
-        spInspectionUnit.setAdapter(adapter);
-    }
-
-    @NonNull
-    @Override
-    protected String getMoveType() {
-        return "1";
-    }
-
-    @Override
-    public void _onPause() {
-        super._onPause();
-        if (mRefData != null) {
-            mRefData.deliveryOrder = getString(etDeliveryOrder);
-            //报检单位
-            mRefData.declaredUnit = mDeclaredUnits.get(spDeclaredUnit.getSelectedItemPosition()).invCode;
-            //班
-            mRefData.team = getString(etTeam);
-            //岗位
-            mRefData.post = getString(etPost);
-            //生产厂家
-            mRefData.manufacture = getString(etManufacture);
-            //检验单位
-            mRefData.inspectionUnit = "00000000" + String.valueOf(spInspectionUnit.getSelectedItemPosition() + 1);
-            //到货时间
-            mRefData.arrivalDate = getString(etArrivalDate);
-            //报检时间
-            mRefData.inspectionDate = getString(etInspectionDate);
-            //检验标准
-            mRefData.inspectionStandard = getString(etInspectionStandard);
-            //备注
-            mRefData.remark = getString(etRemark);
-        }
-    }
-
-    @Override
-    public void bindCommonHeaderUI() {
-        super.bindCommonHeaderUI();
-        if (mRefData != null) {
-            //提货单
-            etDeliveryOrder.setText(mRefData.deliveryOrder);
-            //报检单位
-            mPresenter.getInvsByWorkId(mRefData.billDetailList.get(0).workId, 0);
-            //班
-            etTeam.setText(mRefData.team);
-            //岗位
-            etPost.setText(mRefData.post);
-            //生产厂家
-            if (TextUtils.isEmpty(mRefData.manufacture)) {
-                etManufacture.setText(mRefData.supplierNum + "_" + mRefData.supplierDesc);
-            } else {
-                etManufacture.setText(mRefData.manufacture);
-            }
-            //检验单位
-            UiUtil.setSelectionForSp(mInspectionUnits, mRefData.inspectionUnit, spInspectionUnit);
-            //备注
-            etRemark.setText(mRefData.remark);
-            //检验标准
-            etInspectionStandard.setText(mRefData.inspectionStandard);
-        }
+        //直接初始化检验单位
+        mPresenter.getDictionaryData("inspectionUnit");
     }
 
     @Override
@@ -191,6 +129,85 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
             items.add(item.invCode);
         }
         UiUtil.setSelectionForSp(items, mRefData.declaredUnit, spDeclaredUnit);
+
+    }
+
+
+    @Override
+    public void loadDictionaryDataSuccess(List<SimpleEntity> data) {
+        if(mInspectionUnits == null) {
+            mInspectionUnits = new ArrayList<>();
+        }
+        mInspectionUnits.clear();
+        ArrayList<String> items = new ArrayList<>();
+        for (SimpleEntity simpleEntity : data) {
+            mInspectionUnits.add(simpleEntity.code);
+            items.add(simpleEntity.name);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, items);
+        spInspectionUnit.setAdapter(adapter);
+    }
+
+
+    @NonNull
+    @Override
+    protected String getMoveType() {
+        return "1";
+    }
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if (mRefData != null) {
+            mRefData.deliveryOrder = getString(etDeliveryOrder);
+            //报检单位
+            mRefData.declaredUnit = mDeclaredUnits.get(spDeclaredUnit.getSelectedItemPosition()).invCode;
+            //班
+            mRefData.team = getString(etTeam);
+            //岗位
+            mRefData.post = getString(etPost);
+            //生产厂家
+            mRefData.manufacture = getString(etManufacture);
+            //检验单位
+            mRefData.inspectionUnit = mInspectionUnits.get(spInspectionUnit.getSelectedItemPosition());
+            //到货时间
+            mRefData.arrivalDate = getString(etArrivalDate);
+            //报检时间
+            mRefData.inspectionDate = getString(etInspectionDate);
+            //检验标准
+            mRefData.inspectionStandard = getString(etInspectionStandard);
+            //备注
+            mRefData.remark = getString(etRemark);
+        }
+    }
+
+    @Override
+    public void bindCommonHeaderUI() {
+        super.bindCommonHeaderUI();
+        if (mRefData != null) {
+            //提货单
+            if (!TextUtils.isEmpty(mRefData.deliveryOrder)) {
+                etDeliveryOrder.setText(mRefData.deliveryOrder);
+            }
+            //报检单位
+            mPresenter.getInvsByWorkId(mRefData.billDetailList.get(0).workId, 0);
+            //班
+            etTeam.setText(mRefData.team);
+            //岗位
+            etPost.setText(mRefData.post);
+            //生产厂家
+            if (TextUtils.isEmpty(mRefData.manufacture)) {
+                etManufacture.setText(mRefData.supplierNum + "_" + mRefData.supplierDesc);
+            } else {
+                etManufacture.setText(mRefData.manufacture);
+            }
+            //检验单位
+            UiUtil.setSelectionForSp(mInspectionUnits, mRefData.inspectionUnit, spInspectionUnit);
+            //备注
+            etRemark.setText(mRefData.remark);
+            //检验标准
+            etInspectionStandard.setText(mRefData.inspectionStandard);
+        }
     }
 
     @Override

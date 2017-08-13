@@ -1,14 +1,14 @@
 package com.richfit.sdk_wzrk.base_asn_collect;
 
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 /**
  * Created by monday on 2016/11/27.
  */
 
-public interface IASNCollectPresenter extends IPresenter<IASNCollectView> {
+public interface IASNCollectPresenter extends IBaseCollectPresenter<IASNCollectView> {
 
     void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
                          boolean isDropDown);
@@ -31,10 +31,4 @@ public interface IASNCollectPresenter extends IPresenter<IASNCollectView> {
     void getTransferSingleInfo(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
 }

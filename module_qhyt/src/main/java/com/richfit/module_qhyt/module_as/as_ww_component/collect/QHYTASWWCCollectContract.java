@@ -1,10 +1,9 @@
 package com.richfit.module_qhyt.module_as.as_ww_component.collect;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
-import com.richfit.domain.bean.ResultEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.Map;
  */
 
 public interface QHYTASWWCCollectContract {
-    interface QingHaiWWCCollectView extends BaseView {
+    interface QingHaiWWCCollectView extends IBaseCollectView {
         /**
          * 初始化单据行适配器
          */
@@ -30,8 +29,6 @@ public interface QHYTASWWCCollectContract {
          */
         void showInventory(List<InventoryEntity> list);
         void loadInventoryFail(String message);
-
-
 
         /**
          * 通过缓存刷新界面
@@ -51,13 +48,9 @@ public interface QHYTASWWCCollectContract {
          * @param message
          */
         void loadCacheFail(String message);
-
-
-        void saveCollectedDataSuccess();
-        void saveCollectedDataFail(String message);
     }
 
-    interface QingHaiWWCCollectPresenter extends IPresenter<QingHaiWWCCollectView> {
+    interface QingHaiWWCCollectPresenter extends IBaseCollectPresenter<QingHaiWWCCollectView> {
         /**
          * 获取库存信息
          * @param workId:工厂id
@@ -82,11 +75,5 @@ public interface QHYTASWWCCollectContract {
          */
         void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                    String batchFlag, String location, String refDoc, int refDocItem, String userId);
-        /**
-         * 保存本次采集的数据
-         *
-         * @param result:用户采集的数据(json格式)
-         */
-        void uploadCollectionDataSingle(ResultEntity result);
     }
 }

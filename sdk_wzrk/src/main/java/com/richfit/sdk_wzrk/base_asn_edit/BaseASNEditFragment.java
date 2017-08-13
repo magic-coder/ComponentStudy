@@ -10,7 +10,6 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -23,9 +22,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -41,6 +37,8 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_batch_flag)
     protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
@@ -115,6 +113,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         tvMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
+        tvMaterialUnit.setText(data.unit);
         tvBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag : batchFlag);
         mHistoryDetailList = refData.billDetailList;
     }
@@ -210,33 +209,27 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         builder.show();
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.invType = param.invType;
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = tvInv.getTag().toString();
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = tvMaterialNum.getTag().toString();
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
-            result.location = isLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.invType = param.invType;
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = tvInv.getTag().toString();
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = tvMaterialNum.getTag().toString();
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
+        result.location = isLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
+        result.quantity = getString(etQuantity);
+        result.projectNum = mRefData.projectNum;
+        result.supplierId = mRefData.supplierId;
+        result.modifyFlag = "Y";
+        return result;
     }
 
     @Override

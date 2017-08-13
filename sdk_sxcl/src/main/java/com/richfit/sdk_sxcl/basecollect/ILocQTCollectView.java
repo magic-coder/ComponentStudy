@@ -2,7 +2,7 @@ package com.richfit.sdk_sxcl.basecollect;
 
 import android.support.annotation.NonNull;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by monday on 2017/5/26.
  */
 
-public interface ILocQTCollectView extends BaseView {
+public interface ILocQTCollectView extends IBaseCollectView {
 
     /**
      * 获取匹配的物料信息
@@ -55,9 +55,6 @@ public interface ILocQTCollectView extends BaseView {
 
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
-
 
     /**
      * 显示库存

@@ -57,8 +57,22 @@
 
             <TextView
                 android:id="@id/tv_material_desc"
-                style="@style/RightTextViewItemStyle"
-                />
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/material_unit" />
+
+            <TextView
+                android:id="@id/tv_material_unit"
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
         <LinearLayout
@@ -73,8 +87,7 @@
 
             <TextView
                 android:id="@id/tv_work"
-                style="@style/RightTextViewItemStyle"
-                />
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
         <LinearLayout
@@ -90,8 +103,7 @@
 
             <TextView
                 android:id="@+id/tv_act_quantity"
-                style="@style/RightTextViewItemStyle"
-                 />
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
         <LinearLayout
@@ -107,8 +119,8 @@
 
             <EditText
                 android:id="@id/et_batch_flag"
-                android:gravity="center_horizontal"
-                style="@style/RightEditTextItemStyle" />
+                style="@style/RightEditTextItemStyle"
+                android:gravity="center_horizontal" />
         </LinearLayout>
 
         <LinearLayout
@@ -160,9 +172,8 @@
 
             <TextView
                 android:id="@id/tv_inv_quantity"
-                style="@style/RightTextViewItemStyle"/>
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -177,8 +188,7 @@
 
             <TextView
                 android:id="@id/tv_location_quantity"
-                style="@style/RightTextViewItemStyle"
-                 />
+                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
         <LinearLayout

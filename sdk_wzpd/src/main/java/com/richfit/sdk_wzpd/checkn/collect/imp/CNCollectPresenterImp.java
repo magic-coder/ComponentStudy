@@ -3,7 +3,7 @@ package com.richfit.sdk_wzpd.checkn.collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
@@ -20,10 +20,9 @@ import io.reactivex.Flowable;
  * Created by monday on 2017/3/3.
  */
 
-public class CNCollectPresenterImp extends BasePresenter<ICNCollectView>
+public class CNCollectPresenterImp extends BaseCollectPresenterImp<ICNCollectView>
         implements ICNCollectPresenter {
 
-    ICNCollectView mView;
 
     public CNCollectPresenterImp(Context context) {
         super(context);
@@ -101,7 +100,9 @@ public class CNCollectPresenterImp extends BasePresenter<ICNCollectView>
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在保存本次盘点数量...") {
                     @Override
                     public void _onNext(String s) {
-
+                        if (mView != null) {
+                            mView.saveCollectedDataSuccess(s);
+                        }
                     }
 
                     @Override
@@ -127,9 +128,7 @@ public class CNCollectPresenterImp extends BasePresenter<ICNCollectView>
 
                     @Override
                     public void _onComplete() {
-                        if (mView != null) {
-                            mView.saveCollectedDataSuccess();
-                        }
+
                     }
                 });
         addSubscriber(subscriber);

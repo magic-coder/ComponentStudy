@@ -3,14 +3,13 @@ package com.richfit.sdk_wzyk.base_ms_collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
-import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectPresenter;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectView;
 
@@ -24,10 +23,8 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/2/10.
  */
 
-public class MSCollectPresenterImp extends BasePresenter<IMSCollectView>
+public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectView>
         implements IMSCollectPresenter {
-
-    IMSCollectView mView;
 
     public MSCollectPresenterImp(Context context) {
         super(context);
@@ -56,7 +53,9 @@ public class MSCollectPresenterImp extends BasePresenter<IMSCollectView>
 
                             @Override
                             public void onComplete() {
-
+                                if(mView != null) {
+                                    mView.loadInvComplete();
+                                }
                             }
                         });
         addSubscriber(subscriber);
@@ -105,7 +104,7 @@ public class MSCollectPresenterImp extends BasePresenter<IMSCollectView>
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String, Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
@@ -113,14 +112,14 @@ public class MSCollectPresenterImp extends BasePresenter<IMSCollectView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
+                            specialInvFlag, specialInvNum, invType, deviceId, extraMap))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag,
-                    location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                    location, specialInvFlag, specialInvNum, invType, deviceId, extraMap)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
         }
@@ -216,47 +215,5 @@ public class MSCollectPresenterImp extends BasePresenter<IMSCollectView>
                         });
         addSubscriber(subscriber);
     }
-
-    @Override
-    public void uploadCollectionDataSingle(ResultEntity result) {
-        mView = getView();
-        ResourceSubscriber<String> subscriber =
-                mRepository.uploadCollectionDataSingle(result)
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new RxSubscriber<String>(mContext) {
-                            @Override
-                            public void _onNext(String s) {
-
-                            }
-
-                            @Override
-                            public void _onNetWorkConnectError(String message) {
-                                if (mView != null) {
-                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
-                                }
-                            }
-
-                            @Override
-                            public void _onCommonError(String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onServerError(String code, String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onComplete() {
-                                if (mView != null) {
-                                    mView.saveCollectedDataSuccess();
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
 }
+

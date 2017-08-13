@@ -29,6 +29,7 @@ import com.richfit.sdk_wzys.adapter.ShowPhotosAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import butterknife.BindView;
 import io.reactivex.Flowable;
@@ -80,6 +81,9 @@ public class ShowAndTakePhotoFragment extends BaseFragment<ShowAndTakePhotoPrese
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
+        //在源代码中可以发现，这跟一个叫mHasMenu的boolean变量有关系。这个变量控制Fragment的menu菜单的添加。
+        // 如果mHasMenu为false，那么是不会执行onCreateOptionsMenu方法的，也就是不会添加Fragment的menu菜单。
+        setHasOptionsMenu(true);
         mImages = new ArrayList<>();
         //在onCreate设置setHasOptionsMenu(true)保证能够onOptionsItemSelected重写有效
         setHasOptionsMenu(true);
@@ -183,29 +187,34 @@ public class ShowAndTakePhotoFragment extends BaseFragment<ShowAndTakePhotoPrese
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mImages == null || mImages.size() == 0)
             return super.onOptionsItemSelected(item);
-        int itemId = item.getItemId();
-        switch (itemId) {
-            //删除单个图片
-            case R2.id.id_delete_image:
-                mPresenter.deleteImages(mImages, mImageDir, isLocal);
-                break;
-            //全选
-            case R2.id.id_select_all_image:
-                selectAllImages();
-                break;
+        final int itemId = item.getItemId();
+        if (itemId == R.id.id_delete_image) {
+            //删除选定的图片
+            mPresenter.deleteImages(mImages, mImageDir, isLocal);
+        } else if (itemId == R.id.id_select_all_image) {
+            //选定所有的图片
+            selectAllImages();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * 删除数据记录的图片信息后回调。
+     * 这里主要要注意的是集合的删除，在List里面有一个变量modCount，
+     * 在遍历时改变List的size的时候会检测到modCount的变化，从而抛出异常。
+     * 而在Iterator里面expectedModCount=modCount，而且不再改变modCount的值
+     * 所以是安全的删除方法。modCount的设置主要是用来考虑线程安全而设置的。
+     */
     @Override
-    public void deleteImageSuccess(ArrayList<Integer> deletePositions) {
+    public void deleteImageSuccess() {
         showMessage("删除成功");
         //删除内存的图片，刷星界面
         if (mAdapter != null) {
-            int size = mImages.size();
-            for (Integer index : deletePositions) {
-                if (index >= 0 && index < size) {
-                    mImages.remove(index.intValue());
+            Iterator<ImageEntity> iterator = mImages.iterator();
+            while (iterator.hasNext()) {
+                ImageEntity image = iterator.next();
+                if(image.isSelected && image.isDelete) {
+                    iterator.remove();
                 }
             }
             mAdapter.notifyDataSetChanged();

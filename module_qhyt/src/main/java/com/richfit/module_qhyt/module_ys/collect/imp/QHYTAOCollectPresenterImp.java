@@ -3,13 +3,12 @@ package com.richfit.module_qhyt.module_ys.collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
-import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.module_ys.collect.IQHYTAOCollectPresenter;
 import com.richfit.module_qhyt.module_ys.collect.IQHYTAOCollectView;
 
@@ -21,10 +20,8 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/2/28.
  */
 
-public class QHYTAOCollectPresenterImp extends BasePresenter<IQHYTAOCollectView>
+public class QHYTAOCollectPresenterImp extends BaseCollectPresenterImp<IQHYTAOCollectView>
         implements IQHYTAOCollectPresenter {
-
-    IQHYTAOCollectView mView;
 
     public QHYTAOCollectPresenterImp(Context context) {
         super(context);
@@ -112,50 +109,6 @@ public class QHYTAOCollectPresenterImp extends BasePresenter<IQHYTAOCollectView>
 
                             }
                         });
-        addSubscriber(subscriber);
-    }
-
-
-    @Override
-    public void uploadInspectionDataSingle(ResultEntity result) {
-        mView = getView();
-
-        RxSubscriber<String> subscriber = mRepository.uploadCollectionDataSingle(result)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在保存数据...") {
-                    @Override
-                    public void _onNext(String s) {
-
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.saveCollectedDataFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.saveCollectedDataFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.saveCollectedDataSuccess();
-                        }
-                    }
-                });
         addSubscriber(subscriber);
     }
 

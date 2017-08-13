@@ -157,7 +157,7 @@
             android:text="@string/xngd_project_flag" />
 
         <TextView
-            android:id="@id/xngd_tv_project_flag"
+            android:id="@id/xngd_tv_inv_flag"
             style="@style/RightTextViewItemStyle" />
 
     </LinearLayout>

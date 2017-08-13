@@ -3,6 +3,8 @@ package com.richfit.module_cqyt.module_as;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.data.constant.Global;
+import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -30,21 +33,27 @@ import com.richfit.sdk_wzys.camera.TakephotoActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
-
 /**
+ * private String dangerFlag;// 长庆危险品标识 如果为Y 则表示危险品。
+ * 2017年7月27日增加危险品提示。用户输入实收和到货数量
  * Created by monday on 2017/6/29.
  */
 
 public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
 
     Spinner spInspectionResult;
-    EditText etUnqualifiedQuantity;
+    //到货数量
+    EditText etArrivalQuantity;
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
-    EditText etDeclaredQuantity;
+    //展示不合格数量
+    TextView tvUnqualifiedQuantity;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        mLineNumForFilter = list[list.length - 1];
+        super.handleBarCodeScanResult(type, list);
+    }
 
     @Override
     public int getContentId() {
@@ -59,10 +68,10 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     @Override
     protected void initView() {
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
-        etUnqualifiedQuantity = (EditText) mView.findViewById(R.id.cqyt_et_unqualified_quantity);
+        tvUnqualifiedQuantity = (TextView) mView.findViewById(R.id.cqyt_tv_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
-        etDeclaredQuantity = (EditText) mView.findViewById(R.id.cqyt_et_declared_quantity);
+        etArrivalQuantity = (EditText) mView.findViewById(R.id.et_arrival_quantity);
     }
 
     @Override
@@ -99,6 +108,47 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         super.initDataLazily();
     }
 
+    /**
+     * 设置单据行信息之前，过滤掉
+     *
+     * @param refLines
+     */
+    @Override
+    public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if (!TextUtils.isEmpty(mLineNumForFilter)) {
+            //过滤掉重复行号
+            ArrayList<String> lines = new ArrayList<>();
+            for (String refLine : refLines) {
+                if (refLine.equalsIgnoreCase(mLineNumForFilter)) {
+                    lines.add(refLine);
+                }
+            }
+            if (lines.size() == 0) {
+                showMessage("未获取到条码的单据行信息");
+            }
+            super.setupRefLineAdapter(lines);
+            return;
+        }
+        //如果单据中没有过滤行信息那么直接显示所有的行信息
+        super.setupRefLineAdapter(refLines);
+    }
+
+    @Override
+    public void bindCommonCollectUI() {
+        mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        if (!TextUtils.isEmpty(lineData.dangerFlag)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("温馨提示").setMessage(lineData.dangerFlag)
+                    .setPositiveButton("确定", (dialog, which) -> {
+                        super.bindCommonCollectUI();
+                        dialog.dismiss();
+                    }).show();
+            return;
+        }
+        super.bindCommonCollectUI();
+    }
+
 
     @Override
     public void showOperationMenuOnCollection(final String companyCode) {
@@ -130,19 +180,52 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         });
     }
 
+    /**
+     * 到货数量小于等于实收
+     *
+     * @param quantity
+     * @return
+     */
     @Override
-    public boolean checkCollectedDataBeforeSave() {
-        if (spInspectionResult.getSelectedItemPosition() == 1 && TextUtils.isEmpty(getString(etUnqualifiedQuantity))) {
-            showMessage("请先输入不合格数量");
+    protected boolean refreshQuantity(final String quantity) {
+        //将已经录入的所有的子节点的仓位数量累加
+        final float totalQuantityV = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
+        final float actQuantityV = CommonUtil.convertToFloat(getString(tvActQuantity), 0.0f);
+        final float quantityV = CommonUtil.convertToFloat(quantity, 0.0f);
+        if (Float.compare(quantityV, 0.0f) <= 0.0f) {
+            showMessage("输入实收数量不合理");
             return false;
         }
+        if (Float.compare(quantityV + totalQuantityV, actQuantityV) > 0.0f) {
+            showMessage("输入实收数量有误，请重新输入");
+            if (!cbSingle.isChecked())
+                etQuantity.setText("");
+            return false;
+        }
+        //处理到货数量
+        final float arrivalQuantityV = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
+        if (Float.compare(arrivalQuantityV, 0.0f) <= 0.0f) {
+            showMessage("输入到货数量不合理");
+            return false;
+        }
+        if (Float.compare(quantityV,arrivalQuantityV) > 0.0f) {
+            showMessage("输入实收数量不能大于到货数量");
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+
         if (mRefData == null) {
             showMessage("请先在抬头界面获取单据数据");
             return false;
         }
 
         if (TextUtils.isEmpty(mRefData.deliveryOrder)) {
-            showMessage("请现在抬头界面输入提货单");
+            showMessage("请先在抬头界面输入提货单");
             return false;
         }
         final String quantityCustom = getString(etQuantityCustom);
@@ -158,72 +241,51 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = getString(etBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
-            result.unqualifiedQuantity = getString(etUnqualifiedQuantity);
-            //到货日期
-            result.arrivalDate = mRefData.arrivalDate;
-            //报检日期
-            result.inspectionDate = mRefData.inspectionDate;
-            //提货单
-            result.deliveryOrder = mRefData.deliveryOrder;
-            //件数
-            result.quantityCustom = getString(etQuantityCustom);
-            //报检数量
-            result.declaredQuantity = getString(etDeclaredQuantity);
-            //报检单位
-            result.declaredUnit = mRefData.declaredUnit;
-            // 班
-            result.team = mRefData.team;
-            // 岗位
-            result.post = mRefData.post;
-            // 生产厂家
-            result.manufacture = mRefData.manufacture;
-            //检验单位
-            result.inspectionUnit = mRefData.inspectionUnit;
-            // 备注
-            result.remark = mRefData.remark;
-            // 检验标准及特殊要求
-            result.inspectionStandard = mRefData.inspectionStandard;
-            result.invType = param.invType;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //到货日期
+        result.arrivalDate = mRefData.arrivalDate;
+        //报检日期
+        result.inspectionDate = mRefData.inspectionDate;
+        //提货单
+        result.deliveryOrder = mRefData.deliveryOrder;
+        //件数
+        result.quantityCustom = getString(etQuantityCustom);
+        //报检单位
+        result.declaredUnit = mRefData.declaredUnit;
+        // 班
+        result.team = mRefData.team;
+        // 岗位
+        result.post = mRefData.post;
+        // 生产厂家
+        result.manufacture = mRefData.manufacture;
+        //检验单位
+        result.inspectionUnit = mRefData.inspectionUnit;
+        // 备注
+        result.remark = mRefData.remark;
+        // 检验标准及特殊要求
+        result.inspectionStandard = mRefData.inspectionStandard;
+        //验收结果
+        result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
+        //不合格数量
+        //result.unqualifiedQuantity = getString(tvUnqualifiedQuantity);
+        //到货数量
+        result.arrivalQuantity = getString(etArrivalQuantity);
+        //提货单
+        result.deliveryOrder = mRefData.deliveryOrder;
+        //件数
+        result.quantityCustom = getString(etQuantityCustom);
+        return result;
     }
 
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
+    public void saveCollectedDataSuccess(String message) {
+        //计算不合格数量，到货-实收
+        float arrivalQ = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
+        float quantityQ = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
+        tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
+        super.saveCollectedDataSuccess(message);
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }
@@ -303,7 +365,7 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     @Override
     public void clearAllUI() {
         super.clearAllUI();
-        clearCommonUI(etQuantityCustom, etUnqualifiedQuantity, tvTotalQuantityCustom);
+        clearCommonUI(etQuantityCustom, tvUnqualifiedQuantity, tvTotalQuantityCustom, etArrivalQuantity);
         if (spInspectionResult.getAdapter() != null) {
             spInspectionResult.setSelection(0);
         }

@@ -3,14 +3,13 @@ package com.richfit.sdk_wzrk.base_as_collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
-import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzrk.base_as_collect.IASCollectPresenter;
 import com.richfit.sdk_wzrk.base_as_collect.IASCollectView;
 
@@ -26,10 +25,8 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2016/11/15.
  */
 
-public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
+public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectView>
         implements IASCollectPresenter {
-
-    protected IASCollectView mView;
 
     public ASCollectPresenterImp(Context context) {
         super(context);
@@ -58,7 +55,9 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
 
                             @Override
                             public void onComplete() {
-
+                                if (mView != null) {
+                                    mView.loadInvComplete();
+                                }
                             }
                         });
         addSubscriber(subscriber);
@@ -68,9 +67,9 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
                                  String specialInvFlag, String specialInvNum, String invType, String deviceId,
-                                 Map<String,Object> extraMap,boolean isDropDown) {
+                                 Map<String, Object> extraMap, boolean isDropDown) {
         mView = getView();
-        if(isLocal())
+        if (isLocal())
             return;
         ResourceSubscriber<List<String>> subscriber;
         if ("04".equals(queryType)) {
@@ -78,7 +77,7 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
+                            specialInvFlag, specialInvNum, invType, deviceId, extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
@@ -87,7 +86,7 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                    specialInvFlag, specialInvNum, invType, deviceId, extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
@@ -100,7 +99,7 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
         List<String> locations = new ArrayList<>();
         HashSet<String> set = new HashSet<>();
         for (InventoryEntity data : invs) {
-            if(!set.contains(data.location)) {
+            if (!set.contains(data.location)) {
                 set.add(data.location);
                 locations.add(data.location);
             }
@@ -132,10 +131,9 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
         }
 
 
-
         @Override
         public void onComplete() {
-            if(mView != null) {
+            if (mView != null) {
                 mView.loadInventoryComplete(isDropDown);
             }
         }
@@ -180,7 +178,6 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
                         });
         addSubscriber(subscriber);
     }
-
 
 
     @Override
@@ -234,46 +231,5 @@ public class ASCollectPresenterImp extends BasePresenter<IASCollectView>
         addSubscriber(subscriber);
     }
 
-    @Override
-    public void uploadCollectionDataSingle(ResultEntity result) {
-        mView = getView();
-        ResourceSubscriber<String> subscriber =
-                mRepository.uploadCollectionDataSingle(result)
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new RxSubscriber<String>(mContext) {
-                            @Override
-                            public void _onNext(String s) {
 
-                            }
-
-                            @Override
-                            public void _onNetWorkConnectError(String message) {
-                                if (mView != null) {
-                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
-                                }
-                            }
-
-                            @Override
-                            public void _onCommonError(String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onServerError(String code, String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onComplete() {
-                                if (mView != null) {
-                                    mView.saveCollectedDataSuccess();
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
 }

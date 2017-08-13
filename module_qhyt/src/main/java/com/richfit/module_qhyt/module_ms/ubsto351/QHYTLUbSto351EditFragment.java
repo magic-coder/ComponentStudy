@@ -6,16 +6,10 @@ import android.widget.EditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_ms_edit.BaseMSEditFragment;
 import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/4/14.
@@ -120,39 +114,12 @@ public class QHYTLUbSto351EditFragment extends BaseMSEditFragment<MSEditPresente
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.locationId = mLocationId;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.materialId = lineData.materialId;
-            result.location = getString(etSendLocation);
-            result.specialInvFlag = getString(etSpecialInvFlag);
-            result.specialInvNum = getString(etSpecialInvNum);
-            result.batchFlag = getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : 0.f;
-            result.modifyFlag = "Y";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
-
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.location = getString(etSendLocation);
+        result.specialInvFlag = getString(etSpecialInvFlag);
+        result.specialInvNum = getString(etSpecialInvNum);
+        return result;
     }
 
 }

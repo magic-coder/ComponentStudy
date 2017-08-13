@@ -12,4 +12,5 @@
     <string name="xngd_process_result">处理情况</string>
     <string name="xngd_inv_flag">应急物资</string>
     <string name="xngd_money">本位币金额</string>
+    <string name="xngd_gl_account">总账科目</string>
 </resources>

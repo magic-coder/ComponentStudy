@@ -36,6 +36,7 @@ public class LocationInfoEntity implements Cloneable{
     public String creationDate;
     public String quantityCustom;
     public String money;
+    public String arrivalQuantity;
 
     @Override
     public LocationInfoEntity clone() {

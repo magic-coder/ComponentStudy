@@ -6,13 +6,10 @@ import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.richfit.common_lib.utils.UiUtil;
-import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
@@ -21,23 +18,22 @@ import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
-
 /**
  * Created by monday on 2017/7/4.
  */
 
 public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
-    public static final String extra_inspection_result_key = "extra_inspection_result";
-    public static final String extra_unqualified_key = "extra_unqualified";
-    public static final String extra_remark_key = "extra_remark";
+    public static final String EXTRA_INSPECTION_RESULT_KEY = "extra_inspection_result";
+    public static final String EXTRA_UNQUALIFIED_KEY = "extra_unqualified";
+    public static final String EXTRA_REMARK_KEY = "extra_remark";
+    public static final String EXTRA_DECLARED_QUANTITY_KEY = "extra_declared_quantity";
+    public static final String EXTRA_ARRIVAL_QUANTITY_KEY = "extra_arrival_quantity";
 
     Spinner spInspectionResult;
-    EditText etUnqualifiedQuantity;
+    TextView tvUnqualifiedQuantity;
     EditText etQuantityCustom;
+    EditText etArrivalQuantity;
 
     @Override
     public int getContentId() {
@@ -58,8 +54,9 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
     @Override
     protected void initView() {
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
-        etUnqualifiedQuantity = (EditText) mView.findViewById(R.id.cqyt_et_unqualified_quantity);
+        tvUnqualifiedQuantity = (TextView) mView.findViewById(R.id.cqyt_tv_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
+        etArrivalQuantity = (EditText) mView.findViewById(R.id.arrival_quantity);
     }
 
     @Override
@@ -71,11 +68,13 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         Bundle bundle = getArguments();
         if (bundle != null) {
             String quantityCustom = bundle.getString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY);
-            String inspectionResult = bundle.getString(extra_inspection_result_key);
-            String remark = bundle.getString(extra_remark_key);
-            String unqualifiedQuantity = bundle.getString(extra_unqualified_key);
-            etUnqualifiedQuantity.setText(unqualifiedQuantity);
+            String inspectionResult = bundle.getString(EXTRA_INSPECTION_RESULT_KEY);
+            String arrivalQuantity = bundle.getString(EXTRA_ARRIVAL_QUANTITY_KEY);
             etQuantityCustom.setText(quantityCustom);
+            etArrivalQuantity.setText(arrivalQuantity);
+            float quantityQ = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
+            float arrivalQ = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
+            tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
             UiUtil.setSelectionForSp(items, inspectionResult, spInspectionResult);
         }
     }
@@ -89,12 +88,8 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
-        if (spInspectionResult.getSelectedItemPosition() == 1 && TextUtils.isEmpty(getString(etUnqualifiedQuantity))) {
-            showMessage("请先输入不合格数量");
-            return false;
-        }
         final String quantityCustom = getString(etQuantityCustom);
-        if(TextUtils.isEmpty(quantityCustom)) {
+        if (TextUtils.isEmpty(quantityCustom)) {
             showMessage("请先输入件数");
             return false;
         }
@@ -102,50 +97,43 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             showMessage("件数不合理");
             return false;
         }
+
+        //处理到货数量
+        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity),0.0F);
+        final float arrivalQuantityV = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
+        if (Float.compare(arrivalQuantityV, 0.0f) <= 0.0f) {
+            showMessage("输入到货数量不合理");
+            return false;
+        }
+        if (Float.compare(quantityV,arrivalQuantityV) > 0.0f) {
+            showMessage("输入实收数量不能大于到货数量");
+            return false;
+        }
+
         return super.checkCollectedDataBeforeSave();
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.materialId = lineData.materialId;
-            result.locationId = mLocationId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = getString(tvBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
-            result.unqualifiedQuantity = getString(etUnqualifiedQuantity);
-            //提货单
-            result.deliveryOrder = mRefData.deliveryOrder;
-            //件数
-            result.quantityCustom = getString(etQuantityCustom);
-            result.invType = param.invType;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public void saveEditedDataSuccess(String message) {
+        //更新不不合格数量
+        float quantityQ = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
+        float arrivalQ = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
+        tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
+        super.saveEditedDataSuccess(message);
+    }
+
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //验收结果
+        result.inspectionResult = spInspectionResult.getSelectedItemPosition() == 0 ? "01" : "02";
+        //提货单
+        result.deliveryOrder = mRefData.deliveryOrder;
+        //件数
+        result.quantityCustom = getString(etQuantityCustom);
+        //到货数量
+        result.arrivalQuantity = getString(etArrivalQuantity);
+        return result;
     }
 }

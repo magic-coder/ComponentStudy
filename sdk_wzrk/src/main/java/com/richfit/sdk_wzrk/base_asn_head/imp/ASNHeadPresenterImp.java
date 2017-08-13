@@ -87,11 +87,6 @@ public class ASNHeadPresenterImp extends BaseHeadPresenterImp<IASNHeadView>
         addSubscriber(subscriber);
     }
 
-    @Override
-    public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
-
-    }
-
 
     @Override
     public void getMoveTypeList(int flag) {

@@ -24,6 +24,13 @@ import io.reactivex.Flowable;
 public interface ILocalRepository extends IRepository {
 
     /**
+     * 通过code向本地数据字典查询对应的集合数据
+     * @param code
+     * @return
+     */
+    Flowable<List<SimpleEntity>> getDictionaryData(String code);
+
+    /**
      * 用户登录
      *
      * @param userName：登录名
@@ -109,6 +116,16 @@ public interface ILocalRepository extends IRepository {
      * @return
      */
     Flowable<ArrayList<SimpleEntity>> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag);
+
+    /**
+     * 获取总账科目
+     * @param workCode
+     * @param keyWord
+     * @param defaultItemNum
+     * @param flag
+     * @return
+     */
+    Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag);
 
     /**
      * 保存所有业务的页面信息。

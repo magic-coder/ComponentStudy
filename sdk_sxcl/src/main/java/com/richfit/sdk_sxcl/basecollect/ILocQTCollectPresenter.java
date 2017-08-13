@@ -1,8 +1,7 @@
 package com.richfit.sdk_sxcl.basecollect;
 
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
-import com.richfit.domain.bean.ResultEntity;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 
 import java.util.Map;
 
@@ -10,7 +9,7 @@ import java.util.Map;
  * Created by monday on 2017/5/26.
  */
 
-public interface ILocQTCollectPresenter extends IPresenter<ILocQTCollectView> {
+public interface ILocQTCollectPresenter extends IBaseCollectPresenter<ILocQTCollectView> {
 
     /**
      * 获取上架仓位列表
@@ -51,11 +50,4 @@ public interface ILocQTCollectPresenter extends IPresenter<ILocQTCollectView> {
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
 
     void checkLocation(String queryType, String workId, String invId, String batchFlag, String location);
-
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
 }

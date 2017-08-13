@@ -24,6 +24,7 @@ import com.richfit.common_lib.widget.AutoSwipeRefreshLayout;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.adapter.BlindDetailAdapter;
@@ -84,6 +85,7 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
             startLoadInventory(mCurrentPageNum + 1);
         }
     }
+
 
     @Override
     protected int getContentId() {

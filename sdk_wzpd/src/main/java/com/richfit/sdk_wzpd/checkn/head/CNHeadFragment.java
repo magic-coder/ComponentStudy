@@ -57,7 +57,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @BindView(R2.id.ll_warehouse_level)
     LinearLayout llWarehouseLevel;
     @BindView(R2.id.ll_storage_num_level)
-    LinearLayout llStorageNumLevel;
+    protected  LinearLayout llStorageNumLevel;
     @BindView(R2.id.btn_storage_num_level)
     protected RadioButton rbStorageNumLevel;
     @BindView(R2.id.btn_warehouse_level)
@@ -67,7 +67,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @BindView(R2.id.sp_inv)
     Spinner spInv;
     @BindView(R2.id.sp_storage_num)
-    Spinner spStorageNum;
+    protected Spinner spStorageNum;
     @BindView(R2.id.tv_checker)
     TextView tvChecker;
     @BindView(R2.id.et_check_date)
@@ -174,7 +174,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     /**
      * 重置所有的Button背景
      */
-    private void resetUI() {
+    protected void resetUI() {
         rbStorageNumLevel.setChecked(false);
         rbWarehouseLevel.setChecked(false);
         llWarehouseLevel.setVisibility(View.INVISIBLE);

@@ -80,7 +80,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                            String refType, String bizType, int position, String companyCode) {
         RxSubscriber<String> subscriber =
                 mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                        locationId, refType, bizType, "", "", position, companyCode)
+                        locationId, refType, bizType, "", Global.USER_ID, position, companyCode)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext) {
                             @Override

@@ -46,11 +46,6 @@ public interface IASNHeadView extends IBaseHeadView {
      * 获取供应商失败
      */
     void loadSuppliersFail(String message);
-
-    void showProjectNums(ArrayList<String> projectNums);
-
-    void loadProjectNumsFail(String message);
-
     /**
      * 删除缓存
      * @param message

@@ -175,6 +175,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
 
 
     @Override
+    public Flowable<List<SimpleEntity>> getDictionaryData(String code) {
+        return mLocalRepository.getDictionaryData(code);
+    }
+
+    @Override
     public Flowable<ArrayList<String>> readUserInfo(String userName, String password) {
         return mLocalRepository.readUserInfo(userName, password);
     }
@@ -418,6 +423,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
     @Override
     public Flowable<ArrayList<SimpleEntity>> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
         return mLocalRepository.getProjectNumList(workCode, keyWord, defaultItemNum, flag);
+    }
+
+    @Override
+    public Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        return mLocalRepository.getGLAccountList(workCode,keyWord,defaultItemNum,flag);
     }
 
     @Override

@@ -2,26 +2,17 @@ package com.richfit.module_xngd.module_ys;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.utils.UiUtil;
-import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
 import java.util.ArrayList;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/5/26.
@@ -126,59 +117,24 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        //是否应急
+        result.invFlag = mRefData.invFlag;
+        //全检数量
+        result.allQuantity = getString(etAllQuantity);
+        //抽检数量
+        result.partQuantity = getString(etPartQuantity);
+        //检验方法
+        if (spInspectionType.getSelectedItemPosition() > 0)
+            result.inspectionType = spInspectionType.getSelectedItemPosition();
+        //检验状况
+        if (spInspectionStatus.getSelectedItemPosition() > 0) {
+            result.inspectionStatus = String.valueOf(spInspectionStatus.getSelectedItemPosition());
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData =  mRefData.billDetailList.get(mPosition);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.companyCode = Global.COMPANY_CODE;
-            result.inspectionPerson = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.materialId = lineData.materialId;
-            result.locationId = mLocationId;
-            result.location = isNLocation ? "barcode" : getString(etLocation);
-            result.batchFlag = "20170101";
-            result.specialInvFlag = "N";
-            result.invType = "1";
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            //是否应急
-            result.invFlag = mRefData.invFlag;
-            //全检数量
-            result.allQuantity = getString(etAllQuantity);
-            //抽检数量
-            result.partQuantity = getString(etPartQuantity);
-            //检验方法
-            if (spInspectionType.getSelectedItemPosition() > 0)
-                result.inspectionType = spInspectionType.getSelectedItemPosition();
-            //检验状况
-            if (spInspectionStatus.getSelectedItemPosition() > 0) {
-                result.inspectionStatus = String.valueOf(spInspectionStatus.getSelectedItemPosition());
-            }
-            //处理情况
-            result.processResult = getString(etProcessResult);
-
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+        //处理情况
+        result.processResult = getString(etProcessResult);
+        return result;
     }
 
 }

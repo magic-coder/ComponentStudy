@@ -4,6 +4,7 @@ package com.richfit.module_xngd.module_ds.dsn;
 import android.text.TextUtils;
 
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzck.base_dsn_collect.BaseDSNCollectFragment;
 import com.richfit.sdk_wzck.base_dsn_collect.imp.DSNCollectPresenterImp;
 
@@ -47,15 +48,33 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
         }
 
         if (TextUtils.isEmpty(mRefData.costCenter)) {
-            showMessage("请现在抬头界面输入成本中心");
+            showMessage("请先在抬头界面输入成本中心");
             return;
         }
 
         if (TextUtils.isEmpty(mRefData.voucherDate)) {
-            showMessage("请现在抬头界面输入领料日期");
+            showMessage("请先在抬头界面输入领料日期");
             return;
         }
+
+        if(TextUtils.isEmpty(mRefData.glAccount)) {
+            showMessage("请先在抬头界面输入总账科目");
+            return;
+        }
+
+        if ("0".equals(mRefData.invType) && "1".equals(mRefData.invType)) {
+            showMessage("项目移交物资不合理");
+            return;
+        }
+
         super.initDataLazily();
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.glAccount = mRefData.glAccount;
+        return result;
     }
 
 
@@ -63,11 +82,11 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = "1";
+        param.invType = mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
-        extraMap.put("projectNum",mRefData.projectNum);
+        extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

@@ -18,7 +18,7 @@ import java.util.List;
  */
 
 public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailPresenterImp, InventoryEntity>
-        implements InvNQueryDetailView {
+        implements IInvNQueryDetailView {
 
     InvNQueryDetailAdapter mInvNQueryDetailAdapter;
 
@@ -73,13 +73,11 @@ public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailP
         startAutoRefresh();
     }
 
-
-
     @Override
     public void onRefresh() {
         InventoryQueryParam param = provideInventoryQueryParam();
-        mPresenter.getInventoryInfo(param.queryType, "", "", mRefData.workCode,
-                mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId,mRefData.invId,
+                mRefData.workCode, mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
                 mRefData.batchFlag, "", "", param.invType, "", param.extraMap);
     }
 
@@ -92,12 +90,6 @@ public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailP
             mInvNQueryDetailAdapter.addAll(allNodes);
         }
     }
-
-    @Override
-    public void loadInventoryFail(String message) {
-        showMessage(message);
-    }
-
 
     @Override
     public void deleteNode(InventoryEntity node, int position) {

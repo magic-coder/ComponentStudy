@@ -14,7 +14,6 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -26,9 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 
 /**
@@ -379,45 +375,39 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
         builder.show();
     }
 
+
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mBizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.refLineId = lineData.refLineId;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = lineData.workId;
-            result.materialId = lineData.materialId;
-            result.location = "barcode";
-            result.batchFlag = isOpenBatchManager ? mInventoryDatas.get(spBatchFlag.getSelectedItemPosition()).batchFlag : "";
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            result.refDoc = lineData.refDoc;
-            result.refDocItem = lineData.refDocItem;
-            result.supplierNum = mRefData.supplierNum;
-            result.specialInvFlag = getString(tvSpecialInvFlag);
-            result.specialInvNum = mRefData.supplierNum;
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : 0.f;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        ResultEntity result = new ResultEntity();
+        result.businessType = mBizType;
+        result.refCodeId = mRefData.refCodeId;
+        result.refCode = mRefData.recordNum;
+        result.refLineNum = lineData.lineNum;
+        result.refLineId = lineData.refLineId;
+        result.voucherDate = mRefData.voucherDate;
+        result.refType = mRefType;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = lineData.workId;
+        result.materialId = lineData.materialId;
+        result.location = "barcode";
+        result.batchFlag = isOpenBatchManager ? mInventoryDatas.get(spBatchFlag.getSelectedItemPosition()).batchFlag : "";
+        result.quantity = getString(etQuantity);
+        result.modifyFlag = "N";
+        result.refDoc = lineData.refDoc;
+        result.refDocItem = lineData.refDocItem;
+        result.supplierNum = mRefData.supplierNum;
+        result.specialInvFlag = getString(tvSpecialInvFlag);
+        result.specialInvNum = mRefData.supplierNum;
+        result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
+        result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : 0.f;
+        return result;
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("保存数据成功");
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         final float totalQuantity = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
         tvTotalQuantity.setText(String.valueOf(totalQuantity + quantityV));

@@ -6,15 +6,20 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
+import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
+import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_xngd.module_as.XNGDASNEditFragment;
 import com.richfit.sdk_wzrk.base_asn_detail.imp.ASNDetailPresenterImp;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
+ * 注意西南管道因为只有一步过账所以不在修改标识
  * Created by monday on 2017/7/24.
  */
 
@@ -23,6 +28,54 @@ public class XNGDASNDetailPresenterImp extends ASNDetailPresenterImp {
     public XNGDASNDetailPresenterImp(Context context) {
         super(context);
     }
+
+
+    @Override
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
+                                         String transToSapFlag, Map<String, Object> extraHeaderMap) {
+        mView = getView();
+        RxSubscriber<String> subscriber =
+                mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", "", extraHeaderMap)
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext, "正在过账数据...") {
+                            @Override
+                            public void _onNext(String s) {
+                                if (mView != null) {
+                                    mView.saveMsgFowShow(s);
+                                }
+                            }
+
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
+                                }
+                            }
+
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onComplete() {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemSuccess();
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
 
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,

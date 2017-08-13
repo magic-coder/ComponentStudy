@@ -1,7 +1,6 @@
 package com.richfit.sdk_wzrk.base_as_collect;
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
-import com.richfit.domain.bean.ResultEntity;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 
 import java.util.Map;
 
@@ -10,7 +9,7 @@ import java.util.Map;
  * Created by monday on 2016/11/15.
  */
 
-public interface IASCollectPresenter extends IPresenter<IASCollectView> {
+public interface IASCollectPresenter extends IBaseCollectPresenter<IASCollectView> {
 
     /**
      * 通过工厂id获取该工厂下的库存地点列表
@@ -36,12 +35,6 @@ public interface IASCollectPresenter extends IPresenter<IASCollectView> {
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
 
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
     /**
      * 获取库存信息
      *

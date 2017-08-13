@@ -9,6 +9,7 @@ import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.MaterialEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.R2;
 import com.richfit.sdk_xxcx.material_infoquery.imp.MaterialInfoQueryPresenterImp;
@@ -39,7 +40,6 @@ public class MaterialInfoQueryFragment extends BaseFragment<MaterialInfoQueryPre
     public void handleBarCodeScanResult(String type, String[] list) {
         String materialNum;
         String batchFlag;
-
         if (list != null && list.length > 12) {
             materialNum = list[Global.MATERIAL_POS];
             batchFlag = list[Global.BATCHFALG_POS];

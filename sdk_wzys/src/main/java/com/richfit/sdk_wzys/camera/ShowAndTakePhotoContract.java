@@ -18,7 +18,7 @@ public interface ShowAndTakePhotoContract {
         //未获取到图片，或者图片缓存的目录为空
         void readImagesFail(String message);
 
-        void deleteImageSuccess(ArrayList<Integer> deletePositions);
+        void deleteImageSuccess();
 
         void deleteImageFail(String message);
     }

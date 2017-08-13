@@ -5,14 +5,14 @@
  */
 ext {
     android = [
-            compileSdkVersion: 25,
-            buildToolsVersion: "25.0.2",
+            compileSdkVersion: 26,
+            buildToolsVersion: "26.0.1",
             minSdkVersion    : 15,
-            targetSdkVersion : 25
+            targetSdkVersion : 26
     ]
 
     //Version
-    supportLibrary = "25.3.1"
+    supportLibrary = "26.+"
 
     //supportLibraries dependencies
     supportDependencies = [

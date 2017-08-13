@@ -14,12 +14,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.R;
@@ -30,9 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 当盘点级别为02(库存级)是盘点仓位不显示。这里通过盘点仓位的etCheckLocation控件的属性
@@ -40,7 +36,7 @@ import io.reactivex.FlowableOnSubscribe;
  * Created by monday on 2017/3/3.
  */
 
-public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
+public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp>
         implements ICNCollectView {
 
     @BindView(R2.id.sp_ref_line_num)
@@ -76,6 +72,7 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             final String materialNum = list[Global.MATERIAL_POS];
             if (cbSingle.isChecked() && materialNum.equalsIgnoreCase(getString(etMaterialNum))) {
@@ -85,8 +82,8 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
                 getCheckTransferInfoSingle(materialNum, getString(etCheckLocation));
             }
 
-        } else if (list != null && list.length == 2 & !cbSingle.isChecked()) {
-            final String location = list[1];
+        } else if (list != null && list.length == 1 & !cbSingle.isChecked()) {
+            final String location = list[0];
             etCheckLocation.setText("");
             etCheckLocation.setText(location);
         }
@@ -126,6 +123,7 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
                 .itemSelections(spRefLine)
                 .filter(position -> position > 0)
                 .subscribe(position -> bindCommonCollectUI());
+
        /*单品(注意单品仅仅控制实收数量，累计数量是由行信息里面控制)*/
         cbSingle.setOnCheckedChangeListener((buttonView, isChecked) -> {
             etQuantity.setText(isChecked ? "1" : "");
@@ -232,7 +230,7 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
                 list.add(!TextUtils.isEmpty(item.lineNum) ? item.lineNum : "");
             }
             for (InventoryEntity item : mCurrentInventoryList) {
-                if("X".equalsIgnoreCase(item.newFlag)) {
+                if ("X".equalsIgnoreCase(item.newFlag)) {
                     isNewFlag = true;
                     break;
                 }
@@ -358,35 +356,41 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
         if (!checkCollectedDataBeforeSave()) {
             return;
         }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            InventoryEntity data = mCurrentInventoryList.get(spRefLine.getSelectedItemPosition() - 1);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.checkId = mRefData.checkId;
-            result.checkLineId = data.checkLineId;
-            result.specialInvFlag = getString(etSpecialInvFlag);
-            result.specialInvNum = getString(etSpecialInvNum);
-            result.location = CommonUtil.toUpperCase(getString(etCheckLocation));
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.storageNum = mRefData.storageNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.materialId = data.materialId;
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCheckDataSingle(result));
+        ResultEntity result = provideResult();
+        if(result == null) {
+            showMessage("未获取到上传的数据");
+            return;
+        }
+        mPresenter.uploadCheckDataSingle(result);
     }
 
 
     @Override
-    public void saveCollectedDataSuccess() {
-        showMessage("盘点成功");
+    public ResultEntity provideResult() {
+        InventoryEntity data = mCurrentInventoryList.get(spRefLine.getSelectedItemPosition() - 1);
+        ResultEntity result = new ResultEntity();
+        result.businessType = mRefData.bizType;
+        result.checkId = mRefData.checkId;
+        result.checkLineId = data.checkLineId;
+        result.specialInvFlag = getString(etSpecialInvFlag);
+        result.specialInvNum = getString(etSpecialInvNum);
+        result.location = CommonUtil.toUpperCase(getString(etCheckLocation));
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.storageNum = mRefData.storageNum;
+        result.voucherDate = mRefData.voucherDate;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.materialId = data.materialId;
+        result.quantity = getString(etQuantity);
+        result.modifyFlag = "N";
+        return result;
+    }
+
+    @Override
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
         final float totalQuantityV = CommonUtil.convertToFloat(getString(tvTotalQuantity), 0.0f);
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0f);
         tvTotalQuantity.setText(String.valueOf(totalQuantityV + quantityV));
@@ -402,7 +406,7 @@ public class CNCollectFragment extends BaseFragment<CNCollectPresenterImp>
 
     private void clearAllUI() {
         clearCommonUI(etSpecialInvFlag, etSpecialInvNum, tvMaterialDesc, tvInvQuantity,
-                etQuantity, tvTotalQuantity);
+                etQuantity, tvTotalQuantity,cbSingle);
         //单据行
         if (mRefLineAdapter != null) {
             mRefLines.clear();

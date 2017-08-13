@@ -14,4 +14,6 @@ public class CQYTCNDetailFragment extends CNDetailFragment<CNDetailPresenterImp>
     public void initPresenter() {
         mPresenter = new CNDetailPresenterImp(mActivity);
     }
+
+
 }

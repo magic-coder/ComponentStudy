@@ -10,11 +10,10 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.MaterialEntity;
@@ -28,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 
 /**
@@ -39,7 +35,7 @@ import io.reactivex.FlowableOnSubscribe;
  * Created by monday on 2017/2/7.
  */
 
-public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
+public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp>
         implements ILACollectView {
 
     @BindView(R2.id.et_material_num)
@@ -69,6 +65,7 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 2) {
             final String materialNum = list[Global.MATERIAL_POS];
             final String batchFlag = list[Global.BATCHFALG_POS];
@@ -77,9 +74,11 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
             final String location = list[Global.LOCATION_POS];
             //目标仓位
             if (etRecLocation.hasFocus() && etRecLocation.isFocused()) {
+                clearCommonUI(etRecLocation);
                 etRecLocation.setText(location);
             } else {
                 //源仓位
+                clearCommonUI(etRecLocation);
                 etSendLocation.setText(location);
             }
         }
@@ -336,32 +335,25 @@ public class LACollectFragment extends BaseFragment<LACollectPresenterImp>
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            int position = spSpecialInv.getSelectedItemPosition();
-            //如果没有打开，那么返回服务给出的默认批次
-            result.batchFlag = !isOpenBatchManager ? CommonUtil.toUpperCase(mInventoryDatas.get(position).batchFlag)
-                    : CommonUtil.toUpperCase(getString(etBatchFlag));
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
-            result.location = CommonUtil.toUpperCase(getString(etSendLocation));
-            result.recLocation = CommonUtil.toUpperCase(getString(etRecLocation));
-            result.quantity = getString(etRecQuantity);
-            result.userId = Global.USER_ID;
-            result.invType = mInventoryDatas.get(position).invType;
-            result.invFlag = mInventoryDatas.get(position).invFlag;
-            result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        result.businessType = mRefData.bizType;
+        int position = spSpecialInv.getSelectedItemPosition();
+        //如果没有打开，那么返回服务给出的默认批次
+        result.batchFlag = !isOpenBatchManager ? CommonUtil.toUpperCase(mInventoryDatas.get(position).batchFlag)
+                : CommonUtil.toUpperCase(getString(etBatchFlag));
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
+        result.location = CommonUtil.toUpperCase(getString(etSendLocation));
+        result.recLocation = CommonUtil.toUpperCase(getString(etRecLocation));
+        result.quantity = getString(etRecQuantity);
+        result.userId = Global.USER_ID;
+        result.invType = mInventoryDatas.get(position).invType;
+        result.invFlag = mInventoryDatas.get(position).invFlag;
+        result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
+        return result;
     }
 
     @Override

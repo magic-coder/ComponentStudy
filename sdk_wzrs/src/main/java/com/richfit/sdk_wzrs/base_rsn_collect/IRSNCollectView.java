@@ -1,6 +1,6 @@
 package com.richfit.sdk_wzrs.base_rsn_collect;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by monday on 2017/3/2.
  */
 
-public interface IRSNCollectView extends BaseView {
+public interface IRSNCollectView extends IBaseCollectView {
 
     /**
      * 显示库存地点
@@ -26,15 +26,8 @@ public interface IRSNCollectView extends BaseView {
      * @param refData
      * @param batchFlag
      */
-    void onBindCommonUI(ReferenceEntity refData, String batchFlag);
+    void bindCommonCollectUI(ReferenceEntity refData, String batchFlag);
     void loadTransferSingleInfoFail(String message);
-
-    /**
-     * 保存单条数据
-     */
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
-
     /**
      * 加载上架仓位
      */

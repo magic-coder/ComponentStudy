@@ -1,6 +1,6 @@
 package com.richfit.sdk_wzck.base_dsn_collect;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -11,7 +11,7 @@ import java.util.List;
  * Created by monday on 2017/2/23.
  */
 
-public interface IDSNCollectView extends BaseView {
+public interface IDSNCollectView extends IBaseCollectView {
     /**
      * 显示发出库位
      * @param invs
@@ -31,14 +31,7 @@ public interface IDSNCollectView extends BaseView {
      * @param refData
      * @param batchFlag
      */
-    void onBindCommonUI(ReferenceEntity refData, String batchFlag);
+    void bindCommonCollectUI(ReferenceEntity refData, String batchFlag);
     void loadTransferSingleInfoFail(String message);
     void loadTransferSingleInfoComplete();
-
-    /**
-     * 保存单条数据
-     */
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
-
 }

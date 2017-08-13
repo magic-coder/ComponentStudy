@@ -22,7 +22,7 @@ public class XNGDLQDetailFragment extends LQDetailFragment {
     @Override
     public void showInventory(List<InventoryEntity> allNodes) {
         if (mLQDetailAdapter == null) {
-            mLQDetailAdapter = new XNGDXXCXLQDetailAdapter(mActivity, R.layout.xxcx_item_lq_detail, allNodes);
+            mLQDetailAdapter = new XNGDXXCXLQDetailAdapter(mActivity, R.layout.xngd_item_xxcx_lq_detail, allNodes);
             mRecyclerView.setAdapter(mLQDetailAdapter);
         } else {
             mLQDetailAdapter.addAll(allNodes);

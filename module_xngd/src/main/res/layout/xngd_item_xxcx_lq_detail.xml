@@ -35,7 +35,7 @@
 
 
     <TextView
-        android:id="@id/xngd_tv_project_flag"
+        android:id="@id/xngd_tv_inv_type"
         style="@style/TableHeaderStyle"
         android:layout_width="140dp"
         android:text="@string/xngd_project_flag" />
@@ -43,7 +43,7 @@
     <View style="@style/ItemSeperatorLayout" />
 
     <TextView
-        android:id="@id/invType"
+        android:id="@id/specialInvFlag"
         style="@style/TableHeaderStyle"
         android:layout_width="140dp"
         android:text="@string/inv_type" />

@@ -10,10 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.richfit.common_lib.widget.RichEditText;
-import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -22,10 +18,6 @@ import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
 import java.util.List;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 庆阳离线移库311数据采集界面。注意这里选择完库存地点后加载发出库存，
@@ -330,40 +322,14 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
         return true;
     }
 
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.invId = mSendInvs.get(spSendInv.getSelectedItemPosition()).invId;
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = etMaterialNum.getTag().toString();
-            result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
-            result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
-            result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
-            result.quantity = getString(etQuantity);
-            result.invType = param.invType;
-            result.modifyFlag = "N";
-            result.deviceId = mDeviceId;
-
-            result.location = getString(etSendLocation).toUpperCase();
-            result.specialInvFlag = getString(etSpecialInvFlag);
-            result.specialInvNum = getString(etSpecialInvNum);
-            result.specialConvert = specialConvert;
-
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.location = getString(etSendLocation).toUpperCase();
+        result.specialInvFlag = getString(etSpecialInvFlag);
+        result.specialInvNum = getString(etSpecialInvNum);
+        result.specialConvert = specialConvert;
+        return result;
     }
 
     @Override

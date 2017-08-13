@@ -2,7 +2,7 @@ package com.richfit.sdk_wzyk.base_ms_collect;
 
 import android.support.annotation.NonNull;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by monday on 2017/2/10.
  */
 
-public interface IMSCollectView extends BaseView {
+public interface IMSCollectView extends IBaseCollectView {
 
     /**
      * 获取匹配的物料信息
@@ -40,6 +40,8 @@ public interface IMSCollectView extends BaseView {
      * @param message
      */
     void loadInvFail(String message);
+
+    void loadInvComplete();
 
     /**
      * 获取库存地点列表成功
@@ -73,9 +75,4 @@ public interface IMSCollectView extends BaseView {
     void loadCacheSuccess();
 
     void loadCacheFail(String message);
-
-    void saveCollectedDataSuccess();
-
-    void saveCollectedDataFail(String message);
-
 }

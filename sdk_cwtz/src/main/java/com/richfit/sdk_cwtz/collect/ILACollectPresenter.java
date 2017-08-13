@@ -1,7 +1,6 @@
 package com.richfit.sdk_cwtz.collect;
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
-import com.richfit.domain.bean.ResultEntity;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 
 import java.util.Map;
 
@@ -9,7 +8,7 @@ import java.util.Map;
  * Created by monday on 2017/2/7.
  */
 
-public interface ILACollectPresenter extends IPresenter<ILACollectView> {
+public interface ILACollectPresenter extends IBaseCollectPresenter<ILACollectView> {
 
     void getMaterialInfo(String queryType, String materialNum,String workId);
 
@@ -19,14 +18,5 @@ public interface ILACollectPresenter extends IPresenter<ILACollectView> {
                           String materialDesc, String batchFlag,
                           String location, String specialInvFlag, String specialInvNum,
                           String invType, String deviceId,Map<String,Object> extraMap);
-
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
-
-
 
 }

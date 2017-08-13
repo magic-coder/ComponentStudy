@@ -103,7 +103,7 @@
     "id": "11",
     "tabTitle": "抬头",
     "fragmentTag": "xngd_dsgd_header_fragment_tag",
-    "bizType": "211",
+    "bizType": "410",
     "refType": "15",
     "mode": 0,
     "fragmentType": 0,
@@ -113,7 +113,7 @@
     "id": "12",
     "tabTitle": "数据明细",
     "fragmentTag": "xngd_dsgd_detail_fragment_tag",
-    "bizType": "211",
+    "bizType": "410",
     "refType": "15",
     "mode": 0,
     "fragmentType": 1,
@@ -123,7 +123,7 @@
     "id": "13",
     "tabTitle": "数据采集",
     "fragmentTag": "xngd_dsgd_collect_fragment_tag",
-    "bizType": "211",
+    "bizType": "410",
     "refType": "15",
     "mode": 0,
     "fragmentType": 2,
@@ -133,7 +133,7 @@
     "id": "14",
     "tabTitle": "明细修改",
     "fragmentTag": "xngd_dsgd_edit_fragment_tag",
-    "bizType": "211",
+    "bizType": "410",
     "mode": 0,
     "refType": "15",
     "fragmentType": -1,
@@ -488,5 +488,45 @@
     "mode": 0,
     "fragmentType": -1,
     "className": "com.richfit.module_xngd.module_ms.n311.XNGDMSNEditFragment"
+  },
+  {
+    "id": "54",
+    "tabTitle": "抬头",
+    "fragmentTag": "xngd_sxcl_header_fragment_tag",
+    "bizType": "B1",
+    "mode": 0,
+    "refType": "13",
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_sxcl.basehead.LocQTHeadFragment"
+  },
+  {
+    "id": "55",
+    "tabTitle": "数据明细",
+    "fragmentTag": "xngd_sxcl_detail_fragment_tag",
+    "bizType": "B1",
+    "mode": 0,
+    "refType": "13",
+    "fragmentType": 1,
+    "className": "com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment"
+  },
+  {
+    "id": "56",
+    "tabTitle": "数据采集",
+    "fragmentTag": "xngd_sxcl_collect_fragment_tag",
+    "bizType": "B1",
+    "mode": 0,
+    "refType": "13",
+    "fragmentType": 2,
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocCollectFragment"
+  },
+  {
+    "id": "57",
+    "tabTitle": "明细修改",
+    "fragmentTag": "xngd_sxcl_edit_fragment_tag",
+    "bizType": "B1",
+    "mode": 0,
+    "refType": "13",
+    "fragmentType": -1,
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocEditFragment"
   }
 ]

@@ -5,10 +5,7 @@ import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.richfit.common_lib.widget.RichEditText;
-import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -17,10 +14,6 @@ import com.richfit.sdk_wzyk.base_msn_edit.BaseMSNEditFragment;
 import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
 
 import java.util.List;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/4/12.
@@ -209,38 +202,11 @@ public class QHYTLMSN311EditFragment extends BaseMSNEditFragment<MSNEditPresente
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.locationId = mLocationId;
-            result.invType =
-                    result.invId = CommonUtil.Obj2String(tvSendInv.getTag());
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
-            result.batchFlag = getString(tvSendBatchFlag);
-            result.location = CommonUtil.toUpperCase(getString(etSendLocation));
-            result.specialInvFlag = getString(etSpecialInvFlag);
-            result.specialInvNum = getString(etSpecialInvNum);
-            result.specialConvert = specialConvert;
-            result.recLocation = getString(autoRecLoc);
-            result.recBatchFlag = getString(tvRecBatchFlag);
-            result.quantity = getString(etQuantity);
-            result.modifyFlag = "Y";
-            result.invType = param.invType;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.location = CommonUtil.toUpperCase(getString(etSendLocation));
+        result.specialInvFlag = getString(etSpecialInvFlag);
+        result.specialInvNum = getString(etSpecialInvNum);
+        return result;
     }
 }

@@ -3,6 +3,7 @@ package com.richfit.sdk_wzck.base_dsn_edit;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -12,7 +13,6 @@ import com.richfit.common_lib.lib_adapter.LocationAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/2/27.
@@ -43,6 +40,8 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
     TextView tvMaterialGroup;
+    @BindView(R2.id.tv_material_unit)
+    TextView tvMaterialUnit;
     @BindView(R2.id.tv_batch_flag)
     protected TextView tvBatchFlag;
     @BindView(R2.id.tv_inv)
@@ -118,6 +117,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         final String recBatchFlag = bundle.getString(Global.EXTRA_REC_BATCH_FLAG_KEY);
         //移库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
+        Log.e("yff", "quantity" + mQuantity);
         //其他子节点的发出仓位列表
         mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
@@ -142,6 +142,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         tvMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
+        tvMaterialUnit.setText(data.materialUnit);
         tvBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag :
                 batchFlag);
         mHistoryDetailList = refData.billDetailList;
@@ -304,42 +305,33 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            InventoryQueryParam param = provideInventoryQueryParam();
-            result.businessType = mRefData.bizType;
-            result.voucherDate = mRefData.voucherDate;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.workId = mRefData.workId;
-            result.locationId = mLocationId;
-            result.invId = CommonUtil.Obj2String(tvInv.getTag());
-            result.recWorkId = mRefData.recWorkId;
-            result.recInvId = mRefData.recInvId;
-            result.materialId = tvMaterialNum.getTag().toString();
-            result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
-            result.costCenter = mRefData.costCenter;
-            result.projectNum = mRefData.projectNum;
-            final int position = spLocation.getSelectedItemPosition();
-            result.location = mInventoryDatas.get(position).location;
-            result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
-            result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
-            result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
-                    "Y" : "N";
-            result.quantity = getString(etQuantity);
-            result.invType = "1";
-            result.invFlag = mRefData.invFlag;
-            result.modifyFlag = "Y";
-            result.invType = param.invType;
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER)
-                .compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        InventoryQueryParam param = provideInventoryQueryParam();
+        result.businessType = mRefData.bizType;
+        result.voucherDate = mRefData.voucherDate;
+        result.moveType = mRefData.moveType;
+        result.userId = Global.USER_ID;
+        result.workId = mRefData.workId;
+        result.locationId = mLocationId;
+        result.invId = CommonUtil.Obj2String(tvInv.getTag());
+        result.recWorkId = mRefData.recWorkId;
+        result.recInvId = mRefData.recInvId;
+        result.materialId = tvMaterialNum.getTag().toString();
+        result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
+        result.costCenter = mRefData.costCenter;
+        result.projectNum = mRefData.projectNum;
+        final int position = spLocation.getSelectedItemPosition();
+        result.location = mInventoryDatas.get(position).location;
+        result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
+        result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
+        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+                "Y" : "N";
+        result.quantity = getString(etQuantity);
+        result.invType = param.invType;
+        result.invFlag = mRefData.invFlag;
+        result.modifyFlag = "Y";
+        return result;
     }
 
     @Override

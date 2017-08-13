@@ -3,13 +3,12 @@ package com.richfit.sdk_wzrk.base_asn_collect.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
-import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzrk.base_asn_collect.IASNCollectPresenter;
 import com.richfit.sdk_wzrk.base_asn_collect.IASNCollectView;
 
@@ -23,10 +22,8 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2016/11/27.
  */
 
-public class ASNCollectPresenterImp extends BasePresenter<IASNCollectView>
+public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectView>
         implements IASNCollectPresenter {
-
-    IASNCollectView mView;
 
     public ASNCollectPresenterImp(Context context) {
         super(context);
@@ -112,7 +109,7 @@ public class ASNCollectPresenterImp extends BasePresenter<IASNCollectView>
                     @Override
                     public void _onNext(ReferenceEntity refData) {
                         if (mView != null) {
-                            mView.onBindCommonUI(refData, batchFlag);
+                            mView.bindCommonCollectUI(refData, batchFlag);
                         }
                     }
 
@@ -142,49 +139,6 @@ public class ASNCollectPresenterImp extends BasePresenter<IASNCollectView>
 
                     }
                 });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void uploadCollectionDataSingle(ResultEntity result) {
-        mView = getView();
-        ResourceSubscriber<String> subscriber =
-                mRepository.uploadCollectionDataSingle(result)
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new RxSubscriber<String>(mContext) {
-                            @Override
-                            public void _onNext(String s) {
-
-                            }
-
-                            @Override
-                            public void _onNetWorkConnectError(String message) {
-                                if (mView != null) {
-                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
-                                }
-                            }
-
-                            @Override
-                            public void _onCommonError(String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onServerError(String code, String message) {
-                                if (mView != null) {
-                                    mView.saveCollectedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onComplete() {
-                                if (mView != null) {
-                                    mView.saveCollectedDataSuccess();
-                                }
-                            }
-                        });
         addSubscriber(subscriber);
     }
 }

@@ -24,10 +24,5 @@ public class XJDetailAdapter extends CommonAdapter<LocationInfoEntity> {
     protected void convert(ViewHolder holder, LocationInfoEntity item, int position) {
         holder.setText(R.id.show_title, item.location)
                 .setText(R.id.show_time, item.creationDate);
-        //处理横轴线
-        if(position % 3 == 0) {
-            //画三次换行
-
-        }
     }
 }

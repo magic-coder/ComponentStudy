@@ -11,16 +11,12 @@ import android.widget.TextView;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.blind.edit.imp.BlindEditPresenterImp;
 
 import butterknife.BindView;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2016/12/6.
@@ -144,23 +140,33 @@ public class BCEditFragment extends BaseEditFragment<BlindEditPresenterImp>
 
     @Override
     public void saveCollectedData() {
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.checkId = mRefData.checkId;
-            result.checkLineId = mCheckLineId;
-            result.location = getString(etCheckLocation);
-            result.workId = mRefData.workId;
-            result.invId = mRefData.invId;
-            result.voucherDate = mRefData.voucherDate;
-            result.userId = Global.USER_ID;
-            result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
-            result.quantity = getString(etCheckQuantity);
-            result.modifyFlag = "Y";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCheckDataSingle(result));
+        if (!checkCollectedDataBeforeSave()) {
+            return;
+        }
+        ResultEntity result = provideResult();
+        if(result == null) {
+            showMessage("未获取到上传的数据");
+            return;
+        }
+        mPresenter.uploadCheckDataSingle(result);
+    }
+
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = new ResultEntity();
+        result.businessType = mRefData.bizType;
+        result.checkId = mRefData.checkId;
+        result.checkLineId = mCheckLineId;
+        result.location = getString(etCheckLocation);
+        result.workId = mRefData.workId;
+        result.invId = mRefData.invId;
+        result.voucherDate = mRefData.voucherDate;
+        result.userId = Global.USER_ID;
+        result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
+        result.quantity = getString(etCheckQuantity);
+        result.modifyFlag = "Y";
+        return result;
     }
 
     @Override

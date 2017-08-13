@@ -15,8 +15,6 @@ import com.richfit.sdk_wzrk.adapter.ASNDetailAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.richfit.common_lib.utils.SPrefUtil.getData;
-
 /**
  * Created by monday on 2016/11/27.
  */
@@ -75,7 +73,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
      */
     @Override
     public void editNode(final RefDetailEntity node, int position) {
-        String state = (String) getData(mBizType, "0");
+        String state = (String) SPrefUtil.getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许修改");
             return;
@@ -92,7 +90,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
 
     @Override
     public void deleteNode(final RefDetailEntity node, int position) {
-        String state = (String) getData(mBizType, "0");
+        String state = (String) SPrefUtil.getData(mBizType, "0");
         if (!"0".equals(state)) {
             showMessage("已经过账,不允许删除");
             return;
@@ -168,7 +166,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
      */
     @Override
     protected void submit2SAP(String tranToSapFlag) {
-        String state = (String) getData(mBizType, "0");
+        String state = (String) SPrefUtil.getData(mBizType, "0");
         if ("0".equals(state)) {
             showMessage("请先过账");
             return;

@@ -24,7 +24,7 @@ public class XNGDAOChildItemDelegate implements ItemViewDelegate<RefDetailEntity
     @Override
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
         holder.setText(R.id.location, item.location)
-                .setText(R.id.batchFlag, item.batchFlag)
+                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 .setText(R.id.quantity, item.quantity);
     }
 }

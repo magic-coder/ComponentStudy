@@ -61,6 +61,26 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
     }
 
     @Override
+    public List<SimpleEntity> getDictionaryData(String code) {
+        List<SimpleEntity> data = new ArrayList<>();
+        if (TextUtils.isEmpty(code)) {
+            return data;
+        }
+        SQLiteDatabase db = getWritableDB();
+        Cursor cursor = db.rawQuery("select name,val from T_EXTRA_DATA_SOURCE where code = ?",
+                new String[]{code});
+        while (cursor.moveToNext()) {
+            SimpleEntity item = new SimpleEntity();
+            item.name = cursor.getString(0);
+            item.code = cursor.getString(1);
+            data.add(item);
+        }
+        cursor.close();
+        db.close();
+        return data;
+    }
+
+    @Override
     public ArrayList<RowConfig> loadExtraConfig(String companyId) {
         ArrayList<RowConfig> configs = new ArrayList<>();
         SQLiteDatabase db = getWritableDB();
@@ -796,7 +816,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      * @return
      */
     @Override
-    public ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    public synchronized ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
         Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
@@ -856,7 +876,8 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      * @param workCode:工厂编码
      */
     @Override
-    public ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    public synchronized ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
             return list;
@@ -869,13 +890,66 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                     .append(tableName)
                     .append("  P,BASE_PROJECT_NUM B ")
                     .append(" where P.parent_id = B.org_id ")
-                    .append(" and P.org_level = 2 and P.org_code = ? ");
+                    .append(" and P.org_level = '2' and P.org_code = ? ");
             if (!TextUtils.isEmpty(keyWord)) {
                 sb.append("and project_num_code like ").append("'%").append(keyWord).append("%'");
             } else if (defaultItemNum > 0) {
                 sb.append(" limit 0, ")
                         .append(defaultItemNum);
             }
+            Log.d("yff", "查询sql = " + sb.toString());
+            cursor = db.rawQuery(sb.toString(), new String[]{workCode});
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id = cursor.getString(0);
+                entity.code = cursor.getString(1);
+                entity.name = cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+
+    /**
+     * 获取总账科目列表，这里可能需要过滤
+     *
+     * @param workCode
+     * @param keyWord
+     * @param defaultItemNum
+     * @param flag
+     * @return
+     */
+    @Override
+    public synchronized ArrayList<SimpleEntity> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        Log.d("yff", "workCode = " + workCode);
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(workCode))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+        String tableName = flag == 0 ? PAuthOrgKey : PAuthOrg2Key;
+        Cursor cursor = null;
+        try {
+            sb.append("select B.org_id, B.gl_account,B.gl_account_desc from ")
+                    .append(tableName)
+                    .append("  P,BASE_GL_ACCOUNT B ")
+                    .append(" where P.parent_id = B.org_id ")
+                    .append(" and P.org_level = '2' and P.org_code = ? ");
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append("and project_num_code like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.d("yff", "查询sql = " + sb.toString());
             cursor = db.rawQuery(sb.toString(), new String[]{workCode});
             while (cursor.moveToNext()) {
                 SimpleEntity entity = new SimpleEntity();
@@ -975,6 +1049,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
 
     @Override
     public String getStorageNum(String workId, String workCode, String invId, String invCode) {
+        Log.e("yff", "workId = " + workId + "; workCode = " + workCode);
         SQLiteDatabase db = getReadableDB();
         Cursor cursor = null;
         String storageNum = null;
@@ -993,6 +1068,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 sb.append(" ) ");
                 sb.append(" and org_level = ? ");
                 sb.append(")");
+                Log.e("yff", "sql = " + sb.toString());
                 cursor = db.rawQuery(sb.toString(), new String[]{"3", "2"});
             }
 

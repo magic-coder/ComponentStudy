@@ -143,10 +143,9 @@ public class ReferenceEntity {
     public String inspectionStandard;
     public String post;
     public String manufacture;
-    //项目移交物资
-    public String projectFlag;
     //报检单位
     public String declaredUnit;
+    public String glAccount;
 
     @Override
     public String toString() {

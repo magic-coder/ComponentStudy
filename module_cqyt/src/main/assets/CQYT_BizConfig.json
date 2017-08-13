@@ -287,7 +287,7 @@
     "mode": 0,
     "refType": "0",
     "fragmentType": 0,
-    "className": "com.richfit.sdk_wzpd.checkn.head.CNHeadFragment"
+    "className": "com.richfit.module_cqyt.module_pd.CQYTCNHeadFragment"
   },
   {
     "id": "30",
@@ -307,7 +307,7 @@
     "mode": 0,
     "refType": "0",
     "fragmentType": 2,
-    "className": "com.richfit.sdk_wzpd.checkn.collect.CNCollectFragment"
+    "className": "com.richfit.module_cqyt.module_pd.CQYTCNCollectFragment"
   },
   {
     "id": "32",
@@ -318,5 +318,65 @@
     "mode": 0,
     "fragmentType": -1,
     "className": "com.richfit.sdk_wzpd.checkn.edit.CNEditFragment"
+  },
+  {
+    "id": "33",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_invnquery_head_fragment_tag",
+    "bizType": "3000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_xxcx.CQYTInvNQueryHeadFragment"
+  },
+  {
+    "id": "34",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_invnquery_detail_fragment_tag",
+    "bizType": "3000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_xxcx.CQYTInvNQueryDetailFragment"
+  },
+  {
+    "id": "35",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_as105_header_fragment_tag",
+    "bizType": "112",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_as105.CQYTAS105HeadFragment"
+  },
+  {
+    "id": "36",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_as105_detail_fragment_tag",
+    "bizType": "112",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_as105.CQYTAS105DetailFragment"
+  },
+  {
+    "id": "37",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_as105_collect_fragment_tag",
+    "bizType": "112",
+    "refType": "0",
+    "fragmentType": 2,
+    "mode": 0,
+    "className": "com.richfit.module_cqyt.module_as105.CQYTAS105CollectFragment"
+  },
+  {
+    "id": "38",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_as105_edit_fragment_tag",
+    "bizType": "112",
+    "mode": 0,
+    "refType": "0",
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_as105.CQYTAS105EditFragment"
   }
 ]

@@ -1,5 +1,6 @@
 package com.richfit.module_cqyt.module_ms.y313;
 
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import com.richfit.module_cqyt.R;
 import com.richfit.sdk_wzyk.base_ms_collect.BaseMSCollectFragment;
 import com.richfit.sdk_wzyk.base_ms_collect.imp.MSCollectPresenterImp;
 
+import java.util.ArrayList;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
@@ -28,6 +31,12 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
 
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        mLineNumForFilter = list[list.length - 1];
+        super.handleBarCodeScanResult(type, list);
+    }
 
     @Override
     public int getContentId() {
@@ -55,8 +64,49 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
 
     }
 
+    /**
+     * 设置单据行信息之前，过滤掉
+     *
+     * @param refLines
+     */
+    @Override
+    public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if (!TextUtils.isEmpty(mLineNumForFilter)) {
+            //过滤掉重复行号
+            ArrayList<String> lines = new ArrayList<>();
+            for (String refLine : refLines) {
+                if(refLine.equalsIgnoreCase(mLineNumForFilter)) {
+                    lines.add(refLine);
+                }
+            }
+            if(lines.size() == 0) {
+                showMessage("未获取到条码的单据行信息");
+            }
+            super.setupRefLineAdapter(lines);
+            return;
+        }
+        //如果单据中没有过滤行信息那么直接显示所有的行信息
+        super.setupRefLineAdapter(refLines);
+    }
+
+
     @Override
     public void bindCommonCollectUI() {
+        mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        if (!TextUtils.isEmpty(lineData.dangerFlag)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setTitle("温馨提示").setMessage(lineData.dangerFlag)
+                    .setPositiveButton("继续采集", (dialog, which) -> {
+                        super.bindCommonCollectUI();
+                        etRecBatchFlag.setText(getString(etSendBatchFlag));
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton("放弃采集", (dialog, which) -> {
+                        dialog.dismiss();
+                    }).show();
+            return;
+        }
         super.bindCommonCollectUI();
         //接收批次与接收批次一致
         etRecBatchFlag.setText(getString(etSendBatchFlag));
@@ -127,8 +177,8 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
     }
 
     @Override
-    public void saveCollectedDataSuccess() {
-        super.saveCollectedDataSuccess();
+    public void saveCollectedDataSuccess(String message) {
+        super.saveCollectedDataSuccess(message);
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }

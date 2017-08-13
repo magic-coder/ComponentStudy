@@ -18,6 +18,7 @@ import java.util.List;
  */
 
 public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPresenterImp>{
+
     @Override
     public void initPresenter() {
         mPresenter = new XNGDRSDetailPresenterImp(mActivity);

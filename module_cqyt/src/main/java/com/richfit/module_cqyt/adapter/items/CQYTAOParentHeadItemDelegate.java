@@ -28,6 +28,7 @@ public class CQYTAOParentHeadItemDelegate implements ItemViewDelegate<RefDetailE
         holder.setText(R.id.materialNum, item.materialNum);
         holder.setText(R.id.materialDesc, item.materialDesc);
         holder.setText(R.id.materialGroup, item.materialGroup);
+        holder.setText(R.id.materialUnit,item.unit);
         //允许过账数量
         holder.setText(R.id.actQuantity, item.actQuantity);
         //累计过账数量

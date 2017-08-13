@@ -21,6 +21,8 @@ import java.util.Map;
 
 public interface IBasicServiceDao {
 
+    List<SimpleEntity> getDictionaryData(String code);
+
     /**
      * 下载额外字段的配置信息
      *
@@ -133,6 +135,9 @@ public interface IBasicServiceDao {
      * @return
      */
     ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag);
+
+
+    ArrayList<SimpleEntity> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag);
 
     /**
      * 保存页面配置信息

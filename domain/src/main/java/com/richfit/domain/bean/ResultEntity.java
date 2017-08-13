@@ -173,4 +173,6 @@ public class ResultEntity extends TreeNode{
     public String manufacture;
     public String declaredUnit;
     public String money;
+    public String glAccount;
+    public String arrivalQuantity;
 }

@@ -18,4 +18,6 @@ public interface IDSNHeadPresenter extends IBaseHeadPresenter<IDSNHeadView> {
      */
     void deleteCollectionData(String refType, String bizType, String userId,
                               String companyCode);
+
+    void getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
 }

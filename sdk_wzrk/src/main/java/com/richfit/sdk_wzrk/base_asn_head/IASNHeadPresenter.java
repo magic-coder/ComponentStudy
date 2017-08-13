@@ -22,16 +22,6 @@ public interface IASNHeadPresenter extends IBaseHeadPresenter<IASNHeadView> {
     void getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag);
 
     /**
-     * 获取项目编号列表
-     * @param workCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
-     * @param bizType
-     */
-    void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
-
-    /**
      * 获取移动类型列表
      */
     void getMoveTypeList(int flag);

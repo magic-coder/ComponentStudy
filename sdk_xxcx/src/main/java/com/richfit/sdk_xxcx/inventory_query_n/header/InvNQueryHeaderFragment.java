@@ -5,6 +5,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
@@ -13,7 +14,7 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.R2;
-import com.richfit.sdk_xxcx.inventory_query_n.header.imp.IInvNQueryHeaderPresenterImp;
+import com.richfit.sdk_xxcx.inventory_query_n.header.imp.InvNQueryHeaderPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import butterknife.BindView;
  * Created by monday on 2017/5/25.
  */
 
-public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPresenterImp>
+public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresenterImp>
         implements IInvNQueryHeaderView {
 
     @BindView(R2.id.sp_work)
@@ -38,6 +39,10 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
     EditText etMaterialClass;
     @BindView(R2.id.et_material_desc)
     EditText etMaterialDesc;
+    @BindView(R2.id.ll_material_class)
+    protected LinearLayout llMaterialClass;
+    @BindView(R2.id.ll_material_desc)
+    protected LinearLayout llMaterialDesc;
 
 
     /*工厂*/
@@ -55,7 +60,7 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
 
     @Override
     public void initPresenter() {
-        mPresenter = new IInvNQueryHeaderPresenterImp(mActivity);
+        mPresenter = new InvNQueryHeaderPresenterImp(mActivity);
     }
 
 
@@ -72,6 +77,9 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
 
     @Override
     public void initEvent() {
+        RxAdapterView.itemSelections(spWork)
+                .filter(position -> position.intValue() > 0)
+                .subscribe(position -> mPresenter.getInvsByWorkId(mWorks.get(position.intValue()).workId,0));
     }
 
     @Override
@@ -150,7 +158,7 @@ public class IInvNQueryHeaderFragment extends BaseFragment<IInvNQueryHeaderPrese
         mRefData.materialDesc = getString(etMaterialDesc);
         mRefData.workId = mWorks.get(spWork.getSelectedItemPosition()).workId;
         mRefData.workCode = mWorks.get(spWork.getSelectedItemPosition()).workCode;
-        mRefData.invId = mInvs.get(spInv.getSelectedItemPosition()).invCode;
-        mRefData.invCode = mInvs.get(spInv.getSelectedItemPosition()).invId;
+        mRefData.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+        mRefData.invCode = mInvs.get(spInv.getSelectedItemPosition()).invCode;
     }
 }

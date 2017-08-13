@@ -29,6 +29,7 @@ public class MSYParentHeaderItemDelegate implements ItemViewDelegate<RefDetailEn
         holder.setText(R.id.materialNum,item.materialNum);
         holder.setText(R.id.materialDesc,item.materialDesc);
         holder.setText(R.id.materialGroup,item.materialGroup);
+        holder.setText(R.id.materialUnit,item.unit);
         //应发数量
         holder.setText(R.id.actQuantity,item.actQuantity);
         //累计数量

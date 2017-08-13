@@ -1,6 +1,6 @@
 package com.richfit.sdk_wzrs.base_rsn_collect;
 
-import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 import java.util.Map;
@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by monday on 2017/3/2.
  */
 
-public interface IRSNCollectPresenter extends IPresenter<IRSNCollectView> {
+public interface IRSNCollectPresenter extends IBaseCollectPresenter<IRSNCollectView> {
 
     /**
      * 获取库存地点列表
@@ -30,12 +30,6 @@ public interface IRSNCollectPresenter extends IPresenter<IRSNCollectView> {
     void getTransferSingleInfo(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
-    /**
-     * 保存本次采集的数据
-     *
-     * @param result:用户采集的数据(json格式)
-     */
-    void uploadCollectionDataSingle(ResultEntity result);
 
     /**
      * 获取库存信息

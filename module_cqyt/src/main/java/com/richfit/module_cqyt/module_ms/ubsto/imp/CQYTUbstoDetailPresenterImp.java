@@ -58,10 +58,10 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
             final String refNum = CommonUtil.Obj2String(extraHeaderMap.get("refNum"));
             addSubscriber(Flowable.concat(uploadInspectedImages(refNum, refCodeId, transId, userId, "01", false),
                     mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", "", extraHeaderMap))
-//                    .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
+                    .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                     .doOnComplete(() -> mRepository.deleteInspectionImages(refNum, refCodeId, false))
                     .doOnComplete(() -> FileUtil.deleteDir(FileUtil.getImageCacheDir(mContext.getApplicationContext(), refNum, false)))
-//                    .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
+                    .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new RxSubscriber<String>(mContext, "正在保存数据...") {
 
@@ -253,7 +253,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
         result.imageName = image.imageName;
         result.refType = image.refType;
         result.businessType = image.bizType;
-        result.bizPart = "1";
+        result.bizPart = "2";
         result.imagePath = image.imageDir + File.separator + result.imageName;
         result.createdBy = image.createBy;
         result.imageDate = image.createDate;

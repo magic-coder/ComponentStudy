@@ -322,6 +322,4 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
 
     /*子类返回修改模块的名称*/
     protected abstract String getSubFunName();
-
-
 }

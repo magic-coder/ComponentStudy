@@ -6,16 +6,11 @@ import android.widget.EditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
-import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_ms_collect.BaseMSCollectFragment;
 import com.richfit.sdk_wzyk.base_ms_collect.imp.MSCollectPresenterImp;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * Created by monday on 2017/4/13.
@@ -184,39 +179,12 @@ public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollec
     }
 
     @Override
-    public void saveCollectedData() {
-        if (!checkCollectedDataBeforeSave()) {
-            return;
-        }
-        Flowable.create((FlowableOnSubscribe<ResultEntity>) emitter -> {
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            ResultEntity result = new ResultEntity();
-            result.businessType = mRefData.bizType;
-            result.refCodeId = mRefData.refCodeId;
-            result.refCode = mRefData.recordNum;
-            result.refLineNum = lineData.lineNum;
-            result.voucherDate = mRefData.voucherDate;
-            result.refType = mRefData.refType;
-            result.moveType = mRefData.moveType;
-            result.userId = Global.USER_ID;
-            result.refLineId = lineData.refLineId;
-            result.workId = lineData.workId;
-            result.invId = mInvDatas.get(spSendInv.getSelectedItemPosition()).invId;
-            result.materialId = lineData.materialId;
-            result.batchFlag = CommonUtil.toUpperCase(getString(etSendBatchFlag));
-            result.recBatchFlag = CommonUtil.toUpperCase(getString(etRecBatchFlag));
-            result.recLocation = CommonUtil.toUpperCase(getString(etRecLoc));
-            result.quantity = getString(etQuantity);
-            result.location = getString(etSendLocation);
-            result.specialInvFlag = getString(etSpecialInvFlag);
-            result.specialInvNum = getString(etSpecialInvNum);
-            result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
-            result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : 0.f;
-            result.modifyFlag = "N";
-            emitter.onNext(result);
-            emitter.onComplete();
-        }, BackpressureStrategy.BUFFER).compose(TransformerHelper.io2main())
-                .subscribe(result -> mPresenter.uploadCollectionDataSingle(result));
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.location = getString(etSendLocation);
+        result.specialInvFlag = getString(etSpecialInvFlag);
+        result.specialInvNum = getString(etSpecialInvNum);
+        return result;
     }
 
     protected void clearAllUI() {

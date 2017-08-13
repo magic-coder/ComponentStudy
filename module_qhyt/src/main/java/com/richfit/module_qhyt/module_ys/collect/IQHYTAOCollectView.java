@@ -2,7 +2,7 @@ package com.richfit.module_qhyt.module_ys.collect;
 
 import android.support.annotation.NonNull;
 
-import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * Created by monday on 2017/2/28.
  */
 
-public interface IQHYTAOCollectView extends BaseView {
+public interface IQHYTAOCollectView extends IBaseCollectView {
 
     /**
      * 获取匹配的物料信息
@@ -42,13 +42,6 @@ public interface IQHYTAOCollectView extends BaseView {
      * 为数据采集界面的UI绑定数据
      */
     void bindCommonCollectUI();
-
-    /**
-     * 保存单条采集验收数据
-     */
-    void saveCollectedDataSuccess();
-    void saveCollectedDataFail(String message);
-
     void showInvs(List<InvEntity> invs);
     void loadInvsFail(String message);
 }
