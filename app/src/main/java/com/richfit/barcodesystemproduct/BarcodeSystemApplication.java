@@ -5,8 +5,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_crash.CrashManager;
 import com.richfit.common_lib.lib_crash.HttpCrashReport;
@@ -60,6 +62,8 @@ public class BarcodeSystemApplication extends BaseApplication {
             //说明用户手动设置过Url
             return baseUrl;
         }
+        Log.e("yff", BuildConfig.DEBUG + "");
+        Log.e("yff", BuildConfig.APP_NAME);
         //如果没有手动设置过Url
         if (BuildConfig.DEBUG) {
             switch (BuildConfig.APP_NAME) {

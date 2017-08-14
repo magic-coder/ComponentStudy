@@ -191,7 +191,6 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
     //  compile project(':module_qhyt')
-    compile project(':module_xngd')
     //    compile project(':module_cqyt')
     compile project(':moudle_dlsh')
 }
