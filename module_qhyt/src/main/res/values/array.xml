@@ -14,7 +14,7 @@
     </string-array>
 
 
-    <string-array name="qhyt_move_reasons">
+    <string-array name="qhyt_move_causes">
         <item>请选择</item>
         <item>0001_质量低劣</item>
         <item>0002_未完成的</item>

@@ -74,7 +74,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         }
         if (spMoveCause != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.qhyt_move_reasons));
+                    getStringArray(R.array.qhyt_move_causes));
             spMoveCause.setAdapter(adapter);
         }
     }

@@ -34,17 +34,4 @@
     <string name="cqyt_inspection_result">外观检验结果</string>
     <string name="cqyt_return_quantity">采购退货数量</string>
 
-    <string-array name="cqyt_move_reasons">
-        <item>请选择</item>
-        <item>0001_质量低劣</item>
-        <item>0002_未完成的</item>
-        <item>0003_损坏的</item>
-    </string-array>
-
-    <string-array name="cqyt_strategy_codes">
-        <item>请选择</item>
-        <item>1001_接收</item>
-        <item>1004_拒收</item>
-    </string-array>
-
 </resources>

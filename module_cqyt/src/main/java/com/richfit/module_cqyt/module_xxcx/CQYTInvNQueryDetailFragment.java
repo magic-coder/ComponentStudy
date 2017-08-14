@@ -41,4 +41,9 @@ public class CQYTInvNQueryDetailFragment extends InvNQueryDetailFragment {
         //开始加载
         startAutoRefresh();
     }
+
+    @Override
+    public boolean isNeedShowFloatingButton() {
+        return false;
+    }
 }

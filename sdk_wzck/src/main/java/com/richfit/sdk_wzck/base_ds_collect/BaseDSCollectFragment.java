@@ -228,7 +228,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         }
         String transferKey = (String) SPrefUtil.getData(mBizType + mRefType, "0");
         if ("1".equals(transferKey)) {
-            showMessage("本次采集已经过账,请先到数据明细界面进行数据上传操作");
+            showMessage("本次采集的数据已经上传,请先到数据明细界面进行过账等操作");
             return;
         }
         etMaterialNum.setEnabled(true);

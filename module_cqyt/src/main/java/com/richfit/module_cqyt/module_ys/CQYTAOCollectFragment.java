@@ -70,7 +70,7 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public void initData() {
         if (spMoveCause != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.cqyt_move_reasons));
+                    getStringArray(R.array.cqyt_move_causes));
             spMoveCause.setAdapter(adapter);
         }
     }
