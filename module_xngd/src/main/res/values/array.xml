@@ -14,4 +14,11 @@
         <item>完好</item>
         <item>残缺</item>
     </string-array>
+
+    <string-array name="xngd_move_causes">
+        <item>请选择</item>
+        <item>0001_质量低劣</item>
+        <item>0002_未完成的</item>
+        <item>0003_损坏的</item>
+    </string-array>
 </resources>
