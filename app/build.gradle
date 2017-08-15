@@ -59,6 +59,14 @@ android {
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_changqing_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
+
+        //大连石化
+        sign_dlsh{
+            keyAlias 'dlsh'
+            keyPassword 'wmyj8866'
+            storeFile file('D:\\importantKey\\dlsh.jks')//签名文件路径
+            storePassword 'wmyj8866'
+        }
     }
 
 
@@ -132,7 +140,15 @@ android {
             signingConfig signingConfigs.sign_cqyt
         }
 
-
+        dlsh{
+            buildConfigField "String", "SERVER_URL", '"http://192.168.79.2:8087/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"DLSH_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"dlsh"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 1
+            versionName "1.0"
+            //signingConfig signingConfigs.sign_dlsh
+        }
     }
 
     productFlavors.all { flavor ->
@@ -164,7 +180,7 @@ android {
     }
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -174,10 +190,9 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-
-//  compile project(':module_qhyt')
-    compile project(':module_xngd')
-//    compile project(':module_cqyt')
+    //  compile project(':module_qhyt')
+    //    compile project(':module_cqyt')
+    compile project(':moudle_dlsh')
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

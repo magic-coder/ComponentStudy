@@ -62,6 +62,8 @@ public class Global {
     public static final String QHYT = "qhyt";
     public static final String XNGD = "xngd";
     public static final String CQYT = "cqyt";
+    //大连石化
+    public static final String DLSH="dlsh";
 
     /*全局日期格式*/
     public static final String GLOBAL_DATE_PATTERN_TYPE1 = "yyyyMMdd";
