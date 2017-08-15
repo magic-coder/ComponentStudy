@@ -3,6 +3,7 @@ package com.richfit.module_cqyt.module_ms.ubsto;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
@@ -121,18 +122,6 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
     @Override
     public void submitBarcodeSystemSuccess() {
         showSuccessDialog(mShowMsg);
-        setRefreshing(false, "数据保存成功!");
-//        if (mAdapter != null) {
-//            mAdapter.removeAllVisibleNodes();
-//        }
-//        //注意这里必须清除单据数据
-//        mRefData = null;
-//        mShowMsg.setLength(0);
-//        mTransId = "";
-//        //两步成功后将寄售转自有标识清空
-//        isNeedTurn = false;
-//        isTurnSuccess = false;
-//        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
 
 
@@ -200,8 +189,8 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
     @Override
     protected boolean checkTransStateBeforeRefresh() {
         String transferFlag = (String) getData(mBizType + mRefType, "0");
-        if ("2".equals(transferFlag)) {
-            setRefreshing(false, "本次采集的数据已经过账，不允许修改!");
+        if ("1".equals(transferFlag)) {
+            setRefreshing(false, "本次采集的数据已经上传,请先到数据明细界面进行过账等操作");
             return false;
         }
         return true;

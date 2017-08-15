@@ -4,16 +4,17 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -21,6 +22,7 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
@@ -48,8 +50,8 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     //处理情况
     EditText etProcessResult;
 
-    ArrayList<String> mInspectionTypes;
-    ArrayList<String> mInspectionStatus;
+    ArrayList<SimpleEntity> mInspectionTypes;
+    ArrayList<SimpleEntity> mInspectionStatus;
 
     @Override
     protected int getContentId() {
@@ -83,9 +85,15 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             mInspectionTypes = new ArrayList<>();
         }
         mInspectionTypes.clear();
-        mInspectionTypes.addAll(getStringArray(R.array.xngd_inspection_types));
+        List<String> inspectionTypes = getStringArray(R.array.xngd_inspection_types);
+        for (int i = 0; i < inspectionTypes.size(); i++) {
+            SimpleEntity item = new SimpleEntity();
+            item.name = inspectionTypes.get(i);
+            item.code = String.valueOf(i);
+            mInspectionTypes.add(item);
+        }
 
-        ArrayAdapter<String> inspectionTypeAdapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, mInspectionTypes);
+        SimpleAdapter inspectionTypeAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mInspectionTypes);
         spInspectionType.setAdapter(inspectionTypeAdapter);
 
         //初始化检验状况
@@ -93,8 +101,14 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             mInspectionStatus = new ArrayList<>();
         }
         mInspectionStatus.clear();
-        mInspectionStatus.addAll(getStringArray(R.array.xngd_inspection_status));
-        ArrayAdapter<String> inspectionStatusAdapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, mInspectionStatus);
+        List<String> inspectionStatus = getStringArray(R.array.xngd_inspection_status);
+        for (int i = 0; i < inspectionStatus.size(); i++) {
+            SimpleEntity item = new SimpleEntity();
+            item.name = inspectionStatus.get(i);
+            item.code = String.valueOf(i);
+            mInspectionStatus.add(item);
+        }
+        SimpleAdapter inspectionStatusAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mInspectionStatus);
         spInspectionStatus.setAdapter(inspectionStatusAdapter);
     }
 
@@ -129,9 +143,12 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             //处理情况
             etProcessResult.setText(cache.processResult);
             //检验状况
-            UiUtil.setSelectionForSp(mInspectionTypes, cache.inspectionType, spInspectionType);
+            Log.e("yff", " cache.inspectionType = " + cache.inspectionType);
+            Log.e("yff", " cache.inspectionStatus = " + cache.inspectionStatus);
+
+            UiUtil.setSelectionForSimpleSp(mInspectionTypes, cache.inspectionType, spInspectionType);
             //检验方法
-            UiUtil.setSelectionForSp(mInspectionStatus, cache.inspectionStatus, spInspectionStatus);
+            UiUtil.setSelectionForSimpleSp(mInspectionStatus, cache.inspectionStatus, spInspectionStatus);
         }
     }
 
@@ -323,7 +340,7 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
-        extraMap.put("projectNum",mRefData.projectNum);
+        extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import com.richfit.common_lib.R;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.List;
 
@@ -231,6 +232,30 @@ public class UiUtil {
         }
         sp.setSelection(position == -1 ? 0 : position);
     }
+
+    /**
+     * 匹配code
+     * @param dataSet
+     * @param keyWord
+     * @param sp
+     */
+    public static void setSelectionForSimpleSp(List<SimpleEntity> dataSet, String keyWord, Spinner sp) {
+        int position = -1;
+        if (TextUtils.isEmpty(keyWord))
+            return;
+        if (dataSet == null || dataSet.size() == 0)
+            return;
+        if (sp.getAdapter() == null)
+            return;
+        for (SimpleEntity item : dataSet) {
+            position++;
+            if (keyWord.equals(item.code)) {
+                break;
+            }
+        }
+        sp.setSelection(position == -1 ? 0 : position);
+    }
+
 
     public static void setSelectionForLocation(List<InventoryEntity> dataSet,String keyWord,Spinner sp) {
         int position = -1;

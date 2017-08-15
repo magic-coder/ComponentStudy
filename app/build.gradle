@@ -123,7 +123,7 @@ android {
         }
 
         cqyt {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:9087/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "SERVER_URL", '"http://11.11.177.92:9087/ktbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
@@ -176,8 +176,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 
 //  compile project(':module_qhyt')
-//    compile project(':module_xngd')
-    compile project(':module_cqyt')
+    compile project(':module_xngd')
+//    compile project(':module_cqyt')
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

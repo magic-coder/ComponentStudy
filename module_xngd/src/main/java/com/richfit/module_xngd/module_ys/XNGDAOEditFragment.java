@@ -6,13 +6,16 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by monday on 2017/5/26.
@@ -37,8 +40,8 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     //处理结果
     EditText etProcessResult;
 
-    ArrayList<String> mInspectionTypes;
-    ArrayList<String> mInspectionStatus;
+    ArrayList<SimpleEntity> mInspectionTypes;
+    ArrayList<SimpleEntity> mInspectionStatus;
 
     @Override
     protected int getContentId() {
@@ -72,15 +75,20 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     @Override
     public void initData() {
         super.initData();
-
         //初始化检验方法
         if (mInspectionTypes == null) {
             mInspectionTypes = new ArrayList<>();
         }
         mInspectionTypes.clear();
-        mInspectionTypes.addAll(getStringArray(R.array.xngd_inspection_types));
+        List<String> inspectionTypes = getStringArray(R.array.xngd_inspection_types);
+        for (int i = 0; i < inspectionTypes.size(); i++) {
+            SimpleEntity item = new SimpleEntity();
+            item.name = inspectionTypes.get(i);
+            item.code = String.valueOf(i);
+            mInspectionTypes.add(item);
+        }
 
-        ArrayAdapter<String> inspectionTypeAdapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, mInspectionTypes);
+        SimpleAdapter inspectionTypeAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mInspectionTypes);
         spInspectionType.setAdapter(inspectionTypeAdapter);
 
         //初始化检验状况
@@ -88,8 +96,14 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
             mInspectionStatus = new ArrayList<>();
         }
         mInspectionStatus.clear();
-        mInspectionStatus.addAll(getStringArray(R.array.xngd_inspection_status));
-        ArrayAdapter<String> inspectionStatusAdapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, mInspectionStatus);
+        List<String> inspectionStatusList = getStringArray(R.array.xngd_inspection_status);
+        for (int i = 0; i < inspectionStatusList.size(); i++) {
+            SimpleEntity item = new SimpleEntity();
+            item.name = inspectionStatusList.get(i);
+            item.code = String.valueOf(i);
+            mInspectionStatus.add(item);
+        }
+        SimpleAdapter inspectionStatusAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mInspectionStatus);
         spInspectionStatus.setAdapter(inspectionStatusAdapter);
 
         //初始化缓存数据
@@ -104,9 +118,9 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
             etPartQuantity.setText(partQuantity);
             etProcessResult.setText(processResult);
             //检验状况
-            UiUtil.setSelectionForSp(mInspectionTypes, inspectionType, spInspectionType);
+            UiUtil.setSelectionForSimpleSp(mInspectionTypes, inspectionType, spInspectionType);
             //检验方法
-            UiUtil.setSelectionForSp(mInspectionStatus, inspectionStatus, spInspectionStatus);
+            UiUtil.setSelectionForSimpleSp(mInspectionStatus, inspectionStatus, spInspectionStatus);
         }
     }
 
