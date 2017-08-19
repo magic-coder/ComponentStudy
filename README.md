@@ -1,10 +1,11 @@
 # android组件化实践项目
 
-## 1项目主体构架基础
+## 1. 项目主体构架基础
 该项目的主体架构参考了clean-architecture项目，以及google的android-architecture项目。前期将RxJava，Dagger2,EventBus等融合到了该框架中，后续为了适应
 组件化开发，去除了Dagger2框架。如果你想学习android开发的各大构架，这里有我看过的文章:<br/>
 
 ### 1.1 国内各大平台架构：
+
 <ul>
 <li><a href="http://www.uml.org.cn/mobiledev/201310211.asp" target="_blank">App工程结构搭建：几种常见Android代码架构分析</a></li>
 <li><a href="http://www.infoq.com/cn/presentations/ctrip-mobile-architecture-evolution" target="_blank">携程Mobile架构演化(视频)</a></li>
@@ -21,7 +22,9 @@
 <li><a href="http://www.infoq.com/cn/articles/wechat-android-app-architecture" target="_blank">微信Android客户端架构演进之路</a></li>
 <li><a href="https://mp.weixin.qq.com/s?__biz=MzAxNDUwMzU3Mw==&amp;mid=401044540&amp;idx=1&amp;sn=24b7d8fb655ae6dd5d989d0cb3c08e90&amp;scene=2&amp;srcid=0106EtxRjD2jHxzomxVPTwY3&amp;from=timeline&amp;isappinstalled=0&amp;uin=NzgwODIwNDgw&amp;key=&amp;devicetype=webwx&amp;version=70000001&amp;lang=zh_CN&amp;pass_ticket=46hW44w3Hxd7VY9rutz7mgLu1JGe2T1AAKNQpxNoYOSGi8NpmNYr+AZj+iXtRX2F" target="_blank">饿了么移动APP的架构演进</a></li>
 </ul>
+
 ### 1.2 MVVM &amp; MVP &amp; MVC
+
 <ul>
 <li>
 <a href="http://tech.vg.no/2015/07/17/android-databinding-goodbye-presenter-hello-viewmodel/" target="_blank">ANDROID DATABINDING: GOODBYE PRESENTER, HELLO VIEWMODEL</a><br>（viewmodel，安卓中的databinding）</li>
@@ -60,6 +63,7 @@
 </ul>
 
 ### 1.3 Clean Architecture
+
 <ul>
 <li>
 <a href="https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank">The Clean Architecture</a>(clean architecture出处)</li>
@@ -73,6 +77,7 @@
 </ul>
 
 ### 1.4 其它
+
 <ul>
 <li><a href="https://github.com/Juude/Awesome-Android-Architecture/blob/master/Library.md" target="_blank">Artchitecture Library</a></li>
 <li><a href="https://plus.google.com/+AndroidDevelopers/posts/3C4GPowmWLb" target="_blank">Design for Offline: Android App Architecture Best Practices</a></li>
@@ -93,10 +98,10 @@
 > 1. http://blog.csdn.net/marktheone/article/details/54891373
 > 2. http://www.jianshu.com/p/8ca27934c6e6
 
-# 2ComponentStudy需要解决的问题
+## 2. ComponentStudy需要解决的问题
 我们的业务是开发一套app，给60几家公司提供仓储管理。从业务来看每一家公司的业务或多或少都存在区别。通过前期的大量调研，以及参考之前的开发经验，逐步形成了9套左右的标准功能。所以我们考虑的是能不能将每一个标准功能做成一个组件。通过gradle动态组快速组合一个module，该module是一个最终形成的是一个插件，而在启动App后，通过配置文件启动不同的module，从而满足不同公司的需求。而且能够完全避免不同公司也就是不同module之间的数据污染。
 
-## 3进一步思考的问题
+## 3. 进一步思考的问题
 
 * 1.首先我们需要考虑资源的冲突问题，因为不同module的客户化需要引入一定的资源，所以module可能会与组件和公共lib的资源冲突。我们知道在现在流行的插件开发中，如何解决宿主和插件之间的资源访问问题是也是一个棘手的问题(具体请看后续的small插件化框架源码分析)。而组件化可以通过build.gradle通过设置resourcePrefix来避免component的资源冲突，然后我们将标志公共的资源文件写入公共lib_style,lib_resource等基础库中。当module需要客户化资源时，需要结合module的resourcePrefix引入资源。<br/>
 
