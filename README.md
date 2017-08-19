@@ -1,2 +1,102 @@
-# 该项目是BarcodeSystemProduct项目组件化后的项目，我们将每一个业务抽成一个组件，每一个地区公司视为一个模块，通过组件可以快速和任意的组成一个模块。需要注意的是
-# 组件是一个标准库，它是否能够满足以后的需求，需要进一步实践。同时，在设计标准库的时候，需要尽量的考虑扩展性。
+# android组件化实践项目
+
+## 项目主体构架
+该项目的主体架构参考了clean-architecture项目，以及google的android-architecture项目。前期将RxJava，Dagger2,EventBus等融合到了该框架中，后续为了适应
+组件化开发，去除了Dagger2框架。如果你想学习android开发的各大构架，这里有我看过的文章:<br/>
+
+<h1>2 国内各大平台架构：</h1>
+<ul>
+<li><a href="http://www.uml.org.cn/mobiledev/201310211.asp" target="_blank">App工程结构搭建：几种常见Android代码架构分析</a></li>
+<li><a href="http://www.infoq.com/cn/presentations/ctrip-mobile-architecture-evolution" target="_blank">携程Mobile架构演化(视频)</a></li>
+<li><a href="http://www.infoq.com/cn/articles/ctrip-android-dynamic-loading" target="_blank">携程Android App插件化和动态加载实践</a></li>
+<li><a href="http://www.infoq.com/cn/interviews/tj-taobao-client-arch" target="_blank">陶钧谈淘宝客户端应用框架实践</a></li>
+<li><a href="http://www.infoq.com/cn/articles/alibaba-mobile-infrastructure" target="_blank">QCon旧金山演讲总结：阿里无线技术架构演进</a></li>
+<li><a href="http://www.infoq.com/cn/news/2014/12/taobao-app-evolution" target="_blank">手机淘宝构架演化实践</a></li>
+<li><a href="http://www.open-open.com/lib/view/open1436316754208.html" target="_blank">手机淘宝Android客户端架构</a></li>
+<li><a href="http://club.alibabatech.org/resource_detail.htm?topicId=124" target="_blank">漫谈移动应用架构设计</a></li>
+<li><a href="http://club.alibabatech.org/resource_detail.htm?topicId=130" target="_blank">大规模团队的Android开发</a></li>
+<li><a href="http://club.alibabatech.org/resource_detail.htm?topicId=155" target="_blank">支付宝钱包客户端技术架构</a></li>
+<li><a href="http://www.infoq.com/cn/presentations/mobile-baidu-android-platform-solutions" target="_blank">手机百度Android平台平台化解决方案</a></li>
+<li><a href="http://www.infoq.com/cn/presentations/evolution-of-android-qq-music-architecture" target="_blank">涅盘新生—Android QQ音乐架构演进</a></li>
+<li><a href="http://www.infoq.com/cn/articles/wechat-android-app-architecture" target="_blank">微信Android客户端架构演进之路</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzAxNDUwMzU3Mw==&amp;mid=401044540&amp;idx=1&amp;sn=24b7d8fb655ae6dd5d989d0cb3c08e90&amp;scene=2&amp;srcid=0106EtxRjD2jHxzomxVPTwY3&amp;from=timeline&amp;isappinstalled=0&amp;uin=NzgwODIwNDgw&amp;key=&amp;devicetype=webwx&amp;version=70000001&amp;lang=zh_CN&amp;pass_ticket=46hW44w3Hxd7VY9rutz7mgLu1JGe2T1AAKNQpxNoYOSGi8NpmNYr+AZj+iXtRX2F" target="_blank">饿了么移动APP的架构演进</a></li>
+</ul>
+<h1>2 MVVM &amp; MVP &amp; MVC</h1>
+<ul>
+<li>
+<a href="http://tech.vg.no/2015/07/17/android-databinding-goodbye-presenter-hello-viewmodel/" target="_blank">ANDROID DATABINDING: GOODBYE PRESENTER, HELLO VIEWMODEL</a><br>（viewmodel，安卓中的databinding）</li>
+<li>
+<a href="http://www.codeproject.com/Articles/166952/MVVM-in-Android" target="_blank">MVVM-in-Android</a>（android中的mvvm）</li>
+<li>
+<a href="https://github.com/CameloeAnthony/ZhiHuMVP" target="_blank"> ZhiHuMVP github 地址</a>（MVP架构思想，Retrofit RESTful API 框架的配合，RxJava 响应式编程）</li>
+<li>
+<a href="https://github.com/antoniolg/androidmvp" target="_blank"> androidmvp github地址</a>（star2000+的MVP实例）</li>
+<li>
+<a href="http://antonioleiva.com/mvp-android/" target="_blank">MVP for Android: how to organize the presentation layer</a>（上面这个github对应的文章）</li>
+<li>
+<a href="https://github.com/konmik/konmik.github.io/wiki/Introduction-to-Model-View-Presenter-on-Android" target="_blank"> Introduction-to-Model-View-Presenter-on-Android</a>（MVP的介绍，MVP必读经典）</li>
+<li><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0425/2782.html" target="_blank">Introduction-to-Model-View-Presenter-on-Android 中文翻译版</a></li>
+<li>
+<a href="https://github.com/spengilley/ActivityFragmentMVP" target="_blank">ActivityFragmentMVP github地址</a>（MVP处理Activity和Fragment，使用了Dagger 注入）</li>
+<li>
+<a href="https://github.com/pedrovgs/EffectiveAndroidUI" target="_blank"> EffectiveAndroidUI github地址</a>（star 3000+的mvp，mvvm实例）</li>
+<li>
+<a href="https://github.com/glomadrian/MvpCleanArchitecture" target="_blank"> MvpCleanArchitecture github地址</a>（使用clean architecture 和mvp的实例）</li>
+<li>
+<a href="https://github.com/saulmm/Material-Movies" target="_blank"> Material-Movies github地址</a>（ 使用material design +MVP实现的Material-Movies）</li>
+<li>
+<a href="https://github.com/rallat/EffectiveAndroid" target="_blank">EffectiveAndroid github地址</a>（MVP+clean Architecture 项目）</li>
+<li>
+<a href="https://github.com/CameloeAnthony/AndroidMVPDemo" target="_blank">AndroidMVPDemo github地址</a>（本文作者MVP demo github地址）</li>
+<li>
+<a href="http://willowtreeapps.com/blog/mvvm-on-android-what-you-need-to-know/" target="_blank">MVVM on Android: What You Need to Know</a>(MVVM介绍，这个博客很不错)</li>
+<li>
+<a href="https://developer.android.com/tools/data-binding/guide.html" target="_blank">data-bingding guide</a>（data-binding guide官网）</li>
+<li>
+<a href="http://www.cnblogs.com/dxy1982/p/3793895.html" target="_blank">Web开发的MVVM模式</a>（MVC VS. MVP VS. MVVM）</li>
+<li><a href="http://www.liuguangli.win/archives/299" target="_blank">Android应用开发架构概述</a></li>
+<li>
+<a href="http://objccn.io/issue-13-1/" target="_blank">MVVM介绍</a>（iOS中MVVM的一种实现，对概念的理解有帮助）</li>
+</ul>
+<h1>3 Clean Architecture</h1>
+<ul>
+<li>
+<a href="https://blog.8thlight.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank">The Clean Architecture</a>(clean architecture出处)</li>
+<li>
+<a href="https://github.com/android10/Android-CleanArchitecture" target="_blank">Android-CleanArchitecture github地址</a>（The Clean Architecture文章的例子）</li>
+<li>
+<a href="https://medium.com/ribot-labs/android-application-architecture-8b6e34acda65#.b29vhtdm2" target="_blank">Android Application Architecture原文</a> </li>
+<li><a href="http://www.jianshu.com/p/8ca27934c6e6" target="_blank">Android Application Architecture中文翻译</a></li>
+<li><a href="http://fernandocejas.com/2015/07/18/architecting-android-the-evolution/" target="_blank">Architecting Android…The evolution</a></li>
+<li><a href="http://www.devtf.cn/?p=1083" target="_blank">Architecting Android…The evolution中文翻译</a></li>
+</ul>
+<h1>4 Flux</h1>
+<ul>
+<li><a href="https://armueller.github.io/android/2015/03/29/flux-and-android.html" target="_blank">flux and android</a></li>
+<li><a href="https://medium.com/swlh/rxflux-android-architecture-94f77c857aa2#.sfjwchwok" target="_blank">rxflux android architecture</a></li>
+<li><a href="https://medium.com/swlh/why-rxflux-5b687f062709#.ltlnlr4cl" target="_blank">why rxflux</a></li>
+<li>
+<a href="https://github.com/lgvalle/android-flux-todo-app" target="_blank">android flux todo app</a>(<a href="http://www.devtf.cn/?p=1028" target="_blank">中文翻译</a>)</li>
+<li><a href="https://github.com/skimarxall/RxFlux" target="_blank">RxFlux</a></li>
+<li><a href="https://github.com/naodroid/android-flux" target="_blank">android-flux</a></li>
+</ul>
+<h1>5 其它</h1>
+<ul>
+<li><a href="https://github.com/Juude/Awesome-Android-Architecture/blob/master/Library.md" target="_blank">Artchitecture Library</a></li>
+<li><a href="https://plus.google.com/+AndroidDevelopers/posts/3C4GPowmWLb" target="_blank">Design for Offline: Android App Architecture Best Practices</a></li>
+<li><a href="http://blog.joanzapata.com/robust-architecture-for-an-android-app/" target="_blank">Robust and readable architecture for an Android App</a></li>
+<li><a href="https://events.google.com/io2015/schedule?sid=358c9f91-b6d4-e411-b87f-00155d5066d7#day1/358c9f91-b6d4-e411-b87f-00155d5066d7" target="_blank">Android application architecture</a></li>
+<li>
+<a href="http://mp.weixin.qq.com/s?__biz=MzA3ODg4MDk0Ng==&amp;mid=403539764&amp;idx=1&amp;sn=d30d89e6848a8e13d4da0f5639100e5f#rd" target="_blank">google官方MVP架构示例项目解析</a>（google官网架构中文解析）</li>
+<li>
+<a href="https://github.com/jiangqqlmj" target="_blank">jiangqqlmj</a>/<strong><a href="https://github.com/jiangqqlmj/FastDev4Android" target="_blank">FastDev4Android</a></strong> （android快速开发框架）</li>
+<li><a href="https://www.zhihu.com/question/21406685" target="_blank">知乎：Android 开发有什么好的架构么?</a></li>
+<li>
+<a href="https://www.zhihu.com/question/28564947" target="_blank">知乎：如果从0创建一个Android APP，设计思路是什么？（架构、activity、layout等复用性的考虑），感觉无从下手</a>
+</li>
+</ul>
+
+经过大量的实践，结合我们项目的需求，我选择了mvp业务的基本构架。
+
+
+
