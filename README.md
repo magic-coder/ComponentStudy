@@ -1,6 +1,6 @@
 # android组件化实践项目
 
-## 项目主体构架
+## 项目主体构架基础
 该项目的主体架构参考了clean-architecture项目，以及google的android-architecture项目。前期将RxJava，Dagger2,EventBus等融合到了该框架中，后续为了适应
 组件化开发，去除了Dagger2框架。如果你想学习android开发的各大构架，这里有我看过的文章:<br/>
 
@@ -95,8 +95,26 @@
 <a href="https://www.zhihu.com/question/28564947" target="_blank">知乎：如果从0创建一个Android APP，设计思路是什么？（架构、activity、layout等复用性的考虑），感觉无从下手</a>
 </li>
 </ul>
+<br/>
+<br/>经过大量的实践，结合我们项目的需求，我选择了mvp业务的基本构架。我个人认为各个各样的框架其实很多，你需要自己去体会它们，然后通过动手实践后改造以后框架，融合自己的业务，最终形成自己的可行性构架。这里有系列文章，我觉得这些开发者也是在阅读和大量实践下，不断拥抱新的技术革新，提出自己的解决方案:<br/>
 
-经过大量的实践，结合我们项目的需求，我选择了mvp业务的基本构架。
+> 1. http://blog.csdn.net/marktheone/article/details/54891373
+> 2. http://www.jianshu.com/p/8ca27934c6e6
+
+# ComponentStudy需要解决的问题
+我们的业务是开发一套app，给60几家公司提供仓储管理。从业务来看每一家公司的业务或多或少都存在区别。通过前期的大量调研，以及参考之前的开发经验，逐步形成了9套左右的标准功能。所以我们考虑的是能不能将每一个标准功能做成一个组件。通过gradle动态组快速组合一个module，该module是一个最终形成的是一个插件，而在启动App后，通过配置文件启动不同的module，从而满足不同公司的需求。而且能够完全避免不同公司也就是不同module之间的数据污染。
+
+## 进一步思考的问题
+1.首先我们需要考虑资源的冲突问题，因为不同module的客户化需要引入一定的资源，所以module可能会与组件和公共lib的资源冲突。我们知道在现在流行的插件开发中，如何解决宿主和插件之间的资源访问问题是也是一个棘手的问题(具体请看后续的small插件化框架源码分析)。而组件化可以通过build.gradle通过设置resourcePrefix来避免component的资源冲突，然后我们将标志公共的资源文件写入公共lib_style,lib_resource等基础库中。当module需要客户化资源时，需要结合module的resourcePrefix引入资源。
+
+2.  其次是怎么将MVP模式引入到每一个component,然后就是尽量考虑业务的扩展性。这里我们参考spring的AOP思想，也就是说我们让每一个标准component实现相同接口，如果module需要客户化，动态代理标准接口方法，这样我们能够轻松的修饰我们的标准功能。
+
+
+
+
+
+
+
 
 
 
