@@ -1,0 +1,28 @@
+<resources>
+    <string name="mcq_app_name">module_mcq</string>
+    <string name="mcq_ref_num">单据号</string>
+    <string name="mcq_main_material_unit">主计量单位</string>
+    <string name="mcq_tv_quantity_custom">副计量单位调整数量</string>
+    <string name="mcq_inv_quantity_custom">副计量单位库存数量</string>
+    <string name="mcq_main_inv_quantity">主计量单位库存数量</string>
+    <string name="mcq_main_check_quantity">主计量单位盘点数量</string>
+    <string name="mcq_second_check_quantity">副计量单位盘点数量</string>
+    <string name="mcq_storage_num">仓库号</string>
+    <string name="mcq_year">年度</string>
+    <string name="mcq_duration">期间</string>
+    <string name="mcq_supplier_comment">供应商评价</string>
+    <string name="mcq_material_unit_custom">副计量单位</string>
+    <string name="mcq_location_quantity_custom">副计量单位仓位数量</string>
+    <string name="mcq_act_rec_quantity_custom">副计量单位应收数量</string>
+    <string name="mcq_main_act_rec_quantity">主计量单位应收数量</string>
+    <string name="mcq_total_quantity_custom">副计量单位累计数量</string>
+    <string name="mcq_main_total_quantity">主计量单位累计数量</string>
+    <string name="mcq_qm_flag">是否质检</string>
+    <string name="mcq_ref_status">单据状态</string>
+    <string name="mcq_main_rec_quantity">主计量单位实收数量</string>
+    <string name="mcq_rec_quantity_custom">副计量单位实收数量</string>
+    <string name="mcq_act_delivery_quantity_custom">副计量单位应发数量</string>
+    <string name="mcq_delivery_quantity_custom">副计量单位实发数量</string>
+    <string name="mcq_main_delivery_quantity">主计量单位实发数量</string>
+    <string name="mcq_suggested_location">建议下架仓位</string>
+</resources>

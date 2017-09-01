@@ -143,9 +143,6 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             //处理情况
             etProcessResult.setText(cache.processResult);
             //检验状况
-            Log.e("yff", " cache.inspectionType = " + cache.inspectionType);
-            Log.e("yff", " cache.inspectionStatus = " + cache.inspectionStatus);
-
             UiUtil.setSelectionForSimpleSp(mInspectionTypes, cache.inspectionType, spInspectionType);
             //检验方法
             UiUtil.setSelectionForSimpleSp(mInspectionStatus, cache.inspectionStatus, spInspectionStatus);

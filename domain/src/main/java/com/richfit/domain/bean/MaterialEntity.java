@@ -13,6 +13,8 @@ public class MaterialEntity {
     public String batchFlag;
     public String materialGroup;
     public boolean batchManagerStatus;
+    //副计量单位
+    public String unitCustom;
 
     @Override
     public String toString() {

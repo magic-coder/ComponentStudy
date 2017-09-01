@@ -47,6 +47,7 @@ public class Global {
     public static final String SXCL = "116";
     public static final String VSCX = "117";
     public static final String KFXJ = "118";
+    public static final String REF_CX = "119";
 
     //用户选择的模式
     public static final int ONLINE_MODE = 0x0;
@@ -63,7 +64,9 @@ public class Global {
     public static final String XNGD = "xngd";
     public static final String CQYT = "cqyt";
     //大连石化
-    public static final String DLSH="dlsh";
+    public static final String DLSH = "dlsh";
+    //煤层气
+    public static final String MCQ = "mcq";
 
     /*全局日期格式*/
     public static final String GLOBAL_DATE_PATTERN_TYPE1 = "yyyyMMdd";
@@ -102,7 +105,7 @@ public class Global {
     public static final String RETRY_LOAD_REC_INVENTORY_ACTION = "retry_load_rec_inventory_action";
     /*数据修改*/
     public static final String RETRY_EDIT_DATA_ACTION = "retry_edit_data_action";
-   /*离线结束本次操作*/
+    /*离线结束本次操作*/
     public static final String RETRY_SET_TRANS_FLAG_ACTION = "retry_set_trans_flag_action";
 
     /*
@@ -191,7 +194,7 @@ public class Global {
     /*检验结果*/
     public static final String EXTRA_INSPECTION_RESULT_KEY = "extra_inspection_result";
     /*fragment的信息是否已经初始化完毕，只有用户进入过在线模式系统该值才为true*/
-    public static final String IS_INITED_FRAGMENT_CONFIG_KEY ="is_inited_fragment_config";
+    public static final String IS_INITED_FRAGMENT_CONFIG_KEY = "is_inited_fragment_config";
     public static final String IMAGE_DEFAULT_FORMAT = ".jpeg";
     public static final String EXTRA_TAKE_PHOTO_TYPE = "extra_take_photo_type";
     public static final String EXTRA_TITLE_KEY = "extra_title";
@@ -220,5 +223,12 @@ public class Global {
     /*料签*/
     public static final int MATERIAL_POS_L = 4;
     public static final int BATCHFALG_POS_L = 6;
+    public static final String SUPPLIER_DATA = "supplier";
+    public static final String COST_CENTER_DATA = "costCenter";
+    public static final String PROJECT_NUM_DATA = "projectNum";
+    public static final String GL_ACCOUNT_DATA = "GLAccount";
+
+    public static final String EXTRA_QUANTITY_CUSTOM_KEY = "extra_quantity_custom";
+    public static final String EXTRA_TOTAL_QUANTITY_CUSTOM_KEY = "extra_total_quantity_custom";
 
 }

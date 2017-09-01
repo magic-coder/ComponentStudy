@@ -6,7 +6,7 @@
     "bizType": "100",
     "refType": "4",
     "mode": 0,
-    "fragmentType": 1,
+    "fragmentType": 0,
     "className": "com.richfit.sdk_cwtz.head.LAHeadFragment"
   },
   {

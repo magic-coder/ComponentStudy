@@ -16,6 +16,7 @@ import com.richfit.sdk_wzrk.base_as_head.IASHeadView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -127,16 +128,16 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
     }
 
     @Override
-    public void getDictionaryData(String code) {
+    public void getDictionaryData(String... codes) {
         mView = getView();
-        mRepository.getDictionaryData(code)
+        mRepository.getDictionaryData(codes)
                 .filter(data -> data != null && data.size() > 0)
                 .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<List<SimpleEntity>>() {
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
                     @Override
-                    public void onNext(List<SimpleEntity> strings) {
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
                         if (mView != null) {
-                            mView.loadDictionaryDataSuccess(strings);
+                            mView.loadDictionaryDataSuccess(data);
                         }
                     }
 
@@ -152,7 +153,6 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
 
                     }
                 });
-
     }
 
 

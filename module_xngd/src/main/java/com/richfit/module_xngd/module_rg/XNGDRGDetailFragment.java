@@ -7,8 +7,11 @@ import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_xngd.R;
+import com.richfit.module_xngd.adapter.XNGDDSDetailAdapter;
 import com.richfit.module_xngd.module_rg.imp.XNGDRDDetailPresenterImp;
+import com.richfit.sdk_wzck.adapter.DSYDetailAdapter;
 import com.richfit.sdk_wzck.base_ds_detail.BaseDSDetailFragment;
 
 import java.util.List;
@@ -53,13 +56,28 @@ public class XNGDRGDetailFragment extends BaseDSDetailFragment<XNGDRDDetailPrese
         mPresenter = new XNGDRDDetailPresenterImp(mActivity);
     }
 
+    /**
+     * 如果不是标准的出库，需要重写该方法。
+     */
+    @Override
+    public void showNodes(List<RefDetailEntity> allNodes) {
+        saveTransId(allNodes);
+        saveTurnFlag(allNodes);
+        if (mAdapter == null) {
+            mAdapter = new XNGDDSDetailAdapter(mActivity, allNodes);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setOnItemEditAndDeleteListener(this);
+            mAdapter.setAdapterStateListener(this);
+        } else {
+            mAdapter.addAll(allNodes);
+        }
+    }
+
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         return menus.subList(0, 1);
     }
-
-
 
     /**
      * 第一步过账成功后直接跳转

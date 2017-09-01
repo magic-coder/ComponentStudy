@@ -62,8 +62,7 @@ public class BarcodeSystemApplication extends BaseApplication {
             //说明用户手动设置过Url
             return baseUrl;
         }
-        Log.e("yff", BuildConfig.DEBUG + "");
-        Log.e("yff", BuildConfig.APP_NAME);
+
         //如果没有手动设置过Url
         if (BuildConfig.DEBUG) {
             switch (BuildConfig.APP_NAME) {
@@ -78,7 +77,7 @@ public class BarcodeSystemApplication extends BaseApplication {
                 case Global.XNGD:
                     //西南管道
                     baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
-//                    baseUrl = "http://10.88.53.9:8080/gdbk_middleware/MobileProcess/";
+//                    baseUrl = "http://10.88.53.10:8080/gdbk_middleware/MobileProcess/";
                     break;
                 case Global.CQYT:
                     //长庆油田
@@ -86,7 +85,10 @@ public class BarcodeSystemApplication extends BaseApplication {
                     break;
                 case Global.DLSH:
                     //大连石化
-                    baseUrl="http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
+                    baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
+                    break;
+                case Global.MCQ:
+                    baseUrl = "http://10.88.53.5:8080/ktbk_middleware/MobileProcess/";
                     break;
             }
         } else {

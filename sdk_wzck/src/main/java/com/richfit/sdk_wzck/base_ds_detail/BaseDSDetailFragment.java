@@ -88,8 +88,6 @@ public abstract class BaseDSDetailFragment<P extends IDSDetailPresenter> extends
         } else {
             mAdapter.addAll(allNodes);
         }
-
-
     }
 
     /**

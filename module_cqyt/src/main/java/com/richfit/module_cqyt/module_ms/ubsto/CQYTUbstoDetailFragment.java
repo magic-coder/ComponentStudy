@@ -112,6 +112,7 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
             return;
         }
         mShowMsg.setLength(0);
+        mExtraTansMap.put("shopCondition", mRefData.shopCondition);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
@@ -126,12 +127,13 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
 
 
     /**
-     * 2.调用06过账。注意成功后显示单号回调调用的第一步的回调
+     * 2.调用05过账。注意成功后显示单号回调调用的第一步的回调
      *
      * @param transToSapFlag
      */
     @Override
     protected void submit2SAP(String transToSapFlag) {
+        Log.d("yff", "submit2SAP : " + transToSapFlag);
         String state = (String) getData(mBizType + mRefType, "0");
         if (!"1".equals(state)) {
             showMessage("请先进行数据上传!");
@@ -152,10 +154,11 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
 
 
     /**
-     * 3. 05下架
+     * 3. 06下架
      */
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
+        Log.d("yff", "sapUpAndDownLocation : " + transToSapFlag);
         String state = (String) getData(mBizType + mRefType, "0");
         if (!"2".equals(state)) {
             showMessage("请先进行过账!");
@@ -208,10 +211,12 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
         BottomMenuEntity menu = new BottomMenuEntity();
         menu.menuName = "保存";
         menu.menuImageRes = R.mipmap.icon_save_data;
+
         //过账
-        defaultMenus.get(0).transToSapFlag = "05";
+        defaultMenus.get(0).transToSapFlag = "06";
+
         //下架
-        defaultMenus.get(2).transToSapFlag = "06";
+        defaultMenus.get(2).transToSapFlag = "05";
 
         //保存菜单
         ArrayList menus = new ArrayList();

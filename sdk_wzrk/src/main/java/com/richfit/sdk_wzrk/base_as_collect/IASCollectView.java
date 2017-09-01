@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2016/11/15.
@@ -78,5 +80,8 @@ public interface IASCollectView extends IBaseCollectView {
     void showInventory(List<String> list);
     void loadInventoryComplete(boolean isDropDown);
     void loadInventoryFail(String message);
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 
 }

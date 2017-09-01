@@ -169,6 +169,14 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String inspectionStatusName;
     public String inspectionTypeName;
     public String totalArrivalQuantity;
+    //创建人
+    public String creator;
+    /*副计量单位*/
+    public String unitCustom;
+    /*副营收和数量*/
+    public String actQuantityCustom;
+    /*单据状态*/
+    public String status;
 
     @Override
     public RefDetailEntity clone() {

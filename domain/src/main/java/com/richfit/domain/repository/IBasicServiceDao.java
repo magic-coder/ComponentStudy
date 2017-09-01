@@ -21,7 +21,7 @@ import java.util.Map;
 
 public interface IBasicServiceDao {
 
-    List<SimpleEntity> getDictionaryData(String code);
+    Map<String,List<SimpleEntity>> getDictionaryData(String... codes);
 
     /**
      * 下载额外字段的配置信息
@@ -103,41 +103,9 @@ public interface IBasicServiceDao {
      */
     boolean checkWareHouseNum(String sendWorkId, String sendInvCode, String recWorkId, String recInvCode, int flag);
 
-    /**
-     * 获取供应商列表
-     *
-     * @param workCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
-     * @return
-     */
-    ArrayList<SimpleEntity> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag);
 
-    /**
-     * 获取成本中心列表
-     *
-     * @param workCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
-     * @return
-     */
-    ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag);
-
-    /**
-     * 获取项目好列表
-     *
-     * @param workCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
-     * @return
-     */
-    ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag);
-
-
-    ArrayList<SimpleEntity> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag);
+    Map<String,List<SimpleEntity>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag,
+                                                  String ...keys);
 
     /**
      * 保存页面配置信息

@@ -29,8 +29,8 @@ import java.util.List;
  * Created by monday on 2017/4/21.
  */
 
-public abstract class BaseUploadFragment<P extends UploadContract.Presenter> extends BaseDetailFragment<P, ResultEntity>
-        implements UploadContract.View, UploadFragmentDialog.OnEditLocalDataListener {
+public abstract class BaseUploadFragment<P extends UploadContract.Presenter> extends
+        BaseDetailFragment<P, ResultEntity> implements UploadContract.View, UploadFragmentDialog.OnEditLocalDataListener {
 
     private static final String UPLOAD_INFO_FRAGMENT_DIALOG = "upload_info_fragment_dialog";
     /*公共数据*/

@@ -8,5 +8,5 @@ import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditPresenter;
  */
 
 public interface IASEditPresenter extends IBaseEditPresenter<IASEditView> {
-
+    void getDictionaryData(String... codes);
 }

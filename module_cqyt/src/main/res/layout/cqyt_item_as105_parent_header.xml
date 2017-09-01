@@ -136,6 +136,7 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
+<!--
 
     <TextView
         android:id="@id/projectText"
@@ -144,6 +145,7 @@
         android:text="@string/project_text" />
 
     <View style="@style/ItemSeperatorLayout" />
+-->
 
     <TextView
         android:id="@id/moveCauseDesc"
@@ -162,12 +164,12 @@
     <View style="@style/ItemSeperatorLayout" />
 
 
-    <TextView
+  <!--  <TextView
         android:id="@id/strategyCode"
         style="@style/TableHeaderStyle"
         android:layout_width="120dp"
         android:text="@string/strategy_code" />
 
     <View style="@style/ItemSeperatorLayout" />
-
+-->
 </LinearLayout>

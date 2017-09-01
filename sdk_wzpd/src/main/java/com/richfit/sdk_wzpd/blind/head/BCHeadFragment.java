@@ -51,14 +51,16 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     private static final String DEFAULT_SPECIAL_FLAG = "Y";
 
+    @BindView(R2.id.ll_check_guide)
+    protected LinearLayout llCheckGuide;
     @BindView(R2.id.ll_warehouse_level)
-    LinearLayout llWarehouseLevel;
+    protected LinearLayout llWarehouseLevel;
     @BindView(R2.id.ll_storage_num_level)
-    LinearLayout llStorageNumLevel;
+    protected LinearLayout llStorageNumLevel;
     @BindView(R2.id.btn_storage_num_level)
-    RadioButton rbStorageNumLevel;
+    protected RadioButton rbStorageNumLevel;
     @BindView(R2.id.btn_warehouse_level)
-    RadioButton rbWarehouseLevel;
+    protected  RadioButton rbWarehouseLevel;
     @BindView(R2.id.sp_work)
     Spinner spWork;
     @BindView(R2.id.sp_inv)
@@ -162,7 +164,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     /**
      * 重置所有的Button背景
      */
-    private void resetUI() {
+    protected void resetUI() {
         rbStorageNumLevel.setChecked(false);
         rbWarehouseLevel.setChecked(false);
         llWarehouseLevel.setVisibility(View.INVISIBLE);

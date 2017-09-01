@@ -325,7 +325,8 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         result.location = mInventoryDatas.get(position).location;
         result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
         result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
-        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                && !TextUtils.isEmpty(result.specialInvNum)) ?
                 "Y" : "N";
         result.quantity = getString(etQuantity);
         result.invType = param.invType;

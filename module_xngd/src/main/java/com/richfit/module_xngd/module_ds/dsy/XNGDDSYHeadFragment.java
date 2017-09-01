@@ -90,7 +90,11 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
             //成本中心
             tvCostCenter.setText(mRefData.costCenter);
             //项目移交物资
-            tvInvType.setText(mRefData.invType);
+            if ("1".equalsIgnoreCase(mRefData.invType)) {
+                tvInvType.setText(mRefData.invType + "_" + "工程移交");
+            } else if ("0".equalsIgnoreCase(mRefData.invType)) {
+                tvInvType.setText(mRefData.invType + "_" + "正常物资");
+            }
             tvJobNum.setText(mRefData.jobNum);
             //如果单据中有应急标识，那么不允许修改
             cbInvFlag.setEnabled(TextUtils.isEmpty(mRefData.invFlag));
@@ -109,6 +113,6 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
         super.clearAllUIAfterSubmitSuccess();
-        clearCommonUI(tvInvType, tvCostCenter,tvProjectNum);
+        clearCommonUI(tvInvType, tvCostCenter, tvProjectNum);
     }
 }

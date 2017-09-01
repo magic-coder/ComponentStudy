@@ -78,6 +78,18 @@ public class ServerRepositoryImp implements IServerRepository {
     }
 
     @Override
+    public Flowable<List<ReferenceEntity>> getArrivalInfo(String createdBy, String creationDate, Map<String, Object> extraMap) {
+        mRequestParam.clear();
+        mRequestParam.put("createdBy",createdBy);
+        mRequestParam.put("creationDate",creationDate);
+        if(extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
+        return mRequestApi.getArrivalInfo(JsonUtil.map2Json(mRequestParam))
+                .compose(TransformerHelper.handleResponse());
+    }
+
+    @Override
     public Flowable<ArrayList<BizFragmentConfig>> loadBizFragmentConfig(String companyId, int mode) {
         return null;
     }

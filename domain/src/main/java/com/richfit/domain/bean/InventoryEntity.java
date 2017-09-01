@@ -55,6 +55,15 @@ public class InventoryEntity extends TreeNode{
     public String checkId;
     public String invFlag;
     public String projectNum;
+    //副计量单位库存数量
+    public String invQuantityCustom;
+    //副计量单位
+    public String unitCustom;
+    public String quantityCustom;
+    public String creationDate;
+    public String duration;
+    public String year;
+    public String totalQuantityCustom;
 
     @Override
     public String toString() {

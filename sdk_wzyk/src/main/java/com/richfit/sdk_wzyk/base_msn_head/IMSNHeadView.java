@@ -3,10 +3,12 @@ package com.richfit.sdk_wzyk.base_msn_head;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 无参考移库抬头view标准
@@ -29,7 +31,7 @@ public interface IMSNHeadView extends IBaseHeadView {
     void deleteCacheSuccess(String message);
     void deleteCacheFail(String message);
 
-    void showProjectNums(ArrayList<String> projectNums);
+    void showProjectNums(Map<String,List<SimpleEntity>> map);
 
     void loadProjectNumsFail(String message);
 

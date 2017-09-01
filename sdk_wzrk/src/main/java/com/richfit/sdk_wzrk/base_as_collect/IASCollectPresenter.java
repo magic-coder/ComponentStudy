@@ -49,4 +49,5 @@ public interface IASCollectPresenter extends IBaseCollectPresenter<IASCollectVie
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
                           String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap,boolean isDropDown);
 
+    void getDictionaryData(String... codes);
 }

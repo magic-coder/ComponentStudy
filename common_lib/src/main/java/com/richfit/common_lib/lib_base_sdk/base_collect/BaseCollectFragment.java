@@ -38,7 +38,6 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
-
         //遍历该View树，去除所有的角点
         clearFocus(mView);
         if (imm == null) {

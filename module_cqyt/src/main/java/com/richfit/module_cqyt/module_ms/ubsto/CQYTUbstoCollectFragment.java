@@ -65,31 +65,6 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
         isSplitBatchFlag = true;
     }
 
-    /**
-     * 设置单据行信息之前，过滤掉
-     *
-     * @param refLines
-     */
-    @Override
-    public void setupRefLineAdapter(ArrayList<String> refLines) {
-        if (!TextUtils.isEmpty(mLineNumForFilter)) {
-            //过滤掉重复行号
-            ArrayList<String> lines = new ArrayList<>();
-            for (String refLine : refLines) {
-                if(refLine.equalsIgnoreCase(mLineNumForFilter)) {
-                    lines.add(refLine);
-                }
-            }
-            if(lines.size() == 0) {
-                showMessage("未获取到条码的单据行信息");
-            }
-            super.setupRefLineAdapter(lines);
-            return;
-        }
-        //如果单据中没有过滤行信息那么直接显示所有的行信息
-        super.setupRefLineAdapter(refLines);
-    }
-
     @Override
     public void bindCommonCollectUI() {
         mSelectedRefLineNum = mRefLines.get(spRefLine.getSelectedItemPosition());
@@ -153,6 +128,12 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
             showMessage("件数不合理");
             return false;
         }
+
+        if (mRefData != null && TextUtils.isEmpty(mRefData.shopCondition)) {
+            showMessage("请先在抬头界面选择装运条件");
+            return false;
+        }
+
         return super.checkCollectedDataBeforeSave();
     }
 

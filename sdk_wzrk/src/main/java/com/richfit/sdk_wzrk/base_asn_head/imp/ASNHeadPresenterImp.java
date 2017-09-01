@@ -4,13 +4,17 @@ import android.content.Context;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzrk.base_asn_head.IASNHeadPresenter;
 import com.richfit.sdk_wzrk.base_asn_head.IASNHeadView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -60,15 +64,15 @@ public class ASNHeadPresenterImp extends BaseHeadPresenterImp<IASNHeadView>
     @Override
     public void getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag) {
         mView = getView();
-        ResourceSubscriber<ArrayList<SimpleEntity>> subscriber =
-                mRepository.getSupplierList(workCode, keyWord, defaultItemNum, flag)
-                        .filter(list -> list != null && list.size() > 0)
+        ResourceSubscriber<Map<String, List<SimpleEntity>>> subscriber =
+                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, Global.SUPPLIER_DATA)
+                        .filter(map -> map != null && map.size() > 0)
                         .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<SimpleEntity>>() {
+                        .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
                             @Override
-                            public void onNext(ArrayList<SimpleEntity> list) {
+                            public void onNext(Map<String, List<SimpleEntity>> map) {
                                 if (mView != null) {
-                                    mView.showSuppliers(list);
+                                    mView.showSuppliers(map);
                                 }
                             }
 

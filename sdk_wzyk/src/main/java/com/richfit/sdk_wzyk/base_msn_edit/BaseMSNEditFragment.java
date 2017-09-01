@@ -468,7 +468,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
         result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                && !TextUtils.isEmpty(result.specialInvNum)) ?
                 "Y" : "N";
         result.recLocation = getString(autoRecLoc);
         result.recBatchFlag = getString(tvRecBatchFlag);

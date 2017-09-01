@@ -44,7 +44,8 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
 
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,
-                         ReferenceEntity refData, RefDetailEntity node, String companyCode, String bizType, String refType, String subFunName, int position) {
+                         ReferenceEntity refData, RefDetailEntity node, String companyCode,
+                         String bizType, String refType, String subFunName, int position) {
 
     }
 

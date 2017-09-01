@@ -25,7 +25,7 @@ public class BCSSQLiteHelper extends SQLiteOpenHelper {
      * @param context
      * @return
      */
-    public static BCSSQLiteHelper getInstance(Context context) {
+    static BCSSQLiteHelper getInstance(Context context) {
         if (sInstance == null) {
             synchronized (BCSSQLiteHelper.class) {
                 if (sInstance == null)

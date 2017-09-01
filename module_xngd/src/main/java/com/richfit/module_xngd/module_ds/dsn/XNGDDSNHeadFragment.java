@@ -12,12 +12,16 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.richfit.data.constant.Global;
+import com.richfit.data.helper.CommonUtil;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
-import com.richfit.module_xngd.module_ds.dsn.imp.XNGDDSNHeadPresenterImp;
 import com.richfit.sdk_wzck.base_dsn_head.BaseDSNHeadFragment;
+import com.richfit.sdk_wzck.base_dsn_head.imp.DSNHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * Created by monday on 2017/3/27.
  */
 
-public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresenterImp> {
+public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp> {
 
     //移动类型
     private Spinner spMoveType;
@@ -50,7 +54,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
 
     @Override
     public void initPresenter() {
-        mPresenter = new XNGDDSNHeadPresenterImp(mActivity);
+        mPresenter = new DSNHeadPresenterImp(mActivity);
     }
 
 
@@ -69,15 +73,13 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
     @Override
     public void initEvent() {
         super.initEvent();
-
-        //选择工厂，初始化供应商或者项目编号
+        //选择工厂，初始化成本中心和总账科目
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
                 .subscribe(position -> {
-                    mPresenter.getAutoCompleteList(mWorks.get(position).workCode,
-                            getString(etAutoComp), 100, getOrgFlag(), mBizType);
-                    mPresenter.getGLAccountList(mWorks.get(position).workCode,
-                            getString(etGLAccount), 100, getOrgFlag(), mBizType);
+                    mPresenter.getAutoComList(mWorks.get(position).workCode,
+                            getString(etAutoComp), 100, getOrgFlag(), mBizType, Global.COST_CENTER_DATA,
+                            Global.GL_ACCOUNT_DATA);
                 });
         //点击自动提示控件，显示默认列表
         RxView.clicks(etGLAccount)
@@ -94,8 +96,8 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mGLAccounts != null &&
                         mGLAccounts.size() > 0 && !filterKeyWord(str,mGLAccounts) && spWork.getSelectedItemPosition() > 0)
-                .subscribe(a -> mPresenter.getGLAccountList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
-                        getString(etGLAccount), 100, getOrgFlag(), mBizType));
+                .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
+                        getString(etAutoComp), 100, getOrgFlag(), mBizType, Global.GL_ACCOUNT_DATA));
     }
 
     @Override
@@ -136,8 +138,16 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
         }
     }
 
+
     @Override
-    public void showGLAccounts(List<String> glAccounts) {
+    public void showAutoCompleteList(Map<String,List<SimpleEntity>> map) {
+        List<SimpleEntity> simpleEntities = map.get(Global.GL_ACCOUNT_DATA);
+        if(simpleEntities == null || simpleEntities.size() == 0) {
+            //注意这里可能是父类的数据
+            super.showAutoCompleteList(map);
+            return;
+        }
+        List<String> glAccounts =  CommonUtil.toStringArray(simpleEntities);
         if(mGLAccounts == null) {
             mGLAccounts = new ArrayList<>();
         }
@@ -147,12 +157,20 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<XNGDDSNHeadPresente
                 android.R.layout.simple_dropdown_item_1line, mGLAccounts);
         etGLAccount.setAdapter(glAdapter);
         setAutoCompleteConfig(etGLAccount);
+
+        //注意回调父类方法初始化它的数据
+        super.showAutoCompleteList(map);
     }
 
 
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+    @Override
+    protected String getAutoComDataType() {
+        return Global.COST_CENTER_DATA;
     }
 
 }

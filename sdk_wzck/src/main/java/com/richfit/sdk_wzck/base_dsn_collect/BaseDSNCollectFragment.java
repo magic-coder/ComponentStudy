@@ -470,7 +470,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
         result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                && !TextUtils.isEmpty(result.specialInvNum)) ?
                 "Y" : "N";
         result.invType = param.invType;
         result.invFlag = mRefData.invFlag;

@@ -176,7 +176,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
             etProjectText.setText(cache.projectText);
             etMoveCauseDesc.setText(cache.moveCauseDesc);
             //决策代码和移动原因
-            UiUtil.setSelectionForSp( getStringArray(R.array.qhyt_move_reasons),cache.moveCause,spMoveCause);
+            UiUtil.setSelectionForSp( getStringArray(R.array.qhyt_move_causes),cache.moveCause,spMoveCause);
             UiUtil.setSelectionForSp( getStringArray(R.array.qhyt_strategy_codes),cache.decisionCode,spStrategyCode);
         }
     }

@@ -13,10 +13,12 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -43,7 +45,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     @BindView(R2.id.tv_act_quantity)
     protected TextView tvActQuantity;
     @BindView(R2.id.act_quantity_name)
-    protected TextView actQuantityName;
+    protected TextView tvActQuantityName;
     @BindView(R2.id.quantity_name)
     protected TextView quantityName;
     @BindView(R2.id.et_quantity)
@@ -198,7 +200,6 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         result.invId = CommonUtil.Obj2String(tvInv.getTag());
         result.locationId = mLocationId;
         result.materialId = lineData.materialId;
-        result.locationId = mLocationId;
         result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
         result.quantity = getString(etQuantity);
@@ -231,5 +232,14 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
                 break;
         }
         super.retry(retryAction);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 }

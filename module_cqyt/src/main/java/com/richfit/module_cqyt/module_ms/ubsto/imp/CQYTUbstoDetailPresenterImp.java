@@ -104,7 +104,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
     }
 
     /**
-     * 06
+     * 05
      *
      * @param transId
      * @param bizType
@@ -164,7 +164,7 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
 
 
     /**
-     * 05
+     * 06
      *
      * @param transId
      * @param bizType
@@ -176,7 +176,8 @@ public class CQYTUbstoDetailPresenterImp extends DSDetailPresenterImp {
      * @param submitFlag
      */
     @Override
-    public void sapUpAndDownLocation(String transId, String bizType, String refType, String userId, String voucherDate, String transToSapFlag,
+    public void sapUpAndDownLocation(String transId, String bizType, String refType, String userId,
+                                     String voucherDate, String transToSapFlag,
                                      Map<String, Object> extraHeaderMap, int submitFlag) {
         mView = getView();
         RxSubscriber<String> subscriber =

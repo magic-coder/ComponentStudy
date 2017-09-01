@@ -1,6 +1,7 @@
 package com.richfit.module_cqyt.module_ms.ubsto;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -14,7 +15,7 @@ import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
  * Created by monday on 2017/7/5.
  */
 
-public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp>{
+public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     EditText etQuantityCustom;
 
@@ -51,9 +52,19 @@ public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp
     }
 
     @Override
+    public boolean checkCollectedDataBeforeSave() {
+        if (mRefData != null && TextUtils.isEmpty(mRefData.shopCondition)) {
+            showMessage("请先在抬头界面选择装运条件");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
+    }
+
+    @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
+        result.shopCondition = mRefData.shopCondition;
         return result;
     }
 }

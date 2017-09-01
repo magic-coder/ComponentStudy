@@ -123,7 +123,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
                 .filter(position -> position.intValue() > 0)
                 .subscribe(position -> mPresenter.getInvsByWorkId(mWorkDatas.get(position).workId, 0));
 
-         /*如果选择仓库级，那么初始化工厂和库存地点*/
+        /*如果选择仓库级，那么初始化工厂和库存地点*/
         RxView.clicks(rbWarehouseLevel)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(a -> rbWarehouseLevel.isEnabled())

@@ -25,10 +25,10 @@ public interface ILocalRepository extends IRepository {
 
     /**
      * 通过code向本地数据字典查询对应的集合数据
-     * @param code
+     * @param codes
      * @return
      */
-    Flowable<List<SimpleEntity>> getDictionaryData(String code);
+    Flowable<Map<String,List<SimpleEntity>>> getDictionaryData(String... codes);
 
     /**
      * 用户登录
@@ -93,39 +93,15 @@ public interface ILocalRepository extends IRepository {
                                         final String recWorkId, final String recInvCode, int flag);
 
     /**
-     * 获取供应商列表
-     *
-     * @param workCode：工厂编码
-     * @param keyWord:用户输入的搜索关键字
-     * @param defaultItemNum:初始化时没有关键字那么默认给出数据条数
-     * @param flag:0:表示以及组织机构;1:表示二级组织机构
-     * @return
-     */
-    Flowable<ArrayList<SimpleEntity>> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag);
-
-
-    Flowable<ArrayList<SimpleEntity>> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag);
-
-    /**
-     * 获取项目编号
-     *
+     * 为AutoComplete控件获取基础数据
      * @param workCode
      * @param keyWord
      * @param defaultItemNum
      * @param flag
+     * @param keys
      * @return
      */
-    Flowable<ArrayList<SimpleEntity>> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag);
-
-    /**
-     * 获取总账科目
-     * @param workCode
-     * @param keyWord
-     * @param defaultItemNum
-     * @param flag
-     * @return
-     */
-    Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag);
+    Flowable<Map<String,List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag,String ...keys);
 
     /**
      * 保存所有业务的页面信息。

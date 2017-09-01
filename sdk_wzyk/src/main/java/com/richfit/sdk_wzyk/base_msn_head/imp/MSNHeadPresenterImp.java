@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.SimpleEntity;
@@ -14,6 +15,7 @@ import com.richfit.sdk_wzyk.base_msn_head.IMSNHeadView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -173,16 +175,15 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
     @Override
     public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
         mView = getView();
-        ResourceSubscriber<ArrayList<String>> subscriber =
-                mRepository.getSupplierList(workCode, keyWord, defaultItemNum, flag)
-                        .filter(list -> list != null && list.size() > 0)
-                        .map(list -> convert2StrList(list))
+        ResourceSubscriber<Map<String, List<SimpleEntity>>> subscriber =
+                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, Global.PROJECT_NUM_DATA)
+                        .filter(map -> map != null && map.size() > 0)
                         .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<String>>() {
+                        .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
                             @Override
-                            public void onNext(ArrayList<String> list) {
+                            public void onNext(Map<String, List<SimpleEntity>> map) {
                                 if (mView != null) {
-                                    mView.showProjectNums(list);
+                                    mView.showProjectNums(map);
                                 }
                             }
 
@@ -201,11 +202,5 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
         addSubscriber(subscriber);
     }
 
-    private ArrayList<String> convert2StrList(List<SimpleEntity> list) {
-        ArrayList<String> strs = new ArrayList<>();
-        for (SimpleEntity item : list) {
-            strs.add(item.code + "_" + item.name);
-        }
-        return strs;
-    }
+
 }

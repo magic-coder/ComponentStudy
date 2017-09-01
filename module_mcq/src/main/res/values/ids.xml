@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="mcq_tv_ref_num" type="id"></item>
+    <item name="mcq_tv_main_material_unit" type="id"></item>
+    <item name="mcq_tv_material_unit_custom" type="id"></item>
+    <item name="mcq_tv_quantity_name" type="id"></item>
+    <item name="mcq_et_quantity_custom" type="id"></item>
+    <item name="mcq_tv_main_material_unit_name" type="id"></item>
+    <item name="mcq_tv_send_inv_quantity_name" type="id"></item>
+    <item name="mcq_tv_inv_quantity_custom" type="id"></item>
+    <item name="mcq_inv_quantity_custom" type="id"></item>
+    <item name="mcq_material_unit_custom" type="id"></item>
+    <item name="mcq_quantity_custom" type="id"></item>
+    <item name="mcq_creation_date" type="id"></item>
+    <item name="mcq_storage_num" type="id"></item>
+    <item name="mcq_year" type="id"></item>
+    <item name="mcq_duration" type="id"></item>
+    <item name="mcq_sp_supplier_evaluation" type="id" />
+    <item name="mcq_tv_location_quantity_custom" type="id" />
+    <item name="mcq_tv_act_quantity_custom" type="id" />
+    <item name="mcq_tv_total_quantity_custom" type="id" />
+    <item name="mcq_act_quantity_custom" type="id" />
+    <item name="mcq_total_quantity_custom" type="id" />
+    <item name="mcq_qmFlag" type="id" />
+    <item name="mcq_ref_status" type="id" />
+    <item name="mcq_tv_material_unit_name" type="id" />
+    <item name="mcq_total_quantity_name" type="id" />
+    <item name="mcq_tv_location_quantity_name" type="id" />
+    <item name="mcq_location_name" type="id" />
+    <item name="mcq_tv_suggested_location" type="id" />
+    <item name="mcq_ll_special_inv" type="id" />
+
+</resources>

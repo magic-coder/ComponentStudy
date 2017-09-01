@@ -15,7 +15,7 @@ public class XNGDAOChildHeaderItemDelegate implements ItemViewDelegate<RefDetail
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.xngd_item_detail_child_header;
+        return R.layout.xngd_item_ao_child_header;
     }
 
     @Override

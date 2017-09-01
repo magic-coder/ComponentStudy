@@ -103,7 +103,7 @@
     "id": "11",
     "tabTitle": "抬头",
     "fragmentTag": "xngd_dsgd_header_fragment_tag",
-    "bizType": "410",
+    "bizType": "211",
     "refType": "15",
     "mode": 0,
     "fragmentType": 0,
@@ -113,7 +113,7 @@
     "id": "12",
     "tabTitle": "数据明细",
     "fragmentTag": "xngd_dsgd_detail_fragment_tag",
-    "bizType": "410",
+    "bizType": "211",
     "refType": "15",
     "mode": 0,
     "fragmentType": 1,
@@ -123,7 +123,7 @@
     "id": "13",
     "tabTitle": "数据采集",
     "fragmentTag": "xngd_dsgd_collect_fragment_tag",
-    "bizType": "410",
+    "bizType": "211",
     "refType": "15",
     "mode": 0,
     "fragmentType": 2,
@@ -133,7 +133,7 @@
     "id": "14",
     "tabTitle": "明细修改",
     "fragmentTag": "xngd_dsgd_edit_fragment_tag",
-    "bizType": "410",
+    "bizType": "211",
     "mode": 0,
     "refType": "15",
     "fragmentType": -1,
@@ -528,5 +528,45 @@
     "refType": "13",
     "fragmentType": -1,
     "className": "com.richfit.module_xngd.module_sxcl.XNGDLocEditFragment"
+  },
+  {
+    "id": "58",
+    "tabTitle": "抬头",
+    "fragmentTag": "xngd_ubsto_header_fragment_tag",
+    "bizType": "38",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 0,
+    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYHeadFragment"
+  },
+  {
+    "id": "59",
+    "tabTitle": "数据明细",
+    "fragmentTag": "xngd_ubsto_detail_fragment_tag",
+    "bizType": "38",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 1,
+    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYEditFragment"
+  },
+  {
+    "id": "60",
+    "tabTitle": "数据采集",
+    "fragmentTag": "xngd_ubsto_collect_fragment_tag",
+    "bizType": "38",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 2,
+    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYCollectFragment"
+  },
+  {
+    "id": "61",
+    "tabTitle": "明细修改",
+    "fragmentTag": "xngd_ubsto_edit_fragment_tag",
+    "bizType": "38",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": -1,
+    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYEditFragment"
   }
 ]

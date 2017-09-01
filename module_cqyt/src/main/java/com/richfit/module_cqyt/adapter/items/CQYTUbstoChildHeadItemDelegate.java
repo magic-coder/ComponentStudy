@@ -13,7 +13,7 @@ import com.richfit.module_cqyt.R;
 public class CQYTUbstoChildHeadItemDelegate implements ItemViewDelegate<RefDetailEntity> {
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_ubsto_detail_child_head;
+        return R.layout.cqyt_item_ubsto_child_head;
     }
 
     @Override

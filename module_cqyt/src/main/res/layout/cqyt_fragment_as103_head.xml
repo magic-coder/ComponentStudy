@@ -181,7 +181,7 @@
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/cqyt_inspection_standard" />
 
-            <EditText
+            <AutoCompleteTextView
                 android:id="@id/cqyt_et_inspection_standard"
                 style="@style/RightEditTextItemStyle" />
 

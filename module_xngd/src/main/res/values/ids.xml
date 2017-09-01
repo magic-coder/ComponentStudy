@@ -14,6 +14,7 @@
     <item name="xngd_sp_inspection_type" type="id"></item>
     <item name="xngd_sp_inspection_status" type="id"></item>
     <item name="xngd_et_process_result" type="id"></item>
+    <item name="xngd_sp_move_causes" type="id"></item>
 
     <item name="xngd_allQuantity" type="id"></item>
     <item name="xngd_partQuantity" type="id"></item>

@@ -2,16 +2,23 @@ package com.richfit.module_cqyt.module_as105;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.ArrayAdapter;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/8.
@@ -20,10 +27,12 @@ import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     EditText etReturnQuantity;
-    EditText etProjectText;
+   // EditText etProjectText;
     EditText etMoveCauseDesc;
-    Spinner spStrategyCode;
-    Spinner spMoveReason;
+    //Spinner spStrategyCode;
+    Spinner spMoveCause;
+
+    List<SimpleEntity> mMoveCauses;
 
     @Override
     protected int getContentId() {
@@ -46,10 +55,9 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         etReturnQuantity = (EditText) mActivity.findViewById(R.id.et_return_quantity);
         etReturnQuantity.setEnabled(false);
         //如果输入的退货交货数量，那么移动原因必输，如果退货交货数量没有输入那么移动原因可输可不输
-        etProjectText = (EditText) mActivity.findViewById(R.id.et_project_text);
+        //etProjectText = (EditText) mActivity.findViewById(R.id.et_project_text);
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
-        spStrategyCode = (Spinner) mActivity.findViewById(R.id.sp_strategy_code);
-        spMoveReason = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
+        spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
     }
 
     @Override
@@ -58,28 +66,15 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         String returnQuantity = bundle.getString(Global.EXTRA_RETURN_QUANTITY_KEY);
         String projectText = bundle.getString(Global.EXTRA_PROJECT_TEXT_KEY);
         String moveCauseDesc = bundle.getString(Global.EXTRA_MOVE_CAUSE_DESC_KEY);
-        String moveCause = bundle.getString(Global.EXTRA_MOVE_CAUSE_KEY);
-        String decisionCode = bundle.getString(Global.EXTRA_DECISION_CAUSE_KEY);
         etReturnQuantity.setText(returnQuantity);
-        etProjectText.setText(projectText);
+        //etProjectText.setText(projectText);
         etMoveCauseDesc.setText(moveCauseDesc);
-        //注意实发数量不能修改
-        etQuantity.setEnabled(false);
-        if (spStrategyCode != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.cqyt_strategy_codes));
-            spStrategyCode.setAdapter(adapter);
+        spMoveCause.setEnabled(false);
+        //初始化移动原因
+        String moveCause = getArguments().getString(Global.EXTRA_MOVE_CAUSE_KEY);
+        if (!TextUtils.isEmpty(moveCause)) {
+            mPresenter.getDictionaryData("moveCause");
         }
-        if (spMoveReason != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.cqyt_move_reasons));
-            spMoveReason.setAdapter(adapter);
-        }
-        spStrategyCode.setEnabled(false);
-        spMoveReason.setEnabled(false);
-        UiUtil.setSelectionForSp(getStringArray(R.array.cqyt_strategy_codes), decisionCode, spStrategyCode);
-        UiUtil.setSelectionForSp(getStringArray(R.array.cqyt_move_reasons), moveCause, spMoveReason);
-
         super.initData();
     }
 
@@ -89,14 +84,37 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     }
 
     @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> moveCauses = data.get("moveCause");
+        String moveCause = getArguments().getString(Global.EXTRA_MOVE_CAUSE_KEY);
+        if (moveCauses == null || TextUtils.isEmpty(moveCause))
+            return;
+        if (mMoveCauses == null) {
+            mMoveCauses = new ArrayList<>();
+        }
+        mMoveCauses.clear();
+        SimpleEntity tmp = new SimpleEntity();
+        tmp.name = "请选择";
+        mMoveCauses.add(tmp);
+        mMoveCauses.addAll(moveCauses);
+        SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mMoveCauses);
+        spMoveCause.setAdapter(adapter);
+
+
+        Log.e("yff", "moveCause = " + moveCause);
+        UiUtil.setSelectionForSimpleSp(mMoveCauses, moveCause, spMoveCause);
+    }
+
+    @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         //退货交货数量
         result.returnQuantity = getString(etReturnQuantity);
         //项目文本
-        result.projectText = getString(etProjectText);
+       // result.projectText = getString(etProjectText);
         //移动原因说明
         result.moveCauseDesc = getString(etMoveCauseDesc);
+
         return result;
     }
 }

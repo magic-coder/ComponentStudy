@@ -78,7 +78,7 @@ public class TakephotoActivity extends AppCompatActivity {
 
         //注册调器相机事件
         RxView.clicks(mBtnTakePhoto)
-                .throttleFirst(2000, TimeUnit.MILLISECONDS)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .subscribe(a -> {
                     final Intent intent = getIntent();
                     toTake(intent, mTakePhotoMode);

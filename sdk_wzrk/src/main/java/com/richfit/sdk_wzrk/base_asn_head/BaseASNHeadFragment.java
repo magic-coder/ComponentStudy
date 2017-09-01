@@ -11,6 +11,7 @@ import android.widget.Spinner;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
 import com.richfit.common_lib.utils.DateChooseHelper;
@@ -26,6 +27,8 @@ import com.richfit.sdk_wzrk.R2;
 import com.richfit.sdk_wzrk.adapter.MoveTypeAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -65,7 +68,6 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     protected void initVariable(@Nullable Bundle savedInstanceState) {
         mWorks = new ArrayList<>();
         mMoveTypes = new ArrayList<>();
-        mSuppliers = new ArrayList<>();
         mRefData = null;
     }
 
@@ -90,6 +92,10 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         RxView.clicks(etSupplier)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(aVoid -> showAutoCompleteConfig(etSupplier));
+
+        //选择供应商
+        RxAutoCompleteTextView.itemClickEvents(etSupplier)
+                .subscribe(a -> hideKeyboard(etSupplier));
 
         //删除缓存
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
@@ -143,15 +149,20 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     }
 
     @Override
-    public void showSuppliers(ArrayList<SimpleEntity> suppliers) {
-        mSuppliers.clear();
-        mSuppliers.addAll(suppliers);
-        ArrayList<String> list = new ArrayList<>();
-        for (SimpleEntity supplier : suppliers) {
-            list.add(supplier.code + "_" + supplier.name);
+    public void showSuppliers(Map<String, List<SimpleEntity>> map) {
+        List<SimpleEntity> simpleEntities = map.get(Global.SUPPLIER_DATA);
+        if (simpleEntities == null || simpleEntities.size() == 0) {
+            return;
         }
+        if (mSuppliers == null) {
+            mSuppliers = new ArrayList<>();
+        }
+        List<String> suppliers = CommonUtil.toStringArray(simpleEntities);
+        //注意后续需要供应商的id
+        mSuppliers.clear();
+        mSuppliers.addAll(simpleEntities);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity,
-                R.layout.simple_auto_edittext_item1, list);
+                R.layout.simple_auto_edittext_item1, suppliers);
         etSupplier.setAdapter(adapter);
         setAutoCompleteConfig(etSupplier);
     }

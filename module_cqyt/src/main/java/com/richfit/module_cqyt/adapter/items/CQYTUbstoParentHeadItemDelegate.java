@@ -14,7 +14,7 @@ public class CQYTUbstoParentHeadItemDelegate implements ItemViewDelegate<RefDeta
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_ubsto_detail_parent_head;
+        return R.layout.cqyt_item_ubsto_parent_head;
     }
 
     @Override

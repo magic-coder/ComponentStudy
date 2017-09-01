@@ -38,7 +38,7 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         LinearLayout llInsLotQuantity = (LinearLayout) mView.findViewById(R.id.ll_inslot_quantity);
         tvInsLotQuantity = (TextView) mView.findViewById(R.id.tv_insLot_quantity);
         llInsLotQuantity.setVisibility(View.VISIBLE);
-        actQuantityName.setText("允许过账数量");
+        tvActQuantityName.setText("允许过账数量");
         quantityName.setText("过账数量");
 
     }

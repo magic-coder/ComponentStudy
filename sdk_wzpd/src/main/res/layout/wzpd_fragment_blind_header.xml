@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@id/ll_check_guide"
         android:layout_width="match_parent"
         android:layout_height="@dimen/len_40"
         android:layout_marginBottom="@dimen/len_10"

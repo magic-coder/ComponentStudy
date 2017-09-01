@@ -35,38 +35,39 @@ android {
         sign_qysh {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
-            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qingyang_key.jks')//签名文件路径
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qysh_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
         //青海
         sign_qhyt {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
-            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qinghai_key.jks')//签名文件路径
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_qhyt_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
         //西南管道
         sign_xngd {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
-            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_xinangd_key.jks')//签名文件路径
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_xngd_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
         //长庆油田
         sign_cqyt {
             keyAlias 'xyzmonday'
             keyPassword 'yff3445683'
-            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_changqing_key.jks')//签名文件路径
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_cqyt_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
 
-        //大连石化
-        sign_dlsh{
-            keyAlias 'dlsh'
-            keyPassword 'wmyj8866'
-            storeFile file('D:\\importantKey\\dlsh.jks')//签名文件路径
-            storePassword 'wmyj8866'
+        //煤层气
+        sign_mcq {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_mcq_key.jks')//签名文件路径
+            storePassword 'yff3445683'
         }
+
     }
 
 
@@ -100,7 +101,7 @@ android {
 
 
     productFlavors {
-        qysy {
+        qysh {
             buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8092/lhbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"QYSH_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qysh"'
@@ -135,20 +136,21 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
-            versionCode 1
-            versionName "1.0"
+            versionCode 2
+            versionName "1.1"
             signingConfig signingConfigs.sign_cqyt
         }
 
-        dlsh{
-            buildConfigField "String", "SERVER_URL", '"http://192.168.79.2:8087/ktbk_middleware/MobileProcess/"'
-            buildConfigField "String", "CONFIG_FILE_NAME", '"DLSH_BizConfig.json"'
-            buildConfigField "String", "APP_NAME", '"dlsh"'
+        mcq {
+            buildConfigField "String", "SERVER_URL", '"http://10.88.53.5:8080/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"MCQ_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"mcq"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
             versionName "1.0"
-            //signingConfig signingConfigs.sign_dlsh
+            signingConfig signingConfigs.sign_mcq
         }
+
     }
 
     productFlavors.all { flavor ->
@@ -190,9 +192,11 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    //  compile project(':module_qhyt')
-    //    compile project(':module_cqyt')
-    compile project(':moudle_dlsh')
+//      compile project(':module_qhyt')
+//    compile project(':module_xngd')
+//    compile project(':module_cqyt')
+    compile project(':module_mcq')
+
 }
 tasks.whenTaskAdded { task ->
     if (task.name.contains("AndroidTest")) {

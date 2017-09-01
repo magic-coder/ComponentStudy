@@ -44,4 +44,6 @@ public interface IDSHeadPresenter extends IBaseHeadPresenter<IDSHeadView> {
     void deleteCollectionData(String refNum, String transId, String refCodeId,
                               String refType, String bizType, String userId,
                               String companyCode);
+
+    void getDictionaryData(String... codes);
 }

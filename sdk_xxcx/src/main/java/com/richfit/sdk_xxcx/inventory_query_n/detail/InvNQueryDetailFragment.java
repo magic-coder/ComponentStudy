@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
+import com.richfit.common_lib.lib_tree_rv.CommonTreeAdapter;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_xxcx.R;
@@ -20,7 +21,7 @@ import java.util.List;
 public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailPresenterImp, InventoryEntity>
         implements IInvNQueryDetailView {
 
-    InvNQueryDetailAdapter mInvNQueryDetailAdapter;
+    protected CommonTreeAdapter<InventoryEntity> mInvNQueryDetailAdapter;
 
     @Override
     protected int getContentId() {

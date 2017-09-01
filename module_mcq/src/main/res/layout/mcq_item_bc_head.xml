@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/root_id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/detail_parent_node_bg"
+    android:orientation="horizontal">
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/location"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/check_location" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/quantity"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_main_check_quantity" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/mcq_quantity_custom"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_second_check_quantity" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/mcq_creation_date"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/create_date" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/mcq_storage_num"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_storage_num" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/mcq_year"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_year" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/mcq_duration"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_duration" />
+
+    <View style="@style/ItemSeperatorLayout" />
+</LinearLayout>

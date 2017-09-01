@@ -32,20 +32,20 @@
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="5dp">-->
 
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/project_text" />
+            <!--<TextView-->
+                <!--style="@style/LeftTextViewItemStyle"-->
+                <!--android:text="@string/project_text" />-->
 
-            <EditText
-                android:id="@id/et_project_text"
-                style="@style/RightEditTextItemStyle" />
-        </LinearLayout>
+            <!--<EditText-->
+                <!--android:id="@id/et_project_text"-->
+                <!--style="@style/RightEditTextItemStyle" />-->
+        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,22 +62,22 @@
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:padding="5dp">-->
 
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/strategy_code" />
+            <!--<TextView-->
+                <!--style="@style/LeftTextViewItemStyle"-->
+                <!--android:text="@string/strategy_code" />-->
 
-            <Spinner
-                android:id="@id/sp_strategy_code"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spinner_min_height"
-                android:layout_weight="2" />
-        </LinearLayout>
+            <!--<Spinner-->
+                <!--android:id="@id/sp_strategy_code"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="@dimen/spinner_min_height"-->
+                <!--android:layout_weight="2" />-->
+        <!--</LinearLayout>-->
 
 
         <LinearLayout
@@ -96,9 +96,6 @@
                 android:layout_height="@dimen/spinner_min_height"
                 android:layout_weight="2" />
         </LinearLayout>
-
-
     </LinearLayout>
-
 
 </android.support.v4.widget.NestedScrollView>

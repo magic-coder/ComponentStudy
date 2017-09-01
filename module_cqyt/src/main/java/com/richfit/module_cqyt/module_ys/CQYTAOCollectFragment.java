@@ -9,14 +9,19 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 注意该业务比较特别，每一个单据的所有的行明细都是由一行生成拆分出来的，这就意味着
@@ -32,11 +37,7 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     //移动原因
     Spinner spMoveCause;
 
-    @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        mLineNumForFilter = list[list.length - 1];
-        super.handleBarCodeScanResult(type, list);
-    }
+    List<SimpleEntity> mMoveCauses;
 
     @Override
     public int getContentId() {
@@ -68,38 +69,25 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
 
     @Override
     public void initData() {
-        if (spMoveCause != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.cqyt_move_causes));
-            spMoveCause.setAdapter(adapter);
-        }
+        mPresenter.getDictionaryData("moveCause");
     }
 
-    /**
-     * 设置单据行信息之前，过滤掉
-     *
-     * @param refLines
-     */
     @Override
-    public void setupRefLineAdapter(ArrayList<String> refLines) {
-        if (!TextUtils.isEmpty(mLineNumForFilter)) {
-            //过滤掉重复行号
-            ArrayList<String> lines = new ArrayList<>();
-            for (String refLine : refLines) {
-                if (refLine.equalsIgnoreCase(mLineNumForFilter)) {
-                    lines.add(refLine);
-                }
-            }
-            if (lines.size() == 0) {
-                showMessage("未获取到条码的单据行信息");
-            }
-            super.setupRefLineAdapter(lines);
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> moveCauses = data.get("moveCause");
+        if(moveCauses == null)
             return;
+        if(mMoveCauses == null) {
+            mMoveCauses = new ArrayList<>();
         }
-        //如果单据中没有过滤行信息那么直接显示所有的行信息
-        super.setupRefLineAdapter(refLines);
+        mMoveCauses.clear();
+        SimpleEntity tmp = new SimpleEntity();
+        tmp.name = "请选择";
+        mMoveCauses.add(tmp);
+        mMoveCauses.addAll(moveCauses);
+        SimpleAdapter adapter = new SimpleAdapter(mActivity,R.layout.item_simple_sp,mMoveCauses);
+        spMoveCause.setAdapter(adapter);
     }
-
 
     @Override
     public void bindCommonCollectUI() {
@@ -118,6 +106,17 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             return;
         }
         super.bindCommonCollectUI();
+    }
+
+
+    @Override
+    public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
+        super.onBindCache(cache, batchFlag, location);
+        if (cache != null) {
+            etReturnQuantity.setText(cache.returnQuantity);
+            //移动原因
+            UiUtil.setSelectionForSimpleSp(mMoveCauses,cache.moveCause,spMoveCause);
+        }
     }
 
 
@@ -184,9 +183,9 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         ResultEntity result = super.provideResult();
         result.returnQuantity = getString(etReturnQuantity);
         //移动原因
-        Object selectedItem = spMoveCause.getSelectedItem();
-        if (selectedItem != null)
-            result.moveCause = selectedItem.toString().split("_")[0];
+        if (spMoveCause.getSelectedItemPosition() > 0) {
+            result.moveCause = mMoveCauses.get(spMoveCause.getSelectedItemPosition()).code;
+        }
         return result;
     }
 }

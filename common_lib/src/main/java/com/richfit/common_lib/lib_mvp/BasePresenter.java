@@ -253,17 +253,6 @@ public abstract class BasePresenter<T extends BaseView> implements IPresenter<T>
     }
 
 
-    protected ArrayList<String> wrapper2Str(ArrayList<SimpleEntity> list) {
-        ArrayList<String> strs = new ArrayList<>();
-        StringBuffer sb = new StringBuffer();
-        for (SimpleEntity entity : list) {
-            sb.setLength(0);
-            sb.append(entity.code).append("_").append(entity.name);
-            strs.add(sb.toString());
-        }
-        return strs;
-    }
-
     /**
      * 为单据行增加批次信息。在登陆的时候，已经拿到了batch_flag标识，该标识表示
      * #Y:全部物料启用批次管理

@@ -10,4 +10,13 @@ public class SimpleEntity {
     public String id;
     public String code;
     public String name;
+
+    @Override
+    public String toString() {
+        return "SimpleEntity{" +
+                "id='" + id + '\'' +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

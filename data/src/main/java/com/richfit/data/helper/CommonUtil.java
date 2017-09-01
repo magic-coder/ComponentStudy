@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
+import com.richfit.domain.bean.SimpleEntity;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
@@ -14,8 +16,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
@@ -409,5 +413,15 @@ public class CommonUtil {
         return sb.toString();
     }
 
+
+    public static List<String> toStringArray(List<SimpleEntity> list) {
+        List<String> strs = new ArrayList<>();
+        if (list == null || list.size() == 0)
+            return strs;
+        for (SimpleEntity simpleEntity : list) {
+            strs.add(simpleEntity.code + "_" + simpleEntity.name);
+        }
+        return strs;
+    }
 
 }

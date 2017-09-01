@@ -14,7 +14,7 @@ public class CQYTMSY315ParentHeaderItemDelagate implements ItemViewDelegate<RefD
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_msy315_detail_parent_head;
+        return R.layout.cqyt_item_msy315_parent_head;
     }
 
     @Override

@@ -9,8 +9,13 @@ import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 
 public interface IDSNHeadPresenter extends IBaseHeadPresenter<IDSNHeadView> {
 
+    /**
+     * 获取工厂列表
+     * @param flag
+     */
     void getWorks(int flag);
-    void getAutoCompleteList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
+
+    void getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType,String...keys);
     /**
      * 删除整单缓存
      * @param bizType：业务类型
@@ -18,6 +23,4 @@ public interface IDSNHeadPresenter extends IBaseHeadPresenter<IDSNHeadView> {
      */
     void deleteCollectionData(String refType, String bizType, String userId,
                               String companyCode);
-
-    void getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
 }

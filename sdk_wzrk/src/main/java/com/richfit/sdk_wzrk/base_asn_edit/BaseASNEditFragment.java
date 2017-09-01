@@ -53,8 +53,10 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     String mQuantity;
     List<RefDetailEntity> mHistoryDetailList;
     String mLocation;
+    String mLocationId;
 
-    protected boolean isLocation = false;
+    /*是否上架*/
+    protected boolean isLocation = true;
 
     @Override
     protected int getContentId() {
@@ -85,6 +87,9 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         //仓位
         mLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
+
+        //仓位id
+        mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
 
         //入库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
@@ -179,8 +184,13 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     public boolean checkCollectedDataBeforeSave() {
 
         //检查是否合理，可以保存修改后的数据
-        if (TextUtils.isEmpty(getString(etLocation))) {
+        if (isLocation && TextUtils.isEmpty(getString(etLocation))) {
             showMessage("请输入上架仓位");
+            return false;
+        }
+
+        if (isLocation && TextUtils.isEmpty(mLocationId)) {
+            showMessage("仓位id为空");
             return false;
         }
 
@@ -222,6 +232,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         result.invId = tvInv.getTag().toString();
         result.recWorkId = mRefData.recWorkId;
         result.recInvId = mRefData.recInvId;
+        result.locationId = mLocationId;
         result.materialId = tvMaterialNum.getTag().toString();
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
         result.location = isLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;

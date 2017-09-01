@@ -175,4 +175,6 @@ public class ResultEntity extends TreeNode{
     public String money;
     public String glAccount;
     public String arrivalQuantity;
+    public String year;
+    public String duration;
 }

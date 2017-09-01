@@ -3,14 +3,16 @@ package com.richfit.module_qhyt.module_ds.dsn;
 
 import android.text.TextUtils;
 
-import com.richfit.module_qhyt.module_ds.dsn.imp.QHYTDSNHeadPresenterImp;
+import com.richfit.data.constant.Global;
 import com.richfit.sdk_wzck.base_dsn_head.BaseDSNHeadFragment;
+import com.richfit.sdk_wzck.base_dsn_head.imp.DSNHeadPresenterImp;
 
 /**
+ * 202显示项目编号
  * Created by monday on 2017/3/27.
  */
 
-public class QHYTDSNHead202Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPresenterImp> {
+public class QHYTDSNHead202Fragment extends BaseDSNHeadFragment<DSNHeadPresenterImp> {
 
     @Override
     protected int getOrgFlag() {
@@ -18,9 +20,10 @@ public class QHYTDSNHead202Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPrese
     }
 
 
+
     @Override
     public void initPresenter() {
-        mPresenter = new QHYTDSNHeadPresenterImp(mActivity);
+        mPresenter = new DSNHeadPresenterImp(mActivity);
     }
 
     @Override
@@ -42,5 +45,10 @@ public class QHYTDSNHead202Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPrese
                 mRefData.projectNum = projectNum.split("_")[0];
             }
         }
+    }
+
+    @Override
+    protected String getAutoComDataType() {
+        return Global.PROJECT_NUM_DATA;
     }
 }

@@ -146,6 +146,8 @@ public class ReferenceEntity {
     //报检单位
     public String declaredUnit;
     public String glAccount;
+    //供应商评价
+    public String supplierEvaluation;
 
     @Override
     public String toString() {

@@ -18,12 +18,14 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -268,7 +270,7 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     }
 
     @Override
-    public void showProjectNums(ArrayList<String> projectNums) {
+    public void showProjectNums(Map<String, List<SimpleEntity>> map) {
 
     }
 

@@ -2,7 +2,10 @@ package com.richfit.sdk_wzpd.blind.detail;
 
 
 import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+
+import java.util.List;
 
 /**
  * Created by monday on 2016/12/6.
@@ -34,11 +37,21 @@ public interface IBlindDetailView extends BaseView {
      * @param message
      */
     void deleteNodeFail(String message);
+
     void transferCheckDataSuccess();
+
     void showTransferedNum(String transNum);
+
     void transferCheckDataFail(String message);
+
     void setTransFlagFail(String message);
+
     void setTransFlagsComplete();
 
+    /**
+     * 显示库存明细
+     * @param allNodes
+     */
+    void showNodes(List<InventoryEntity> allNodes);
 
 }

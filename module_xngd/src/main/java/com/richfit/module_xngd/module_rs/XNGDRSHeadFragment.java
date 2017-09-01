@@ -68,7 +68,11 @@ public class XNGDRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
             tvCostCenter.setText(mRefData.costCenter);
             tvJobNum.setText(mRefData.jobNum);
             //项目移交物资
-            tvInvType.setText(mRefData.invType);
+            if ("1".equalsIgnoreCase(mRefData.invType)) {
+                tvInvType.setText(mRefData.invType + "_" + "工程移交");
+            } else if ("0".equalsIgnoreCase(mRefData.invType)) {
+                tvInvType.setText(mRefData.invType + "_" + "正常物资");
+            }
             cbInvFlag.setEnabled(TextUtils.isEmpty(mRefData.invFlag));
             cbInvFlag.setChecked("1".equals(mRefData.invFlag));
         }

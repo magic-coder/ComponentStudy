@@ -1,6 +1,7 @@
 package com.richfit.barcodesystemproduct.login;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,8 +18,6 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
 import com.richfit.barcodesystemproduct.R;
@@ -42,7 +41,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * Created by monday on 2016/10/27.
  */
 
-public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements LoginContract.View, OnItemClickListener {
+public class LoginActivity extends BaseActivity<LoginPresenterImp> implements LoginContract.View {
 
     @BindView(R.id.et_username)
     RichAutoEditText etUsername;
@@ -54,7 +53,6 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
     FloatingActionButton btnShowInfo;
 
 
-    private AlertView mAlertView;
     private TextView mOldIP;
     private EditText mIP1;
     private EditText mIP2;
@@ -84,6 +82,7 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
 
     @Override
     public void initEvent() {
+
         etUsername.setOnRichAutoEditTouchListener((view, text) -> etUsername.setText(""));
         etPassword.setOnRichAutoEditTouchListener((view, text) -> etPassword.setText(""));
 
@@ -139,7 +138,7 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
                 .setMessage(message + ".该手持MAC地址是" + Global.MAC_ADDRESS + ".注意注册完成后系统将自动重启APP!")
                 .setPositiveButton("已经注册", (dialog1, which) -> {
                     dialog1.dismiss();
-                    SPrefUtil.saveData(Global.IS_APP_FIRST_KEY,true);
+                    SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, true);
                     Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
                     startActivity(intent);
                     finish();
@@ -218,25 +217,31 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
      */
     private void showEditIPDialog() {
         if (mPresenter != null) {
-            if (mAlertView == null) {
-                mAlertView = new AlertView("提示", "请输入新的服务器地址", "取消", null, new String[]{"完成"}, this, AlertView.Style.Alert, this);
-                ViewGroup extView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.dialog_ip_manager, null);
-                mOldIP = (TextView) extView.findViewById(R.id.tv_old_ip);
-                mIP1 = (EditText) extView.findViewById(R.id.ip1);
-                mIP2 = (EditText) extView.findViewById(R.id.ip2);
-                mIP3 = (EditText) extView.findViewById(R.id.ip3);
-                mIP4 = (EditText) extView.findViewById(R.id.ip4);
-                mEtPort = (EditText) extView.findViewById(R.id.et_port);
-                int indexOf = BarcodeSystemApplication.baseUrl.indexOf("/", 7);
-                if (indexOf < 7) {
-                    mOldIP.setVisibility(ViewGroup.GONE);
-                } else {
-                    String ip = BarcodeSystemApplication.baseUrl.substring(7, indexOf);
-                    mOldIP.setText("当前的ip是:" + ip);
-                }
-                mAlertView.addExtView(extView);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("设置新的IP");
+            ViewGroup extView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.dialog_ip_manager, null);
+            ViewGroup.LayoutParams lp  = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT);
+            extView.setLayoutParams(lp);
+            mOldIP = (TextView) extView.findViewById(R.id.tv_old_ip);
+            mIP1 = (EditText) extView.findViewById(R.id.ip1);
+            mIP2 = (EditText) extView.findViewById(R.id.ip2);
+            mIP3 = (EditText) extView.findViewById(R.id.ip3);
+            mIP4 = (EditText) extView.findViewById(R.id.ip4);
+            mEtPort = (EditText) extView.findViewById(R.id.et_port);
+            int indexOf = BarcodeSystemApplication.baseUrl.indexOf("/", 7);
+            if (indexOf < 7) {
+                mOldIP.setVisibility(ViewGroup.GONE);
+            } else {
+                String ip = BarcodeSystemApplication.baseUrl.substring(7, indexOf);
+                mOldIP.setText("当前的ip是:" + ip);
             }
-            mAlertView.show();
+            builder.setView(extView);
+            builder.setPositiveButton("确定", (dialogInterface, i) -> {
+                dialogInterface.dismiss();
+                prepareEditIP();
+
+            }).setNegativeButton("取消", (dialogInterface, i) -> dialogInterface.dismiss()).show();
         }
     }
 
@@ -265,71 +270,54 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
     }
 
     @Override
-    public void retry(String action) {
-        switch (action) {
-            case Global.RETRY_LOGIN_ACTION:
-                //因为登陆有可能是注册也有可能是登陆接口超时，所以统一重新走
-                prepareLogin();
-                break;
-            case Global.RETRY_REGISTER_ACTION:
-                mPresenter.getMappingInfo();
-                break;
-        }
-        super.retry(action);
-    }
-
-    @Override
-    public void onItemClick(Object o, int position) {
-        hideKeyboard(mIP1);
-        //判断是否是拓展窗口View，而且点击的是非取消按钮
-        if (o == mAlertView && position != AlertView.CANCELPOSITION) {
-            if (!checkIP(mIP1, mIP2, mIP3, mIP4)) {
-                showMessage("您输入的IP不合理");
-                return;
-            }
-
-            final String port = mEtPort.getText().toString();
-            if (TextUtils.isEmpty(port)) {
-                showMessage("请输入端口号");
-                return;
-            }
-            //1. 先拿到当前服务器地址的资源名
-            final String url = BarcodeSystemApplication.baseUrl;
-            final StringBuffer sb = new StringBuffer();
-            if (!TextUtils.isEmpty(url)) {
-                int indexOf = url.indexOf("/", 7);//这里去除http://
-                if (indexOf > 0) {
-                    String webURI = url.substring(indexOf);
-                    sb.append("http://")
-                            .append(mIP1.getText())
-                            .append(".")
-                            .append(mIP2.getText())
-                            .append(".")
-                            .append(mIP3.getText())
-                            .append(".")
-                            .append(mIP4.getText())
-                            .append(":")
-                            .append(port)
-                            .append(webURI);
-                }
-            }
-            final String newUrl = sb.toString();
-            if (TextUtils.isEmpty(newUrl)) {
-                showMessage("服务为空");
-                return;
-            }
-            mPresenter.setupUrl(newUrl);
-            return;
-        }
-    }
-
-
-    @Override
     public void setupUrlComplete() {
         //启动SplashActivity
         Intent intent = new Intent(this, SplashActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void prepareEditIP() {
+        hideKeyboard(mIP1);
+        //判断是否是拓展窗口View，而且点击的是非取消按钮
+
+        if (!checkIP(mIP1, mIP2, mIP3, mIP4)) {
+            showMessage("您输入的IP不合理");
+            return;
+        }
+
+        final String port = mEtPort.getText().toString();
+        if (TextUtils.isEmpty(port)) {
+            showMessage("请输入端口号");
+            return;
+        }
+        //1. 先拿到当前服务器地址的资源名
+        final String url = BarcodeSystemApplication.baseUrl;
+        final StringBuffer sb = new StringBuffer();
+        if (!TextUtils.isEmpty(url)) {
+            int indexOf = url.indexOf("/", 7);//这里去除http://
+            if (indexOf > 0) {
+                String webURI = url.substring(indexOf);
+                sb.append("http://")
+                        .append(mIP1.getText())
+                        .append(".")
+                        .append(mIP2.getText())
+                        .append(".")
+                        .append(mIP3.getText())
+                        .append(".")
+                        .append(mIP4.getText())
+                        .append(":")
+                        .append(port)
+                        .append(webURI);
+            }
+        }
+        final String newUrl = sb.toString();
+        if (TextUtils.isEmpty(newUrl)) {
+            showMessage("服务为空");
+            return;
+        }
+        mPresenter.setupUrl(newUrl);
+        return;
     }
 
     private boolean checkIP(EditText... ets) {
@@ -343,13 +331,16 @@ public class  LoginActivity extends BaseActivity<LoginPresenterImp> implements L
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mAlertView != null) {
-            mAlertView.dismiss();
-            mAlertView = null;
+    public void retry(String action) {
+        switch (action) {
+            case Global.RETRY_LOGIN_ACTION:
+                //因为登陆有可能是注册也有可能是登陆接口超时，所以统一重新走
+                prepareLogin();
+                break;
+            case Global.RETRY_REGISTER_ACTION:
+                mPresenter.getMappingInfo();
+                break;
         }
+        super.retry(action);
     }
-
-
 }

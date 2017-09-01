@@ -40,5 +40,5 @@ public interface IASHeadPresenter extends IBaseHeadPresenter<IASHeadView> {
     void getInvsByWorkId(String workId, int flag);
 
 
-    void getDictionaryData(String code);
+    void getDictionaryData(String... codes);
 }

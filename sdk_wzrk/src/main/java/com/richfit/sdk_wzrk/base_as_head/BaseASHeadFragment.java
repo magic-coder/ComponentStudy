@@ -22,6 +22,7 @@ import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -34,7 +35,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
         implements IASHeadView {
 
     @BindView(R2.id.et_ref_num)
-    RichEditText etRefNum;
+    protected RichEditText etRefNum;
     @BindView(R2.id.tv_ref_num)
     TextView tvRefNum;
     @BindView(R2.id.et_transfer_date)
@@ -274,7 +275,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     }
 
     @Override
-    public void loadDictionaryDataSuccess(List<SimpleEntity> data) {
+    public void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data) {
 
     }
 

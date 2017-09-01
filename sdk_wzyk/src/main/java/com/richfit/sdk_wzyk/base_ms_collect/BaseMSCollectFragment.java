@@ -171,7 +171,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         /*监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
          这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI。*/
         RxTextView.textChanges(etSendBatchFlag)
-                .filter(str -> !TextUtils.isEmpty(str))
+                .filter(str -> !TextUtils.isEmpty(str) && spSendInv.getAdapter() != null)
                 .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe(batch -> resetCommonUIPartly());
 
@@ -738,7 +738,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
         result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                && !TextUtils.isEmpty(result.specialInvNum)) ?
                 "Y" : "N";
         result.modifyFlag = "N";
         result.invType = param.invType;

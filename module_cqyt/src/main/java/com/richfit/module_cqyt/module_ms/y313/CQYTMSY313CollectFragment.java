@@ -33,12 +33,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
     TextView tvTotalQuantityCustom;
 
     @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        mLineNumForFilter = list[list.length - 1];
-        super.handleBarCodeScanResult(type, list);
-    }
-
-    @Override
     public int getContentId() {
         return R.layout.cqyt_fragment_msy313_collect;
     }
@@ -63,32 +57,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
     public void initData() {
 
     }
-
-    /**
-     * 设置单据行信息之前，过滤掉
-     *
-     * @param refLines
-     */
-    @Override
-    public void setupRefLineAdapter(ArrayList<String> refLines) {
-        if (!TextUtils.isEmpty(mLineNumForFilter)) {
-            //过滤掉重复行号
-            ArrayList<String> lines = new ArrayList<>();
-            for (String refLine : refLines) {
-                if(refLine.equalsIgnoreCase(mLineNumForFilter)) {
-                    lines.add(refLine);
-                }
-            }
-            if(lines.size() == 0) {
-                showMessage("未获取到条码的单据行信息");
-            }
-            super.setupRefLineAdapter(lines);
-            return;
-        }
-        //如果单据中没有过滤行信息那么直接显示所有的行信息
-        super.setupRefLineAdapter(refLines);
-    }
-
 
     @Override
     public void bindCommonCollectUI() {

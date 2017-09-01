@@ -259,9 +259,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
             showMessage("输入数量不合理");
             return false;
         }
-        final float recQuantityV = CommonUtil.convertToFloat(getString(etRecQuantity), 0.0f);
+        //发出仓位的库存
+        final float sendInvQuantityV = CommonUtil.convertToFloat(getString(tvSendInvQuantity), 0.0f);
         final float quantityV = CommonUtil.convertToFloat(quantity, 0.0f);
-        if (Float.compare(quantityV, recQuantityV) > 0.0f) {
+        if (Float.compare(quantityV, sendInvQuantityV) > 0.0f) {
             showMessage("输入数量有误，请重新输入");
             return false;
         }

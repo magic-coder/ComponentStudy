@@ -1,6 +1,7 @@
 package com.richfit.module_xngd.module_ms.ubsto;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.CheckBox;
 
 import com.richfit.module_xngd.R;
@@ -28,6 +29,8 @@ public class XNGDMSYHeadFragment extends BaseMSHeadFragment<MSHeadPresenterImp> 
     @Override
     public void initView() {
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
+        //隐藏接收库位
+        llInv.setVisibility(View.GONE);
     }
 
     @Override

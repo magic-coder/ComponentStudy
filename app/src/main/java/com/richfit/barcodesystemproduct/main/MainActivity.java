@@ -25,13 +25,12 @@ import com.richfit.data.constant.Global;
 import butterknife.BindView;
 
 
-
 /**
  * Created by monday on 2017/3/10.
  */
 
 public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> implements
-        MainContract.View, ViewPager.OnPageChangeListener, IBarcodeSystemMain{
+        MainContract.View, ViewPager.OnPageChangeListener, IBarcodeSystemMain {
 
 
     /*当前选中的页签下表，用于恢复*/
@@ -171,52 +170,53 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
      * 拦截点击事件，在屏幕的任何空白处点击关闭软键盘。
      * 注意dispatcherTouchEvent是事件WMS->Activity
      * 的回到，之后才有Window.superDispatchTouchEvent()->DecorView上面
-     * @param ev
+     * //* @param ev 该方法已经废弃，因为我们的需求需要显示auto这样的控件，所以该方法将会
+     * 导致auto的提示控件也消失
+     *
      * @return
      */
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (isShouldHideInput(v, ev)) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (imm != null) {
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                }
-            }
-            return super.dispatchTouchEvent(ev);
-        }
-        // 必不可少，否则所有的组件都不会有TouchEvent了
-        if (getWindow().superDispatchTouchEvent(ev)) {
-            return true;
-        }
-        return onTouchEvent(ev);
-    }
-
-    private boolean isShouldHideInput(View v, MotionEvent event) {
-        if (v != null && (v instanceof EditText)) {
-            int[] leftTop = {0, 0};
-            //获取输入框当前的location位置
-            v.getLocationInWindow(leftTop);
-            int left = leftTop[0];
-            int top = leftTop[1];
-            int bottom = top + v.getHeight();
-            int right = left + v.getWidth();
-            if (event.getX() > left && event.getX() < right
-                    && event.getY() > top && event.getY() < bottom) {
-                // 点击的是输入框区域，保留点击EditText的事件
-                return false;
-            } else {
-                //使EditText触发一次失去焦点事件
-                v.setFocusable(false);
-//                v.setFocusable(true); //这里不需要是因为下面一句代码会同时实现这个功能
-                v.setFocusableInTouchMode(true);
-                return true;
-            }
-        }
-        return false;
-    }
-
+//    @Override
+//    public boolean dispatchTouchEvent(MotionEvent ev) {
+//        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+//            View v = getCurrentFocus();
+//            if (isShouldHideInput(v, ev)) {
+//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                if (imm != null) {
+//                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                }
+//            }
+//            return super.dispatchTouchEvent(ev);
+//        }
+//        // 必不可少，否则所有的组件都不会有TouchEvent了
+//        if (getWindow().superDispatchTouchEvent(ev)) {
+//            return true;
+//        }
+//        return onTouchEvent(ev);
+//    }
+//
+//    private boolean isShouldHideInput(View v, MotionEvent event) {
+//        if (v != null && (v instanceof EditText)) {
+//            int[] leftTop = {0, 0};
+//            //获取输入框当前的location位置
+//            v.getLocationInWindow(leftTop);
+//            int left = leftTop[0];
+//            int top = leftTop[1];
+//            int bottom = top + v.getHeight();
+//            int right = left + v.getWidth();
+//            if (event.getX() > left && event.getX() < right
+//                    && event.getY() > top && event.getY() < bottom) {
+//                // 点击的是输入框区域，保留点击EditText的事件
+//                return false;
+//            } else {
+//                //使EditText触发一次失去焦点事件
+//                v.setFocusable(false);
+////                v.setFocusable(true); //这里不需要是因为下面一句代码会同时实现这个功能
+//                v.setFocusableInTouchMode(true);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -225,7 +225,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
 
     /**
@@ -300,7 +299,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override

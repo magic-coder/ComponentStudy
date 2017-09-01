@@ -3,16 +3,17 @@ package com.richfit.module_qhyt.module_ds.dsn;
 import android.text.TextUtils;
 import android.widget.EditText;
 
+import com.richfit.data.constant.Global;
 import com.richfit.module_qhyt.R;
-import com.richfit.module_qhyt.module_ds.dsn.imp.QHYTDSNHeadPresenterImp;
 import com.richfit.sdk_wzck.base_dsn_head.BaseDSNHeadFragment;
+import com.richfit.sdk_wzck.base_dsn_head.imp.DSNHeadPresenterImp;
 
 /**
  * 201出库。显示成本中心
  * Created by monday on 2017/7/12.
  */
 
-public class QHYTDSNHead201Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPresenterImp> {
+public class QHYTDSNHead201Fragment extends BaseDSNHeadFragment<DSNHeadPresenterImp> {
 
     EditText etAuxiliary9;
     EditText etAccountType;
@@ -28,10 +29,15 @@ public class QHYTDSNHead201Fragment extends BaseDSNHeadFragment<QHYTDSNHeadPrese
         return 0;
     }
 
+    @Override
+    protected String getAutoComDataType() {
+        return Global.COST_CENTER_DATA;
+    }
+
 
     @Override
     public void initPresenter() {
-        mPresenter = new QHYTDSNHeadPresenterImp(mActivity);
+        mPresenter = new DSNHeadPresenterImp(mActivity);
     }
 
     @Override

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.richfit.common_lib.lib_interface.IOnItemMove;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_tree_rv.CommonTreeAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.AdvancedEditText;
 import com.richfit.common_lib.widget.AutoSwipeRefreshLayout;
@@ -52,7 +53,7 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
     @BindView(R2.id.base_detail_horizontal_scroll)
     HorizontalScrollView mHScrollView;
     @BindView(R2.id.base_detail_recycler_view)
-    RecyclerView mRecycleView;
+    protected RecyclerView mRecycleView;
     @BindView(R2.id.base_detail_swipe_refresh_layout)
     AutoSwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R2.id.root_id)
@@ -67,7 +68,7 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
     List<String> mTitles;
     SparseArray<TextView> mTextViews;
     SparseArray<View> mDividers;
-    BlindDetailAdapter mAdapter;
+    protected CommonTreeAdapter<InventoryEntity> mAdapter;
     int mCurrentPageNum = 0;
     String mTransNum;
 
@@ -330,12 +331,17 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
         }
         setupBottomBar(tempTotalPage);
         setRefreshing(true);
+        showNodes(refData.checkList);
+    }
+
+    @Override
+    public void showNodes(List<InventoryEntity> allNodes) {
         if (mAdapter == null) {
-            mAdapter = new BlindDetailAdapter(mActivity, R.layout.wzpd_item_blind_detail, refData.checkList);
+            mAdapter = new BlindDetailAdapter(mActivity, R.layout.wzpd_item_blind_detail, allNodes);
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemEditAndDeleteListener(this);
         } else {
-            mAdapter.addAll(refData.checkList);
+            mAdapter.addAll(allNodes);
         }
     }
 
@@ -423,6 +429,8 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
         showMessage("结束本次操作!");
         startAutoRefresh();
     }
+
+
 
     /**
      * 过账

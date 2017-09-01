@@ -78,8 +78,8 @@ public class CQYTAS105DetailFragment extends BaseASDetailFragment<CQYTAS105Detai
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
-        menus.get(0).transToSapFlag = "Z02";
-        menus.get(1).transToSapFlag = "Z03";
+        menus.get(0).transToSapFlag = "10";
+        menus.get(1).transToSapFlag = "11";
         return menus.subList(0, 2);
     }
 

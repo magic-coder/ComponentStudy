@@ -11,11 +11,13 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzyk.base_msn_head.BaseMSNHeadFragment;
 import com.richfit.sdk_wzyk.base_msn_head.imp.MSNHeadPresenterImp;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 
@@ -165,6 +167,8 @@ public class QHYTMSN311HeadFragment extends BaseMSNHeadFragment<MSNHeadPresenter
     public void loadRecInvsComplete() {
 
     }
+
+
 
     @Override
     protected String getMoveType() {

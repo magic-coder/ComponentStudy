@@ -6,6 +6,7 @@ import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.LoadBasicDataWrapper;
 import com.richfit.domain.bean.LoadDataTask;
 import com.richfit.domain.bean.RefNumEntity;
+import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.UpdateEntity;
 
@@ -22,8 +23,24 @@ import io.reactivex.Flowable;
 
 public interface IServerRepository extends IRepository {
 
+    /**
+     * 获取与接口的状态，用于判断系统处于哪一个模式以及ip修改等等
+     * @return
+     */
     Flowable<String> getConnectionStatus();
 
+    /**
+     * 查询出入库单据列表
+     * @return
+     */
+    Flowable<List<ReferenceEntity>> getArrivalInfo(String createdBy,String creationDate,Map<String,Object> extraMap);
+
+    /**
+     * 加载业务界面的配置文件
+     * @param companyId
+     * @param mode
+     * @return
+     */
     Flowable<ArrayList<BizFragmentConfig>> loadBizFragmentConfig(String companyId, int mode);
 
     /**
@@ -33,6 +50,12 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<LoadBasicDataWrapper> preparePageLoad(LoadBasicDataWrapper requestParam);
 
+    /**
+     * 重置密码
+     * @param userId
+     * @param password
+     * @return
+     */
     Flowable<String> resetPassword(String userId,String password);
 
     /**
@@ -72,6 +95,11 @@ public interface IServerRepository extends IRepository {
                                           int inspectionType, String voucherDate,
                                           String remark, String userId,Map<String, Object> extraHeaderMap);
 
+    /**
+     * 数据明细界面，与sap过账
+     * @param result
+     * @return
+     */
     Flowable<String> transferCollectionData(ResultEntity result);
 
 
@@ -161,6 +189,11 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<String> uploadMultiFiles(List<ResultEntity> results);
 
+    /**
+     * 上传离线附件
+     * @param results
+     * @return
+     */
     Flowable<String> uploadMultiFilesOffline(List<ResultEntity> results);
 
     /**
@@ -171,8 +204,17 @@ public interface IServerRepository extends IRepository {
      */
     Flowable<ResultEntity> getDeviceInfo(String deviceId);
 
-
+    /**
+     * 上传离线采集的数据
+     * @param results
+     * @return
+     */
     Flowable<String> uploadCollectionDataOffline(List<ResultEntity> results);
 
+    /**
+     * 上传离线盘点采集的数据
+     * @param results
+     * @return
+     */
     Flowable<String> uploadCheckDataOffline(List<ResultEntity> results);
 }

@@ -167,8 +167,8 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
-    public Flowable<List<SimpleEntity>> getDictionaryData(String code) {
-        return Flowable.just(mBasicServiceDao.getDictionaryData(code));
+    public Flowable<Map<String, List<SimpleEntity>>> getDictionaryData(String... codes) {
+        return Flowable.just(mBasicServiceDao.getDictionaryData(codes));
     }
 
     @Override
@@ -235,47 +235,13 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
-    public Flowable<ArrayList<SimpleEntity>> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return Flowable.just(keyWord)
-                .flatMap(code -> {
-                    ArrayList<SimpleEntity> list = mBasicServiceDao.getSupplierList(workCode, code, defaultItemNum, flag);
-                    if (list == null || list.size() == 0) {
-                        return Flowable.error(new Throwable("未获取到供应商,请检查是否您选择的工厂是否正确或者是否在设置界面同步过供应商"));
-                    }
-                    return Flowable.just(list);
-                });
-    }
-
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
         return Flowable.just(keyWord).flatMap(key -> {
-            ArrayList<SimpleEntity> list = mBasicServiceDao.getCostCenterList(workCode, key, defaultItemNum, flag);
-            if (list == null || list.size() == 0) {
-                return Flowable.error(new Throwable("未获取到成本中心,请检查是否您选择的工厂是否正确或者是否在设置界面同步过成本中心"));
+            Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode, key, defaultItemNum, flag, keys);
+            if (map == null || map.size() == 0) {
+                return Flowable.error(new Throwable("未获取到基础数据,请检查是否您选择的工厂是否正确或者是否在设置界面同步过基础数据"));
             }
-            return Flowable.just(list);
-        });
-    }
-
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return Flowable.just(keyWord).flatMap(key -> {
-            ArrayList<SimpleEntity> list = mBasicServiceDao.getProjectNumList(workCode, key, defaultItemNum, flag);
-            if (list == null || list.size() == 0) {
-                return Flowable.error(new Throwable("未获取到项目编号,请检查是否您选择的工厂是否正确或者是否在设置界面同步过项目编号"));
-            }
-            return Flowable.just(list);
-        });
-    }
-
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return Flowable.just(keyWord).flatMap(key -> {
-            ArrayList<SimpleEntity> list = mBasicServiceDao.getGLAccountList(workCode, key, defaultItemNum, flag);
-            if (list == null || list.size() == 0) {
-                return Flowable.error(new Throwable("未获取到总账科目,请检查是否您选择的工厂是否正确或者是否在设置界面同步过项目编号"));
-            }
-            return Flowable.just(list);
+            return Flowable.just(map);
         });
     }
 

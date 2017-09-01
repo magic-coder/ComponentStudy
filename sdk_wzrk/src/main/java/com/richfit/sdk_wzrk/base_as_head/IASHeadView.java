@@ -7,6 +7,7 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2016/11/11.
@@ -70,7 +71,7 @@ public interface IASHeadView extends IBaseHeadView {
     void showInvs(List<InvEntity> list);
     void loadInvsComplete();
 
-    void loadDictionaryDataSuccess(List<SimpleEntity> data);
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
     void loadDictionaryDataFail(String message);
 
 

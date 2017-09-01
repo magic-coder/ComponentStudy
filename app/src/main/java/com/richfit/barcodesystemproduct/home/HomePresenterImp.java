@@ -56,45 +56,45 @@ public class HomePresenterImp extends BasePresenter<HomeContract.View>
                                 .onErrorReturn(e -> new ArrayList<>()),
                         (onLineMenus, offLineMenus) -> mergeMenuNodes(onLineMenus, offLineMenus))
                         .filter(list -> list != null && list.size() > 0)
-                .map(list -> convertDatas2Nodes(list, mode))
-                .map(list -> mRepository.saveMenuInfo(list, loginId, mode))
-                .map(list -> getSecondNodesByParentId(list, mode))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<ArrayList<MenuNode>>(mContext, "正在初始化主菜单...") {
+                        .map(list -> convertDatas2Nodes(list, mode))
+                        .map(list -> mRepository.saveMenuInfo(list, loginId, mode))
+                        .map(list -> getSecondNodesByParentId(list, mode))
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<ArrayList<MenuNode>>(mContext, "正在初始化主菜单...") {
 
-                    @Override
-                    public void _onNext(ArrayList<MenuNode> menuNodes) {
-                        if (mView != null) {
-                            mView.initModulesSuccess(menuNodes);
-                        }
-                    }
+                            @Override
+                            public void _onNext(ArrayList<MenuNode> menuNodes) {
+                                if (mView != null) {
+                                    mView.initModulesSuccess(menuNodes);
+                                }
+                            }
 
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_SETUP_MENUS_ACTION);
-                        }
-                    }
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_SETUP_MENUS_ACTION);
+                                }
+                            }
 
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.initModelsFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.initModelsFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.initModelsFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.initModelsFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onComplete() {
+                            @Override
+                            public void _onComplete() {
 
-                    }
-                });
+                            }
+                        });
         addSubscriber(subscriber);
     }
 
@@ -181,6 +181,9 @@ public class HomePresenterImp extends BasePresenter<HomeContract.View>
                 return R.mipmap.icon_module17;
             case Global.KFXJ:
                 return R.mipmap.icon_module18;
+            //上架单据查询
+            case Global.REF_CX:
+                return R.mipmap.icon_module17;
         }
         return 0;
     }

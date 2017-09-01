@@ -13,7 +13,7 @@ import com.richfit.module_xngd.R;
 public class XNGDAOParentHeaderItemDelegate implements ItemViewDelegate<RefDetailEntity> {
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.xngd_item_detail_parent_header;
+        return R.layout.xngd_item_ao_parent_header;
     }
 
     @Override

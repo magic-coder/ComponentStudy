@@ -5,11 +5,14 @@ import android.content.Context;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzck.base_dsn_head.IDSNHeadPresenter;
 import com.richfit.sdk_wzck.base_dsn_head.IDSNHeadView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -17,7 +20,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/2/23.
  */
 
-public abstract class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
+public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
         implements IDSNHeadPresenter {
 
     public DSNHeadPresenterImp(Context context) {
@@ -95,8 +98,36 @@ public abstract class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadV
     }
 
 
-    @Override
-    public void getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
 
+    @Override
+    public void getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType,
+                                    String ...keys) {
+        mView = getView();
+
+        ResourceSubscriber<Map<String,List<SimpleEntity>>> subscriber =
+                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag,keys)
+                        .filter(map -> map != null && map.size() > 0)
+                        .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                            @Override
+                            public void onNext(Map<String,List<SimpleEntity>> map) {
+                                if (mView != null) {
+                                    mView.showAutoCompleteList(map);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.loadAutoCompleteFail(t.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+        addSubscriber(subscriber);
     }
+
 }

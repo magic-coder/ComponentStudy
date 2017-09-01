@@ -187,8 +187,6 @@
     <item name="manufacturer" type="id"></item>
     <item name="damagedQuantity" type="id"></item>
 
-
-
     <!--数据修改业务id-->
     <item name="tv_transfer_date" type="id"></item>
     <item name="tv_ref_line_num" type="id"></item>
@@ -252,4 +250,7 @@
     <item name="tmp" type="id"></item>
     <item name="ll_material_class" type="id"></item>
     <item name="ll_material_desc" type="id"></item>
+    <item name="et_create_date" type="id"></item>
+    <item name="tv_creation_date" type="id"></item>
+
 </resources>

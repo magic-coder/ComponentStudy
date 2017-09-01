@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/root_id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/detail_parent_node_bg"
+    android:orientation="horizontal">
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/lineNum"
+        style="@style/TableHeaderStyle"
+        android:layout_width="80dp"
+        android:text="@string/ref_line_num" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/materialNum"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/material_num" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/materialDesc"
+        style="@style/TableHeaderStyle"
+        android:layout_width="240dp"
+        android:text="@string/material_desc" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/materialGroup"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/material_group" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <!--主计量单位-->
+    <TextView
+        android:id="@id/materialUnit"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_main_material_unit" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <!--主计量单位应收数量-->
+    <TextView
+        android:id="@id/actQuantity"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_main_act_rec_quantity" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <!--主计量单位累计数量-->
+    <TextView
+        android:id="@id/totalQuantity"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_main_total_quantity" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <!--副计量单位-->
+    <TextView
+        android:id="@id/mcq_material_unit_custom"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_material_unit_custom" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <!--副计量单位应收数量-->
+    <TextView
+        android:id="@id/mcq_act_quantity_custom"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_act_rec_quantity_custom" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <!--副计量单位累计数量-->
+    <TextView
+        android:id="@id/mcq_total_quantity_custom"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_total_quantity_custom" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/work"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/work" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/inv"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/inv" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <!--是否质检-->
+
+    <TextView
+        android:id="@id/mcq_qmFlag"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_qm_flag" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <!--单据状态-->
+    <TextView
+        android:id="@id/mcq_ref_status"
+        style="@style/TableHeaderStyle"
+        android:layout_width="120dp"
+        android:text="@string/mcq_ref_status" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+</LinearLayout>

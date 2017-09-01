@@ -127,6 +127,9 @@ public interface IRequestApi {
     @GET("getLocationInfo")
     Flowable<Map<String, Object>> getLocation(@Query("requestParam") String requestParam);
 
+    @GET("getArrivalInfo")
+    Flowable<Response<List<ReferenceEntity>>> getArrivalInfo(@Query("requestParam") String requestParam);
+
     @GET("getAppVersion")
     Flowable<Response<UpdateEntity>> getAppVersion();
 

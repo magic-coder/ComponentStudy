@@ -14,7 +14,7 @@ public class CQYTMSY313ParentHeaderItemDelegate extends MSYParentHeaderItemDeleg
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_msy313_detail_parent_head;
+        return R.layout.cqyt_item_msy313_parent_head;
     }
 
 

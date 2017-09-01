@@ -33,7 +33,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
 public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
         implements IASDetailPresenter {
 
-    public ASDetailPresenterImp( Context context) {
+    public ASDetailPresenterImp(Context context) {
         super(context);
     }
 
@@ -204,50 +204,52 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
     }
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType,
+                                         String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap),
-                mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
-                .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
+        RxSubscriber<String> subscriber =
+                Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
+                        mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
+                        .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
+                        .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
+                            @Override
+                            public void _onNext(String message) {
+                                if (mView != null) {
+                                    mView.saveMsgFowShow(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
-                        }
-                    }
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
+                                }
+                            }
 
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemSuccess();
-                        }
-                    }
-                });
+                            @Override
+                            public void _onComplete() {
+                                if (mView != null) {
+                                    mView.submitBarcodeSystemSuccess();
+                                }
+                            }
+                        });
         addSubscriber(subscriber);
     }
 
@@ -333,9 +335,13 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 cachedData.materialDesc = data.materialDesc;
                 cachedData.materialGroup = data.materialGroup;
                 cachedData.unit = data.unit;
+                cachedData.unitCustom = data.unitCustom;
                 cachedData.actQuantity = data.actQuantity;
+                cachedData.actQuantityCustom = data.actQuantityCustom;
                 cachedData.refDoc = data.refDoc;
                 cachedData.refDocItem = data.refDocItem;
+                cachedData.qmFlag = data.qmFlag;
+                cachedData.status = data.status;
                 //注意单据中有lineNum105
                 cachedData.lineNum105 = data.lineNum105;
                 cachedData.insLot = data.insLot;
@@ -366,6 +372,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 childNode.location = location.location;
                 childNode.batchFlag = location.batchFlag;
                 childNode.quantity = location.quantity;
+                childNode.quantityCustom = location.quantityCustom;
                 childNode.transId = location.transId;
                 childNode.arrivalQuantity = location.arrivalQuantity;
                 childNode.transLineId = location.transLineId;

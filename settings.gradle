@@ -1,1 +1,1 @@
-include ':app', ':common_lib', ':domain', ':data', ':sdk_wzrk', ':module_qhyt', ':sdk_wzck', ':sdk_wzyk', ':sdk_wzrs', ':sdk_sxcl', ':sdk_wzys', ':sdk_cwtz', ':module_xngd', ':sdk_xxcx', ':sdk_wzpd', ':module_qysh', ':module_cqyt', ':moudle_dlsh'
+include ':app', ':common_lib', ':domain', ':data', ':sdk_wzrk', ':module_qhyt', ':sdk_wzck', ':sdk_wzyk', ':sdk_wzrs', ':sdk_sxcl', ':sdk_wzys', ':sdk_cwtz', ':module_xngd', ':sdk_xxcx', ':sdk_wzpd', ':module_qysh', ':module_cqyt', ':module_mcq', ':module_mcq'

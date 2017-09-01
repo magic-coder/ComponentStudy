@@ -12,15 +12,19 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.widget.RichAutoEditText;
+import com.richfit.data.constant.Global;
+import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzyk.base_msn_head.BaseMSNHeadFragment;
 import com.richfit.sdk_wzyk.base_msn_head.imp.MSNHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -208,7 +212,7 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
             //项目移交物资
             mRefData.invType = cbInvType.isChecked() ? "0" : "1";
             String projectNum = getString(etProjectNum);
-            if(!TextUtils.isEmpty(projectNum)) {
+            if (!TextUtils.isEmpty(projectNum)) {
                 mRefData.projectNum = projectNum.split("_")[0];
             }
         }
@@ -241,7 +245,12 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
     }
 
     @Override
-    public void showProjectNums(ArrayList<String> projectNums) {
+    public void showProjectNums(Map<String, List<SimpleEntity>> map) {
+        List<SimpleEntity> simpleEntities = map.get(Global.PROJECT_NUM_DATA);
+        if (simpleEntities == null || simpleEntities.size() == 0) {
+            return;
+        }
+        List<String> projectNums = CommonUtil.toStringArray(simpleEntities);
         mAutoDatas.clear();
         mAutoDatas.addAll(projectNums);
         if (mAutoAdapter == null) {

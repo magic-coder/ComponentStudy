@@ -12,7 +12,7 @@ import com.richfit.sdk_wzrk.adapter.items.ASYChildHeaderItemDelegate;
 public class CQYTMSY315ChildHeaderItemDelegate extends ASYChildHeaderItemDelegate{
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_msy315_detail_child_head;
+        return R.layout.cqyt_item_msy315_child_head;
     }
 
 

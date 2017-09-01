@@ -61,7 +61,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.tv_work)
     TextView tvWork;
     @BindView(R2.id.act_quantity_name)
-    protected TextView actQuantityName;
+    protected TextView tvActQuantityName;
     @BindView(R2.id.tv_act_quantity)
     protected TextView tvActQuantity;
     @BindView(R2.id.et_batch_flag)
@@ -75,7 +75,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @BindView(R2.id.tv_location_quantity)
     protected TextView tvLocQuantity;
     @BindView(R2.id.quantity_name)
-    protected TextView quantityName;
+    protected TextView tvQuantityName;
     @BindView(R2.id.et_quantity)
     protected EditText etQuantity;
     @BindView(R2.id.cb_single)
@@ -125,6 +125,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             //仓位处理
             if (mInventoryDatas != null && spLocation.getAdapter() != null) {
                 final String location = list[0];
+               /* if (mInventoryDatas.size() == 0 && spInv.getSelectedItemPosition() >= 1) {
+                    //有可能是修改批次清空了
+                    loadInventory(spInv.getSelectedItemPosition());
+                    return;
+                }*/
                 UiUtil.setSelectionForLocation(mInventoryDatas, location, spLocation);
             }
         }
@@ -160,7 +165,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         //监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
         //这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI
         RxTextView.textChanges(etBatchFlag)
-                .filter(str -> !TextUtils.isEmpty(str))
+                .filter(str -> !TextUtils.isEmpty(str) && spInv.getAdapter() != null)
                 .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(batch -> resetCommonUIPartly());
 
@@ -442,8 +447,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         isBatchValidate = true;
         mPresenter.getTransferInfoSingle(refCodeId, refType, bizType, refLineId,
                 getString(etMaterialNum), batchFlag, location, lineData.refDoc,
-                CommonUtil.convertToInt(lineData.refDocItem),
-                Global.USER_ID);
+                CommonUtil.convertToInt(lineData.refDocItem), Global.USER_ID);
     }
 
     private void resetLocation() {
@@ -723,7 +727,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
         result.supplierNum = mRefData.supplierNum;
         //寄售转自有的标识
-        result.specialConvert = !TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum) ?
+        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                && !TextUtils.isEmpty(result.specialInvNum)) ?
                 "Y" : "N";
         result.invType = param.invType;
         result.modifyFlag = "N";

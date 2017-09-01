@@ -22,6 +22,7 @@ import com.richfit.domain.repository.IBasicServiceDao;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,21 +62,25 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
     }
 
     @Override
-    public List<SimpleEntity> getDictionaryData(String code) {
-        List<SimpleEntity> data = new ArrayList<>();
-        if (TextUtils.isEmpty(code)) {
+    public Map<String, List<SimpleEntity>> getDictionaryData(String... codes) {
+        Map<String, List<SimpleEntity>> data = new HashMap<>();
+        if (codes.length <= 0) {
             return data;
         }
         SQLiteDatabase db = getWritableDB();
-        Cursor cursor = db.rawQuery("select name,val from T_EXTRA_DATA_SOURCE where code = ?",
-                new String[]{code});
-        while (cursor.moveToNext()) {
-            SimpleEntity item = new SimpleEntity();
-            item.name = cursor.getString(0);
-            item.code = cursor.getString(1);
-            data.add(item);
+        for (String code : codes) {
+            Cursor cursor = db.rawQuery("select name,val from T_EXTRA_DATA_SOURCE where code = ?",
+                    new String[]{code});
+            List<SimpleEntity> list = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                SimpleEntity item = new SimpleEntity();
+                item.name = cursor.getString(0);
+                item.code = cursor.getString(1);
+                list.add(item);
+            }
+            data.put(code, list);
+            cursor.close();
         }
-        cursor.close();
         db.close();
         return data;
     }
@@ -758,14 +763,47 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         return storageNum;
     }
 
+    @Override
+    public Map<String, List<SimpleEntity>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
+        Map<String, List<SimpleEntity>> map = new HashMap<>();
+        if (keys == null || keys.length == 0) {
+            return map;
+        }
+
+        for (String key : keys) {
+            switch (key) {
+                //供应商
+                case Global.SUPPLIER_DATA:
+                    ArrayList<SimpleEntity> list1 = getSupplierList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key, list1);
+                    break;
+                //成本中心
+                case Global.COST_CENTER_DATA:
+                    ArrayList<SimpleEntity> list2 = getCostCenterList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key, list2);
+                    break;
+                //项目编号
+                case Global.PROJECT_NUM_DATA:
+                    ArrayList<SimpleEntity> list3 = getProjectNumList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key, list3);
+                    break;
+                //GLAccount
+                case Global.GL_ACCOUNT_DATA:
+                    ArrayList<SimpleEntity> list4 = getGLAccountList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key, list4);
+                    break;
+            }
+        }
+        return map;
+    }
+
     /**
      * 获取供应商列表
      *
      * @param workCode：工厂编码
      * @return
      */
-    @Override
-    public ArrayList<SimpleEntity> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    private ArrayList<SimpleEntity> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag) {
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
             return list;
@@ -815,8 +853,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      * @param flag
      * @return
      */
-    @Override
-    public synchronized ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    private ArrayList<SimpleEntity> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
         Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
@@ -875,8 +912,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      *
      * @param workCode:工厂编码
      */
-    @Override
-    public synchronized ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    private ArrayList<SimpleEntity> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
         Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))
@@ -927,8 +963,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
      * @param flag
      * @return
      */
-    @Override
-    public synchronized ArrayList<SimpleEntity> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
+    private ArrayList<SimpleEntity> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
         Log.d("yff", "workCode = " + workCode);
         ArrayList<SimpleEntity> list = new ArrayList<>();
         if (TextUtils.isEmpty(workCode))

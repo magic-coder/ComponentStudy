@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BasePresenter;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.SimpleEntity;
@@ -13,6 +14,7 @@ import com.richfit.sdk_cwtz.head.ILAHeadView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -136,9 +138,9 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
     public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
         mView = getView();
         ResourceSubscriber<ArrayList<String>> subscriber =
-                mRepository.getProjectNumList(workCode, keyWord, defaultItemNum, flag)
-                        .filter(list -> list != null && list.size() > 0)
-                        .map(list -> convert2StrList(list))
+                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, Global.PROJECT_NUM_DATA)
+                        .filter(map -> map != null && map.size() > 0)
+                        .map(map -> convert2StrList(map))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<ArrayList<String>>() {
                             @Override
@@ -163,8 +165,12 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
         addSubscriber(subscriber);
     }
 
-    private ArrayList<String> convert2StrList(List<SimpleEntity> list) {
+    private ArrayList<String> convert2StrList(Map<String,List<SimpleEntity>> map) {
         ArrayList<String> strs = new ArrayList<>();
+        List<SimpleEntity> simpleEntities = map.get(Global.GL_ACCOUNT_DATA);
+        if(simpleEntities == null || simpleEntities.size() ==0)
+            return strs;
+        List<SimpleEntity> list = map.get(Global.PROJECT_NUM_DATA);
         for (SimpleEntity item : list) {
             strs.add(item.code + "_" + item.name);
         }

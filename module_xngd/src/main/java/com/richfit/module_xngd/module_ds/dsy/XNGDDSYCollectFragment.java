@@ -1,6 +1,9 @@
 package com.richfit.module_xngd.module_ds.dsy;
 
 
+import android.text.TextUtils;
+
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
@@ -30,7 +33,6 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
     public void initData() {
 
     }
-
 
     @Override
     protected int getOrgFlag() {

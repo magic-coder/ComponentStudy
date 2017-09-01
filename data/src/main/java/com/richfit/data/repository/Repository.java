@@ -105,6 +105,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
     }
 
     @Override
+    public Flowable<List<ReferenceEntity>> getArrivalInfo(String createdBy, String creationDate, Map<String, Object> extraMap) {
+        return mServerRepository.getArrivalInfo(createdBy,creationDate,extraMap);
+    }
+
+    @Override
     public Flowable<ArrayList<BizFragmentConfig>> loadBizFragmentConfig(String companyId, int mode) {
         return null;
     }
@@ -175,8 +180,8 @@ public final class Repository implements ILocalRepository, IServerRepository {
 
 
     @Override
-    public Flowable<List<SimpleEntity>> getDictionaryData(String code) {
-        return mLocalRepository.getDictionaryData(code);
+    public Flowable<Map<String, List<SimpleEntity>>> getDictionaryData(String... codes) {
+        return mLocalRepository.getDictionaryData(codes);
     }
 
     @Override
@@ -411,24 +416,10 @@ public final class Repository implements ILocalRepository, IServerRepository {
     }
 
     @Override
-    public Flowable<ArrayList<SimpleEntity>> getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return mLocalRepository.getSupplierList(workCode, keyWord, defaultItemNum, flag);
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
+        return mLocalRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, keys);
     }
 
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getCostCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return mLocalRepository.getCostCenterList(workCode, keyWord, defaultItemNum, flag);
-    }
-
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return mLocalRepository.getProjectNumList(workCode, keyWord, defaultItemNum, flag);
-    }
-
-    @Override
-    public Flowable<ArrayList<SimpleEntity>> getGLAccountList(String workCode, String keyWord, int defaultItemNum, int flag) {
-        return mLocalRepository.getGLAccountList(workCode,keyWord,defaultItemNum,flag);
-    }
 
     @Override
     public Flowable<Boolean> saveBizFragmentConfig(ArrayList<BizFragmentConfig> bizFragmentConfigs) {

@@ -141,6 +141,8 @@ public class BlindDetailPresenterImp extends BasePresenter<IBlindDetailView>
         //需要修改的字段
         bundle.putString(Global.EXTRA_QUANTITY_KEY, node.totalQuantity);
         bundle.putString(Global.EXTRA_LOCATION_KEY, node.location);
+        //副计量单位盘点数量
+        bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY,node.totalQuantityCustom);
 
         intent.putExtras(bundle);
 

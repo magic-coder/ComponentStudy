@@ -2,12 +2,17 @@ package com.richfit.module_cqyt.module_as;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.DateChooseHelper;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichEditText;
@@ -21,6 +26,8 @@ import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 注意这里是获取单据数据后，通过单据里面的工厂信息初始化报检单位
@@ -28,6 +35,10 @@ import java.util.List;
  */
 
 public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
+
+    //数据字段
+    private static final String INSPECTION_UNIT_KEY = "inspectionUnit";
+    private static final String INS_STANDARD_KEY = "INS_STANDARD";
 
     EditText etDeliveryOrder;
     //报检单位
@@ -40,8 +51,10 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
     //检验单位
     Spinner spInspectionUnit;
     EditText etRemark;
-    EditText etInspectionStandard;
-    List<String> mInspectionUnits;
+    //检验标准(必输)
+    AutoCompleteTextView etInspectionStandard;
+
+    List<SimpleEntity> mInspectionUnits;
     List<InvEntity> mDeclaredUnits;
     InvAdapter mInvAdapter;
 
@@ -73,7 +86,7 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
         etManufacture = (EditText) mView.findViewById(R.id.cqyt_et_manufacturer);
         spInspectionUnit = (Spinner) mView.findViewById(R.id.cqyt_sp_inspection_unit);
         etRemark = (EditText) mView.findViewById(R.id.et_remark);
-        etInspectionStandard = (EditText) mView.findViewById(R.id.cqyt_et_inspection_standard);
+        etInspectionStandard = (AutoCompleteTextView) mView.findViewById(R.id.cqyt_et_inspection_standard);
 
         llSupplier.setVisibility(View.VISIBLE);
         llSendWork.setVisibility(View.GONE);
@@ -90,6 +103,18 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
 
         etInspectionDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etInspectionDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
+
+        //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
+        RxAutoCompleteTextView.itemClickEvents(etInspectionStandard)
+                .delay(50, TimeUnit.MILLISECONDS)
+                .filter(a -> etInspectionStandard.getAdapter() != null)
+                .subscribe(a -> hideKeyboard(etInspectionStandard));
+
+        //点击自动提示控件，显示默认列表
+        RxView.clicks(etInspectionStandard)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> etInspectionStandard.getAdapter() != null)
+                .subscribe(a -> showAutoCompleteConfig(etInspectionStandard));
     }
 
     @Override
@@ -98,7 +123,7 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
         etArrivalDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         etInspectionDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //直接初始化检验单位
-        mPresenter.getDictionaryData("inspectionUnit");
+        mPresenter.getDictionaryData(INSPECTION_UNIT_KEY, INS_STANDARD_KEY);
     }
 
     @Override
@@ -123,29 +148,48 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
 
     @Override
     public void loadInvsComplete() {
-        //报检单位
+        //报检单位和检验标准，注意检验标准采用的是auto提示
         ArrayList<String> items = new ArrayList<>();
         for (InvEntity item : mDeclaredUnits) {
             items.add(item.invCode);
         }
         UiUtil.setSelectionForSp(items, mRefData.declaredUnit, spDeclaredUnit);
-
     }
 
-
+    /**
+     * 字典查询完毕，初始化检验单位
+     *
+     * @param data
+     */
     @Override
-    public void loadDictionaryDataSuccess(List<SimpleEntity> data) {
-        if(mInspectionUnits == null) {
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        //初始化检验单位
+        if (mInspectionUnits == null) {
             mInspectionUnits = new ArrayList<>();
         }
         mInspectionUnits.clear();
-        ArrayList<String> items = new ArrayList<>();
-        for (SimpleEntity simpleEntity : data) {
-            mInspectionUnits.add(simpleEntity.code);
-            items.add(simpleEntity.name);
+        List<SimpleEntity> inspectionUnitList = data.get(INSPECTION_UNIT_KEY);
+        if (inspectionUnitList != null && inspectionUnitList.size() > 0) {
+            //增加请选择
+            SimpleEntity tmp = new SimpleEntity();
+            tmp.name = "请选择";
+            mInspectionUnits.add(tmp);
+            mInspectionUnits.addAll(inspectionUnitList);
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, items);
+        SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mInspectionUnits);
         spInspectionUnit.setAdapter(adapter);
+        //初始化检验标准
+        List<SimpleEntity> inspectionStandardList = data.get(INS_STANDARD_KEY);
+        if (inspectionStandardList != null && inspectionStandardList.size() > 0) {
+            ArrayList<String> items = new ArrayList<>();
+            for (SimpleEntity simpleEntity : inspectionStandardList) {
+                items.add(simpleEntity.code + "_" + simpleEntity.name);
+            }
+            ArrayAdapter<String> insStandardAdapter = new ArrayAdapter<>(mActivity,
+                    android.R.layout.simple_dropdown_item_1line, items);
+            etInspectionStandard.setAdapter(insStandardAdapter);
+            setAutoCompleteConfig(etInspectionStandard);
+        }
     }
 
 
@@ -169,7 +213,7 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
             //生产厂家
             mRefData.manufacture = getString(etManufacture);
             //检验单位
-            mRefData.inspectionUnit = mInspectionUnits.get(spInspectionUnit.getSelectedItemPosition());
+            mRefData.inspectionUnit = mInspectionUnits.get(spInspectionUnit.getSelectedItemPosition()).code;
             //到货时间
             mRefData.arrivalDate = getString(etArrivalDate);
             //报检时间
@@ -202,7 +246,7 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
                 etManufacture.setText(mRefData.manufacture);
             }
             //检验单位
-            UiUtil.setSelectionForSp(mInspectionUnits, mRefData.inspectionUnit, spInspectionUnit);
+            UiUtil.setSelectionForSimpleSp(mInspectionUnits, mRefData.inspectionUnit, spInspectionUnit);
             //备注
             etRemark.setText(mRefData.remark);
             //检验标准

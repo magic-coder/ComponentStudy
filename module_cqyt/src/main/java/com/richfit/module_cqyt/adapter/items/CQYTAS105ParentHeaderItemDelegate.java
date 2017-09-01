@@ -26,13 +26,14 @@ public class CQYTAS105ParentHeaderItemDelegate extends ASYParentHeaderItemDelega
                 .setText(R.id.refDocItem, String.valueOf(data.refDocItem))
                 //退货交货数量
                 .setText(R.id.returnDeliveryQuantity, data.returnQuantity)
-                //项目文本
-                .setText(R.id.projectText, data.projectText)
+              /*  //项目文本
+                .setText(R.id.projectText, data.projectText)*/
                 //移动原因说明
                 .setText(R.id.moveCauseDesc, data.moveCauseDesc)
                 //移动原因
-                .setText(R.id.moveCause, data.moveCause)
-                //决策代码
+                .setText(R.id.moveCause, data.moveCause);
+              /*  //决策代码
                 .setText(R.id.strategyCode, data.decisionCode);
+    }*/
     }
 }

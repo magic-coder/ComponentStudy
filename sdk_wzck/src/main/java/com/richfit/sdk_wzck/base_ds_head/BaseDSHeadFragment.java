@@ -14,8 +14,12 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzck.R;
 import com.richfit.sdk_wzck.R2;
+
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -210,7 +214,7 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUI() {
-        clearCommonUI(etRefNum,tvRefNum, tvSupplier, tvCreator);
+        clearCommonUI(etRefNum, tvRefNum, tvSupplier, tvCreator);
     }
 
     @Override
@@ -238,6 +242,16 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
                 break;
         }
         super.retry(retryAction);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 
     @Override

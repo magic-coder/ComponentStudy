@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.utils.ArithUtil;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
@@ -105,32 +106,25 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
             showMessage("未获取到移动类型");
             return;
         }
+
+        if(TextUtils.isEmpty(mRefData.inspectionStandard)) {
+            showMessage("请先在抬头输入检验标准和特殊要求");
+            return;
+        }
         super.initDataLazily();
     }
 
     /**
-     * 设置单据行信息之前，过滤掉
+     * 设置单据行信息之前，不进行过滤，只是自动选中哪一行
      *
      * @param refLines
      */
     @Override
     public void setupRefLineAdapter(ArrayList<String> refLines) {
-        if (!TextUtils.isEmpty(mLineNumForFilter)) {
-            //过滤掉重复行号
-            ArrayList<String> lines = new ArrayList<>();
-            for (String refLine : refLines) {
-                if (refLine.equalsIgnoreCase(mLineNumForFilter)) {
-                    lines.add(refLine);
-                }
-            }
-            if (lines.size() == 0) {
-                showMessage("未获取到条码的单据行信息");
-            }
-            super.setupRefLineAdapter(lines);
-            return;
-        }
-        //如果单据中没有过滤行信息那么直接显示所有的行信息
         super.setupRefLineAdapter(refLines);
+        if (!TextUtils.isEmpty(mLineNumForFilter)) {
+            UiUtil.setSelectionForSp(refLines,mLineNumForFilter,spRefLine);
+        }
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.richfit.sdk_wzyk.adapter.items.MSYChildItemDelegate;
 public class CQYTMSY313ChildItemDelegate extends MSYChildItemDelegate {
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_msy313_detail_child_item;
+        return R.layout.cqyt_item_msy313_child_item;
     }
 
 

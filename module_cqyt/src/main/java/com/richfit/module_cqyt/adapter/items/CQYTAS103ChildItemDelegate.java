@@ -13,7 +13,7 @@ import com.richfit.module_cqyt.R;
 public class CQYTAS103ChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.cqyt_item_as103_detail_child_item;
+        return R.layout.cqyt_item_as103_child_item;
     }
 
     @Override
