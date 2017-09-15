@@ -163,8 +163,8 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             lineDeleteFlag = parentNode.getChildren().size() > 1 ? "N" : "Y";
         }
         mPresenter.deleteNode(lineDeleteFlag, node.transId, node.transLineId,
-                node.locationId, mRefData.refType, mRefData.bizType, position,
-                mCompanyCode);
+                node.locationId, mRefData.refType, mRefData.bizType,node.refLineId,Global.USER_ID,
+                position, mCompanyCode);
     }
 
     @Override
@@ -216,6 +216,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             return;
         }
         mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -240,6 +241,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
             return;
         }
         mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }

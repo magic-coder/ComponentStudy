@@ -1,13 +1,23 @@
 package com.richfit.module_mcq.module_dscx.detail;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
 
+import com.richfit.common_lib.lib_adapter_rv.MultiItemTypeAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_mcq.R;
-import com.richfit.module_mcq.adapter.DSCXAdapter;
+import com.richfit.module_mcq.adapter.ASCXRefLinesAdapter;
+import com.richfit.module_mcq.adapter.DSCXRefLinesAdapter;
+import com.richfit.module_mcq.adapter.DSCXRefsAdapter;
 
 import java.util.List;
 
@@ -15,7 +25,8 @@ import java.util.List;
  * Created by monday on 2017/8/28.
  */
 
-public class DSCXDetailFragment extends BaseDetailFragment<BaseDetailPresenterImp,RefDetailEntity> {
+public class DSCXDetailFragment extends BaseDetailFragment<DSCXDetailPresenterImp, RefDetailEntity>
+        implements IDSCSDetailView , MultiItemTypeAdapter.OnItemClickListener{
 
     @Override
     protected int getContentId() {
@@ -24,7 +35,62 @@ public class DSCXDetailFragment extends BaseDetailFragment<BaseDetailPresenterIm
 
     @Override
     public void initPresenter() {
-        mPresenter = new BaseDetailPresenterImp(mActivity);
+        mPresenter = new DSCXDetailPresenterImp(mActivity);
+    }
+
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void initEvent() {
+
+    }
+
+    @Override
+    public void initData() {
+
+    }
+
+    @Override
+    public void initDataLazily() {
+        if (mRefData == null) {
+            showMessage("请现在抬头界面获取单据数据,并选择合适的单据");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRefData.recordNum)) {
+            showMessage("请现在抬头界面获取单据数据,并选择合适的单据");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRefData.bizType)) {
+            showMessage("未获取到业务类型");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRefData.refType)) {
+            showMessage("未获取到单据类型");
+            return;
+        }
+        //开始刷新
+        startAutoRefresh();
+    }
+
+    //重写该方法的目的是，我们不在获取整单缓存，转而获取该单据的明细数据
+    @Override
+    public void onRefresh() {
+        //单据抬头id
+        final String refNum = mRefData.recordNum;
+        //业务类型
+        final String bizType = mRefData.bizType;
+        //单据类型
+        final String refType = mRefData.refType;
+        //移动类型
+        final String moveType = mRefData.moveType;
+        mPresenter.getReference(refNum, refType, bizType, moveType, "", Global.USER_ID);
     }
 
     @Override
@@ -39,14 +105,7 @@ public class DSCXDetailFragment extends BaseDetailFragment<BaseDetailPresenterIm
 
     @Override
     public void showNodes(List<RefDetailEntity> allNodes) {
-        if (mAdapter == null) {
-            mAdapter = new DSCXAdapter(mActivity, R.layout.mcq_item_dscx_head,allNodes);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setOnItemEditAndDeleteListener(this);
-            mAdapter.setAdapterStateListener(this);
-        } else {
-            mAdapter.addAll(allNodes);
-        }
+
     }
 
     @Override
@@ -76,25 +135,6 @@ public class DSCXDetailFragment extends BaseDetailFragment<BaseDetailPresenterIm
 
 
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void initEvent() {
-
-    }
-
-    @Override
-    public void initData() {
-
-    }
-
-    @Override
-    public void initDataLazily() {
-
-    }
 
     @Override
     protected boolean checkTransStateBeforeRefresh() {
@@ -114,5 +154,36 @@ public class DSCXDetailFragment extends BaseDetailFragment<BaseDetailPresenterIm
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
 
+    }
+
+    @Override
+    public void getReferenceSuccess(ReferenceEntity refData) {
+        List<RefDetailEntity> allNodes = refData.billDetailList;
+        DSCXRefLinesAdapter adapter = new DSCXRefLinesAdapter(mActivity, R.layout.mcq_item_dscx_head, allNodes);
+        adapter.setOnItemClickListener(this);
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+        //点击跳转到主页面，并且实现上架功能跳转
+        Intent intent = new Intent(getContext(), mActivity.getClass());
+        Bundle bundle = new Bundle();
+        bundle.putString(Global.EXTRA_COMPANY_CODE_KEY, Global.COMPANY_CODE);
+        bundle.putString(Global.EXTRA_MODULE_CODE_KEY, "");
+        bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, "114");
+        bundle.putString(Global.EXTRA_REF_TYPE_KEY, "17");
+        bundle.putString(Global.EXTRA_CAPTION_KEY, "物资下架");
+        //必须新增单据号
+        bundle.putString(Global.EXTRA_REF_NUM_KEY,mRefData.recordNum);
+        bundle.putInt(Global.EXTRA_MODE_KEY, Global.ONLINE_MODE);
+        intent.putExtras(bundle);
+        mActivity.startActivity(intent);
+        mActivity.finish();
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+        return false;
     }
 }

@@ -67,7 +67,7 @@ public class QHYTUbSto101CollectFragment extends BaseASCollectFragment<ASCollect
 
         final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         final String invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-        mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location);
+        mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location,null);
     }
 
     @Override

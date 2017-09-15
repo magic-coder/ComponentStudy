@@ -109,7 +109,9 @@ public class CQYTMSY315DetailPresenterImp extends ASDetailPresenterImp {
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
                     //件数
-                    bundle.putString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;

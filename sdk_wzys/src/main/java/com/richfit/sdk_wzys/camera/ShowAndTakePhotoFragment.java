@@ -208,7 +208,7 @@ public class ShowAndTakePhotoFragment extends BaseFragment<ShowAndTakePhotoPrese
     @Override
     public void deleteImageSuccess() {
         showMessage("删除成功");
-        //删除内存的图片，刷星界面
+        //删除内存的图片，刷新界面
         if (mAdapter != null) {
             Iterator<ImageEntity> iterator = mImages.iterator();
             while (iterator.hasNext()) {

@@ -41,8 +41,11 @@ public class DSPrarentHeadItemDelegate implements ItemViewDelegate<RefDetailEnti
                 .setText(R.id.work, data.workCode)
                 //库存地点
                 .setText(R.id.inv, data.invCode)
+                //副计量单位
                 .setText(R.id.mcq_material_unit_custom, data.unitCustom)
+                //副计量单位应收
                 .setText(R.id.mcq_act_quantity_custom, data.actQuantityCustom)
+                //副计量单位累计
                 .setText(R.id.mcq_total_quantity_custom, data.totalQuantityCustom);
 
     }

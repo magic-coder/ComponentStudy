@@ -136,8 +136,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     /*批次一致性检查*/
     protected boolean isBatchValidate = true;
     /*上架仓位列表适配器*/
-    ArrayAdapter<String> mLocationAdapter;
-    List<String> mLocationList;
+    protected ArrayAdapter<String> mLocationAdapter;
+    protected  List<String> mLocationList;
+
 
     @Override
     protected int getContentId() {
@@ -175,7 +176,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             }
             //处理仓位
         } else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
-            final String location = list[0];
+            final String location = list[Global.LOCATION_POS];
             clearCommonUI(etLocation);
             etLocation.setText(location);
             getTransferSingle(getString(etBatchFlag), location);
@@ -203,6 +204,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        //物料改变恢复批次状态
         RxTextView.textChanges(etMaterialNum)
                 .filter(str -> !TextUtils.isEmpty(str))
                 .subscribe(e -> {
@@ -411,8 +413,15 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         } else {
             mInvAdapter.notifyDataSetChanged();
         }
-        //这里如果不上架，默认选择第一个目的是触发获取缓存
-        spInv.setSelection(isNLocation ? 1 : 0);
+        //如果上架，那么带出单据中的库存地点
+        if(!isNLocation) {
+            ArrayList<String> datas = new ArrayList<>();
+            for (InvEntity item : list) {
+                datas.add(item.invCode);
+            }
+            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+            UiUtil.setSelectionForSp(datas, lineData.invCode, spInv);
+        }
     }
 
     @Override
@@ -436,7 +445,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
     @Override
     public void loadInventoryFail(String message) {
-        showMessage(message);
         if (mLocationAdapter != null) {
             mLocationList.clear();
             etLocation.setAdapter(null);
@@ -498,7 +506,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             //如果上架，那么检查仓位是否存在
             final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
             final String invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
-            mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location);
+            //使用库存参数
+            InventoryQueryParam queryParam = provideInventoryQueryParam();
+            mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location,queryParam.extraMap);
         } else {
             //如果不上架，那么直接默认仓位检查通过
             checkLocationSuccess(batchFlag, location);
@@ -585,16 +595,23 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                  */
                 for (LocationInfoEntity cachedItem : locationInfos) {
                     //缓存和输入的都为空或者都不为空而且相等,那么系统默认批次匹配
-                    boolean isMatch;
+                    boolean isMatch = false;
 
                     isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                             (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                    isMatch = isOpenBatchManager ? (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag) &&
-                            location.equalsIgnoreCase(cachedItem.location)) || (
-                            !TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                    location.equalsIgnoreCase(cachedItem.location))
-                            : location.equalsIgnoreCase(cachedItem.location);
+                    if (!isOpenBatchManager) {
+                        //没有打开批次管理，直接使用仓位匹配
+                        isMatch = location.equalsIgnoreCase(cachedItem.location);
+                    } else {
+                        if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
+                            //打开批次管理，但是没有输入批次
+                            isMatch = location.equalsIgnoreCase(cachedItem.location);
+                        } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
+                            //打开了批次管理，输入了批次
+                            isMatch = location.equalsIgnoreCase(cachedItem.location) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                        }
+                    }
 
                     L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
 
@@ -869,6 +886,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
      *
      * @return
      */
-    protected abstract int getOrgFlag();
+    protected int getOrgFlag() {
+        return 0;
+    }
 
 }

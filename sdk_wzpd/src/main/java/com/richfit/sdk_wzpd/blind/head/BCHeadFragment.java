@@ -409,6 +409,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
         if (mRefData != null) {
             mRefData.voucherDate = getString(etTransferDate);
             if (rbStorageNumLevel.isChecked()) {
+                //仓位级
                 mRefData.storageNum = mStorageNums.get(spStorageNum.getSelectedItemPosition());
                 mRefData.checkLevel = "01";
             } else if (rbWarehouseLevel.isChecked()) {

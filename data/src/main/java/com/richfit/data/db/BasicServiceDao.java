@@ -1237,7 +1237,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
     }
 
     /**
-     * 读取离线模式下该用户的所有业务类型，注意这里仅仅需要查询的二级菜单l
+     * 读取离线模式下该用户的所有业务类型，注意这里仅仅需要查询的二级菜单
      *
      * @param loginId
      * @return
@@ -1249,20 +1249,12 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         Cursor cursor = null;
         clearStringBuffer();
         try {
-            //1. 查询离线根节点的id
-            String rootId = null;
-            cursor = db.rawQuery("select id from T_HOME_MENUS where parent_id = ? and biz_type = ?", new String[]{
-                    "0", "local_mobile"});
-            while (cursor.moveToNext()) {
-                rootId = cursor.getString(0);
-            }
-            if (TextUtils.isEmpty(rootId)) {
-                return list;
-            }
 
             sb.append("select id,parent_id,biz_type,ref_type,caption,functionCode,tree_level ");
-            sb.append(" from T_HOME_MENUS where login_id = ? and biz_type != ? and parent_id != ? and mode = ? and ref_type is null");
-            cursor = db.rawQuery(sb.toString(), new String[]{loginId, "local_mobile", rootId, "1"});
+            sb.append(" from T_HOME_MENUS where 1=1 and ")
+                    .append(" login_id = ? and biz_type != ? and parent_id != ? and mode = ? ")
+            .append(" and functionCode = '' and ref_type = ''");
+            cursor = db.rawQuery(sb.toString(), new String[]{loginId, "local_mobile", "0","1"});
             clearStringBuffer();
             MenuNode item;
             int index;

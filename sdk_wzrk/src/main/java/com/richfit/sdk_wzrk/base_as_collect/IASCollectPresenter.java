@@ -19,7 +19,8 @@ public interface IASCollectPresenter extends IBaseCollectPresenter<IASCollectVie
     void getInvsByWorkId(String workId, int flag);
 
 
-    void checkLocation(String queryType, String workId, String invId, String batchFlag, String location);
+    void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                       String location,Map<String,Object> extraMap);
 
 
     /**

@@ -2,13 +2,11 @@ package com.richfit.module_mcq.module_ascx.head;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.MultiItemTypeAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
@@ -19,7 +17,7 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_mcq.R;
-import com.richfit.module_mcq.adapter.RefsAdapter;
+import com.richfit.module_mcq.adapter.ASCXRefsAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,7 +122,7 @@ public class ASCXHeadFragment extends BaseHeadFragment<ASCXHeadPresenterImp> imp
         }
         mRefList.clear();
         mRefList.addAll(refs);
-        RefsAdapter adapter = new RefsAdapter(mActivity, R.layout.mcq_item_refs, refs);
+        ASCXRefsAdapter adapter = new ASCXRefsAdapter(mActivity, R.layout.mcq_item_ascx_refs, refs);
         rvRefs.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
     }

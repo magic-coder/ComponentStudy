@@ -7,18 +7,20 @@ import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_mcq.R;
+import com.richfit.sdk_wzpd.blind.collect.imp.BlindCollectPresenterImp;
 
 /**
  * Created by monday on 2017/8/29.
  */
 
-public class MCQBCColectFragment extends BaseCollectFragment<MCQCollectPresenterImp>
-        implements IMCQBCCollectView {
+public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresenterImp>
+        implements IBaseCollectView {
 
     //盘点仓位
     EditText etLocation;
@@ -34,7 +36,7 @@ public class MCQBCColectFragment extends BaseCollectFragment<MCQCollectPresenter
 
     @Override
     public void initPresenter() {
-        mPresenter = new MCQCollectPresenterImp(mActivity);
+        mPresenter = new BlindCollectPresenterImp(mActivity);
     }
 
     @Override

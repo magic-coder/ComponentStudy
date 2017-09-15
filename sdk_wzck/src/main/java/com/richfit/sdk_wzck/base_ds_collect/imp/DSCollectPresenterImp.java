@@ -10,6 +10,7 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzck.base_ds_collect.IDSCollectPresenter;
 import com.richfit.sdk_wzck.base_ds_collect.IDSCollectView;
 
@@ -123,7 +124,9 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
 
         @Override
         public void _onComplete() {
-
+            if(mView != null) {
+                mView.loadInventoryComplete();
+            }
         }
     }
 
@@ -171,6 +174,80 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
                             public void _onComplete() {
                                 if (mView != null) {
                                     mView.loadCacheSuccess();
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
+
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
+
+    @Override
+    public void getSuggestedLocation(String refCodeId, String bizType, String refType, String userId, String workId, String invId, String recWorkId, String recInvId, String queryType, String lineWorkId, String lineInvId, String lineWorkCode, String lineInvCode, String storageNum, String materialNum, String materialId, String location, String batchFlag, String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String, Object> extraMap) {
+
+    }
+
+    @Override
+    public void checkLocation(String queryType, String workId, String invId, String batchFlag, String location, Map<String, Object> extraMap) {
+        mView = getView();
+        if (TextUtils.isEmpty(workId) && mView != null) {
+            mView.checkLocationFail("工厂为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(invId) && mView != null) {
+            mView.checkLocationFail("库存地点为空");
+            return;
+        }
+
+        ResourceSubscriber<String> subscriber =
+                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new ResourceSubscriber<String>() {
+                            @Override
+                            public void onNext(String s) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.checkLocationFail(t.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                if (mView != null) {
+                                    mView.checkLocationSuccess(batchFlag, location);
                                 }
                             }
                         });

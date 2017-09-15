@@ -55,7 +55,15 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
         spStrategyCode = (Spinner) mActivity.findViewById(R.id.sp_strategy_code);
         spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
+    }
 
+    @Override
+    public void initEvent() {
+        super.initEvent();
+        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
+            hideKeyboard(etLocation);
+            getTransferSingle(getString(etBatchFlag), location);
+        });
     }
 
     @Override
@@ -148,11 +156,8 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         return index;
     }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
-    }
+
+
 
     @Override
     public void bindCommonCollectUI() {

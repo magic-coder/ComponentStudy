@@ -84,15 +84,25 @@ public class CQYTMYS313DetailPresenterImp extends MSDetailPresenterImp {
                     //批次
                     bundle.putString(Global.EXTRA_BATCH_FLAG_KEY, node.batchFlag);
 
-                    //上架仓位
+                    //接收批次
+                    bundle.putString(Global.EXTRA_REC_BATCH_FLAG_KEY,node.recBatchFlag);
+
+                    //上/下架仓位
                     bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
+
+                    //上/下接收仓位
+                    bundle.putString(Global.EXTRA_REC_LOCATION_KEY,node.recLocation);
+
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
                     //件数
-                    bundle.putString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+
+                    //仓储类型
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
 
                     intent.putExtras(bundle);
 

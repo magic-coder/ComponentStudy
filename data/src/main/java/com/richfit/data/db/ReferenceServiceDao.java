@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.data.constant.Global;
+import com.richfit.data.exception.Exception;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -22,7 +24,7 @@ import java.util.List;
 public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao {
 
 
-    public ReferenceServiceDao( Context context) {
+    public ReferenceServiceDao(Context context) {
         super(context);
     }
 
@@ -471,4 +473,186 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
     public void saveDeliveryInfo(ReferenceEntity refData, String bizType, String refType) {
 
     }
+
+    @Override
+    public ReferenceEntity getArrivalInfo(String refNum, String refType, String bizType, String moveType, String refLineId, String userId) {
+        ReferenceEntity refData = new ReferenceEntity();
+        SQLiteDatabase db = getWritableDB();
+
+        try {
+            //1. 查询单据抬头
+            StringBuffer sqlField = new StringBuffer();
+
+            //创建需要保存的字段
+            sqlField.append(" ID,ARRIVAL_NUM,RECORD_CREATOR,RECORD_DATE,PO_NUM,SUPPLIER_NUM,SUPPLIER_DESC,")
+                    //没有workId
+                    .append("PROJECT_NUM,WORK_CODE,WORK_NAME,SUPPLIER_EVALUATION ");
+            clearStringBuffer();
+            sb.append("select ")
+                    .append(sqlField)
+                    .append("from mtl_arrival_headers ")
+                    .append("where arrival_num = ?");
+
+            Cursor cursor = db.rawQuery(sb.toString(), new String[]{refNum});
+            int index;
+            while (cursor.moveToNext()) {
+                index = -1;
+                refData.refCodeId = cursor.getString(++index);
+                refData.recordNum = cursor.getString(++index);
+                refData.recordCreator = cursor.getString(++index);
+                refData.recordDate = cursor.getString(++index);
+                refData.poNum = cursor.getString(++index);
+                refData.supplierNum = cursor.getString(++index);
+                refData.supplierDesc = cursor.getString(++index);
+                refData.projectNum = cursor.getString(++index);
+                refData.workCode = cursor.getString(++index);
+                refData.workName = cursor.getString(++index);
+                refData.supplierEvaluation = cursor.getString(++index);
+            }
+            cursor.close();
+
+            //如果未获取到抬头的refCodeId，那么直接返回null
+            final String refCodeId = refData.refCodeId;
+            if (TextUtils.isEmpty(refCodeId)) {
+                return refData;
+            }
+
+            //2. 获取单据的明细数据
+            sqlField.setLength(0);
+            sqlField.append("ID,ARRIVAL_ID,LINE_NUM,PO_NUM,PO_LINE_NUM,WORK_ID,INV_ID,MATERIAL_ID,")
+                    .append("QUANTITY,QUANTITY_CUSTOM,QM_FLAG,SPECIAL_FLAG,UNIT,UNIT_CUSTOM,ACT_QUANTITY,ACT_QUANTITY_CUSTOM,")
+                    .append("MATERIAL_NUM,MATERIAL_DESC,MATERIAL_GROUP,STATUS,W.ORG_CODE,W.ORG_NAME,I.ORG_CODE,I.ORG_NAME ");
+
+            clearStringBuffer();
+            sb.append("select ")
+                    .append(sqlField)
+                    .append(" from mtl_arrival_lines t left join P_AUTH_ORG  w on t.work_id = w.org_id ")
+                    .append(" left join P_AUTH_ORG  i on t.inv_id = i.org_id ")
+                    .append(" where arrival_id = ? ");
+
+            cursor = db.rawQuery(sb.toString(), new String[]{refData.refCodeId});
+            ArrayList<RefDetailEntity> billDetailList = new ArrayList<>();
+            RefDetailEntity item;
+
+            while (cursor.moveToNext()) {
+                item = new RefDetailEntity();
+                index = -1;
+
+                item.refLineId = cursor.getString(++index);
+                item.refCodeId = cursor.getString(++index);
+                item.lineNum = cursor.getString(++index);
+                item.poNum = cursor.getString(++index);
+                item.poLineNum = cursor.getString(++index);
+                item.workId = cursor.getString(++index);
+                item.invId = cursor.getString(++index);
+                item.materialId = cursor.getString(++index);
+                item.quantity = cursor.getString(++index);
+                item.quantityCustom = cursor.getString(++index);
+                item.qmFlag = cursor.getString(++index);
+                item.specialInvFlag = cursor.getString(++index);
+                item.unit = cursor.getString(++index);
+                item.unitCustom = cursor.getString(++index);
+                item.actQuantity = cursor.getString(++index);
+                item.actQuantityCustom = cursor.getString(++index);
+                item.materialNum = cursor.getString(++index);
+                item.materialDesc = cursor.getString(++index);
+                item.materialGroup = cursor.getString(++index);
+                item.status = cursor.getString(++index);
+                item.workCode = cursor.getString(++index);
+                item.workName = cursor.getString(++index);
+                item.invCode = cursor.getString(++index);
+                item.invName = cursor.getString(++index);
+
+                billDetailList.add(item);
+            }
+            cursor.close();
+            refData.billDetailList = billDetailList;
+        } catch (Exception e) {
+            return refData;
+        } finally {
+            db.close();
+        }
+
+        return refData;
+    }
+
+    /**
+     * 保存出入库通知单单据数据
+     *
+     * @param refData:原始单据数据
+     * @param bizType:业务类型
+     * @param refType:单据类型
+     */
+    @Override
+    public void saveArrivalInfo(ReferenceEntity refData, String bizType, String refType) {
+        SQLiteDatabase db = getWritableDB();
+        if (refData == null || refData.billDetailList == null || refData.billDetailList.size() == 0) {
+            return;
+        }
+        try {
+            //1. 处理抬头
+            String refCodeId = refData.refCodeId;
+            clearStringBuffer();
+            StringBuffer sqlField = new StringBuffer();
+
+            //创建需要保存的字段
+            sqlField.append("ID,ARRIVAL_NUM,RECORD_CREATOR,RECORD_DATE,PO_NUM,SUPPLIER_NUM,SUPPLIER_DESC,")
+                    //没有workId
+                    .append("PROJECT_NUM,WORK_CODE,WORK_NAME,SUPPLIER_EVALUATION,TYPE,STATUS,")
+                    .append("CREATED_BY,CREATION_DATE,LAST_UPDATED_BY,LAST_UPDATE_DATE");
+
+            //创建占位符
+            String sqlHeadPlaceHolder = createPlaceHolder(sqlField.toString());
+
+            //创建sql语句
+            sb.append("insert or replace into mtl_arrival_headers  (")
+                    .append(sqlField)
+                    .append(")")
+                    .append(" VALUES (")
+                    .append(sqlHeadPlaceHolder)
+                    .append(")");
+
+            //插入数据
+            String currentDate = CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1);
+
+            db.execSQL(sb.toString(), new Object[]{refCodeId, refData.recordNum,
+                    refData.recordCreator, refData.recordDate, "", refData.supplierNum, refData.supplierDesc,
+                    refData.projectNum, refData.workCode, refData.workName, refData.supplierEvaluation, "1", "Y",
+                    refData.recordCreator, currentDate, refData.recordCreator, currentDate});
+
+            //2. 处理明细
+            final List<RefDetailEntity> list = refData.billDetailList;
+            if (list != null && list.size() > 0) {
+                clearStringBuffer();
+                //创建需要保存的字段
+                sqlField.setLength(0);
+                sqlField.append("ID,ARRIVAL_ID,LINE_NUM,PO_NUM,PO_LINE_NUM,WORK_ID,INV_ID,MATERIAL_ID,")
+                        .append("QUANTITY,QUANTITY_CUSTOM,QM_FLAG,SPECIAL_FLAG,UNIT,UNIT_CUSTOM,ACT_QUANTITY,ACT_QUANTITY_CUSTOM,")
+                        .append("MATERIAL_NUM,MATERIAL_DESC,MATERIAL_GROUP,")
+                        .append("STATUS,CREATED_BY,CREATION_DATE,LAST_UPDATED_BY,LAST_UPDATE_DATE");
+                //创建占位符
+                String sqlDetailPlaceHolder = createPlaceHolder(sqlField.toString());
+                //插入数据
+                sb.append("insert or replace into  mtl_arrival_lines ( ")
+                        .append(sqlField)
+                        .append(")")
+                        .append(" VALUES (")
+                        .append(sqlDetailPlaceHolder)
+                        .append(")");
+
+                for (RefDetailEntity data : list) {
+                    db.execSQL(sb.toString(), new Object[]{data.refLineId, refCodeId, data.lineNum, "", "",
+                            data.workId, data.invId, data.materialId, data.quantity, data.quantityCustom, data.qmFlag,
+                            data.specialInvFlag, data.unit, data.unitCustom, data.actQuantity, data.actQuantityCustom,
+                            data.materialNum, data.materialDesc, data.materialGroup, "Y",
+                            refData.recordCreator, currentDate, refData.recordCreator, currentDate});
+                }
+            }
+        } catch (Exception e) {
+            Log.e("yff", "保存单据出错 = " + e.getMessage());
+        } finally {
+            db.close();
+        }
+    }
+
 }

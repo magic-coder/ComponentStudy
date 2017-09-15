@@ -17,11 +17,13 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -53,7 +55,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     @BindView(R2.id.tv_inv_quantity)
     TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
-    TextView tvLocQuantity;
+    protected TextView tvLocQuantity;
     @BindView(R2.id.tv_total_quantity)
     protected TextView tvTotalQuantity;
     @BindView(R2.id.tv_rec_location)
@@ -71,7 +73,6 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     //该子节点修改前的出库数量
     protected String mQuantity;
     protected List<InventoryEntity> mInventoryDatas;
-    private LocationAdapter mLocationAdapter;
     private List<String> mLocationCombines;
     protected String mSelectedLocationCombine;
     protected String mSpecialInvFlag;
@@ -85,24 +86,16 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
-        mInventoryDatas = new ArrayList<>();
+
     }
 
 
     @Override
     public void initEvent() {
         //选择下架仓位，刷新库存数量并且请求缓存，注意缓存是用来刷新仓位数量和累计数量
-        RxAdapterView
-                .itemSelections(spLocation)
-                .filter(position -> position >= 0 && isValidatedLocation())
-                .subscribe(position -> {
-                    //库存数量
-                    tvInvQuantity.setText(mInventoryDatas.get(position).invQuantity);
-                    //获取缓存
-                    mPresenter.getTransferInfoSingle(mRefData.refCodeId, mRefData.refType,
-                            mRefData.bizType, mRefLineId, getString(tvBatchFlag), mInventoryDatas.get(position).locationCombine
-                            , "", -1, Global.USER_ID);
-                });
+        RxAdapterView.itemSelections(spLocation)
+                .filter(position -> mInventoryDatas != null &&isValidatedLocation())
+                .subscribe(position -> getTransferSingle(position));
     }
 
     /**
@@ -140,7 +133,6 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         mRefLineId = bundle.getString(Global.EXTRA_REF_LINE_ID_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
 
-
         if (mRefData != null) {
             /*单据数据中的库存地点不一定有，而且用户可以录入新的库存地点，所以只有子节点的库存地点才是正确的*/
             final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
@@ -160,54 +152,65 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             tvRecLoc.setText(recLocation);
             //初始化库存地点
             if (spLocation.isEnabled())
-                loadInventoryInfo(lineData.workId, invId, lineData.workCode, invCode, lineData.materialId, "", batchFlag);
+                loadInventoryInfo();
         }
     }
 
     /**
-     * 获取库存
-     *
-     * @param workId
-     * @param invId
-     * @param materialId
-     * @param location
-     * @param batchFlag
+     * 获取库存。注意这里获取的是所有仓位的库存，在用户选择仓位之后进行过滤选择
      */
-    protected void loadInventoryInfo(String workId, String invId, String workCode, String invCode, String materialId, String
-            location, String batchFlag) {
+    protected void loadInventoryInfo() {
+        //清除之前匹配的缓存
+        tvInvQuantity.setText("");
+        tvLocQuantity.setText("");
+        tvTotalQuantity.setText("");
+
+        //准备数据
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        String workId = lineData.workId;
+        String workCode = lineData.workCode;
+        String invId = CommonUtil.Obj2String(tvInv.getTag());
+        String invCode = getString(tvInv);
+        String materialId = lineData.materialId;
+        String batchFlag = getString(tvBatchFlag);
+
         //检查批次，库存地点等字段
         if (TextUtils.isEmpty(workId)) {
-            showMessage("发出工厂为空");
+            showMessage("工厂为空");
             return;
         }
         if (TextUtils.isEmpty(invId)) {
-            showMessage("发出库位");
+            showMessage("库存地点");
             return;
         }
-        final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+
+        //开始加载库存
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode,
-                "", getString(tvMaterialNum), materialId, location, batchFlag, lineData.specialInvFlag,
+                "", getString(tvMaterialNum), materialId, "", batchFlag, lineData.specialInvFlag,
                 mRefData.supplierNum, param.invType, "", param.extraMap);
     }
 
     @Override
     public void showInventory(List<InventoryEntity> list) {
-        mInventoryDatas.clear();
-        mInventoryDatas.addAll(list);
-        if (mLocationAdapter == null) {
-            mLocationAdapter = new LocationAdapter(mActivity, R.layout.item_simple_sp, mInventoryDatas);
-            spLocation.setAdapter(mLocationAdapter);
-        } else {
-            mLocationAdapter.notifyDataSetChanged();
+        if(mInventoryDatas == null) {
+            mInventoryDatas = new ArrayList<>();
         }
+        mInventoryDatas.clear();
+        InventoryEntity tmp = new InventoryEntity();
+        tmp.locationCombine = "请选择";
+        mInventoryDatas.add(tmp);
+        mInventoryDatas.addAll(list);
+
+        //这里采用局部变量的原因是，煤层气增加的仓储类型。每次选择仓储类型都必须去获取最新的库存信息
+        LocationAdapter adapter = new LocationAdapter(mActivity, R.layout.item_simple_sp, mInventoryDatas);
+        spLocation.setAdapter(adapter);
 
         //默认选择已经下架的仓位
         if (TextUtils.isEmpty(mSelectedLocationCombine)) {
             spLocation.setSelection(0);
             return;
         }
-
 
         //系统自动选择用户选中的仓位
         int pos = -1;
@@ -217,17 +220,38 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             if (mSelectedLocationCombine.equalsIgnoreCase(loc.locationCombine))
                 break;
         }
-        if (pos >= 0 && pos < list.size()) {
+        if (pos >= 0 && pos < mInventoryDatas.size()) {
             spLocation.setSelection(pos);
         } else {
             spLocation.setSelection(0);
         }
     }
 
-
     @Override
     public void loadInventoryFail(String message) {
         showMessage(message);
+    }
+
+    /**
+     * 选择下拉仓位匹配单条缓存
+     * @param position:下拉仓位的位置
+     */
+    protected void getTransferSingle(int position) {
+        final String invQuantity = mInventoryDatas.get(position).invQuantity;
+        //检测是否选择了发出库位
+        if (position <= 0) {
+            spLocation.setSelection(0, true);
+            tvInvQuantity.setText("");
+            tvLocQuantity.setText("");
+            tvTotalQuantity.setText("");
+            return;
+        }
+        //如果满足条件，那么先显示库存数量
+        tvInvQuantity.setText(invQuantity);
+        //获取缓存
+        mPresenter.getTransferInfoSingle(mRefData.refCodeId, mRefData.refType,
+                mRefData.bizType, mRefLineId, getString(tvBatchFlag), mInventoryDatas.get(position).locationCombine
+                , "", -1, Global.USER_ID);
     }
 
     @Override
@@ -274,6 +298,11 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
 
         if (Float.parseFloat(getString(etQuantity)) <= 0.0f) {
             showMessage("输入出库数量不合理,请重新输入");
+            return false;
+        }
+
+        if (spLocation.getSelectedItemPosition() <= 0) {
+            showMessage("请先输入下架仓位");
             return false;
         }
 
@@ -349,13 +378,20 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     }
 
     @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
     public void retry(String retryAction) {
         switch (retryAction) {
             case Global.RETRY_LOAD_INVENTORY_ACTION:
-                final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-                loadInventoryInfo(lineData.workId, tvInv.getTag().toString(),
-                        lineData.workCode, getString(tvInv),
-                        lineData.materialId, "", getString(tvBatchFlag));
+                loadInventoryInfo();
                 break;
         }
         super.retry(retryAction);

@@ -12,7 +12,9 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.checkn.collect.ICNCollectPresenter;
 import com.richfit.sdk_wzpd.checkn.collect.ICNCollectView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 
@@ -89,7 +91,9 @@ public class CNCollectPresenterImp extends BaseCollectPresenterImp<ICNCollectVie
         Flowable<String> flowable;
         final String checkLevel = result.checkLevel;
         if ("01".equals(checkLevel)) {
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, result.storageNum, result.location),
+            Map<String,Object> extraMap = new HashMap<>();
+            extraMap.put("locationType",result.locationType);
+            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, result.storageNum, result.location,extraMap),
                     mRepository.uploadCheckDataSingle(result));
         } else {
             flowable = mRepository.uploadCheckDataSingle(result);

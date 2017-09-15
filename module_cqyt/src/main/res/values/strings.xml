@@ -33,5 +33,16 @@
     <string name="cqyt_inspection_standard">检验标准及特殊要求</string>
     <string name="cqyt_inspection_result">外观检验结果</string>
     <string name="cqyt_return_quantity">采购退货数量</string>
+    <string name="cqyt_ins_weather">天气</string>
+    <string name="cqyt_ins_temperature">温度</string>
+    <string name="cqyt_ins_humidity">湿度</string>
+    <string name="cqyt_ins_clean">库区地面是否干净整洁</string>
+    <string name="cqyt_ins_quantity">帐、卡、物数量是否一致</string>
+    <string name="cqyt_ins_chemical">化学品物资码垛是否合理、牢固、苫垫是否严密</string>
+    <string name="cqyt_ins_fire">消防设施（器材）、防护用具是否有效、消防通道是否通畅</string>
+    <string name="cqyt_ins_hazardous">危化品包装是否有破损或者渗漏等</string>
+    <string name="cqyt_ins_h">库区温度与湿度是否符合库存维护批储存要求</string>
+    <string name="cqyt_ins_flammable">易燃化学物资封口是否严密，有无挥发或者渗漏、变质、溶化或者变色等现象</string>
+    <string name="cqyt_ins_effective">化学品是否超过有效期</string>
 
 </resources>

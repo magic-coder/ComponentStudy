@@ -75,31 +75,6 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
         }
     }
 
-    @Override
-    public void editNode(final RefDetailEntity node, int position) {
-        mPresenter.editNode(null, null, mRefData, node, mCompanyCode, mBizType, mRefType,
-                getSubFunName(), -1);
-    }
-
-    @Override
-    public void deleteNode(final RefDetailEntity node, int position) {
-        if (TextUtils.isEmpty(node.transLineId)) {
-            showMessage("该行还未进行数据采集");
-            return;
-        }
-        TreeNode parentNode = node.getParent();
-        String lineDeleteFlag;
-        if (parentNode == null) {
-            lineDeleteFlag = "N";
-        } else {
-            lineDeleteFlag = parentNode.getChildren().size() > 1 ? "N" : "Y";
-        }
-
-        mPresenter.deleteNode(lineDeleteFlag, node.transId, node.transLineId,
-                node.locationId, mRefData.refType, mRefData.bizType, position,
-                mCompanyCode);
-    }
-
     /**
      * 1.过账。因为要上传图片，给出单号
      */
@@ -192,8 +167,8 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
     @Override
     protected boolean checkTransStateBeforeRefresh() {
         String transferFlag = (String) getData(mBizType + mRefType, "0");
-        if ("1".equals(transferFlag)) {
-            setRefreshing(false, "本次采集的数据已经上传,请先到数据明细界面进行过账等操作");
+        if (!"0".equals(transferFlag)) {
+            setRefreshing(false, "本次采集的数据已经上传/过账,请先到数据明细界面进行过账等操作");
             return false;
         }
         return true;

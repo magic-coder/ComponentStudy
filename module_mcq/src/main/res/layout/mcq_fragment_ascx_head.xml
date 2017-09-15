@@ -47,12 +47,11 @@
 
         <include
             android:id="@id/tmp"
-            layout="@layout/mcq_item_refs" />
+            layout="@layout/mcq_item_ascx_refs" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@id/base_detail_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </LinearLayout>
 </LinearLayout>

@@ -31,7 +31,10 @@
     <item name="totalUsedQuantity" type="id"></item>
     <item name="ll_customer" type="id"></item>
     <item name="tv_customer" type="id"></item>
+    <item name="tv_material_unit_name" type="id"></item>
+    <item name="ll_rec_location_type" type="id"></item>
     <item name="sp_work" type="id"></item>
+    <item name="sp_rec_location_type" type="id"></item>
     <item name="et_auto_comp" type="id"></item>
     <item name="et_auto_comp_name" type="id"></item>
     <item name="ll_work" type="id"></item>
@@ -252,5 +255,7 @@
     <item name="ll_material_desc" type="id"></item>
     <item name="et_create_date" type="id"></item>
     <item name="tv_creation_date" type="id"></item>
+    <item name="sp_location_type" type="id"></item>
+    <item name="ll_location_type" type="id"></item>
 
 </resources>

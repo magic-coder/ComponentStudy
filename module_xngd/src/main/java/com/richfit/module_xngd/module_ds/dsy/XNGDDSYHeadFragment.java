@@ -90,9 +90,9 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
             //成本中心
             tvCostCenter.setText(mRefData.costCenter);
             //项目移交物资
-            if ("1".equalsIgnoreCase(mRefData.invType)) {
+            if ("0".equalsIgnoreCase(mRefData.invType)) {
                 tvInvType.setText(mRefData.invType + "_" + "工程移交");
-            } else if ("0".equalsIgnoreCase(mRefData.invType)) {
+            } else if ("1".equalsIgnoreCase(mRefData.invType)) {
                 tvInvType.setText(mRefData.invType + "_" + "正常物资");
             }
             tvJobNum.setText(mRefData.jobNum);

@@ -1,44 +1,4 @@
-create table IF not exists T_EXTRA_HEADER
-(
-  id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-  config_type      TEXT
-);
 
-create table IF not exists T_EXTRA_LINE
-(
-   id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-   ref_code_id      VARCHAR2(32),
-   config_type      TEXT
-
-);
-
-create table IF not exists T_EXTRA_CW
-(
- id               VARCHAR2(32) PRIMARY KEY NOT NULL,
- ref_line_id      VARCHAR2(32),
- config_type      TEXT
-);
-
-create table IF not exists T_TRANSACTION_EXTRA_HEADER
-(
-   id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-   config_type      TEXT
-);
-
-
-create table IF not exists T_TRANSACTION_EXTRA_LINE
-(
-   id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-   trans_line_id    VARCHAR2(32),
-   config_type      TEXT
-);
-
-create table IF not exists T_TRANSACTION_EXTRA_CW
-(
-   id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-   trans_loc_id     VARCHAR2(32),
-   config_type      TEXT
-);
 
 create table BASE_MATERIAL_BATCH
 (
@@ -216,22 +176,6 @@ create table IF not exists T_USER
   batch_flag         TEXT
 );
 
-create table IF not exists T_CONFIG
-(
-    id               VARCHAR2(32) PRIMARY KEY NOT NULL,
-    property_name    TEXT,
-    property_code    TEXT,
-    display_flag     TEXT,
-    input_flag       TEXT,
-    company_id       TEXT,
-    biz_type         TEXT,
-    ref_type         TEXT,
-    config_type      TEXT,
-    ui_type          TEXT,
-    col_num          TEXT,
-    col_name         TEXT,
-    data_source      TEXT
-);
 
 create table IF not exists T_EXTRA_DATA_SOURCE
 (
@@ -544,8 +488,10 @@ create table IF not exists  MTL_TRANSACTION_LINES
   material_id         VARCHAR2(32),
   new_material_id     VARCHAR2(32),
   quantity            NUMBER(13,3),
+  quantityC_custom    NUMBER(13,3),
   order_unit_quantity NUMBER(13,3),
   act_quantity        NUMBER(13,3),
+  act_quantity_custom   NUMBER(13,3),
   unit                TEXT,
   unit_rate           REAL,
   device_location     VARCHAR2(300),
@@ -587,6 +533,7 @@ create table IF not exists MTL_TRANSACTION_LINES_SPLIT
   material_id         VARCHAR2(32),
   new_material_id     VARCHAR2(32),
   quantity            NUMBER(13,3),
+  quantity_custom     NUMBER(13,3),
   order_unit_quantity NUMBER(13,3),
   special_convert     TEXT,
   act_quantity        NUMBER(13,3),
@@ -618,6 +565,7 @@ create table IF not exists MTL_TRANSACTION_LINES_LOCATION
    location            VARCHAR2(32),
    rec_location        VARCHAR2(32),
    quantity            NUMBER(13,3),
+   quantity_custom     NUMBER(13,3),
    order_quantity      NUMBER(13,3),
    rec_quantity        NUMBER(13,3),
    rec_order_quantity  NUMBER(13,3),
@@ -627,4 +575,54 @@ create table IF not exists MTL_TRANSACTION_LINES_LOCATION
    creation_date       INTEGER,
    last_updated_by     VARCHAR2(32),
    last_update_date    INTEGER
+);
+
+
+CREATE TABLE `mtl_arrival_headers` (
+  `ID` varchar(32) NOT NULL ,
+  `ARRIVAL_NUM` varchar(16) NOT NULL ,
+  `RECORD_CREATOR` varchar(32) NOT NULL ,
+  `RECORD_DATE` date DEFAULT NULL ,
+  `PO_NUM` varchar(10) DEFAULT NULL ,
+  `SUPPLIER_NUM` varchar(10) DEFAULT NULL ,
+  `SUPPLIER_DESC` varchar(120) DEFAULT NULL ,
+  `PROJECT_NUM` varchar(120) DEFAULT NULL ,
+  `WORK_CODE` varchar(4) DEFAULT NULL,
+  `WORK_NAME` varchar(120) DEFAULT NULL ,
+  `SUPPLIER_EVALUATION` varchar(200) DEFAULT NULL ,
+  `TYPE` varchar(2) DEFAULT NULL ,
+  `STATUS` varchar(10) DEFAULT NULL,
+  `CREATED_BY` varchar(32) DEFAULT NULL ,
+  `CREATION_DATE` datetime DEFAULT NULL ,
+  `LAST_UPDATED_BY` varchar(32) DEFAULT NULL,
+  `LAST_UPDATE_DATE` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+);
+
+CREATE TABLE mtl_arrival_lines (
+  `ID` varchar(32) NOT NULL ,
+  `ARRIVAL_ID` varchar(32) DEFAULT NULL ,
+  `LINE_NUM` decimal(6,0) DEFAULT NULL ,
+  `PO_NUM` varchar(32) DEFAULT NULL ,
+  `PO_LINE_NUM` decimal(6,0) DEFAULT NULL ,
+  `WORK_ID` varchar(32) DEFAULT NULL ,
+  `INV_ID` varchar(32) DEFAULT NULL ,
+  `MATERIAL_ID` varchar(18) DEFAULT NULL ,
+  `QUANTITY` decimal(13,3) DEFAULT NULL ,
+  `QUANTITY_CUSTOM` decimal(13,3) DEFAULT NULL ,
+  `QM_FLAG` varchar(1) DEFAULT NULL ,
+  `SPECIAL_FLAG` varchar(1) DEFAULT NULL,
+  `UNIT` varchar(120) DEFAULT NULL ,
+  `UNIT_CUSTOM` varchar(120) DEFAULT NULL ,
+  `STATUS` varchar(10) DEFAULT NULL ,
+  `CREATED_BY` varchar(32) DEFAULT NULL ,
+  `CREATION_DATE` datetime DEFAULT NULL ,
+  `LAST_UPDATED_BY` varchar(32) DEFAULT NULL ,
+  `LAST_UPDATE_DATE` datetime DEFAULT NULL ,
+  `ACT_QUANTITY` decimal(13,3) DEFAULT NULL ,
+  `ACT_QUANTITY_CUSTOM` decimal(13,3) DEFAULT NULL,
+  `MATERIAL_NUM` TEXT,
+  `MATERIAL_DESC` TEXT,
+  `MATERIAL_GROUP` TEXT,
+  PRIMARY KEY (`ID`)
 );

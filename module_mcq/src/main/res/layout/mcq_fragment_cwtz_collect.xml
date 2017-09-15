@@ -93,6 +93,7 @@
 
 
         <LinearLayout
+            android:id="@id/mcq_ll_batch_flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

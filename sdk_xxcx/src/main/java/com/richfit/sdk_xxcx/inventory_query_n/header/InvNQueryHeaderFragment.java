@@ -11,6 +11,7 @@ import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_xxcx.R;
 import com.richfit.sdk_xxcx.R2;
@@ -18,6 +19,7 @@ import com.richfit.sdk_xxcx.inventory_query_n.header.imp.InvNQueryHeaderPresente
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -142,6 +144,16 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
         } else {
             mInvAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 
 

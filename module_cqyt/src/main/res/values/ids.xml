@@ -49,5 +49,18 @@
     <item name="cqyt_et_material_num" type="id"/>
     <item name="cqyt_et_material_desc" type="id"/>
     <item name="cqyt_tv_quantity" type="id"/>
+    <item name="cqyt_tv_location_type" type="id" />
+    <item name="cqyt_et_ins_weather" type="id" />
+    <item name="cqyt_et_ins_temperature" type="id" />
+    <item name="cqyt_et_ins_humidity" type="id" />
+    <item name="cqyt_sp_ins_clean" type="id" />
+    <item name="cqyt_sp_ins_quantity" type="id" />
+    <item name="cqyt_sp_ins_chemical" type="id" />
+    <item name="cqyt_sp_ins_fire" type="id" />
+    <item name="cqyt_sp_ins_hazardous" type="id" />
+    <item name="cqyt_sp_ins_th" type="id" />
+    <item name="cqyt_sp_ins_expire" type="id" />
+    <item name="cqyt_sp_ins_flammable" type="id" />
+    <item name="cqyt_sp_ins_effective" type="id" />
 
 </resources>

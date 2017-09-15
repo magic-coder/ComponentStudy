@@ -11,6 +11,7 @@ import com.richfit.domain.bean.UserEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 
@@ -144,7 +145,8 @@ public interface IRepository {
      * @return
      */
     Flowable<ReferenceEntity> getCheckInfo(String userId, String bizType, String checkLevel, String checkSpecial,
-                                           String storageNum, String workId, String invId, String checkNum, String checkDate);
+                                           String storageNum, String workId, String invId, String checkNum, String checkDate,
+                                           Map<String,Object> extraMap);
 
     /**
      * 删除整个盘点单
@@ -210,7 +212,8 @@ public interface IRepository {
     Flowable<String> uploadCheckData(String checkId, String userId, String bizType);
 
 
-    Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location);
+    Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location,
+                                     Map<String,Object> extraMap);
 
     /**
      * 获取用户操作的菜单列表

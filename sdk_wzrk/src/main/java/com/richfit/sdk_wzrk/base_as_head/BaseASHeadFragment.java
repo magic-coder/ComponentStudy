@@ -220,7 +220,9 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
             //单据号
             tvRefNum.setText(mRefData.recordNum);
             //供应商
-            tvSupplier.setText(mRefData.supplierNum + "_" + mRefData.supplierDesc);
+            String supplier = !TextUtils.isEmpty(mRefData.supplierDesc) ? (mRefData.supplierNum + "_" + mRefData.supplierDesc)
+                    : mRefData.supplierNum;
+            tvSupplier.setText(supplier);
             //发出工厂
             tvSendWork.setText(mRefData.workCode);
             tvCreator.setText(Global.LOGIN_ID);
@@ -229,7 +231,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
 
     @Override
     public void clearAllUI() {
-        clearCommonUI(etRefNum,tvRefNum, tvSupplier, tvSendWork);
+        clearCommonUI(etRefNum, tvRefNum, tvSupplier, tvSendWork);
     }
 
     @Override
@@ -275,7 +277,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     }
 
     @Override
-    public void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data) {
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
 
     }
 

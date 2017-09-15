@@ -185,10 +185,13 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
                     bundle.putString(CQYTAS103EditFragment.EXTRA_REMARK_KEY, parentNode.remark);
 
                     //件数(注意这里使用的是313的关键字)
-                    bundle.putString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
 
                     //报检数量
                     bundle.putString(CQYTAS103EditFragment.EXTRA_DECLARED_QUANTITY_KEY, node.declaredQuantity);
+
+                    //仓储类型
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;

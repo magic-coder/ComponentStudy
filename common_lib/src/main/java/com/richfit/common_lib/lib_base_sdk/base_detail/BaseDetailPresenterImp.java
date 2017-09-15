@@ -38,7 +38,9 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
     }
 
     @Override
-    public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId, String refType, String bizType, int position, String companyCode) {
+    public void deleteNode(String lineDeleteFlag, String transId, String transLineId,
+                           String locationId, String refType, String bizType,
+                           String refLine,String userId,int position, String companyCode) {
 
     }
 

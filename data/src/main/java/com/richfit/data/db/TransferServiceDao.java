@@ -279,7 +279,6 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
         selectionList.clear();
         sb.append(" SELECT T.ID,T.REF_LINE_ID,T.REF_LINE_NUM,T.WORK_ID,T.INV_ID,")
                 .append("T.REC_WORK_ID,T.REC_INV_ID,T.MATERIAL_ID,")
-                .append("T.QUANTITY,")
                 .append("W.ORG_CODE AS WORK_CODE,")
                 .append("W.ORG_NAME AS WORK_NAME,")
                 .append("I.ORG_CODE AS INV_CODE,")
@@ -288,7 +287,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 .append("RW.ORG_NAME AS REC_WORK_NAME,")
                 .append("RI.ORG_CODE AS REC_INV_CODE,")
                 .append("RI.ORG_NAME AS REC_INV_NAME,")
-                .append("T.QUANTITY,T.INS_LOT,T.DECISION_CODE,T.PROJECT_TEXT,")
+                .append("T.QUANTITY,T.QUANTITY_CUSTOM,T.INS_LOT,T.DECISION_CODE,T.PROJECT_TEXT,")
                 .append("T.MOVE_CAUSE,T.MOVE_CAUSE_DESC,")
                 .append("T.RETURN_QUANTITY,T.REF_DOC,T.REF_DOC_ITEM ")
                 .append("FROM MTL_TRANSACTION_LINES T ");
@@ -317,7 +316,6 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
             item.recWorkId = cursor.getString(++index);
             item.recInvId = cursor.getString(++index);
             item.materialId = cursor.getString(++index);
-            item.quantity = cursor.getString(++index);
             item.workCode = cursor.getString(++index);
             item.workName = cursor.getString(++index);
             item.invCode = cursor.getString(++index);
@@ -326,7 +324,10 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
             item.recWorkName = cursor.getString(++index);
             item.recInvCode = cursor.getString(++index);
             item.recInvName = cursor.getString(++index);
+            /* item.quantity = cursor.getString(++index);
+            item.quantityCustom = cursor.getString(++index);*/
             item.totalQuantity = cursor.getString(++index);
+            item.totalQuantityCustom = cursor.getString(++index);
             item.insLot = cursor.getString(++index);
             item.decisionCode = cursor.getString(++index);
             item.projectText = cursor.getString(++index);
@@ -349,9 +350,9 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
         //获取仓位缓存
         clearStringBuffer();
         sb.append(" SELECT T.ID,T.TRANS_ID,T.TRANS_LINE_ID,T.LOCATION,")
-                .append("L.BATCH_NUM,T.QUANTITY,T.REC_LOCATION,L.REC_BATCH_NUM,")
+                .append("L.BATCH_NUM,T.QUANTITY,T.QUANTITY_CUSTOM,T.REC_LOCATION,L.REC_BATCH_NUM,")
                 .append("L.SPECIAL_FLAG,L.SPECIAL_NUM,L.SPECIAL_CONVERT ")
-                .append("FROM MTL_TRANSACTION_LINES_LOCATION T , MTL_TRANSACTION_LINES_SPLIT L")
+                .append("FROM MTL_TRANSACTION_LINES_LOCATION T , MTL_TRANSACTION_LINES_SPLIT L ")
                 .append(" WHERE T.TRANS_LINE_SPLIT_ID = L.ID ")
                 .append(" AND T.TRANS_LINE_ID = ?")
                 .append(" ORDER BY T.LOCATION");
@@ -369,6 +370,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 locItem.location = cursor.getString(++index);
                 locItem.batchFlag = cursor.getString(++index);
                 locItem.quantity = cursor.getString(++index);
+                locItem.quantityCustom = cursor.getString(++index);
                 locItem.recLocation = cursor.getString(++index);
                 locItem.recBatchFlag = cursor.getString(++index);
                 locItem.specialInvFlag = cursor.getString(++index);
@@ -864,7 +866,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
         selectionList.clear();
         sb.append("SELECT T.ID, T.REF_LINE_ID, T.WORK_ID,")
                 .append("T.INV_ID,T.REC_WORK_ID,T.REC_INV_ID,")
-                .append("T.MATERIAL_ID,T.QUANTITY,")
+                .append("T.MATERIAL_ID,T.QUANTITY,T.QUANTITY_CUSTOM,")
                 .append("M.MATERIAL_NUM,M.MATERIAL_DESC,M.MATERIAL_GROUP,")
                 .append("W.ORG_CODE AS WORK_CODE,W.ORG_NAME AS WORK_NAME,")
                 .append("I.ORG_CODE AS INV_CODE,I.ORG_NAME AS INV_NAME,")
@@ -929,6 +931,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
             item.recInvId = cursor.getString(++index);
             item.materialId = cursor.getString(++index);
             item.totalQuantity = cursor.getString(++index);
+            item.totalQuantityCustom = cursor.getString(++index);
             item.materialNum = cursor.getString(++index);
             item.materialDesc = cursor.getString(++index);
             item.materialGroup = cursor.getString(++index);
@@ -959,12 +962,12 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
             return refData;
         }
 
-        //获取仓位缓存
+        //获取仓位缓存(煤层气增加副计量单位相关数量)
         clearStringBuffer();
         sb.append(" SELECT T.ID,T.TRANS_ID,T.TRANS_LINE_ID,T.LOCATION,")
-                .append("L.BATCH_NUM,T.QUANTITY,T.REC_LOCATION,L.REC_BATCH_NUM,")
+                .append("L.BATCH_NUM,T.QUANTITY,T.QUANTITY_CUSTOM,T.REC_LOCATION,L.REC_BATCH_NUM,")
                 .append("L.SPECIAL_FLAG,L.SPECIAL_NUM ")
-                .append("FROM MTL_TRANSACTION_LINES_LOCATION T , MTL_TRANSACTION_LINES_SPLIT L")
+                .append("FROM MTL_TRANSACTION_LINES_LOCATION T,MTL_TRANSACTION_LINES_SPLIT L")
                 .append(" WHERE T.TRANS_LINE_SPLIT_ID = L.ID ")
                 .append(" AND T.TRANS_LINE_ID = ?")
                 .append(" ORDER BY T.LOCATION");
@@ -981,6 +984,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 locItem.location = cursor.getString(++index);
                 locItem.batchFlag = cursor.getString(++index);
                 locItem.quantity = cursor.getString(++index);
+                locItem.quantityCustom = cursor.getString(++index);
                 locItem.recLocation = cursor.getString(++index);
                 locItem.recBatchFlag = cursor.getString(++index);
                 locItem.specialInvFlag = cursor.getString(++index);

@@ -45,7 +45,8 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
         }
 
         //如果用户选择的是项目物资，那么必须检查编号必输
-        if ("Q".equals(mRefData.specialInvFlag) && TextUtils.isEmpty(mRefData.projectNum)) {
+        if (!TextUtils.isEmpty(mRefData.specialInvFlag) && 
+			"Q".equals(mRefData.specialInvFlag) && TextUtils.isEmpty(mRefData.projectNum)) {
             showMessage("请先在抬头输入项目编号");
             return;
         }
@@ -87,7 +88,7 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = mRefData.invType;
+       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

@@ -36,8 +36,8 @@ public class SettingPresenterImp extends BasePresenter<ISettingView>
         implements ISettingPresenter {
 
     private ISettingView mView;
-    private RxDownload mRxDownload;
     private int mTaskId = 0;
+    private RxDownload mRxDownload;
     private Disposable mUpdateDisposable;
 
     public SettingPresenterImp(Context context) {

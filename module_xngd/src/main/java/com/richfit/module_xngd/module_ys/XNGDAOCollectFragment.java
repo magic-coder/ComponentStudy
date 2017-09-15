@@ -186,7 +186,9 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         //是否应急
-        result.invFlag = mRefData.invFlag;
+        //修改成明细取该字段
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        result.invFlag = lineData.invFlag;
         //全检数量
         result.allQuantity = getString(etAllQuantity);
         //抽检数量
@@ -333,7 +335,7 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = "1";
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

@@ -20,5 +20,6 @@ public interface IInvNQueryHeaderPresenter extends IPresenter<IInvNQueryHeaderVi
      */
     void getInvsByWorkId(String workId, int flag);
 
+    void getDictionaryData(String... codes);
 
 }

@@ -134,7 +134,8 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         //是否应急
-        result.invFlag = mRefData.invFlag;
+        //修改成明细取该字段
+        result.invFlag = mRefData.billDetailList.get(mPosition).invFlag;
         //全检数量
         result.allQuantity = getString(etAllQuantity);
         //抽检数量

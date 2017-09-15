@@ -124,9 +124,9 @@ public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, final int position, String companyCode) {
+                           String refType, String bizType, String refLineId,String userId,int position, String companyCode) {
         RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, "", "", position, companyCode)
+                locationId, refType, bizType, refLineId, userId, position, companyCode)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext) {
                     @Override

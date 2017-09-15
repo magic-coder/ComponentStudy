@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="false"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@id/root_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_xj_date" />
+
+            <com.richfit.common_lib.widget.RichEditText
+                android:id="@id/cqyt_et_xj_date"
+                style="@style/RightRichEditTextItemStyle"
+                android:drawableRight="@mipmap/icon_find"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_xj_person" />
+
+            <TextView
+                android:id="@id/cqyt_tv_xj_person"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <!--天气-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_weather" />
+
+            <EditText
+                android:id="@id/cqyt_et_ins_weather"
+                style="@style/RightEditTextItemStyle" />
+        </LinearLayout>
+
+        <!--温度-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_temperature" />
+
+            <EditText
+                android:id="@id/cqyt_et_ins_temperature"
+                style="@style/RightEditTextItemStyle" />
+        </LinearLayout>
+
+
+        <!--湿度-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_humidity" />
+
+            <EditText
+                android:id="@id/cqyt_et_ins_humidity"
+                style="@style/RightEditTextItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_xj_ins_door" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_door"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_clean" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_clean"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_quantity" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_quantity"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_chemical" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_chemical"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_fire" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_fire"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_hazardous" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_hazardous"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_h" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_th"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_flammable" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_flammable"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_ins_effective" />
+
+            <Spinner
+                android:id="@id/cqyt_sp_ins_effective"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--（0：采购订单，1：验收清单，2：生产订单，3：到货验收单，4：交货单，5：出库单，6：提料单，-->
-    <!--7：领料申请单，8：批料单，9：SAP出入库单，10：预留单）-->
+    <!--7：领料申请单，8：批料单，9：SAP出入库单，10：预留单，11 调拨单,12.退库申请单,13.条码出入库单
+        14.报废申请单,15.工单,16.入库通知单,17.出库通知单
+    ）-->
     <string-array name="ref_type_list">
         <item>采购订单</item>
         <item>验收清单</item>
@@ -14,6 +16,13 @@
         <item>领料申请单</item>
         <item>SAP出入库单</item>
         <item>预留单</item>
+        <item>调拨单</item>
+        <item>退库申请单</item>
+        <item>条码出入库单</item>
+        <item>报废申请单</item>
+        <item>工单</item>
+        <item>入库通知单</item>
+        <item>出库通知单</item>
     </string-array>
 
 

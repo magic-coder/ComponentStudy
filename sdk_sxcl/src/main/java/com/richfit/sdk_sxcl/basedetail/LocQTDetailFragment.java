@@ -121,7 +121,8 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
             lineDeleteFlag = parentNode.getChildren().size() > 1 ? "N" : "Y";
         }
         mPresenter.deleteNode(lineDeleteFlag, node.transId, node.transLineId,
-                node.locationId, mRefData.refType, mRefData.bizType, position, mCompanyCode);
+                node.locationId, mRefData.refType, mRefData.bizType,node.refLineId,
+                Global.USER_ID, position, mCompanyCode);
     }
 
     @Override

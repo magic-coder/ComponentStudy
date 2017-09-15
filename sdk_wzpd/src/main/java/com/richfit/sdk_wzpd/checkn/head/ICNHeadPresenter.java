@@ -3,6 +3,8 @@ package com.richfit.sdk_wzpd.checkn.head;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/3/3.
  */
@@ -39,7 +41,7 @@ public interface ICNHeadPresenter extends IBaseHeadPresenter<ICNHeadView> {
      * @param invId:库存地点id
      */
     void getCheckInfo(String userId, String bizType, String checkLevel, String checkSpecial,
-                      String storageNum, String workId, String invId, String checkDate);
+                      String storageNum, String workId, String invId, String checkDate,Map<String,Object> extraMap);
 
     /**
      * 删除整单盘点数据
@@ -51,4 +53,6 @@ public interface ICNHeadPresenter extends IBaseHeadPresenter<ICNHeadView> {
      */
     void deleteCheckData(String storageNum, String workId, String invId,
                          String checkId, String userId, String bizType);
+
+    void getDictionaryData(String... codes);
 }

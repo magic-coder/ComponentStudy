@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -246,13 +247,15 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
     public void checkAppVersion(UpdateEntity info) {
         //获取当前的版本号
         mUpdateInfo = info;
-        int currentVersion = CommonUtil.getCurrentVersionCode(this.getApplicationContext());
-        if (info.appNum > currentVersion) {
+        String currentVersionName = CommonUtil.getCurrentVersionName(this.getApplicationContext());
+        float versionName = Float.parseFloat(currentVersionName);
+        float appVersion = Float.parseFloat(info.appVersion);
+        if (appVersion > versionName) {
             //提示用户需要更新
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setTitle("检测到最新的版本:" + info.appVersion);
             dialog.setMessage(info.appUpdateDesc);
-            dialog.setPositiveButton("现在下载", (dialogInterface, i) -> start(info.appDownloadUrl, info.appName));
+            dialog.setPositiveButton("现在下载", (dialogInterface, i) -> startLoadLatestApk(info.appDownloadUrl, info.appName));
             dialog.setNegativeButton("以后再说", (dialogInterface, i) -> dialogInterface.dismiss());
             dialog.show();
         } else {
@@ -342,7 +345,7 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
      * @param url
      * @param saveName
      */
-    private void start(String url, String saveName) {
+    private void startLoadLatestApk(String url, String saveName) {
         mCurrentLoadStatus = LOAD_STATUS_START;
         String apkCacheDir = FileUtil.getApkCacheDir(this.getApplicationContext());
         mPresenter.loadLatestApp(url, saveName, apkCacheDir);
@@ -404,11 +407,11 @@ public class SettingActivity extends BaseActivity<SettingPresenterImp>
         if (o == mAlertView && position != AlertView.CANCELPOSITION) {
             String oldPwd = etOldPwd.getText().toString();
             String newPwd = etNewPwd.getText().toString();
-            if(TextUtils.isEmpty(oldPwd) || TextUtils.isEmpty(newPwd)) {
+            if (TextUtils.isEmpty(oldPwd) || TextUtils.isEmpty(newPwd)) {
                 showMessage("输入密码有误");
                 return;
             }
-            mPresenter.resetPassword(oldPwd,newPwd);
+            mPresenter.resetPassword(oldPwd, newPwd);
             return;
         }
     }

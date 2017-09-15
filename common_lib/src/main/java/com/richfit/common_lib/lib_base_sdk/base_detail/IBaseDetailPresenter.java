@@ -36,7 +36,7 @@ public interface IBaseDetailPresenter<V extends IBaseDetailView> extends IPresen
      * @param position：该子节点在所有节点中的真实位置
      */
     void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                    String refType, String bizType, int position, String companyCode);
+                    String refType, String bizType,String refLineId,String userId, int position, String companyCode);
 
     /**
      * 修改子节点

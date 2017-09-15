@@ -21,7 +21,7 @@
     <TextView
         android:id="@id/tv_creator"
         style="@style/TableHeaderStyle"
-        android:layout_width="240dp"
+        android:layout_width="120dp"
         android:text="@string/creator" />
 
     <View style="@style/ItemSeperatorLayout"/>
@@ -29,7 +29,7 @@
     <TextView
         android:id="@id/work"
         style="@style/TableHeaderStyle"
-        android:layout_width="240dp"
+        android:layout_width="120dp"
         android:text="@string/work" />
 
     <View style="@style/ItemSeperatorLayout"/>

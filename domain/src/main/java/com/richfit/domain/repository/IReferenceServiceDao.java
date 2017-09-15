@@ -97,4 +97,25 @@ public interface IReferenceServiceDao {
      * @param refType
      */
     void saveDeliveryInfo(ReferenceEntity refData, String bizType, String refType);
+
+    /**
+     * 获取出入库通知单单据数据
+     * @param refNum
+     * @param refType
+     * @param bizType
+     * @param moveType
+     * @param refLineId
+     * @param userId
+     * @return
+     */
+    ReferenceEntity getArrivalInfo(String refNum, String refType, String bizType,
+                                    String moveType, String refLineId, String userId);
+
+    /**
+     * 保存出入库通知单单据数据
+     * @param refData
+     * @param bizType
+     * @param refType
+     */
+    void saveArrivalInfo(ReferenceEntity refData, String bizType, String refType);
 }

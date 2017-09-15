@@ -159,7 +159,7 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
         }
 
         final String invId = mSendInvs.get(spSendInv.getSelectedItemPosition()).invId;
-        mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location);
+        mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location,null);
     }
 
     @Override

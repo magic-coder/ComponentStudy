@@ -42,6 +42,7 @@ public class MainPresenterImp extends BasePresenter<MainContract.View>
         final String companyCode = bundle.getString(Global.EXTRA_COMPANY_CODE_KEY);
         final String moduleCode = bundle.getString(Global.EXTRA_MODULE_CODE_KEY);
         final String refLineNum = bundle.getString(Global.EXTRA_REF_LINE_NUM_KEY);
+        final String refNum = bundle.getString(Global.EXTRA_REF_NUM_KEY);
         final UploadMsgEntity uploadMsgEntity = bundle.getParcelable(Global.EXTRA_UPLOAD_MSG_KEY);
 
         ResourceSubscriber<MainPagerViewAdapter> subscriber =
@@ -52,6 +53,7 @@ public class MainPresenterImp extends BasePresenter<MainContract.View>
                             Bundle argument = new Bundle();
                             argument.putString(Global.EXTRA_COMPANY_CODE_KEY, companyCode);
                             argument.putString(Global.EXTRA_MODULE_CODE_KEY, moduleCode);
+                            argument.putString(Global.EXTRA_REF_NUM_KEY,refNum);
                             argument.putString(Global.EXTRA_BIZ_TYPE_KEY, config.bizType);
                             argument.putString(Global.EXTRA_REF_TYPE_KEY, config.refType);
                             argument.putString(Global.EXTRA_TITLE_KEY, config.tabTitle);

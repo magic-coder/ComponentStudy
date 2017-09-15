@@ -28,7 +28,7 @@ public class MCQDSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
     @Override
     public void initData() {
-
+       // etRefNum.setText("2-20170907-00230");
     }
 
     @Override

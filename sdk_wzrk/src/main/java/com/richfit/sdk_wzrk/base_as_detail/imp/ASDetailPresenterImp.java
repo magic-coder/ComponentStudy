@@ -76,42 +76,43 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, final int position, String companyCode) {
-        RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, "", "", position, companyCode)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext) {
-                    @Override
-                    public void _onNext(String s) {
+                           String refType, String bizType, String refLineId, String userId, int position, String companyCode) {
+        RxSubscriber<String> subscriber =
+                mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
+                        locationId, refType, bizType, refLineId, userId, position, companyCode)
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext) {
+                            @Override
+                            public void _onNext(String s) {
 
-                    }
+                            }
 
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
 
-                    }
+                            }
 
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.deleteNodeFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.deleteNodeFail(message);
+                                }
+                            }
 
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.deleteNodeSuccess(position);
-                        }
-                    }
-                });
+                            @Override
+                            public void _onComplete() {
+                                if (mView != null) {
+                                    mView.deleteNodeSuccess(position);
+                                }
+                            }
+                        });
         addSubscriber(subscriber);
     }
 
@@ -192,8 +193,19 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                     //上架仓位
                     bundle.putString(Global.EXTRA_LOCATION_KEY, node.location);
 
+                    //仓储类型
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
+
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
+
+                    //副计量单位的累计数量
+                    bundle.putString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY, parentNode.totalQuantityCustom);
+
+                    //副计量单位的实收数量
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
@@ -366,6 +378,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
 
             for (LocationInfoEntity location : locationList) {
                 RefDetailEntity childNode = new RefDetailEntity();
+                childNode.refLineId = parentNode.refLineId;
                 childNode.invId = parentNode.invId;
                 childNode.invCode = parentNode.invCode;
                 childNode.totalQuantity = parentNode.totalQuantity;
@@ -377,7 +390,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 childNode.arrivalQuantity = location.arrivalQuantity;
                 childNode.transLineId = location.transLineId;
                 childNode.locationId = location.id;
-                childNode.quantityCustom = location.quantityCustom;
+                childNode.locationType = location.locationType;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

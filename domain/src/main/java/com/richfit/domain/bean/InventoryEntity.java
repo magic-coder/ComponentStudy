@@ -33,6 +33,8 @@ public class InventoryEntity extends TreeNode{
     public String workName;
     //组合仓位值
     public String locationCombine;
+    //仓储类型
+    public String locationType;
     /**
      * 盘点凭证
      */

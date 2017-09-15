@@ -102,6 +102,10 @@ public class CQYTAS105DetailPresenterImp extends ASDetailPresenterImp {
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
 
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
+
+                    //件数
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY,node.quantityCustom);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;

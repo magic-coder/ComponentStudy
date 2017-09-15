@@ -25,6 +25,39 @@
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_quantity_custom" />
+
+            <EditText
+                android:id="@id/cqyt_et_quantity_custom"
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_total_quantity_custom" />
+
+            <TextView
+                android:id="@id/cqyt_tv_total_quantity_custom"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
                 android:text="@string/return_delivery_quantity" />
 
             <EditText
@@ -32,20 +65,6 @@
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:padding="5dp">-->
-
-            <!--<TextView-->
-                <!--style="@style/LeftTextViewItemStyle"-->
-                <!--android:text="@string/project_text" />-->
-
-            <!--<EditText-->
-                <!--android:id="@id/et_project_text"-->
-                <!--style="@style/RightEditTextItemStyle" />-->
-        <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,23 +80,6 @@
                 android:id="@id/et_move_cause_desc"
                 style="@style/RightEditTextItemStyle" />
         </LinearLayout>
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:orientation="horizontal"-->
-            <!--android:padding="5dp">-->
-
-            <!--<TextView-->
-                <!--style="@style/LeftTextViewItemStyle"-->
-                <!--android:text="@string/strategy_code" />-->
-
-            <!--<Spinner-->
-                <!--android:id="@id/sp_strategy_code"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="@dimen/spinner_min_height"-->
-                <!--android:layout_weight="2" />-->
-        <!--</LinearLayout>-->
 
 
         <LinearLayout

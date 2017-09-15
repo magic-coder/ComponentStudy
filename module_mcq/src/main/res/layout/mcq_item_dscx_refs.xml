@@ -11,7 +11,7 @@
     <TextView
         android:id="@id/mcq_tv_ref_num"
         style="@style/TableHeaderStyle"
-        android:layout_width="140dp"
+        android:layout_width="135dp"
         android:text="@string/mcq_ref_num" />
 
     <View style="@style/ItemSeperatorLayout" />
@@ -19,16 +19,16 @@
     <TextView
         android:id="@id/tv_creator"
         style="@style/TableHeaderStyle"
-        android:layout_width="100dp"
+        android:layout_width="90dp"
         android:text="@string/creator" />
 
     <View style="@style/ItemSeperatorLayout" />
 
     <TextView
-        android:id="@id/tv_creation_date"
+        android:id="@id/work"
         style="@style/TableHeaderStyle"
-        android:layout_width="100dp"
-        android:text="@string/create_date" />
+        android:layout_width="90dp"
+        android:text="@string/work" />
 
     <View style="@style/ItemSeperatorLayout" />
 

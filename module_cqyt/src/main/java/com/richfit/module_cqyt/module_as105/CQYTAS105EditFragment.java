@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -13,6 +14,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
+import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
@@ -27,12 +29,14 @@ import java.util.Map;
 public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     EditText etReturnQuantity;
-   // EditText etProjectText;
     EditText etMoveCauseDesc;
-    //Spinner spStrategyCode;
     Spinner spMoveCause;
+    EditText etQuantityCustom;
 
     List<SimpleEntity> mMoveCauses;
+    //仓储类型
+    Spinner spLocationType;
+    List<SimpleEntity> mLocationTypes;
 
     @Override
     protected int getContentId() {
@@ -54,27 +58,28 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         //退货交货数量
         etReturnQuantity = (EditText) mActivity.findViewById(R.id.et_return_quantity);
         etReturnQuantity.setEnabled(false);
+        etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         //如果输入的退货交货数量，那么移动原因必输，如果退货交货数量没有输入那么移动原因可输可不输
-        //etProjectText = (EditText) mActivity.findViewById(R.id.et_project_text);
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
         spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
+        //显示仓储类型
+        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
+        spLocationType = mView.findViewById(R.id.sp_location_type);
     }
 
     @Override
     public void initData() {
         Bundle bundle = getArguments();
         String returnQuantity = bundle.getString(Global.EXTRA_RETURN_QUANTITY_KEY);
-        String projectText = bundle.getString(Global.EXTRA_PROJECT_TEXT_KEY);
+        //String projectText = bundle.getString(Global.EXTRA_PROJECT_TEXT_KEY);
         String moveCauseDesc = bundle.getString(Global.EXTRA_MOVE_CAUSE_DESC_KEY);
         etReturnQuantity.setText(returnQuantity);
         //etProjectText.setText(projectText);
         etMoveCauseDesc.setText(moveCauseDesc);
         spMoveCause.setEnabled(false);
-        //初始化移动原因
-        String moveCause = getArguments().getString(Global.EXTRA_MOVE_CAUSE_KEY);
-        if (!TextUtils.isEmpty(moveCause)) {
-            mPresenter.getDictionaryData("moveCause");
-        }
+        String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
+        etQuantityCustom.setText(quantityCustom);
+        mPresenter.getDictionaryData("moveCause","locationType");
         super.initData();
     }
 
@@ -87,22 +92,56 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> moveCauses = data.get("moveCause");
         String moveCause = getArguments().getString(Global.EXTRA_MOVE_CAUSE_KEY);
-        if (moveCauses == null || TextUtils.isEmpty(moveCause))
-            return;
-        if (mMoveCauses == null) {
-            mMoveCauses = new ArrayList<>();
+        if (moveCauses != null && !TextUtils.isEmpty(moveCause)) {
+            if (mMoveCauses == null) {
+                mMoveCauses = new ArrayList<>();
+            }
+            mMoveCauses.clear();
+            SimpleEntity tmp = new SimpleEntity();
+            tmp.name = "请选择";
+            mMoveCauses.add(tmp);
+            mMoveCauses.addAll(moveCauses);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mMoveCauses);
+            spMoveCause.setAdapter(adapter);
+            UiUtil.setSelectionForSimpleSp(mMoveCauses, moveCause, spMoveCause);
         }
-        mMoveCauses.clear();
-        SimpleEntity tmp = new SimpleEntity();
-        tmp.name = "请选择";
-        mMoveCauses.add(tmp);
-        mMoveCauses.addAll(moveCauses);
-        SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mMoveCauses);
-        spMoveCause.setAdapter(adapter);
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
 
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
+        }
+    }
 
-        Log.e("yff", "moveCause = " + moveCause);
-        UiUtil.setSelectionForSimpleSp(mMoveCauses, moveCause, spMoveCause);
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+
+        final String quantityCustom = getString(etQuantityCustom);
+        if (TextUtils.isEmpty(quantityCustom)) {
+            showMessage("请先输入件数");
+            return false;
+        }
+        if (Float.valueOf(quantityCustom) < 0.0f) {
+            showMessage("件数不合理");
+            return false;
+        }
+
+        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
+            showMessage("未获取到仓储类型");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
     }
 
     @Override
@@ -110,11 +149,12 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         ResultEntity result = super.provideResult();
         //退货交货数量
         result.returnQuantity = getString(etReturnQuantity);
-        //项目文本
-       // result.projectText = getString(etProjectText);
         //移动原因说明
         result.moveCauseDesc = getString(etMoveCauseDesc);
-
+        //件数
+        result.quantityCustom = getString(etQuantityCustom);
+        //仓储类型
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 }

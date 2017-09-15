@@ -55,7 +55,7 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = "1";
+       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

@@ -47,7 +47,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     @BindView(R2.id.act_quantity_name)
     protected TextView tvActQuantityName;
     @BindView(R2.id.quantity_name)
-    protected TextView quantityName;
+    protected TextView tvQuantityName;
     @BindView(R2.id.et_quantity)
     protected EditText etQuantity;
     @BindView(R2.id.et_location)
@@ -104,7 +104,6 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         if (mRefData != null) {
             /*单据数据中的库存地点不一定有，而且用户可以录入新的库存地点，所以只有子节点的库存地点才是正确的*/
             final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
-            L.e("105非必检 refDoc = " + lineData.refDoc + "; refDocItem = " + lineData.refDocItem);
             tvRefLineNum.setText(lineData.lineNum);
             tvMaterialNum.setText(lineData.materialNum);
             tvMaterialDesc.setText(lineData.materialDesc);

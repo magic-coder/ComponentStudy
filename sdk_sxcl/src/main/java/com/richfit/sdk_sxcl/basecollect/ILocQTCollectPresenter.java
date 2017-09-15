@@ -49,5 +49,6 @@ public interface ILocQTCollectPresenter extends IBaseCollectPresenter<ILocQTColl
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId, String materialNum,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
 
-    void checkLocation(String queryType, String workId, String invId, String batchFlag, String location);
+    void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,
+                       Map<String,Object> extraMap);
 }

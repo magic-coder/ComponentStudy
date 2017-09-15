@@ -3,22 +3,36 @@ package com.richfit.module_mcq.module_as;
 import android.media.tv.TvInputManager;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
+import com.richfit.common_lib.utils.UiUtil;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
+import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_mcq.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * 是否质检为Y时，单据状态为质检（Y/N）时才允许采集，是否质检为N时，
@@ -41,6 +55,27 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     EditText etQuantityCustom;
     //副计量单位累计数量
     TextView tvTotalQuantityCustom;
+
+    //仓储类型
+    Spinner spLocationType;
+    List<SimpleEntity> mLocationTypes;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        //支持仓储类型的扫描
+        if (list != null && list.length == 2 && !cbSingle.isChecked()) {
+            String location = list[Global.LOCATION_POS];
+            String locationType = list[Global.LOCATION_TYPE_POS];
+            clearCommonUI(etLocation);
+            etLocation.setText(location);
+            //自动选择仓储类型
+            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            getTransferSingle(getString(etBatchFlag), location);
+            return;
+        }
+        super.handleBarCodeScanResult(type, list);
+    }
+
 
     @Override
     public int getContentId() {
@@ -81,12 +116,35 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         llBatchFlag.setVisibility(View.GONE);
         //隐藏特殊库存标识
         mView.findViewById(R.id.mcq_ll_special_inv).setVisibility(View.GONE);
+
+        spLocationType = mView.findViewById(R.id.sp_location_type);
     }
 
     @Override
     public void initEvent() {
         super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
+        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
+            hideKeyboard(etLocation);
+            getTransferSingle(getString(etBatchFlag), location);
+        });
+
+        //增加库存地点选择出发仓储类型的获取
+        RxAdapterView.itemSelections(spInv)
+                .filter(pos -> pos > 0)
+                .subscribe(pos -> {
+                    if (isNLocation) {
+                        //如果不上架
+                        getTransferSingle(getString(etBatchFlag), getString(etLocation));
+                    } else {
+                        mPresenter.getDictionaryData("locationType");
+                    }
+                });
+
+        //增加仓储类型的选择获取提示库粗
+        RxAdapterView.itemSelections(spLocationType)
+                .filter(a -> spLocationType.getAdapter() != null && mLocationTypes != null
+                        && mLocationTypes.size() > 0)
+                .subscribe(position -> loadLocationList(false));
     }
 
     @Override
@@ -103,13 +161,14 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         //通过是否质检和单据状态进行分发
         //如果qm_flag是Y
-        if ("Y".equalsIgnoreCase(lineData.qmFlag) && !"Y".equalsIgnoreCase(lineData.status)) {
+        //单据状态 01:创建 03:质检
+        if ("Y".equalsIgnoreCase(lineData.qmFlag) && !"03".equalsIgnoreCase(lineData.status)) {
             showMessage("该物料是质检物资，但是单据状态不是质检状态，不允许采集");
             return;
         }
 
-        if ("N".equalsIgnoreCase(lineData.qmFlag) && !"N".equalsIgnoreCase(lineData.status)) {
-            showMessage("该物料是非质检物资，但是单据状态是质检状态，不允许采集");
+        if ("N".equalsIgnoreCase(lineData.qmFlag) && !"01".equalsIgnoreCase(lineData.status)) {
+            showMessage("该物料是非质检物资，但是单据状态是创建状态，不允许采集");
             return;
         }
 
@@ -125,6 +184,30 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
 
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
+    }
+
+    //重写该方法，在获取提示库存之前清除历史库存
+    @Override
+    public void loadLocationList(boolean isDropDown) {
+        if (mLocationList != null && mLocationAdapter != null) {
+            mLocationList.clear();
+            mLocationAdapter.notifyDataSetChanged();
+        }
+        super.loadLocationList(isDropDown);
+    }
 
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
@@ -149,17 +232,24 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
                  * 也可能没有批次。
                  */
                 for (LocationInfoEntity cachedItem : locationInfos) {
-                    //缓存和输入的都为空或者都不为空而且相等,那么系统默认批次匹配
-                    boolean isMatch;
+
+                    boolean isMatch = false;
 
                     isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                             (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                    isMatch = isOpenBatchManager ? (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag) &&
-                            location.equalsIgnoreCase(cachedItem.location)) || (
-                            !TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                    location.equalsIgnoreCase(cachedItem.location))
-                            : location.equalsIgnoreCase(cachedItem.location);
+                    if (!isOpenBatchManager) {
+                        //没有打开批次管理，直接使用仓位匹配
+                        isMatch = location.equalsIgnoreCase(cachedItem.location);
+                    } else {
+                        if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
+                            //打开批次管理，但是没有输入批次
+                            isMatch = location.equalsIgnoreCase(cachedItem.location);
+                        } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
+                            //打开了批次管理，输入了批次
+                            isMatch = location.equalsIgnoreCase(cachedItem.location) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                        }
+                    }
 
                     L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
 
@@ -187,6 +277,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
 
     /**
      * 如果未获取到缓存那么重写该方法，将副计量单位的仓位数量和累计数量设置默认值
+     *
      * @param message
      */
     @Override
@@ -205,6 +296,16 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         }
     }
 
+
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+        if (spLocationType.getSelectedItemPosition() <= 0) {
+            showMessage("请先选择仓储类型");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
+    }
+
     /**
      * 校验副计量单位的数量
      *
@@ -215,14 +316,15 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     protected boolean refreshQuantity(final String quantity) {
 
         //校验副计量单位的实收数量
-        String actQuantityCustom = getString(tvActQuantityCustom);
-        String quantityCustom = getString(etQuantityCustom);
-        if (!TextUtils.isEmpty(actQuantityCustom) && TextUtils.isEmpty(quantityCustom)) {
-            showMessage("请先输入副计量单位的实收数量");
-            return false;
-        }
+        if (!TextUtils.isEmpty(getString(tvMaterialUnitCustom))) {
+            //如果副计量单位不为空
+            String actQuantityCustom = getString(tvActQuantityCustom);
+            String quantityCustom = getString(etQuantityCustom);
+            if (TextUtils.isEmpty(quantityCustom)) {
+                showMessage("请先输入副计量单位的实收数量");
+                return false;
+            }
 
-        if (!TextUtils.isEmpty(actQuantityCustom) && !TextUtils.isEmpty(quantityCustom)) {
             float actQuantityCustomV = CommonUtil.convertToFloat(actQuantityCustom, 0.0F);
             float quantityCustomV = CommonUtil.convertToFloat(quantityCustom, 0.0F);
             float totalQuantityCustomV = CommonUtil.convertToFloat(getString(tvTotalQuantityCustom), 0.0F);
@@ -246,6 +348,8 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
+        //仓储类型
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -256,7 +360,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
      */
     @Override
     public void saveCollectedDataSuccess(String message) {
-        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom), getString(tvTotalQuantityCustom))));
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom), getString(tvTotalQuantityCustom))));
         if (!isNLocation) {
             tvLocQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom), getString(tvLocQuantityCustom))));
         }
@@ -269,5 +373,23 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+
+    @Override
+    protected void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(tvActQuantityCustom, tvLocQuantityCustom, tvMaterialUnitCustom, tvTotalQuantityCustom, etQuantityCustom);
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 }

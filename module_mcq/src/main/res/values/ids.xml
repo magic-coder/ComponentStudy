@@ -30,5 +30,8 @@
     <item name="mcq_location_name" type="id" />
     <item name="mcq_tv_suggested_location" type="id" />
     <item name="mcq_ll_special_inv" type="id" />
+    <item name="mcq_ll_batch_flag" type="id" />
+    <item name="mcq_tv_inv_quantity_name" type="id" />
+    <item name="mcq_tv_location_type" type="id" />
 
 </resources>

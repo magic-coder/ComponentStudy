@@ -420,6 +420,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             result.decisionCode = item.decisionCode;
             result.projectText = item.projectText;
             result.quantity = item.quantity;
+            result.quantityCustom = item.quantityCustom;
             result.recQuantity = item.recQuantity;
             result.location = CommonUtil.toUpperCase(item.location);
             result.recLocation = CommonUtil.toUpperCase(item.recLocation);
@@ -524,6 +525,16 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             case "311":// UB 101
                 businessTypeDesc = "101转储接收-有参考";
                 transToSapFlag = "05";
+                break;
+            case "113"://入库通知单
+                businessTypeDesc = "物资上架";
+                refTypeDesc = "入库通知单";
+                transToSapFlag = "02";
+                break;
+            case "114"://出库通知单
+                businessTypeDesc = "物资下架";
+                refTypeDesc = "出库通知单";
+                transToSapFlag = "02";
                 break;
             case "45":// UB 352
                 break;

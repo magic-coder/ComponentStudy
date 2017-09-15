@@ -10,12 +10,11 @@ import android.view.View;
 
 import com.richfit.common_lib.lib_adapter_rv.MultiItemTypeAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
-import com.richfit.common_lib.lib_tree_rv.MultiItemTypeTreeAdapter;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_mcq.R;
-import com.richfit.module_mcq.adapter.ASCXAdapter;
+import com.richfit.module_mcq.adapter.ASCXRefLinesAdapter;
 
 import java.util.List;
 
@@ -94,7 +93,7 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
     @Override
     public void getReferenceSuccess(ReferenceEntity refData) {
         List<RefDetailEntity> allNodes = refData.billDetailList;
-        ASCXAdapter adapter = new ASCXAdapter(mActivity, R.layout.mcq_item_ascx_head, allNodes);
+        ASCXRefLinesAdapter adapter = new ASCXRefLinesAdapter(mActivity, R.layout.mcq_item_ascx_head, allNodes);
         adapter.setOnItemClickListener(this);
         mRecyclerView.setAdapter(adapter);
     }
@@ -173,6 +172,8 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
         bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, "113");
         bundle.putString(Global.EXTRA_REF_TYPE_KEY, "16");
         bundle.putString(Global.EXTRA_CAPTION_KEY, "物资上架");
+        //必须新增单据号
+        bundle.putString(Global.EXTRA_REF_NUM_KEY,mRefData.recordNum);
         bundle.putInt(Global.EXTRA_MODE_KEY, Global.ONLINE_MODE);
         intent.putExtras(bundle);
         mActivity.startActivity(intent);

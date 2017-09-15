@@ -46,6 +46,7 @@ public class ASParentHeadItemDelegate implements ItemViewDelegate<RefDetailEntit
                 .setText(R.id.mcq_act_quantity_custom, data.actQuantityCustom)
                 .setText(R.id.mcq_total_quantity_custom, data.totalQuantityCustom)
                 .setText(R.id.mcq_qmFlag, data.qmFlag)
+                //单据状态
                 .setText(R.id.mcq_ref_status, data.status);
     }
 }

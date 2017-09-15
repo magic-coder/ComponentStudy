@@ -220,14 +220,15 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
 
     protected void showSuccessDialog(CharSequence message) {
         //注意这里需要处理\n和-----分割符
-        if(TextUtils.isEmpty(message))
+        if (TextUtils.isEmpty(message))
             return;
         String[] msgs = message.toString().split("______");
         StringBuffer msg = new StringBuffer();
         for (String s : msgs) {
+            if (msg.indexOf(s) > 0)
+                continue;
             msg.append(s);
         }
-        msgs = null;
         new SweetAlertDialog(mActivity, SweetAlertDialog.SUCCESS_TYPE)
                 .setTitleText("温馨提示")
                 .setContentText(msg.toString())
@@ -242,7 +243,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     }
 
     protected void showErrorDialog(CharSequence message) {
-        if(TextUtils.isEmpty(message))
+        if (TextUtils.isEmpty(message))
             return;
         String[] errors = message.toString().split("______");
         //注意这里使用多态性质，父类AppCompatActivity中的FragmentManager
@@ -278,7 +279,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     }
 
     protected List<BottomMenuEntity> provideDefaultBottomMenu() {
-        if(mBottomMenus == null) {
+        if (mBottomMenus == null) {
             mBottomMenus = new ArrayList<>();
         }
         mBottomMenus.clear();
@@ -305,7 +306,7 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     }
 
     protected InventoryQueryParam provideInventoryQueryParam() {
-        if(mInventoryParam == null) {
+        if (mInventoryParam == null) {
             mInventoryParam = new InventoryQueryParam();
         }
         mInventoryParam.reset();

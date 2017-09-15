@@ -207,7 +207,7 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
             //应急物资
             mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
             //库存类型
-            mRefData.specialInvFlag = spSpecialInvType.getSelectedItemPosition() == 0 ? "N" :
+            mRefData.specialInvFlag = spSpecialInvType.getSelectedItemPosition() <= 0 ? "N" :
                     "Q";
             //项目移交物资
             mRefData.invType = cbInvType.isChecked() ? "0" : "1";

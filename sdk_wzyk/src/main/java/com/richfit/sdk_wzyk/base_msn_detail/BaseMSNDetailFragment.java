@@ -162,7 +162,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             return;
         }
         mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
-                mRefData.refType, mRefData.bizType, position, mCompanyCode);
+                mRefData.refType, mRefData.bizType,node.refLineId,Global.USER_ID, position, mCompanyCode);
     }
 
     /**

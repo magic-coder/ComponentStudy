@@ -2,21 +2,28 @@ package com.richfit.module_cqyt.module_as;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/7/4.
@@ -34,6 +41,9 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
     TextView tvUnqualifiedQuantity;
     EditText etQuantityCustom;
     EditText etArrivalQuantity;
+    //仓储类型
+    Spinner spLocationType;
+    List<SimpleEntity> mLocationTypes;
 
     @Override
     public int getContentId() {
@@ -57,6 +67,9 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         tvUnqualifiedQuantity = (TextView) mView.findViewById(R.id.cqyt_tv_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         etArrivalQuantity = (EditText) mView.findViewById(R.id.arrival_quantity);
+        //显示仓储类型
+        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
+        spLocationType = mView.findViewById(R.id.sp_location_type);
     }
 
     @Override
@@ -67,7 +80,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         spInspectionResult.setAdapter(adapter);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String quantityCustom = bundle.getString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY);
+            String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
             String inspectionResult = bundle.getString(EXTRA_INSPECTION_RESULT_KEY);
             String arrivalQuantity = bundle.getString(EXTRA_ARRIVAL_QUANTITY_KEY);
             etQuantityCustom.setText(quantityCustom);
@@ -77,6 +90,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
             UiUtil.setSelectionForSp(items, inspectionResult, spInspectionResult);
         }
+        mPresenter.getDictionaryData("locationType");
     }
 
 
@@ -85,6 +99,26 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
+        }
+    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -99,17 +133,20 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         }
 
         //处理到货数量
-        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity),0.0F);
+        final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
         final float arrivalQuantityV = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
         if (Float.compare(arrivalQuantityV, 0.0f) <= 0.0f) {
             showMessage("输入到货数量不合理");
             return false;
         }
-        if (Float.compare(quantityV,arrivalQuantityV) > 0.0f) {
+        if (Float.compare(quantityV, arrivalQuantityV) > 0.0f) {
             showMessage("输入实收数量不能大于到货数量");
             return false;
         }
-
+        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
+            showMessage("未获取到仓储类型");
+            return false;
+        }
         return super.checkCollectedDataBeforeSave();
     }
 
@@ -134,6 +171,8 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         result.quantityCustom = getString(etQuantityCustom);
         //到货数量
         result.arrivalQuantity = getString(etArrivalQuantity);
+        //仓储类型
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 }

@@ -21,6 +21,24 @@
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqyt_quantity_custom" />
+
+            <EditText
+                android:id="@id/cqyt_et_quantity_custom"
+                style="@style/RightEditTextItemStyle"
+                android:inputType="numberDecimal"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
                 android:text="@string/return_delivery_quantity" />
 
             <EditText

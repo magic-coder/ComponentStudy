@@ -12,6 +12,7 @@ import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.base_as_edit.IASEditPresenter;
 import com.richfit.sdk_wzrk.base_as_edit.IASEditView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,9 @@ public class ASEditPresenterImp extends BaseEditPresenterImp<IASEditView>
             //意味着不上架
             flowable = mRepository.uploadCollectionDataSingle(result);
         } else {
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location),
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location, extraMap),
                     mRepository.uploadCollectionDataSingle(result));
         }
         ResourceSubscriber<String> subscriber =
@@ -88,9 +91,9 @@ public class ASEditPresenterImp extends BaseEditPresenterImp<IASEditView>
         mRepository.getDictionaryData(codes)
                 .filter(data -> data != null && data.size() > 0)
                 .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
                     @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                    public void onNext(Map<String, List<SimpleEntity>> data) {
                         if (mView != null) {
                             mView.loadDictionaryDataSuccess(data);
                         }

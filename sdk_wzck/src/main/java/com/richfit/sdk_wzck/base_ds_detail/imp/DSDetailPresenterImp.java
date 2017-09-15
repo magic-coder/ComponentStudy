@@ -77,10 +77,10 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, int position, String companyCode) {
+                           String refType, String bizType,String refLineId,String userId, int position, String companyCode) {
         RxSubscriber<String> subscriber =
                 mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                        locationId, refType, bizType, "", Global.USER_ID, position, companyCode)
+                        locationId, refType, bizType, refLineId, userId, position, companyCode)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext) {
                             @Override
@@ -168,13 +168,21 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                     bundle.putString(Global.EXTRA_BATCH_FLAG_KEY, node.batchFlag);
                     //累计数量
                     bundle.putSerializable(Global.EXTRA_TOTAL_QUANTITY_KEY, node.totalQuantity);
+
                     //需要修改的字段
                     //上架仓位
                     bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
+
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
+
+                    //副计量单位的累计数量
+                    bundle.putString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY,parentNode.totalQuantityCustom);
+                    //副计量单位的实收数量
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY,node.quantityCustom);
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
                     activity.startActivity(intent);
@@ -355,6 +363,8 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                 cachedData.materialDesc = data.materialDesc;
                 cachedData.materialGroup = data.materialGroup;
                 cachedData.unit = data.unit;
+                cachedData.unitCustom = data.unitCustom;
+                cachedData.actQuantityCustom = data.actQuantityCustom;
                 cachedData.actQuantity = data.actQuantity;
                 cachedData.refDoc = data.refDoc;
                 cachedData.refDocItem = data.refDocItem;
@@ -396,6 +406,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                 childNode.specialInvNum = location.specialInvNum;
                 childNode.specialConvert = location.specialConvert;
                 childNode.quantityCustom = location.quantityCustom;
+                childNode.locationType = location.locationType;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

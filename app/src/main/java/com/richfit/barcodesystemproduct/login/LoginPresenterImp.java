@@ -14,6 +14,7 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.data.net.http.RetrofitModule;
 import com.richfit.data.repository.DataInjection;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.UpdateEntity;
 import com.richfit.domain.bean.UserEntity;
 
 import java.io.File;
@@ -21,8 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.ResourceObserver;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.ResourceSubscriber;
+import zlc.season.rxdownload2.RxDownload;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by monday on 2016/10/27.
@@ -33,10 +41,7 @@ public class LoginPresenterImp extends BasePresenter<LoginContract.View>
 
     LoginContract.View mView;
 
-    @Override
-    protected void onStart() {
-        mView = getView();
-    }
+
 
     public LoginPresenterImp(Context context) {
         super(context);
@@ -220,6 +225,44 @@ public class LoginPresenterImp extends BasePresenter<LoginContract.View>
         addSubscriber(subscriber);
     }
 
+    @Override
+    public void getAppVersion() {
+        mView = getView();
+        mRepository.getAppVersion()
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new RxSubscriber<UpdateEntity>(mContext, "正在检查更新...") {
+                    @Override
+                    public void _onNext(UpdateEntity updateEntity) {
+                        if (mView != null) {
+                            mView.checkAppVersion(updateEntity);
+                        }
+                    }
+
+                    @Override
+                    public void _onNetWorkConnectError(String message) {
+
+                    }
+
+                    @Override
+                    public void _onCommonError(String message) {
+                        if (mView != null) {
+                            mView.getUpdateInfoFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onServerError(String code, String message) {
+                        if (mView != null) {
+                            mView.getUpdateInfoFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onComplete() {
+
+                    }
+                });
+    }
 
     @Override
     public void setupUrl(String url) {
@@ -258,5 +301,7 @@ public class LoginPresenterImp extends BasePresenter<LoginContract.View>
         addSubscriber(subscriber);
 
     }
+
+
 
 }

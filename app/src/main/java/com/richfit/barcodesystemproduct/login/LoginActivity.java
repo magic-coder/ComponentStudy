@@ -1,12 +1,15 @@
 package com.richfit.barcodesystemproduct.login;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,32 +19,44 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.richfit.barcodesystemproduct.BarcodeSystemApplication;
+import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.splash.SplashActivity;
+import com.richfit.barcodesystemproduct.update.UpdateActivity;
 import com.richfit.barcodesystemproduct.welcome.WelcomeActivity;
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.lib_mvp.BaseActivity;
+import com.richfit.common_lib.utils.FileUtil;
 import com.richfit.common_lib.utils.SPrefUtil;
+import com.richfit.common_lib.widget.ButtonCircleProgressBar;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.domain.bean.UpdateEntity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import zlc.season.rxdownload2.entity.DownloadStatus;
 
 /**
  * Created by monday on 2016/10/27.
  */
 
 public class LoginActivity extends BaseActivity<LoginPresenterImp> implements LoginContract.View {
+
+    public static final String UPDATEI_NFO_KEY = "updateInfo";
 
     @BindView(R.id.et_username)
     RichAutoEditText etUsername;
@@ -100,6 +115,10 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
                     }
                 });
 
+        RxAutoCompleteTextView.itemClickEvents(etUsername)
+                .delay(50, TimeUnit.MILLISECONDS)
+                .subscribe(a -> hideKeyboard(etUsername));
+
         RxView.clicks(btnShowInfo)
                 .subscribe(a -> showChooseDialog());
     }
@@ -109,8 +128,14 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
     public void initData(Bundle savedInstanceState) {
         mPresenter.readUserInfos();
         //如果没有网络，不需要上传奔溃日志
-        if (mPresenter != null && !mPresenter.isLocal())
-            mPresenter.uploadCrashLogFiles();
+        if (mPresenter != null && !mPresenter.isLocal()) {
+            if (!BuildConfig.DEBUG) {
+                //debug状态不上传异常日志
+                mPresenter.uploadCrashLogFiles();
+            }
+            //强制检查更新
+            mPresenter.getAppVersion();
+        }
     }
 
     /**
@@ -143,6 +168,36 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
                     startActivity(intent);
                     finish();
                 }).show();
+    }
+
+    @Override
+    public void checkAppVersion(UpdateEntity info) {
+        //获取当前的版本号
+        String currentVersionName = CommonUtil.getCurrentVersionName(this.getApplicationContext());
+        float versionName = Float.parseFloat(currentVersionName);
+        float appVersion = Float.parseFloat(info.appVersion);
+        Log.e("yff", "versionName = " + versionName + "; appVersion = " + appVersion);
+        if (appVersion > versionName) {
+            //提示用户需要更新
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("检测到最新的版本:" + info.appVersion);
+            dialog.setMessage(info.appUpdateDesc);
+            dialog.setPositiveButton("立即更新", (dialogInterface, i) -> {
+                //启动下载页面
+                Intent intent = new Intent(LoginActivity.this, UpdateActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(UPDATEI_NFO_KEY, info);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            });
+            dialog.setNegativeButton("以后再说", (dialogInterface, i) -> dialogInterface.dismiss());
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void getUpdateInfoFail(String message) {
+        showMessage(message);
     }
 
 
@@ -220,7 +275,7 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("设置新的IP");
             ViewGroup extView = (ViewGroup) LayoutInflater.from(this).inflate(R.layout.dialog_ip_manager, null);
-            ViewGroup.LayoutParams lp  = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
             extView.setLayoutParams(lp);
             mOldIP = (TextView) extView.findViewById(R.id.tv_old_ip);
@@ -343,4 +398,5 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
         }
         super.retry(action);
     }
+
 }

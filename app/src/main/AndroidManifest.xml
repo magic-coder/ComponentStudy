@@ -62,6 +62,8 @@
             android:process=":preloaddex"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
+
+        <activity android:name=".update.UpdateActivity"/>
     </application>
 
     <meta-data

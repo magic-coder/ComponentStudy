@@ -23,9 +23,10 @@ public class CQYTAOChildItemDelegate implements ItemViewDelegate<RefDetailEntity
 
     @Override
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
-        holder.setText(R.id.location,item.location)
-                .setText(R.id.batchFlag,item.batchFlag)
-                .setText(R.id.quantity,item.quantity);
+        holder.setText(R.id.location, item.location)
+                .setText(R.id.batchFlag, item.batchFlag)
+                .setText(R.id.quantity, item.quantity)
+                .setText(R.id.cqyt_tv_location_type, item.locationType);
     }
 }
 

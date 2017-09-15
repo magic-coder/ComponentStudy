@@ -12,6 +12,7 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.adapter.XNGDASNDetailAdapter;
+import com.richfit.module_xngd.module_as.imp.XNGDASNDetailPresenterImp;
 import com.richfit.sdk_wzrk.base_asn_detail.BaseASNDetailFragment;
 import com.richfit.sdk_wzrk.base_asn_detail.imp.ASNDetailPresenterImp;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by monday on 2017/6/23.
  */
 
-public class XNGDASNDetailFragment extends BaseASNDetailFragment<ASNDetailPresenterImp> {
+public class XNGDASNDetailFragment extends BaseASNDetailFragment<XNGDASNDetailPresenterImp> {
 
     @Override
     public int getContentId() {
@@ -30,7 +31,7 @@ public class XNGDASNDetailFragment extends BaseASNDetailFragment<ASNDetailPresen
 
     @Override
     public void initPresenter() {
-        mPresenter = new ASNDetailPresenterImp(mActivity);
+        mPresenter = new XNGDASNDetailPresenterImp(mActivity);
     }
 
     @Override

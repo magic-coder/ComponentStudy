@@ -12,6 +12,9 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzpd.blind.collect.IBlindCollectPresenter;
 import com.richfit.sdk_wzpd.blind.collect.IBlindCollectView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.reactivex.Flowable;
 
 /**
@@ -84,7 +87,9 @@ public class BlindCollectPresenterImp extends BaseCollectPresenterImp<IBlindColl
         final String checkLevel = result.checkLevel;
         Flowable<String> flowable;
         if ("01".equals(checkLevel)) {
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, result.storageNum, result.location),
+            Map<String,Object> extraMap = new HashMap<>();
+            extraMap.put("locationType",result.locationType);
+            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, result.storageNum, result.location,extraMap),
                     mRepository.uploadCheckDataSingle(result));
         } else {
             flowable = mRepository.uploadCheckDataSingle(result);

@@ -235,7 +235,9 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
         Flowable<String> flowable;
         //这里-1表示离线模式
         if (isLocal()) {
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location),
+            Map<String,Object> extraMap = new HashMap<>();
+            extraMap.put("locationType",result.locationType);
+            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location,extraMap),
                     mRepository.uploadCollectionDataSingle(result));
         } else {
             flowable = mRepository.uploadCollectionDataSingle(result);

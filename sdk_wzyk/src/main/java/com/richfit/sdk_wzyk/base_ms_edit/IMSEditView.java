@@ -3,8 +3,10 @@ package com.richfit.sdk_wzyk.base_ms_edit;
 import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditView;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/13.
@@ -30,4 +32,7 @@ public interface IMSEditView extends IBaseEditView {
     void onBindCache(RefDetailEntity cache, String batchFlag, String location);
 
     void loadCacheFail(String message);
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

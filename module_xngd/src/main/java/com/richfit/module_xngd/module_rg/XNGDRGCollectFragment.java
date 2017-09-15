@@ -1,5 +1,6 @@
 package com.richfit.module_xngd.module_rg;
 
+import android.text.TextUtils;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
@@ -36,8 +37,8 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
 
     @Override
     protected void initView() {
-        quantityName.setText("实退数量");
-        actQuantityName.setText("应退数量");
+        tvQuantityName.setText("实退数量");
+        tvActQuantityName.setText("应退数量");
         spMoveCause = mView.findViewById(R.id.xngd_sp_move_causes);
     }
 
@@ -84,7 +85,7 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = "1";
+       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

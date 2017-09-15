@@ -6,9 +6,11 @@ import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2016/11/19.
@@ -52,7 +54,7 @@ public interface IDSCollectView extends IBaseCollectView {
      */
     void showInventory(List<InventoryEntity> list);
     void loadInventoryFail(String message);
-
+    void loadInventoryComplete();
     /**
      * 获取缓存成功
      * @param cache
@@ -62,4 +64,16 @@ public interface IDSCollectView extends IBaseCollectView {
     void onBindCache(RefDetailEntity cache, String batchFlag, String location);
     void loadCacheSuccess();
     void loadCacheFail(String message);
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
+
+    //增加建议仓位
+    void getSuggestedLocationSuccess(InventoryEntity suggestedInventory);
+    void getSuggestedLocationFail(String message);
+    void getSuggestedLocationComplete();
+
+    //增加离线仓位检查
+    void checkLocationFail(String message);
+    void checkLocationSuccess(String batchFlag, String location);
 }

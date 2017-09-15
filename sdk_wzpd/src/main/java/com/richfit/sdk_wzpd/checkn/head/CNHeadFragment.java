@@ -3,6 +3,7 @@ package com.richfit.sdk_wzpd.checkn.head;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
@@ -37,6 +39,7 @@ import com.richfit.sdk_wzpd.checkn.head.imp.CNHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -57,32 +60,37 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @BindView(R2.id.ll_warehouse_level)
     LinearLayout llWarehouseLevel;
     @BindView(R2.id.ll_storage_num_level)
-    protected  LinearLayout llStorageNumLevel;
+    protected LinearLayout llStorageNumLevel;
+
+    //仓位级
     @BindView(R2.id.btn_storage_num_level)
     protected RadioButton rbStorageNumLevel;
+
+    //库存级
     @BindView(R2.id.btn_warehouse_level)
-    RadioButton rbWarehouseLevel;
+    protected   RadioButton rbWarehouseLevel;
+
     @BindView(R2.id.sp_work)
-    Spinner spWork;
+    protected  Spinner spWork;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected  Spinner spInv;
     @BindView(R2.id.sp_storage_num)
     protected Spinner spStorageNum;
     @BindView(R2.id.tv_checker)
     TextView tvChecker;
     @BindView(R2.id.et_check_date)
-    RichEditText etTransferDate;
+    protected RichEditText etTransferDate;
     @BindView(R2.id.cb_special_flag)
     CheckBox cbSpecialFlag;
 
     /*工厂列表*/
-    List<WorkEntity> mWorkDatas;
+    protected   List<WorkEntity>  mWorkDatas;
     /*库存地点列表以及适配器*/
     InvAdapter mInvAdapter;
-    List<InvEntity> mInvDatas;
+    protected List<InvEntity> mInvDatas;
     /*库存号列表*/
-    List<String> mStorageNums;
-    String mSpecialFlag;
+    protected  List<String> mStorageNums;
+    protected String mSpecialFlag;
 
 
     @Override
@@ -132,6 +140,9 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
                     mRefData = null;
                     rbWarehouseLevel.setChecked(true);
                     llWarehouseLevel.setVisibility(View.VISIBLE);
+                    if (spWork.getAdapter() == null) {
+                        mPresenter.getWorks(0);
+                    }
                 });
 
 
@@ -154,13 +165,18 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
 
     }
 
+    /**
+     * 默认情况下，选择的是仓库级别，那么系统应该自动初始化工厂。但是如果
+     * 子类重写该方法后，修改rbWarehouseLevel的checked属性，应该禁止加载工厂
+     */
     @Override
     public void initData() {
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         tvChecker.setText(Global.LOGIN_ID);
         mSpecialFlag = cbSpecialFlag.isChecked() ? "Y" : "N";
         //因为默认是选择仓库级的，所以在先初始化工厂
-        if (spWork.getAdapter() == null) {
+        if (rbWarehouseLevel.isChecked() && spWork.getAdapter() == null) {
+            Log.e("yff", "初始化工厂列表");
             //如果工厂还未初始化
             mPresenter.getWorks(0);
         }
@@ -233,6 +249,11 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     }
 
     @Override
+    public void loadInvsComplete() {
+
+    }
+
+    @Override
     public void showStorageNums(List<String> storageNums) {
         mStorageNums.clear();
         mStorageNums.addAll(storageNums);
@@ -250,6 +271,11 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
             ArrayAdapter workAdapter = (ArrayAdapter) adapter;
             workAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void loadStorageNumComplete() {
+
     }
 
     /**
@@ -321,7 +347,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     /**
      * 开始盘点
      */
-    private void startCheck() {
+    protected void startCheck() {
         //请求抬头信息
         mRefData = null;
         if (rbStorageNumLevel.isChecked()) {
@@ -332,7 +358,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
             }
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "01",
                     mSpecialFlag, mStorageNums.get(spStorageNum.getSelectedItemPosition()),
-                    "", "", getString(etTransferDate));
+                    "", "", getString(etTransferDate), null);
         } else if (rbWarehouseLevel.isChecked()) {
             //库存级
             if (mWorkDatas == null || mWorkDatas.size() == 0) {
@@ -345,7 +371,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "02",
                     mSpecialFlag, "",
                     mWorkDatas.get(spWork.getSelectedItemPosition()).workId,
-                    mInvDatas.get(spInv.getSelectedItemPosition()).invId, getString(etTransferDate));
+                    mInvDatas.get(spInv.getSelectedItemPosition()).invId, getString(etTransferDate), null);
         }
     }
 
@@ -402,6 +428,16 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @Override
     public void getCheckInfoFail(String message) {
         mRefData = null;
+        showMessage(message);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
         showMessage(message);
     }
 

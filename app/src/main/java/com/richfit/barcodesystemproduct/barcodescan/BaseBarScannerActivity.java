@@ -39,14 +39,14 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
      * 条码类型|物料编码|批次|验收人|采购订单号
      */
     private void filerBarCodeInfo(String info) {
-
         if (TextUtils.isEmpty(info)) {
             return;
         }
+        L.e("扫描条码的原始内容 = " + info);
         //仓位和单据不加密
         int length = info.split("\\|", -1).length;
         String barcodeInfo;
-        if (length <= 1) {
+        if (length <= 2) {
             barcodeInfo = info;
         } else {
             switch (BuildConfig.APP_NAME) {
@@ -70,6 +70,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                     }
                     break;
                 default:
+                    //默认物料是加密的
                     barcodeInfo = ScanUtil.CharTrans(info);
                     break;
             }
@@ -78,7 +79,7 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
             showMessage("单据条码信息为空");
             return;
         }
-        L.e("扫描条码的内容 = " + barcodeInfo);
+
         String[] a = barcodeInfo.split("\\|", -1);
         handleBarCodeScanResult("", a);
     }

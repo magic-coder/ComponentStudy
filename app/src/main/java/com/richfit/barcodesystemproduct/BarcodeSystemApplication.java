@@ -88,7 +88,7 @@ public class BarcodeSystemApplication extends BaseApplication {
                     baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
                     break;
                 case Global.MCQ:
-                    baseUrl = "http://10.88.53.5:8080/ktbk_middleware/MobileProcess/";
+                    baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
                     break;
             }
         } else {

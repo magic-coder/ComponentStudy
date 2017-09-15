@@ -177,6 +177,7 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String actQuantityCustom;
     /*单据状态*/
     public String status;
+    public String locationType;
 
     @Override
     public RefDetailEntity clone() {

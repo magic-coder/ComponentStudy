@@ -33,8 +33,7 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
         implements IBaseCollectView {
 
     private InputMethodManager imm;
-    /*从条码中扫描带出来的单据行号，用于过滤重复的行号。该功能长庆使用了*/
-    protected String mLineNumForFilter;
+
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {

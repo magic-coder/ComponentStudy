@@ -23,7 +23,7 @@
     "id": "3",
     "tabTitle": "抬头",
     "fragmentTag": "mcq_bc_header_fragment_tag",
-    "bizType": "C02",
+    "bizType": "C03",
     "refType": "",
     "mode": 0,
     "fragmentType": 0,
@@ -33,7 +33,7 @@
     "id": "4",
     "tabTitle": "数据明细",
     "fragmentTag": "mcq_bc_detail_fragment_tag",
-    "bizType": "C02",
+    "bizType": "C03",
     "refType": "",
     "mode": 0,
     "fragmentType": 1,
@@ -43,7 +43,7 @@
     "id": "5",
     "tabTitle": "数据采集",
     "fragmentTag": "mcq_bc_collect_fragment_tag",
-    "bizType": "C02",
+    "bizType": "C03",
     "refType": "",
     "mode": 0,
     "fragmentType": 2,
@@ -53,7 +53,7 @@
     "id": "6",
     "tabTitle": "数据修改",
     "fragmentTag": "mcq_bc_edit_fragment_tag",
-    "bizType": "C02",
+    "bizType": "C03",
     "refType": "",
     "mode": 0,
     "fragmentType": -1,
@@ -138,5 +138,125 @@
     "mode": 0,
     "fragmentType": -1,
     "className": "com.richfit.module_mcq.module_ds.MCQDSEditFragment"
+  },
+  {
+    "id": "15",
+    "tabTitle": "抬头",
+    "fragmentTag": "mcq_cwtz_header_fragment_tag",
+    "bizType": "100",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_cwtz.head.LAHeadFragment"
+  },
+  {
+    "id": "16",
+    "tabTitle": "数据采集",
+    "fragmentTag": "mcq_cwtz_collect_fragment_tag",
+    "bizType": "100",
+    "mode": 0,
+    "refType": "4",
+    "fragmentType": 2,
+    "className": "com.richfit.module_mcq.module_cwtz.MCQLACollectFragmnent"
+  },
+  {
+    "id": "17",
+    "tabTitle": "抬头",
+    "fragmentTag": "mcq_dscx_header_fragment_tag",
+    "bizType": "17A",
+    "refType": "17A",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_mcq.module_dscx.head.DSCXHeadFragment"
+  },
+  {
+    "id": "18",
+    "tabTitle": "数据明细",
+    "fragmentTag": "mcq_dscx_detail_fragment_tag",
+    "bizType": "17A",
+    "refType": "17A",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_mcq.module_dscx.detail.DSCXDetailFragment"
+  },
+  {
+    "id": "19",
+    "tabTitle": "抬头",
+    "fragmentTag": "mcq_as_header_fragment_tag",
+    "bizType": "113",
+    "refType": "16",
+    "mode": 1,
+    "fragmentType": 0,
+    "className": "com.richfit.module_mcq.module_as.MCQASHeadFragment"
+  },
+  {
+    "id": "20",
+    "tabTitle": "数据明细",
+    "fragmentTag": "mcq_as_detail_fragment_tag",
+    "bizType": "113",
+    "refType": "16",
+    "mode": 1,
+    "fragmentType": 1,
+    "className": "com.richfit.module_mcq.module_as.MCQASDetailFragment"
+  },
+  {
+    "id": "21",
+    "tabTitle": "数据采集",
+    "fragmentTag": "mcq_as_collect_fragment_tag",
+    "bizType": "113",
+    "refType": "16",
+    "mode": 1,
+    "fragmentType": 2,
+    "className": "com.richfit.module_mcq.module_as.MCQASCollectFragment"
+  },
+  {
+    "id": "22",
+    "tabTitle": "数据修改",
+    "fragmentTag": "mcq_as_edit_fragment_tag",
+    "bizType": "113",
+    "refType": "16",
+    "mode": 1,
+    "fragmentType": -1,
+    "className": "com.richfit.module_mcq.module_as.MCQASEditFragment"
+  },
+  {
+    "id": "23",
+    "tabTitle": "抬头",
+    "fragmentTag": "mcq_lds_header_fragment_tag",
+    "bizType": "114",
+    "refType": "17",
+    "mode": 1,
+    "fragmentType": 0,
+    "className": "com.richfit.module_mcq.module_ds.MCQDSHeadFragment"
+  },
+  {
+    "id": "24",
+    "tabTitle": "数据明细",
+    "fragmentTag": "mcq_lds_detail_fragment_tag",
+    "bizType": "114",
+    "refType": "17",
+    "mode": 1,
+    "fragmentType": 1,
+    "className": "com.richfit.module_mcq.module_ds.MCQDSDetailFragment"
+  },
+  {
+    "id": "25",
+    "tabTitle": "数据采集",
+    "fragmentTag": "mcq_ds_collect_fragment_tag",
+    "bizType": "114",
+    "refType": "17",
+    "mode": 1,
+    "fragmentType": 2,
+    "className": "com.richfit.module_mcq.module_ds.MCQLDSCollectFragment"
+  },
+  {
+    "id": "26",
+    "tabTitle": "数据修改",
+    "fragmentTag": "mcq_lds_edit_fragment_tag",
+    "bizType": "114",
+    "refType": "17",
+    "mode": 1,
+    "fragmentType": -1,
+    "className": "com.richfit.module_mcq.module_ds.MCQLDSEditFragment"
   }
 ]

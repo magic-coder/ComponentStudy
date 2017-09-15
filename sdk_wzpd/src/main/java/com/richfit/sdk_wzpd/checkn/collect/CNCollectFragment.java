@@ -42,7 +42,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
     @BindView(R2.id.sp_ref_line_num)
     Spinner spRefLine;
     @BindView(R2.id.et_check_location)
-    EditText etCheckLocation;
+    protected  EditText etCheckLocation;
     @BindView(R2.id.ll_check_location)
     LinearLayout llCheckLocation;
     @BindView(R2.id.et_material_num)
@@ -58,7 +58,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
     @BindView(R2.id.et_quantity)
     EditText etQuantity;
     @BindView(R2.id.cb_single)
-    CheckBox cbSingle;
+    protected CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
     TextView tvTotalQuantity;
 

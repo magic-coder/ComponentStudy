@@ -44,6 +44,7 @@ public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollec
     @Override
     public void initEvent() {
         super.initEvent();
+        //注意这里点击的是输入仓位控件
         etSendLocation.setOnRichEditTouchListener((view, location) -> {
             hideKeyboard(view);
             checkLocation(getString(etSendBatchFlag), location);
@@ -69,7 +70,7 @@ public class QHYTLUbSto351CollectFragment extends BaseMSCollectFragment<MSCollec
         }
 
         final String invId = mInvDatas.get(spSendInv.getSelectedItemPosition()).invId;
-        mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location);
+        mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location,null);
     }
 
     @Override

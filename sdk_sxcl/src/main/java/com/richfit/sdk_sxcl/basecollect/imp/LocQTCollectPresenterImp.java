@@ -176,7 +176,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
 
     @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                              String location) {
+                              String location,Map<String,Object> extraMap) {
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.checkLocationFail("工厂为空");
@@ -189,7 +189,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId, "", location)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override

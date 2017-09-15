@@ -148,6 +148,19 @@ public class ReferenceEntity {
     public String glAccount;
     //供应商评价
     public String supplierEvaluation;
+    public String locationType;
+    public Object recordDate;
+    public int insClean;
+    public int insQuantity;
+    public int insChemical;
+    public int insFire;
+    public int insTh;
+    public int insHazardous;
+    public int insFlammable;
+    public int insEffective;
+    public String insWeather;
+    public String insTemperature;
+    public String insHumidity;
 
     @Override
     public String toString() {

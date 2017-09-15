@@ -177,4 +177,9 @@ public class ResultEntity extends TreeNode{
     public String arrivalQuantity;
     public String year;
     public String duration;
+    public String locationType;
+    public String recLocationType;
+    public String insWeather;
+    public String insTemperature;
+    public String insHumility;
 }

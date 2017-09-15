@@ -79,7 +79,6 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             if (TextUtils.isEmpty(transId)) {
                 return false;
             }
-
             result.transId = transId;
             // 2.行表
             String transLineId = saveBusinessLine(db, result, yk, subGroup, refDoc, prodGroup);
@@ -469,6 +468,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
      * @return
      */
     private String saveBusinessLocation(SQLiteDatabase db, ResultEntity param, boolean yk, boolean device) {
+
         String locationId = null;
         String transId = param.transId;
         String transLineId = param.transLineId;
@@ -533,6 +533,10 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             cv.put("created_by", param.userId);
             cv.put("creation_date", creationDate);
             cv.put("quantity", param.quantity);
+
+            //煤层气增加副计量单位，长庆增加件数都是用该字段
+            cv.put("quantity_custom", param.quantityCustom);
+
             if (yk) {
                 cv.put("rec_quantity", param.quantity);
             }
@@ -552,7 +556,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             }
 
             //如果是修改则累加数量
-            db.execSQL("update mtl_transaction_lines_location set quantity = quantity + ? where id = ?",
+            db.execSQL("update mtl_transaction_lines_location set quantity = quantity + ?,quantity_custom = quantity_custom+ ? where id = ?",
                     new Object[]{param.quantity, locationId});
             //如果是移库，那么还需要修改接收累计数量
             if (yk) {
@@ -571,19 +575,23 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
     public void updateLineTotalQuantity(SQLiteDatabase db, ResultEntity param) {
         // mtl_transaction_lines
         clearStringBuffer();
-        sb.append(" SELECT IFNULL(SUM(T.QUANTITY), 0) AS A ")
+        sb.append(" SELECT IFNULL(SUM(T.QUANTITY), 0) AS A,IFNULL(SUM(T.QUANTITY_CUSTOM), 0) AS B ")
                 .append(" FROM MTL_TRANSACTION_LINES_LOCATION T ")
                 .append(" WHERE T.TRANS_LINE_ID = ?");
         Cursor cursor = db.rawQuery(sb.toString(), new String[]{param.transLineId});
         sb.setLength(0);
         String totalQuantity = null;
+        String totalQuantityCustom = null;
         while (cursor.moveToNext()) {
             totalQuantity = cursor.getString(0);
+            totalQuantityCustom = cursor.getString(1);
+
         }
         cursor.close();
-
-        db.execSQL("update MTL_TRANSACTION_LINES set quantity =  ? where id = ?",
-                new String[]{totalQuantity, param.transLineId});
+        // totalQuantity = TextUtils.isEmpty(totalQuantity) ? "0" : totalQuantity;
+        // totalQuantityCustom = TextUtils.isEmpty(totalQuantityCustom) ? "0" : totalQuantityCustom;
+        db.execSQL("update MTL_TRANSACTION_LINES set quantity =  ?,quantity_custom = ? where id = ?",
+                new String[]{totalQuantity, totalQuantityCustom, param.transLineId});
     }
 
     /**
@@ -593,18 +601,21 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
      */
     private void updateLineSplitTotalQuantity(SQLiteDatabase db, ResultEntity param) {
         StringBuffer sb = new StringBuffer();
-        sb.append(" SELECT SUM(QUANTITY) AS A ")
+        sb.append(" SELECT IFNULL(SUM(T.QUANTITY), 0) AS A,IFNULL(SUM(T.QUANTITY_CUSTOM), 0) AS B ")
                 .append("FROM MTL_TRANSACTION_LINES_SPLIT T ")
                 .append(" WHERE T.id = ?");
         String totalQuantity = null;
+        String totalQuantityCustom = null;
         Cursor cursor = db.rawQuery(sb.toString(), new String[]{param.transLineSplitId});
         while (cursor.moveToNext()) {
             totalQuantity = cursor.getString(0);
+            totalQuantityCustom = cursor.getString(1);
         }
-        totalQuantity = TextUtils.isEmpty(totalQuantity) ? "0" : totalQuantity;
         cursor.close();
-        db.execSQL("update MTL_TRANSACTION_LINES_SPLIT set quantity = ? where id = ?",
-                new String[]{totalQuantity, param.transLineSplitId});
+        // totalQuantity = TextUtils.isEmpty(totalQuantity) ? "0" : totalQuantity;
+        // totalQuantityCustom = TextUtils.isEmpty(totalQuantityCustom) ? "0" : totalQuantityCustom;
+        db.execSQL("update MTL_TRANSACTION_LINES_SPLIT set quantity = ?,quantity_custom = ? where id = ?",
+                new String[]{totalQuantity, totalQuantityCustom, param.transLineSplitId});
     }
 
     /**
@@ -882,7 +893,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         sb.append("select T.id,T.ref_line_id,T.ref_line_num,T.work_id,T.inv_id,T.rec_work_id,T.rec_inv_id,")
                 .append("T.material_id,T.ref_doc,T.ref_doc_item,T.ins_lot,")
                 .append("T.return_quantity,T.move_cause,T.move_cause_desc,T.decision_code,")
-                .append("T.project_text,L.id as locationId,L.quantity,L.rec_quantity,L.location,L.rec_location, ")
+                .append("T.project_text,L.id as locationId,L.quantity,L.quantity_custom,L.rec_quantity,L.location,L.rec_location, ")
                 .append("S.id as transLineSplitId,S.batch_num,S.rec_batch_num,S.special_convert,")
                 .append("M.material_num,M.material_desc,M.material_group,")
                 .append("WORG.org_code as work_code,WORG.org_name as work_name,")
@@ -929,6 +940,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
                 detail.projectText = cursor.getString(++index);
                 detail.locationId = cursor.getString(++index);
                 detail.quantity = cursor.getString(++index);
+                detail.quantityCustom = cursor.getString(++index);
                 detail.recQuantity = cursor.getString(++index);
                 detail.location = cursor.getString(++index);
                 detail.recLocation = cursor.getString(++index);

@@ -10,6 +10,7 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectPresenter;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectView;
 
@@ -28,6 +29,35 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
     public MSCollectPresenterImp(Context context) {
         super(context);
+    }
+
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
     @Override
@@ -63,7 +93,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
     @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                              String location) {
+                              String location,Map<String,Object> extraMap) {
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.checkLocationFail("工厂为空");
@@ -76,7 +106,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId, "", location)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override

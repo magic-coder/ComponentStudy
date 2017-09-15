@@ -80,9 +80,9 @@ public class ServerRepositoryImp implements IServerRepository {
     @Override
     public Flowable<List<ReferenceEntity>> getArrivalInfo(String createdBy, String creationDate, Map<String, Object> extraMap) {
         mRequestParam.clear();
-        mRequestParam.put("createdBy",createdBy);
-        mRequestParam.put("creationDate",creationDate);
-        if(extraMap != null) {
+        mRequestParam.put("createdBy", createdBy);
+        mRequestParam.put("creationDate", creationDate);
+        if (extraMap != null) {
             mRequestParam.putAll(extraMap);
         }
         return mRequestApi.getArrivalInfo(JsonUtil.map2Json(mRequestParam))
@@ -349,7 +349,7 @@ public class ServerRepositoryImp implements IServerRepository {
     @Override
     public Flowable<ReferenceEntity> getCheckInfo(String userId, String bizType, String checkLevel,
                                                   String checkSpecial, String storageNum, String workId,
-                                                  String invId, String checkNum, String checkDate) {
+                                                  String invId, String checkNum, String checkDate, Map<String, Object> extraMap) {
         mRequestParam.clear();
         mRequestParam.put("userId", userId);
         mRequestParam.put("businessType", bizType);
@@ -359,6 +359,9 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("workId", workId);
         mRequestParam.put("invId", invId);
         mRequestParam.put("checkNum", checkNum);
+        if (extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
         return mRequestApi.getCheckInfo(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.handleResponse());
     }
@@ -444,7 +447,7 @@ public class ServerRepositoryImp implements IServerRepository {
     @Override
     public Flowable<String> uploadCollectionData(String refCodeId, String transId, String bizType,
                                                  String refType, int inspectionType, String voucherDate,
-                                                 String remark, String userId,Map<String, Object> extraHeaderMap) {
+                                                 String remark, String userId, Map<String, Object> extraHeaderMap) {
         mRequestParam.clear();
         mRequestParam.put("transId", transId);
         mRequestParam.put("businessType", bizType);
@@ -454,7 +457,7 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("inspectionType", inspectionType);
         mRequestParam.put("remark", remark);
         mRequestParam.put("userId", userId);
-        if(extraHeaderMap != null) {
+        if (extraHeaderMap != null) {
             mRequestParam.putAll(extraHeaderMap);
         }
         return mRequestApi.uploadCollectionData(JsonUtil.map2Json(mRequestParam))
@@ -557,13 +560,17 @@ public class ServerRepositoryImp implements IServerRepository {
     }
 
     @Override
-    public Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location) {
+    public Flowable<String> getLocationInfo(String queryType, String workId, String invId,
+                                            String storageNum, String location,Map<String,Object> extraMap) {
         mRequestParam.clear();
         mRequestParam.put("queryType", queryType);
         mRequestParam.put("workId", workId);
         mRequestParam.put("invId", invId);
         mRequestParam.put("location", CommonUtil.toUpperCase(location));
         mRequestParam.put("storageNum", storageNum);
+        if(extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
         return mRequestApi.getLocation(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.MapTransformer);
     }

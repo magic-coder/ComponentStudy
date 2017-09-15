@@ -1,14 +1,19 @@
 package com.richfit.module_mcq.module_as;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_mcq.R;
 import com.richfit.sdk_wzrk.base_as_head.BaseASHeadFragment;
 import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +58,7 @@ public class MCQASHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
     public void initData() {
         super.initData();
         //初始化供应商评价
-        items  = new ArrayList<>();
+        items = new ArrayList<>();
         SimpleEntity simpleEntity = new SimpleEntity();
         simpleEntity.name = "很好";
         simpleEntity.code = "01";
@@ -80,11 +85,19 @@ public class MCQASHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
         simpleEntity.code = "05";
         items.add(simpleEntity);
 
-        SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, items,false);
+        SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, items, false);
         spSupplierEvaluation.setAdapter(adapter);
 
-        //// TODO: 2017/8/31 测试使用的单据号
-        etRefNum.setText("1-20160816-00065");
+        //etRefNum.setText("1-20160816-00065");
+
+        //读取Intent传递过来的refNum,如果存在那么自动加载数据
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String refNum = arguments.getString(Global.EXTRA_REF_NUM_KEY);
+            if (!TextUtils.isEmpty(refNum)) {
+                getRefData(refNum);
+            }
+        }
     }
 
     @Override
@@ -102,7 +115,7 @@ public class MCQASHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
     @Override
     public void _onPause() {
         super._onPause();
-        if(mRefData != null) {
+        if (mRefData != null) {
             mRefData.supplierEvaluation = items.get(spSupplierEvaluation.getSelectedItemPosition()).code;
         }
     }

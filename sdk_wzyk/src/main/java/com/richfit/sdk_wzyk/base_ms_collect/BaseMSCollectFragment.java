@@ -30,11 +30,13 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -68,7 +70,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @BindView(R2.id.sp_send_location)
     protected Spinner spSendLoc;
     @BindView(R2.id.tv_inv_quantity)
-    TextView tvInvQuantity;
+    protected TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
     protected TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
@@ -76,7 +78,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @BindView(R2.id.cb_single)
     protected CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
-    TextView tvTotalQuantity;
+    protected TextView tvTotalQuantity;
     @BindView(R2.id.et_rec_location)
     protected EditText etRecLoc;
     @BindView(R2.id.et_rec_batch_flag)
@@ -94,7 +96,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     private InvAdapter mInvAdapter;
     /*库存信息*/
     protected List<InventoryEntity> mInventoryDatas;
-    private LocationAdapter mLocationAdapter;
+    protected LocationAdapter mLocationAdapter;
     /*当前操作的明细行号*/
     protected String mSelectedRefLineNum;
     /*缓存的批次*/
@@ -133,7 +135,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                 return;
             } else if (mInventoryDatas != null && spSendLoc.getAdapter() != null) {
                 //扫描发出仓位
-                UiUtil.setSelectionForLocation(mInventoryDatas,location,spSendLoc);
+                UiUtil.setSelectionForLocation(mInventoryDatas, location, spSendLoc);
             }
         }
     }
@@ -145,9 +147,6 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
-        mRefLines = new ArrayList<>();
-        mInvDatas = new ArrayList<>();
-        mInventoryDatas = new ArrayList<>();
     }
 
     /**
@@ -172,7 +171,6 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
          这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI。*/
         RxTextView.textChanges(etSendBatchFlag)
                 .filter(str -> !TextUtils.isEmpty(str) && spSendInv.getAdapter() != null)
-                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .subscribe(batch -> resetCommonUIPartly());
 
         /*监听单据行*/
@@ -182,11 +180,12 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
         /*库存地点，选择库存地点加载库存数据*/
         RxAdapterView.itemSelections(spSendInv)
+                .filter(a -> spSendInv.getSelectedItemPosition() > 0)
                 .filter(a -> spSendLoc.isEnabled())
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventory(position.intValue()));
+                .subscribe(position -> loadInventory(position));
 
        /*下架仓位,选择下架仓位刷新库存数量，并且获取缓存*/
         RxAdapterView
@@ -265,6 +264,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     @Override
     public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if(mRefLines == null) {
+            mRefLines = new ArrayList<>();
+        }
         mRefLines.clear();
         mRefLines.add(getString(R.string.default_choose_item));
         if (refLines != null)
@@ -328,6 +330,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
     @Override
     public void showInvs(ArrayList<InvEntity> list) {
+        if(mInvDatas == null) {
+            mInvDatas = new ArrayList<>();
+        }
         //初始化库存地点
         mInvDatas.clear();
         mInvDatas.addAll(list);
@@ -354,7 +359,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      *
      * @param position:用户选择的库存地点
      */
-    private void loadInventory(int position) {
+    protected void loadInventory(int position) {
         tvInvQuantity.setText("");
         tvLocQuantity.setText("");
         tvTotalQuantity.setText("");
@@ -381,6 +386,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     @Override
     public void showInventory(List<InventoryEntity> list) {
+        if(mInventoryDatas == null) {
+            mInventoryDatas = new ArrayList<>();
+        }
         mInventoryDatas.clear();
         InventoryEntity tmp = new InventoryEntity();
         tmp.locationCombine = "请选择";
@@ -398,6 +406,11 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @Override
     public void loadInventoryFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    public void loadInventoryComplete() {
+
     }
 
     @Override
@@ -504,18 +517,21 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                     return;
                 }
                 //缓存和输入的都为空或者都不为空而且相等
-                boolean isMatch;
+                boolean isMatch = false;
 
                 isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                isMatch = isOpenBatchManager ? (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag) &&
-                        locationCombine.equalsIgnoreCase(cachedItem.locationCombine)) || (
-                        !TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                locationCombine.equalsIgnoreCase(cachedItem.locationCombine))
-                        : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
-
+                if (!isOpenBatchManager) {
+                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                } else {
+                    if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
+                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                    } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
+                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                    }
+                }
                 L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
 
                 //注意它没有匹配次成功可能是批次页可能是仓位。
@@ -735,12 +751,16 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         result.quantity = getString(etQuantity);
         int locationPos = spSendLoc.getSelectedItemPosition();
-        result.location = mInventoryDatas.get(locationPos).location;
-        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
-                && !TextUtils.isEmpty(result.specialInvNum)) ?
-                "Y" : "N";
+        //这里需要兼容离线，而离线是没有库存
+        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+            result.location = mInventoryDatas.get(locationPos).location;
+            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+            result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                    && !TextUtils.isEmpty(result.specialInvNum)) ?
+                    "Y" : "N";
+        }
+
         result.modifyFlag = "N";
         result.invType = param.invType;
         return result;
@@ -776,6 +796,16 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @Override
     public void _onPause() {
         clearAllUI();
+    }
+
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 
     protected abstract int getOrgFlag();

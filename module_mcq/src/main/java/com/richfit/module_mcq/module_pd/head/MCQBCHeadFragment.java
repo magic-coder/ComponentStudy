@@ -5,7 +5,7 @@ import android.view.View;
 import com.richfit.sdk_wzpd.blind.head.BCHeadFragment;
 
 /**
- * 库存级盘点。默认仓库号写死为
+ * 库存级盘点。默认仓库号写死为1Q0
  * Created by monday on 2017/8/29.
  */
 
@@ -15,9 +15,8 @@ public class MCQBCHeadFragment extends BCHeadFragment {
 
     @Override
     public void initView() {
-        super.initView();
-        //初始化位仓位级
         resetUI();
+        super.initView();
         mRefData = null;
         rbWarehouseLevel.setChecked(true);
         llWarehouseLevel.setVisibility(View.VISIBLE);

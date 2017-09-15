@@ -6,9 +6,11 @@ import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/10.
@@ -50,8 +52,6 @@ public interface IMSCollectView extends IBaseCollectView {
      */
     void showInvs(ArrayList<InvEntity> list);
 
-
-
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
     /**
@@ -60,9 +60,8 @@ public interface IMSCollectView extends IBaseCollectView {
      * @param list
      */
     void showInventory(List<InventoryEntity> list);
-
     void loadInventoryFail(String message);
-
+    void loadInventoryComplete();
     /**
      * 获取缓存成功
      *
@@ -75,4 +74,8 @@ public interface IMSCollectView extends IBaseCollectView {
     void loadCacheSuccess();
 
     void loadCacheFail(String message);
+
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

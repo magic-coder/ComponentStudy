@@ -2,7 +2,12 @@ package com.richfit.module_cqyt.module_xxcx;
 
 import android.text.TextUtils;
 
+import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.sdk_xxcx.inventory_query_n.detail.InvNQueryDetailFragment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/8/4.
@@ -32,6 +37,11 @@ public class CQYTInvNQueryDetailFragment extends InvNQueryDetailFragment {
             return;
         }
 
+        if (TextUtils.isEmpty(mRefData.locationType)) {
+            showMessage("请现在抬头界面选择仓储类型");
+            return;
+        }
+
         //物料和仓位必输其一
         if (TextUtils.isEmpty(mRefData.materialNum) && TextUtils.isEmpty(mRefData.location)) {
             showMessage("请现在抬头界面输入物料或者仓位");
@@ -45,5 +55,15 @@ public class CQYTInvNQueryDetailFragment extends InvNQueryDetailFragment {
     @Override
     public boolean isNeedShowFloatingButton() {
         return false;
+    }
+
+
+    @Override
+    public InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("locationType", mRefData.locationType);
+        queryParam.extraMap = extraMap;
+        return queryParam;
     }
 }

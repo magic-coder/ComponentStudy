@@ -13,6 +13,7 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_sxcl.baseedit.ILocQTEditPresenter;
 import com.richfit.sdk_sxcl.baseedit.ILocQTEditView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
                                  String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location,
                                  String batchFlag, String specialInvFlag, String specialInvNum,
-                                 String invType, String deviceId,Map<String,Object> extraMap) {
+                                 String invType, String deviceId, Map<String, Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
@@ -43,7 +44,7 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
+                            specialInvFlag, specialInvNum, invType, deviceId, extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
@@ -51,7 +52,7 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                    specialInvFlag, specialInvNum, invType, deviceId, extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
@@ -153,7 +154,9 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
         Flowable<String> flowable;
         if ("S".equalsIgnoreCase(result.shkzg)) {
             //上架
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location),
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location, extraMap),
                     mRepository.uploadCollectionDataSingle(result));
         } else {
             //下架

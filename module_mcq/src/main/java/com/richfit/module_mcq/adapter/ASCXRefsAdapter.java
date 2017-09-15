@@ -14,9 +14,9 @@ import java.util.List;
  * Created by monday on 2017/8/29.
  */
 
-public class RefsAdapter extends CommonAdapter<ReferenceEntity> {
+public class ASCXRefsAdapter extends CommonAdapter<ReferenceEntity> {
 
-    public RefsAdapter(Context context, int layoutId, List<ReferenceEntity> datas) {
+    public ASCXRefsAdapter(Context context, int layoutId, List<ReferenceEntity> datas) {
         super(context, layoutId, datas);
     }
 

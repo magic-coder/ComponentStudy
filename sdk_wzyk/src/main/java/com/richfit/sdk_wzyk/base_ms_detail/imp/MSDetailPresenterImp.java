@@ -77,9 +77,9 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, int position, String companyCode) {
+                           String refType, String bizType,String refLineId,String userId, int position, String companyCode) {
         RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, "", "", position, companyCode)
+                locationId, refType, bizType, refLineId, userId, position, companyCode)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext) {
                     @Override
@@ -173,12 +173,21 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                     //批次
                     bundle.putString(Global.EXTRA_BATCH_FLAG_KEY, node.batchFlag);
 
+                    //接收批次
+                    bundle.putString(Global.EXTRA_REC_BATCH_FLAG_KEY,node.recBatchFlag);
+
                     //上架仓位
                     bundle.putString(Global.EXTRA_LOCATION_KEY, node.locationCombine);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_FLAG_KEY, node.specialInvFlag);
                     bundle.putString(Global.EXTRA_SPECIAL_INV_NUM_KEY, node.specialInvNum);
+
+                    //上/下接收仓位
+                    bundle.putString(Global.EXTRA_REC_LOCATION_KEY,node.recLocation);
+
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
+
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
 
                     intent.putExtras(bundle);
 
@@ -395,6 +404,8 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 childNode.totalQuantity = parentNode.totalQuantity;
                 childNode.location = location.location;
                 childNode.batchFlag = location.batchFlag;
+                childNode.recBatchFlag = location.recBatchFlag;
+                childNode.recLocation = location.recLocation;
                 childNode.quantity = location.quantity;
                 childNode.transId = location.transId;
                 childNode.transLineId = location.transLineId;
@@ -404,6 +415,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 childNode.specialConvert = location.specialConvert;
                 childNode.locationCombine = location.locationCombine;
                 childNode.quantityCustom = location.quantityCustom;
+                childNode.locationType = location.locationType;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

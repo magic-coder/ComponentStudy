@@ -10,6 +10,7 @@ public class Global {
     /*App是否第一次启动*/
     public final static String IS_APP_FIRST_KEY = "is_app_first";
 
+
     public static String USER_ID;
     public static String LOGIN_ID;
     public static String USER_NAME;
@@ -154,7 +155,7 @@ public class Global {
     public static final String EXTRA_INV_QUANTITY_KEY = "extra_inv_quantity";
     public static final String EXTRA_BIZ_TYPE_KEY = "extra_biz_type";
     public static final String EXTRA_REF_TYPE_KEY = "extra_ref_type";
-
+    public static final String EXTRA_LOCATION_TYPE_KEY = "location_type";
     public static final String EXTRA_DEVICE_ID_KEY = "extra_device_id";
 
     public static final String EXTRA_REC_LOCATION_KEY = "extra_rec_location";
@@ -220,6 +221,7 @@ public class Global {
     public static final int MATERIAL_POS = 2;
     public static final int BATCHFALG_POS = 12;
     public static final int LOCATION_POS = 0;
+    public static final int LOCATION_TYPE_POS = 1;
     /*料签*/
     public static final int MATERIAL_POS_L = 4;
     public static final int BATCHFALG_POS_L = 6;

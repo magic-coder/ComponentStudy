@@ -37,7 +37,7 @@ public class CQYTXJCollectFragment extends BaseCollectFragment<CQYTXJCollectPres
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
-        if (list != null && list.length == 1) {
+        if (list != null && list.length <= 1) {
             final String location = list[0];
             etInsLocation.setText(location);
             saveCollectedData();

@@ -3,14 +3,26 @@ package com.richfit.module_cqyt.module_ms.y315;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
+import com.richfit.common_lib.utils.UiUtil;
+import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/6/30.
@@ -19,6 +31,9 @@ import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     EditText etQuantityCustom;
+    //仓储类型
+    Spinner spLocationType;
+    List<SimpleEntity> mLocationTypes;
 
 
     @Override
@@ -45,6 +60,9 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
         tvInvName.setText("接收库位");
         tvBatchFlagName.setText("接收批次");
         tvLocationName.setText("接收仓位");
+        //显示仓储类型
+        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
+        spLocationType = mView.findViewById(R.id.sp_location_type);
     }
 
     @Override
@@ -52,9 +70,10 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
         super.initData();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            String quantityCustom = bundle.getString(CQYTMSY313EditFragment.EXTRA_QUANTITY_CUSTOM_KEY);
+            String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
             etQuantityCustom.setText(quantityCustom);
         }
+        mPresenter.getDictionaryData("locationType");
     }
 
     @Override
@@ -62,6 +81,26 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
 
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
+        }
+    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -74,6 +113,10 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
             showMessage("件数不合理");
             return false;
         }
+        if(mLocationTypes == null || mLocationTypes.size() <= 0) {
+            showMessage("未获取到仓储类型");
+            return false;
+        }
         return super.checkCollectedDataBeforeSave();
     }
 
@@ -81,6 +124,8 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
+        //仓储类型
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 

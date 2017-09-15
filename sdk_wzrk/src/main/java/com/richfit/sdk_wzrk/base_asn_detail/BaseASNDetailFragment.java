@@ -99,8 +99,8 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
             showMessage("该行还未进行数据采集");
             return;
         }
-        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId, mRefData.refType,
-                mRefData.bizType, position, mCompanyCode);
+        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
+                mRefData.refType, mRefData.bizType,node.refLineId,Global.USER_ID, position, mCompanyCode);
     }
 
     /**
@@ -149,6 +149,8 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
             showMessage(getString(R.string.msg_detail_off_location));
             return;
         }
+        mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2BarcodeSystem("",mTransId, mBizType, mRefType, mRefData.voucherDate,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -171,6 +173,8 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
             showMessage("请先过账");
             return;
         }
+        mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2SAP(mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, "", null);
     }

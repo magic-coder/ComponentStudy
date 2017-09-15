@@ -122,7 +122,7 @@ public class BlindHeadPresenterImp extends BaseHeadPresenterImp<IBlindHeadView>
         mView = getView();
 
         RxSubscriber<ReferenceEntity> subscriber = mRepository.getCheckInfo(userId, bizType,
-                checkLevel, checkSpecial, storageNum, workId, invId, "", checkDate)
+                checkLevel, checkSpecial, storageNum, workId, invId, "", checkDate, null)
                 .filter(data -> data != null)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<ReferenceEntity>(mContext, "正在初始化本次盘点....") {

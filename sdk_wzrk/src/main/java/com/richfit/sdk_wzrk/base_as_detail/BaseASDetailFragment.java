@@ -134,7 +134,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             lineDeleteFlag = parentNode.getChildren().size() > 1 ? "N" : "Y";
         }
         mPresenter.deleteNode(lineDeleteFlag, node.transId, node.transLineId,
-                node.locationId, mRefData.refType, mRefData.bizType, position, mCompanyCode);
+                node.locationId, mRefData.refType, mRefData.bizType, node.refLineId, Global.USER_ID, position, mCompanyCode);
     }
 
     /**
@@ -186,6 +186,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             return;
         }
         mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -209,6 +210,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
             return;
         }
         mShowMsg.setLength(0);
+        mExtraTansMap.clear();
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
@@ -232,6 +234,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
 
     /**
      * 第三步转储入口
+     *
      * @param transToSapFlag
      */
     protected void sapUpAndDownLocation(String transToSapFlag) {

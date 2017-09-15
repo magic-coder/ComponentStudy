@@ -498,7 +498,7 @@ public abstract class BaseLocQTCollectFragment extends BaseCollectFragment<LocQT
             return;
         }
         //这里不考虑是否上架
-        mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location);
+        mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location,null);
     }
 
     @Override

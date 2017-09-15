@@ -47,9 +47,12 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
     @Override
     public void initEvent() {
         super.initEvent();
-        /*监听上架仓位点击事件(注意如果是必检物资该监听无效)*/
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
+        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
+            hideKeyboard(etLocation);
+            getTransferSingle(getString(etBatchFlag), location);
+        });
     }
+
 
     @Override
     public void initData() {

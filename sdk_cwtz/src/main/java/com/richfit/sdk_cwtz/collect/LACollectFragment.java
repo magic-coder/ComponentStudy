@@ -18,6 +18,7 @@ import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.MaterialEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_cwtz.R;
 import com.richfit.sdk_cwtz.R2;
 import com.richfit.sdk_cwtz.adapter.SpecialInvAdapter;
@@ -25,6 +26,7 @@ import com.richfit.sdk_cwtz.collect.imp.LACollectPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -59,6 +61,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     //增加特殊库存
     @BindView(R2.id.sp_special_inv)
     protected Spinner spSpecialInv;
+
     SpecialInvAdapter mAdapter;
     protected List<InventoryEntity> mInventoryDatas;
     MaterialEntity mHistoryData;
@@ -70,7 +73,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
             final String materialNum = list[Global.MATERIAL_POS];
             final String batchFlag = list[Global.BATCHFALG_POS];
             loadMaterialInfo(materialNum, batchFlag);
-        } else {
+        } else if (list != null && list.length == 1) {
             final String location = list[Global.LOCATION_POS];
             //目标仓位
             if (etRecLocation.hasFocus() && etRecLocation.isFocused()) {
@@ -78,8 +81,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                 etRecLocation.setText(location);
             } else {
                 //源仓位
-                clearCommonUI(etRecLocation);
+                clearCommonUI(etSendLocation);
                 etSendLocation.setText(location);
+                //获取库存
+                loadInventoryInfo(getString(etSendLocation));
             }
         }
     }
@@ -129,8 +134,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     public void initEvent() {
+
         //获取物料
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> loadMaterialInfo(materialNum, getString(etBatchFlag)));
+
         //监听物料恢复批次状态
         RxTextView.textChanges(etMaterialNum)
                 .filter(str -> !TextUtils.isEmpty(str))
@@ -138,8 +145,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                     isOpenBatchManager = true;
                     etBatchFlag.setEnabled(true);
                 });
+
         //获取仓位的库存
         etSendLocation.setOnRichEditTouchListener((view, location) -> loadInventoryInfo(location));
+
         //选择下拉
         RxAdapterView.itemSelections(spSpecialInv)
                 .filter(pos -> pos > 0)
@@ -238,6 +247,16 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     public void getInventoryFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
         showMessage(message);
     }
 

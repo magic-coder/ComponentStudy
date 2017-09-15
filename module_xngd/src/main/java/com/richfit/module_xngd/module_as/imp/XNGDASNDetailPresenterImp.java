@@ -113,6 +113,7 @@ public class XNGDASNDetailPresenterImp extends ASNDetailPresenterImp {
         //上架仓位集合
         bundle.putStringArrayList(Global.EXTRA_LOCATION_LIST_KEY, sendLocations);
 
+        //本位金额
         bundle.putString(XNGDASNEditFragment.EXTRA_MONEY_KEY, node.money);
 
         intent.putExtras(bundle);

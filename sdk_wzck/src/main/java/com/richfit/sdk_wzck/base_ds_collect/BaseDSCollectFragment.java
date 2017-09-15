@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -29,11 +32,13 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzck.R;
 import com.richfit.sdk_wzck.R2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -92,7 +97,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     private InvAdapter mInvAdapter;
     /*库存信息*/
     protected List<InventoryEntity> mInventoryDatas;
-    private LocationAdapter mLocationAdapter;
+    protected LocationAdapter mLocationAdapter;
     /*当前操作的明细行号*/
     protected String mSelectedRefLineNum;
     /*批次一致性检查*/
@@ -125,11 +130,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             //仓位处理
             if (mInventoryDatas != null && spLocation.getAdapter() != null) {
                 final String location = list[0];
-               /* if (mInventoryDatas.size() == 0 && spInv.getSelectedItemPosition() >= 1) {
-                    //有可能是修改批次清空了
-                    loadInventory(spInv.getSelectedItemPosition());
-                    return;
-                }*/
                 UiUtil.setSelectionForLocation(mInventoryDatas, location, spLocation);
             }
         }
@@ -137,9 +137,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
-        mRefLines = new ArrayList<>();
-        mInvDatas = new ArrayList<>();
-        mInventoryDatas = new ArrayList<>();
+
     }
 
 
@@ -166,7 +164,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         //这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI
         RxTextView.textChanges(etBatchFlag)
                 .filter(str -> !TextUtils.isEmpty(str) && spInv.getAdapter() != null)
-                .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                // .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(batch -> resetCommonUIPartly());
 
         //监听单据行
@@ -176,24 +174,19 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
         //库存地点，选择库存地点加载库存数据
         RxAdapterView.itemSelections(spInv)
+                .filter(a -> spInv.getSelectedItemPosition() > 0)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventory(position.intValue()));
+                .subscribe(position -> loadInventory(position));
 
-        //下架仓位,选择下架仓位刷新库存数量，并且获取缓存
+        //下架仓位,选择下架仓位刷新库存数量，并且获取缓存。注意这里必须检查库存是否加载
         RxAdapterView
                 .itemSelections(spLocation)
                 .filter(position -> (mInventoryDatas != null && mInventoryDatas.size() > 0 &&
                         position.intValue() <= mInventoryDatas.size() - 1))
-                .subscribe(position -> {
-                    RefDetailEntity data = getLineData(mSelectedRefLineNum);
-                    InventoryEntity invData = mInventoryDatas.get(position);
-                    String invQuantity = calQuantityByUnitRate(invData.invQuantity, data.recordUnit, data.unitRate);
-                    invData.invQuantity = invQuantity;
-                    tvInvQuantity.setText(invData.invQuantity);
-                    getTransferSingle(position);
-                });
+                .filter(a -> spInv.getAdapter() != null)
+                .subscribe(position -> getTransferSingle(position));
 
         //单品(注意单品仅仅控制实收数量，累计数量是由行信息里面控制)
         cbSingle.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -266,6 +259,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     @Override
     public void setupRefLineAdapter(ArrayList<String> refLines) {
+        if (mRefLines == null) {
+            mRefLines = new ArrayList<>();
+        }
         mRefLines.clear();
         mRefLines.add(getString(R.string.default_choose_item));
         if (refLines != null)
@@ -330,6 +326,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void showInvs(ArrayList<InvEntity> list) {
+        if (mInvDatas == null) {
+            mInvDatas = new ArrayList<>();
+        }
         //初始化库存地点
         mInvDatas.clear();
         mInvDatas.addAll(list);
@@ -352,7 +351,13 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         }
     }
 
-    private void loadInventory(int position) {
+
+    /**
+     * 选择库存地点，加载库存
+     *
+     * @param position:库存地点的位置
+     */
+    protected void loadInventory(int position) {
         tvInvQuantity.setText("");
         tvLocQuantity.setText("");
         tvTotalQuantity.setText("");
@@ -385,6 +390,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     @Override
     public void showInventory(List<InventoryEntity> list) {
+        if (mInventoryDatas == null) {
+            mInventoryDatas = new ArrayList<>();
+        }
         mInventoryDatas.clear();
         InventoryEntity tmp = new InventoryEntity();
         tmp.locationCombine = "请选择";
@@ -405,18 +413,52 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     /**
+     * 如果获取库存成功，可以获取建议仓位
+     */
+    @Override
+    public void loadInventoryComplete() {
+
+    }
+
+    @Override
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
+        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
+        if (!cbSingle.isChecked()) {
+            etQuantity.setText("");
+        }
+    }
+
+    @Override
+    public void saveCollectedDataFail(String message) {
+        showMessage("保存数据失败;" + message);
+    }
+
+    /**
      * 获取单条缓存。注意这必须先确定好批次和仓位是否输入，因为系统将用批次和仓位匹配缓存信息。
+     *
+     * @param position:下架仓位的位置
      */
     protected void getTransferSingle(int position) {
-        final String invQuantity = mInventoryDatas.get(position).invQuantity;
-        //这里给出的是location+specialInvFlag+specialInvNum的组合字段
-        final String location = mInventoryDatas.get(position).locationCombine;
-        final String batchFlag = getString(etBatchFlag);
+
         //检测是否选择了发出库位
         if (position <= 0) {
             resetLocation();
             return;
         }
+
+        //这里给出的是location+specialInvFlag+specialInvNum的组合字段
+        final String location = mInventoryDatas.get(position).locationCombine;
+        final String batchFlag = getString(etBatchFlag);
+
+        //从新计算库存数量
+        RefDetailEntity data = getLineData(mSelectedRefLineNum);
+        InventoryEntity invData = mInventoryDatas.get(position);
+        String invQuantity = calQuantityByUnitRate(invData.invQuantity, data.recordUnit, data.unitRate);
+        invData.invQuantity = invQuantity;
+        tvInvQuantity.setText(invData.invQuantity);
+
         if (spRefLine.getSelectedItemPosition() <= 0) {
             showMessage("请先选择单据行");
             return;
@@ -486,19 +528,23 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                     return;
                 }
                 //缓存和输入的都为空或者都不为空而且相等
-                boolean isMatch;
+                boolean isMatch = false;
 
                 isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位批次，而且如果批次没有输入，那么通过仓位匹配。
+                //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
-                isMatch = isOpenBatchManager ? (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag) &&
-                        locationCombine.equalsIgnoreCase(cachedItem.locationCombine)) || (
-                        !TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                locationCombine.equalsIgnoreCase(cachedItem.locationCombine))
-                        : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                if (!isOpenBatchManager) {
+                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                } else {
+                    if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
+                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                    } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
+                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                    }
+                }
 
                 L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
 
@@ -550,7 +596,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     /**
      * 不论扫描的是否是同一个物料，都清除控件的信息。
      */
-    private void clearAllUI() {
+    protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvLocQuantity, etQuantity, tvLocQuantity, tvInvQuantity,
                 tvTotalQuantity, cbSingle, etMaterialNum, etBatchFlag, tvMaterialUnit);
         //单据行
@@ -736,21 +782,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void saveCollectedDataSuccess(String message) {
-        showMessage(message);
-        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
-        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
-        if (!cbSingle.isChecked()) {
-            etQuantity.setText("");
-        }
-    }
-
-    @Override
-    public void saveCollectedDataFail(String message) {
-        showMessage("保存数据失败;" + message);
-    }
-
-    @Override
     public void _onPause() {
         super._onPause();
         clearAllUI();
@@ -767,6 +798,49 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         super.retry(retryAction);
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void getSuggestedLocationSuccess(InventoryEntity suggestedInventory) {
+        //主计量单位自动匹配
+        if (suggestedInventory != null && !TextUtils.isEmpty(suggestedInventory.locationCombine) && mInventoryDatas != null) {
+            int pos = -1;
+            for (InventoryEntity data : mInventoryDatas) {
+                pos++;
+                if (data.locationCombine.equalsIgnoreCase(suggestedInventory.locationCombine)) {
+                    break;
+                }
+            }
+            if (pos >= 0) {
+                spLocation.setSelection(pos);
+            }
+        }
+    }
+
+    @Override
+    public void getSuggestedLocationFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void getSuggestedLocationComplete() {}
+
+    @Override
+    public void checkLocationFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void checkLocationSuccess(String batchFlag, String location) {
+
+    }
 
     protected abstract int getOrgFlag();
 
