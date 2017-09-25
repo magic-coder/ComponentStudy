@@ -77,7 +77,7 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType,String refLineId,String userId, int position, String companyCode) {
+                           String refType, String bizType, String refLineId, String userId, int position, String companyCode) {
         RxSubscriber<String> subscriber =
                 mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
                         locationId, refType, bizType, refLineId, userId, position, companyCode)
@@ -177,12 +177,14 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
 
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
-                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
 
                     //副计量单位的累计数量
-                    bundle.putString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY,parentNode.totalQuantityCustom);
+                    bundle.putString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY, parentNode.totalQuantityCustom);
                     //副计量单位的实收数量
-                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY,node.quantityCustom);
+                    bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
+                    //仓储类型
+                    bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
                     activity.startActivity(intent);
@@ -193,10 +195,10 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
 
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
+    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSap, Map<String, Object> extraHeaderMap) {
         mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap),
+        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSap, extraHeaderMap))
                 .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
                 .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))

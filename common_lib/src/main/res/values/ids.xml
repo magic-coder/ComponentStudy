@@ -19,6 +19,7 @@
 
     <!--抬头业务id-->
     <item name="et_ref_num" type="id"></item>
+    <item name="tv_rec_work" type="id"></item>
     <item name="tv_ref_num" type="id"></item>
     <item name="ll_supplier" type="id"></item>
     <item name="tv_supplier" type="id"></item>

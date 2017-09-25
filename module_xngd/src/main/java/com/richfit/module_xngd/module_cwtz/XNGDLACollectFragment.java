@@ -3,6 +3,7 @@ package com.richfit.module_xngd.module_cwtz;
 import android.text.TextUtils;
 
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_cwtz.collect.LACollectFragment;
 
 import java.util.HashMap;
@@ -84,6 +85,15 @@ public class XNGDLACollectFragment extends LACollectFragment {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
+        return  result;
     }
 
     @Override

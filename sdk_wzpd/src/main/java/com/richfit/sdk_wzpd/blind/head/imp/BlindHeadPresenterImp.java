@@ -9,11 +9,14 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzpd.blind.head.IBlindHeadPresenter;
 import com.richfit.sdk_wzpd.blind.head.IBlindHeadView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -79,7 +82,9 @@ public class BlindHeadPresenterImp extends BaseHeadPresenterImp<IBlindHeadView>
 
                     @Override
                     public void onComplete() {
-
+                        if (mView != null) {
+                            mView.loadStorageNumComplete();
+                        }
                     }
                 });
         addSubscriber(subscriber);
@@ -111,18 +116,21 @@ public class BlindHeadPresenterImp extends BaseHeadPresenterImp<IBlindHeadView>
 
                     @Override
                     public void onComplete() {
-
+                        if (mView != null) {
+                            mView.loadInvsComplete();
+                        }
                     }
                 });
         addSubscriber(subscriber);
     }
 
     @Override
-    public void getCheckInfo(String userId, String bizType, String checkLevel, String checkSpecial, String storageNum, String workId, String invId, String checkDate) {
+    public void getCheckInfo(String userId, String bizType, String checkLevel, String checkSpecial,
+                             String storageNum, String workId, String invId, String checkDate,Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<ReferenceEntity> subscriber = mRepository.getCheckInfo(userId, bizType,
-                checkLevel, checkSpecial, storageNum, workId, invId, "", checkDate, null)
+                checkLevel, checkSpecial, storageNum, workId, invId, "", checkDate, extraMap)
                 .filter(data -> data != null)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<ReferenceEntity>(mContext, "正在初始化本次盘点....") {
@@ -204,4 +212,31 @@ public class BlindHeadPresenterImp extends BaseHeadPresenterImp<IBlindHeadView>
 
     }
 
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String, List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
 }

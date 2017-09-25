@@ -119,7 +119,8 @@ create table IF not exists BASE_LOCATION
   location          TEXT,
   storage_num       TEXT,
   work_id           TEXT,
-  inv_id            TEXT
+  inv_id            TEXT,
+  location_type    TEXT
 );
 
 create table IF not exists P_AUTH_ORG
@@ -571,6 +572,7 @@ create table IF not exists MTL_TRANSACTION_LINES_LOCATION
    rec_order_quantity  NUMBER(13,3),
    device_id           VARCHAR2(32),
    rec_device_id       VARCHAR2(32),
+   location_type       TEXT,
    created_by          VARCHAR2(32),
    creation_date       INTEGER,
    last_updated_by     VARCHAR2(32),

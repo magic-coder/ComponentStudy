@@ -114,16 +114,15 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
         mSpecialInvNum = bundle.getString(Global.EXTRA_SPECIAL_INV_NUM_KEY);
-        final String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
-        final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
-        final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
-        final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
+        String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
+        String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
+        String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
+        String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
         mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mRefLineId = bundle.getString(Global.EXTRA_REF_LINE_ID_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
-
         if (mRefData != null) {
             /*单据数据中的库存地点不一定有，而且用户可以录入新的库存地点，所以只有子节点的库存地点才是正确的*/
             RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
@@ -136,7 +135,6 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             tvBatchFlag.setText(batchFlag);
             tvInv.setText(invCode);
             tvInv.setTag(invId);
-
             etQuantity.setText(mQuantity);
             tvTotalQuantity.setText(totalQuantity);
             //下载库存
@@ -179,7 +177,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
 
     @Override
     public void showInventory(List<InventoryEntity> list) {
-        if(mInventoryDatas == null) {
+        if (mInventoryDatas == null) {
             mInventoryDatas = new ArrayList<>();
         }
         mInventoryDatas.clear();
@@ -219,13 +217,14 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
 
     /**
      * 选择下拉仓位匹配单条缓存
+     *
      * @param position:下拉仓位的位置
      */
     protected void getTransferSingle(int position) {
         final String invQuantity = mInventoryDatas.get(position).invQuantity;
         //检测是否选择了发出库位
         if (position <= 0) {
-            spLocation.setSelection(0, true);
+            spLocation.setSelection(0);
             tvInvQuantity.setText("");
             tvLocQuantity.setText("");
             tvTotalQuantity.setText("");
@@ -337,7 +336,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         //库存相关的字段回传
         int locationPos = spLocation.getSelectedItemPosition();
         //这里需要兼容离线，而离线是没有库存
-        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+        if (mInventoryDatas != null && mInventoryDatas.size() > 0) {
             result.location = mInventoryDatas.get(locationPos).location;
             result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;

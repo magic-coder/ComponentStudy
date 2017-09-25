@@ -1283,11 +1283,13 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
     }
 
     @Override
-    public boolean getLocationInfo(String queryType, String workId, String invId, String storageNum, String location) {
+    public boolean getLocationInfo(String queryType, String workId, String invId, String storageNum,
+                                   String location,Map<String, Object> extraMap) {
         SQLiteDatabase db = getWritableDB();
         clearStringBuffer();
         String[] selections;
         List<String> selectionList = new ArrayList<>();
+        final String locationType = (String) extraMap.get("locationType");
         sb.append(" select count(*) from BASE_LOCATION where ");
         if (TextUtils.isEmpty(storageNum)) {
             // 如果仓库号为空 则先查询库存地点是否启用了WM
@@ -1299,21 +1301,33 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
             }
             cursor.close();
             if (TextUtils.isEmpty(storageCode)) {
-                sb.append(" work_id = ? and inv_id = ? and location = ?");
+                sb.append(" work_id = ? and inv_id = ? and location = ? ");
                 selectionList.add(workId);
                 selectionList.add(invId);
                 selectionList.add(location);
+                if(!TextUtils.isEmpty(locationType)) {
+                    sb.append(" and location_type = ? ");
+                    selectionList.add(locationType);
+                }
 
             } else {
                 sb.append(" storage_num = ? and location = ?");
                 selectionList.add(storageCode);
                 selectionList.add(location);
+                if(!TextUtils.isEmpty(locationType)) {
+                    sb.append(" and location_type = ? ");
+                    selectionList.add(locationType);
+                }
             }
         } else {
             // 如果传入的是仓库号 表示启用了WM 直接根据仓库号查询
+            sb.append(" storage_num = ? and location = ?");
             selectionList.add(storageNum);
             selectionList.add(location);
-            sb.append(" storage_num = ? and location = ?");
+            if(!TextUtils.isEmpty(locationType)) {
+                sb.append(" and location_type = ? ");
+                selectionList.add(locationType);
+            }
         }
 
         selections = new String[selectionList.size()];

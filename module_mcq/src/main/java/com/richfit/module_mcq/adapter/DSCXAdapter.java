@@ -2,7 +2,6 @@ package com.richfit.module_mcq.adapter;
 
 import android.content.Context;
 
-
 import com.richfit.common_lib.lib_adapter_rv.CommonAdapter;
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -12,12 +11,13 @@ import com.richfit.module_mcq.R;
 import java.util.List;
 
 /**
+ * 单据查询明细展示
  * Created by monday on 2017/8/28.
  */
 
-public class DSCXRefsAdapter extends CommonAdapter<ReferenceEntity> {
+public class DSCXAdapter extends CommonAdapter<ReferenceEntity> {
 
-    public DSCXRefsAdapter(Context context, int layoutId, List<ReferenceEntity> datas) {
+    public DSCXAdapter(Context context, int layoutId, List<ReferenceEntity> datas) {
         super(context, layoutId, datas);
     }
 

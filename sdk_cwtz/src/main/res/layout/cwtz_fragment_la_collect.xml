@@ -98,7 +98,6 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@id/tv_ref_line_num_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="源仓储类型" />
 
@@ -170,7 +169,6 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@id/tv_ref_line_num_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="目标仓储类型" />
 

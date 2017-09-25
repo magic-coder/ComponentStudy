@@ -14,6 +14,7 @@ import com.richfit.sdk_wzrk.base_asn_collect.IASNCollectView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
@@ -100,7 +101,8 @@ public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectV
                                       String invId, String recWorkId, String recInvId, String batchFlag,
                                       String refDoc, int refDocItem) {
         mView = getView();
-        RxSubscriber<ReferenceEntity> subscriber = mRepository.getTransferInfoSingle("", "", bizType, "",
+        RxSubscriber<ReferenceEntity> subscriber =
+                mRepository.getTransferInfoSingle("", "", bizType, "",
                 workId, invId, recWorkId, recInvId, materialNum, batchFlag, "", refDoc, refDocItem, userId)
                 .filter(refData -> refData != null && refData.billDetailList.size() > 0)
                 .flatMap(refData -> Flowable.just(addBatchManagerStatus(refData)))
@@ -141,4 +143,46 @@ public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectV
                 });
         addSubscriber(subscriber);
     }
+
+
+    @Override
+    public void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                              String location,Map<String,Object> extraMap) {
+        mView = getView();
+        if (TextUtils.isEmpty(workId) && mView != null) {
+            mView.checkLocationFail("工厂为空");
+            return;
+        }
+
+        if (TextUtils.isEmpty(invId) && mView != null) {
+            mView.checkLocationFail("库存地点为空");
+            return;
+        }
+
+        ResourceSubscriber<String> subscriber =
+                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new ResourceSubscriber<String>() {
+                            @Override
+                            public void onNext(String s) {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.checkLocationFail(t.getMessage());
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                if (mView != null) {
+                                    mView.checkLocationSuccess(batchFlag, location);
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
 }

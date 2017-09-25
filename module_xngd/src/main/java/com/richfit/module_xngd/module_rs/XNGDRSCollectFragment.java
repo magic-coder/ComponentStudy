@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
@@ -52,10 +54,19 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     }
 
     @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
+        return result;
+    }
+
+    @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

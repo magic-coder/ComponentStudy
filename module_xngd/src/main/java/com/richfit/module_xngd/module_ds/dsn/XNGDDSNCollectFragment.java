@@ -74,6 +74,9 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.glAccount = mRefData.glAccount;
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
 
@@ -82,7 +85,7 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = mRefData.invType;
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

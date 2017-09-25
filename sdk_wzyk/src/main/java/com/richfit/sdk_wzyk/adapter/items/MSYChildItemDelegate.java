@@ -31,7 +31,7 @@ public class MSYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
         //接收仓位
         holder.setText(R.id.recLocation,item.recLocation);
         //接收批次
-        holder.setText(R.id.recBatchFlag,item.recBatchFlag);
+        holder.setText(R.id.recBatchFlag,Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.recBatchFlag) ? "" : item.recBatchFlag);
         //特殊库存
         holder.setText(R.id.specialInvFlag,item.specialInvFlag);
         holder.setText(R.id.specialInvNum,item.specialInvNum);

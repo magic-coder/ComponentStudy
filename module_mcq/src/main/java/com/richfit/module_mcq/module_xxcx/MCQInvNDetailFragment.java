@@ -3,11 +3,14 @@ package com.richfit.module_mcq.module_xxcx;
 import android.text.TextUtils;
 
 import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.module_mcq.R;
 import com.richfit.module_mcq.adapter.MCQInvNDetailAdapter;
 import com.richfit.sdk_xxcx.inventory_query_n.detail.InvNQueryDetailFragment;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/8/28.
@@ -38,11 +41,21 @@ public class MCQInvNDetailFragment extends InvNQueryDetailFragment {
     @Override
     public void showInventory(List<InventoryEntity> allNodes) {
         if (mInvNQueryDetailAdapter == null) {
-            mInvNQueryDetailAdapter = new MCQInvNDetailAdapter(mActivity, com.richfit.sdk_xxcx.R.layout.xxcx_item_invn_query_detail, allNodes);
+            mInvNQueryDetailAdapter = new MCQInvNDetailAdapter(mActivity,
+                    R.layout.mcq_item_invn_head, allNodes);
             mRecyclerView.setAdapter(mInvNQueryDetailAdapter);
         } else {
             mInvNQueryDetailAdapter.addAll(allNodes);
         }
     }
 
+    //这里将locationType放在了抬头
+    @Override
+    public InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("locationType", mRefData.locationType);
+        queryParam.extraMap = extraMap;
+        return queryParam;
+    }
 }

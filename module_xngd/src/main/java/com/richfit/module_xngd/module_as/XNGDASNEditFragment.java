@@ -2,6 +2,7 @@ package com.richfit.module_xngd.module_as;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.EditText;
 
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -62,6 +63,9 @@ public class XNGDASNEditFragment extends BaseASNEditFragment<ASNEditPresenterImp
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.money = getString(etMoney);
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
 
@@ -69,7 +73,7 @@ public class XNGDASNEditFragment extends BaseASNEditFragment<ASNEditPresenterImp
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = "1";
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

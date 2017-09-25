@@ -3,9 +3,11 @@ package com.richfit.sdk_wzpd.blind.head;
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/3.
@@ -17,12 +19,12 @@ public interface IBlindHeadView extends IBaseHeadView {
     void loadWorksFail(String message);
 
     void showInvs(List<InvEntity> invs);
-
     void loadInvsFail(String message);
+    void loadInvsComplete();
 
     void showStorageNums(List<String> storageNums);
     void loadStorageNumFail(String message);
-
+    void loadStorageNumComplete();
 
     /**
      * 删除缓存成功
@@ -55,4 +57,8 @@ public interface IBlindHeadView extends IBaseHeadView {
      */
     void getCheckInfoFail(String message);
     void clearAllUIAfterSubmitSuccess();
+
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

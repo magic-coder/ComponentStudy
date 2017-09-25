@@ -3,6 +3,7 @@ package com.richfit.module_mcq.module_as;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -70,6 +71,7 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
         spLocationType = mView.findViewById(R.id.sp_location_type);
+
         //主计量单位
         TextView tvMaterialUniName = mView.findViewById(R.id.mcq_tv_material_unit_name);
         tvMaterialUniName.setText("主计量单位");
@@ -87,6 +89,9 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         //主计量单位累计数量
         TextView tvTotalQuantityName = mView.findViewById(R.id.mcq_total_quantity_name);
         tvTotalQuantityName.setText("主计量单位累计数量");
+
+        //隐藏批次
+        mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
     }
 
     @Override
@@ -105,7 +110,7 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
             etQuantityCustom.setText(mQuantityCustom);
             tvLocQuantityCustom.setText(mQuantityCustom);
             //副计量单位累计数量（注意这里是父子节点）
-            final String totalQuantityCustom= bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
+            final String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
         mPresenter.getDictionaryData("locationType");
@@ -140,7 +145,7 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     //增加副计量单位数量的校验
     @Override
     public boolean checkCollectedDataBeforeSave() {
-        if(!super.checkCollectedDataBeforeSave()) {
+        if (!super.checkCollectedDataBeforeSave()) {
             return false;
         }
 
@@ -185,6 +190,7 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
+        result.batchFlag = !isOpenBatchManager ? null : getString(tvBatchFlag);
         //仓储类型
         result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;

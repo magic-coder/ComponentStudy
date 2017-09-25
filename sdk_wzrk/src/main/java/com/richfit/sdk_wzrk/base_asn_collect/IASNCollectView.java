@@ -28,6 +28,10 @@ public interface IASNCollectView extends IBaseCollectView {
     void getLocationListFail(String message);
     void getLocationListSuccess(List<String> list, boolean isDropDown);
 
+    //检查上架仓位
+    void checkLocationFail(String message);
+    void checkLocationSuccess(String batchFlag, String location);
+
     /**
      * 输入物料获取缓存后，刷新界面
      * @param refData

@@ -1,8 +1,10 @@
 package com.richfit.module_xngd.module_ms.n311;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
@@ -31,33 +33,17 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
 
     }
 
-    @Override
-    public void initDataLazily() {
-
-        if (mRefData == null) {
-            showMessage("请现在抬头界面选择合适的参数");
-            return;
-        }
-
-        if ("0".equals(mRefData.invType) && "1".equals(mRefData.invType)) {
-            showMessage("项目移交物资不合理");
-            return;
-        }
-
-        //如果用户选择的是项目物资，那么必须检查编号必输
-        if (!TextUtils.isEmpty(mRefData.specialInvFlag) && 
-			"Q".equals(mRefData.specialInvFlag) && TextUtils.isEmpty(mRefData.projectNum)) {
-            showMessage("请先在抬头输入项目编号");
-            return;
-        }
-
-        super.initDataLazily();
-    }
 
     @Override
     protected boolean checkHeaderData() {
-        if ("1".equals(mRefData.invType) && TextUtils.isEmpty(mRefData.projectNum)) {
-            //选择库存类型为项目物资的时候，项目编号必输
+        if ("0".equals(mRefData.invType) && "1".equals(mRefData.invType)) {
+            showMessage("项目移交物资不合理");
+            return false;
+        }
+
+        //如果用户选择的是项目物资，那么必须检查编号必输
+        if (!TextUtils.isEmpty(mRefData.specialInvFlag) &&
+                "Q".equals(mRefData.specialInvFlag) && TextUtils.isEmpty(mRefData.projectNum)) {
             showMessage("请先在抬头输入项目编号");
             return false;
         }
@@ -82,6 +68,15 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
+        return  result;
     }
 
     @Override

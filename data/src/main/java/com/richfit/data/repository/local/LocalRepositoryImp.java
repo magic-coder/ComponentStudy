@@ -144,10 +144,11 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
-    public Flowable<String> getLocationInfo(String queryType, String workId, String invId, String storageNum, String location, Map<String, Object> extraMap) {
+    public Flowable<String> getLocationInfo(String queryType, String workId, String invId,
+                                            String storageNum, String location, Map<String, Object> extraMap) {
         return Flowable.just(queryType)
                 .flatMap(type -> {
-                    if (mBasicServiceDao.getLocationInfo(type, workId, invId, storageNum, location)) {
+                    if (mBasicServiceDao.getLocationInfo(type, workId, invId, storageNum, location,extraMap)) {
                         return Flowable.just("仓位存在");
                     } else {
                         return Flowable.error(new Throwable("您输入的仓位不存在"));

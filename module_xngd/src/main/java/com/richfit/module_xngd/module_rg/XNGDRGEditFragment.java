@@ -1,5 +1,6 @@
 package com.richfit.module_xngd.module_rg;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Spinner;
 
@@ -75,6 +76,9 @@ public class XNGDRGEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         if(spMoveCauses.getSelectedItemPosition() > 0) {
             result.moveCause = ((SimpleEntity)spMoveCauses.getSelectedItem()).code;
         }
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
 
@@ -83,7 +87,7 @@ public class XNGDRGEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
         param.queryType = "03";
-        param.invType = mRefData.invType;
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", lineData.invFlag);
         extraMap.put("specialInvFlag", lineData.specialInvFlag);

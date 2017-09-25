@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
 import com.richfit.sdk_wzck.base_ds_collect.imp.DSCollectPresenterImp;
@@ -37,6 +38,16 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
     @Override
     protected int getOrgFlag() {
         return getInteger(R.integer.orgNorm);
+    }
+
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
+        return result;
     }
 
     /**

@@ -68,8 +68,12 @@ public class XNGDASNCollectFragment extends BaseASNCollectFragment<ASNCollectPre
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.money = getString(etMoney);
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
+
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {

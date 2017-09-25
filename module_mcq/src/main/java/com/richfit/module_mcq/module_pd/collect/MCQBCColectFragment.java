@@ -11,8 +11,10 @@ import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
+import com.richfit.domain.bean.MaterialEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_mcq.R;
+import com.richfit.sdk_wzpd.blind.collect.IBlindCollectView;
 import com.richfit.sdk_wzpd.blind.collect.imp.BlindCollectPresenterImp;
 
 /**
@@ -20,7 +22,7 @@ import com.richfit.sdk_wzpd.blind.collect.imp.BlindCollectPresenterImp;
  */
 
 public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresenterImp>
-        implements IBaseCollectView {
+        implements IBlindCollectView {
 
     //盘点仓位
     EditText etLocation;
@@ -28,6 +30,18 @@ public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresent
     EditText etMainQuantity;
     //副计量单位盘点数量
     EditText etQuantityCustom;
+
+    //增加仓储巡检扫描
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type,list);
+        if (list != null && list.length == 2 ) {
+            final String location = list[0];
+            etLocation.setText("");
+            etLocation.setText(location);
+            return;
+        }
+    }
 
     @Override
     protected int getContentId() {
@@ -222,4 +236,18 @@ public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresent
         clearAllUI();
     }
 
+    @Override
+    public void getCheckTransferInfoSingle(String materialNum, String location) {
+
+    }
+
+    @Override
+    public void loadMaterialInfoSuccess(MaterialEntity data) {
+
+    }
+
+    @Override
+    public void loadMaterialInfoFail(String message) {
+
+    }
 }

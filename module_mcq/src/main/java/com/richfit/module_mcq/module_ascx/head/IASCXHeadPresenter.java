@@ -10,5 +10,4 @@ import java.util.Map;
 
 public interface IASCXHeadPresenter extends IBaseHeadPresenter<IASCXHeadView> {
 
-    void getArrivalInfo(String createdBy,String creationDate,Map<String,Object> extraMap);
 }

@@ -49,7 +49,7 @@
 
         <TextView
             style="@style/LeftTextViewItemStyle"
-            android:text="@string/rec_work" />
+            android:text="@string/send_work" />
 
         <TextView
             android:id="@id/tv_send_work"
@@ -60,19 +60,18 @@
 
 
     <LinearLayout
-        android:id="@id/ll_work"
+        android:id="@id/ll_rec_work"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="@dimen/collect_row_padding">
 
         <TextView
-            android:id="@id/tv_work_name"
             style="@style/LeftTextViewItemStyle"
             android:text="@string/rec_work" />
 
         <TextView
-            android:id="@id/tv_work"
+            android:id="@id/tv_rec_work"
             style="@style/RightTextViewItemStyle" />
 
     </LinearLayout>

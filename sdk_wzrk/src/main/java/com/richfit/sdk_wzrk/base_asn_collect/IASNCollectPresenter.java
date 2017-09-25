@@ -4,6 +4,8 @@ package com.richfit.sdk_wzrk.base_asn_collect;
 import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2016/11/27.
  */
@@ -31,4 +33,8 @@ public interface IASNCollectPresenter extends IBaseCollectPresenter<IASNCollectV
     void getTransferSingleInfo(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
+
+    void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                       String location,Map<String,Object> extraMap);
+
 }

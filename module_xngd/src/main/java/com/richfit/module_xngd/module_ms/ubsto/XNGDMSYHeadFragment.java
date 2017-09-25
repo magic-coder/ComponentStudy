@@ -28,9 +28,13 @@ public class XNGDMSYHeadFragment extends BaseMSHeadFragment<MSHeadPresenterImp> 
 
     @Override
     public void initView() {
+        super.initView();
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
         //隐藏接收库位
         llInv.setVisibility(View.GONE);
+        //隐藏接收工厂
+        llRecWork.setVisibility(View.GONE);
+        llSendWork.setVisibility(View.VISIBLE);
     }
 
     @Override

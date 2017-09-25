@@ -7,11 +7,13 @@ import android.widget.Spinner;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_xxcx.inventory_query_n.header.InvNQueryHeaderFragment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +32,7 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type,list);
         etMaterialNum.clearFocus();
         etLocation.clearFocus();
         if (list != null && list.length > 12) {
@@ -65,7 +68,6 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
         etMaterialNum = mView.findViewById(R.id.et_material_num);
 
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
         spLocationType = mView.findViewById(R.id.sp_location_type);
     }
 

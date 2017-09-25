@@ -44,5 +44,7 @@
     <string name="cqyt_ins_h">库区温度与湿度是否符合库存维护批储存要求</string>
     <string name="cqyt_ins_flammable">易燃化学物资封口是否严密，有无挥发或者渗漏、变质、溶化或者变色等现象</string>
     <string name="cqyt_ins_effective">化学品是否超过有效期</string>
+    <string name="cqyt_transfer_date">取样日期</string>
+    <string name="cqyt_quantity">数量</string>
 
 </resources>

@@ -442,7 +442,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                 lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap, isDropDown);
     }
 
-
     @Override
     public void loadInventoryFail(String message) {
         if (mLocationAdapter != null) {
@@ -508,6 +507,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             final String invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
             //使用库存参数
             InventoryQueryParam queryParam = provideInventoryQueryParam();
+            Log.e("yff","==" + queryParam.extraMap);
             mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location,queryParam.extraMap);
         } else {
             //如果不上架，那么直接默认仓位检查通过

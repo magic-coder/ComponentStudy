@@ -2,12 +2,14 @@ package com.richfit.module_xngd.module_ys;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
@@ -15,7 +17,9 @@ import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/5/26.
@@ -149,7 +153,24 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         }
         //处理情况
         result.processResult = getString(etProcessResult);
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
+    }
+
+
+    @Override
+    public InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam param = super.provideInventoryQueryParam();
+        param.queryType = "03";
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        Map<String, Object> extraMap = new HashMap<>();
+        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        extraMap.put("projectNum", mRefData.projectNum);
+        param.extraMap = extraMap;
+        return param;
     }
 
 }

@@ -373,7 +373,7 @@
     "id": "38",
     "tabTitle": "抬头",
     "fragmentTag": "xngd_dsyl_header_fragment_tag",
-    "bizType": "24",
+    "bizType": "28",
     "refType": "10",
     "mode": 0,
     "fragmentType": 0,
@@ -383,7 +383,7 @@
     "id": "39",
     "tabTitle": "数据明细",
     "fragmentTag": "xngd_dsyl_detail_fragment_tag",
-    "bizType": "24",
+    "bizType": "28",
     "refType": "10",
     "mode": 0,
     "fragmentType": 1,
@@ -393,7 +393,7 @@
     "id": "40",
     "tabTitle": "数据采集",
     "fragmentTag": "xngd_dsyl_collect_fragment_tag",
-    "bizType": "24",
+    "bizType": "28",
     "refType": "10",
     "mode": 0,
     "fragmentType": 2,
@@ -403,7 +403,7 @@
     "id": "41",
     "tabTitle": "明细修改",
     "fragmentTag": "xngd_dsyl_edit_fragment_tag",
-    "bizType": "24",
+    "bizType": "28",
     "refType": "10",
     "mode": 0,
     "fragmentType": -1,
@@ -493,17 +493,17 @@
     "id": "54",
     "tabTitle": "抬头",
     "fragmentTag": "xngd_sxcl_header_fragment_tag",
-    "bizType": "B1",
+    "bizType": "311",
     "mode": 0,
     "refType": "13",
     "fragmentType": 0,
-    "className": "com.richfit.sdk_sxcl.basehead.LocQTHeadFragment"
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocHeadFragment"
   },
   {
     "id": "55",
     "tabTitle": "数据明细",
     "fragmentTag": "xngd_sxcl_detail_fragment_tag",
-    "bizType": "B1",
+    "bizType": "311",
     "mode": 0,
     "refType": "13",
     "fragmentType": 1,
@@ -513,7 +513,7 @@
     "id": "56",
     "tabTitle": "数据采集",
     "fragmentTag": "xngd_sxcl_collect_fragment_tag",
-    "bizType": "B1",
+    "bizType": "311",
     "mode": 0,
     "refType": "13",
     "fragmentType": 2,
@@ -523,7 +523,7 @@
     "id": "57",
     "tabTitle": "明细修改",
     "fragmentTag": "xngd_sxcl_edit_fragment_tag",
-    "bizType": "B1",
+    "bizType": "311",
     "mode": 0,
     "refType": "13",
     "fragmentType": -1,
@@ -547,7 +547,7 @@
     "mode": 0,
     "refType": "4",
     "fragmentType": 1,
-    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYEditFragment"
+    "className": "com.richfit.module_xngd.module_ms.ubsto.XNGDMSYDetailFragment"
   },
   {
     "id": "60",
@@ -608,5 +608,45 @@
     "mode": 0,
     "fragmentType": -1,
     "className": "com.richfit.module_xngd.module_rs.XNGDRSEditFragment"
+  },
+  {
+    "id": "66",
+    "tabTitle": "抬头",
+    "fragmentTag": "xngd_sxcl_header_fragment_tag",
+    "bizType": "311",
+    "mode": 0,
+    "refType": "9",
+    "fragmentType": 0,
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocHeadFragment"
+  },
+  {
+    "id": "67",
+    "tabTitle": "数据明细",
+    "fragmentTag": "xngd_sxcl_detail_fragment_tag",
+    "bizType": "311",
+    "mode": 0,
+    "refType": "9",
+    "fragmentType": 1,
+    "className": "com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment"
+  },
+  {
+    "id": "68",
+    "tabTitle": "数据采集",
+    "fragmentTag": "xngd_sxcl_collect_fragment_tag",
+    "bizType": "311",
+    "mode": 0,
+    "refType": "9",
+    "fragmentType": 2,
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocCollectFragment"
+  },
+  {
+    "id": "69",
+    "tabTitle": "明细修改",
+    "fragmentTag": "xngd_sxcl_edit_fragment_tag",
+    "bizType": "311",
+    "mode": 0,
+    "refType": "9",
+    "fragmentType": -1,
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocEditFragment"
   }
 ]

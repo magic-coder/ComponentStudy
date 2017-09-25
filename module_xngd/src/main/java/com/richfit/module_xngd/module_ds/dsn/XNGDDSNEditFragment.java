@@ -1,6 +1,8 @@
 package com.richfit.module_xngd.module_ds.dsn;
 
 
+import android.text.TextUtils;
+
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzck.base_dsn_edit.BaseDSNEditFragment;
@@ -34,6 +36,9 @@ public class XNGDDSNEditFragment extends BaseDSNEditFragment<DSNEditPresenterImp
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.glAccount = mRefData.glAccount;
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
 
@@ -41,7 +46,7 @@ public class XNGDDSNEditFragment extends BaseDSNEditFragment<DSNEditPresenterImp
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = mRefData.invType;
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

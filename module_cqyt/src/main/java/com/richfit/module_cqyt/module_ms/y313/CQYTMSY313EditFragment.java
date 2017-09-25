@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
@@ -19,6 +20,7 @@ import com.richfit.sdk_wzyk.base_ms_edit.BaseMSEditFragment;
 import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -176,5 +178,16 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
         result.quantityCustom = getString(etQuantityCustom);
         result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 }

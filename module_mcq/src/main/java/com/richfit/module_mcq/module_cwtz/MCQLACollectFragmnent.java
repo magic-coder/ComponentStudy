@@ -1,6 +1,7 @@
 package com.richfit.module_mcq.module_cwtz;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -55,6 +56,7 @@ public class MCQLACollectFragmnent extends LACollectFragment {
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length == 2) {
             String location = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
@@ -68,10 +70,11 @@ public class MCQLACollectFragmnent extends LACollectFragment {
                 etSendLocation.setText(location);
                 //自动选择仓储类型
                 UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+                //获取库存
+                loadInventoryInfo(location);
             }
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
 
@@ -88,18 +91,16 @@ public class MCQLACollectFragmnent extends LACollectFragment {
         tvMainInvQuantityName = mView.findViewById(R.id.mcq_tv_send_inv_quantity_name);
         tvInvQuantityCustom = mView.findViewById(R.id.mcq_tv_inv_quantity_custom);
         tvMainQuantityName = mView.findViewById(R.id.mcq_tv_quantity_name);
+        etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
         tvMainMaterialUnitName.setText("主计量单位");
         tvMainInvQuantityName.setText("主计量单位库存数量");
         tvMainQuantityName.setText("主计量单位调整数量");
         //隐藏批次
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
         //源仓位仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        //目标仓位仓储类型
-        mView.findViewById(R.id.ll_rec_location_type).setVisibility(View.VISIBLE);
         spLocationType = mView.findViewById(R.id.sp_location_type);
+        //目标仓位仓储类型
         spRecLocationType = mView.findViewById(R.id.sp_rec_location_type);
-
     }
 
     @Override
@@ -115,11 +116,15 @@ public class MCQLACollectFragmnent extends LACollectFragment {
                     tvSendInvQuantity.setText(mInventoryDatas.get(pos).invQuantity);
                 });
 
-        //增加仓储类型的选择获取提示库粗
+        //选择仓储类型仅仅清除库存信息
         RxAdapterView.itemSelections(spLocationType)
-                .filter(a -> spLocationType.getAdapter() != null && mLocationTypes != null
-                        && mLocationTypes.size() > 0)
-                .subscribe(position -> loadInventoryInfo(getString(etSendLocation)));
+                .filter(a -> mInventoryDatas != null && mInventoryDatas.size() > 0 && mAdapter != null)
+                .subscribe(position -> {
+                    //清除缓存
+                    mInventoryDatas.clear();
+                    mAdapter.notifyDataSetChanged();
+                    tvSendInvQuantity.setText("");
+                });
     }
 
     @Override
@@ -162,25 +167,24 @@ public class MCQLACollectFragmnent extends LACollectFragment {
         etBatchFlag.setEnabled(false);
     }
 
+    @Override
     protected void loadInventoryInfo(String location) {
-        //如果没有仓位那么直接返回
-        if(TextUtils.isEmpty(location))
-            return;
+        //清除副计量单位
+        tvInvQuantityCustom.setText("");
         super.loadInventoryInfo(location);
     }
 
-
     @Override
     public boolean checkCollectedDataBeforeSave() {
-        String secondQuantity = getString(etQuantityCustom);
-        if (Float.valueOf(secondQuantity) <= 0.0f) {
+        String quantityCustom = getString(etQuantityCustom);
+        if (CommonUtil.convertToFloat(quantityCustom,.0F) <= 0.0f) {
             showMessage("输入副计量单位调整数量不合理");
             return false;
         }
         //副计量单位的库存数量
-        final float secondInvQunatityV = CommonUtil.convertToFloat(getString(tvInvQuantityCustom), 0.0f);
-        final float quantityV = CommonUtil.convertToFloat(secondQuantity, 0.0f);
-        if (Float.compare(quantityV, secondInvQunatityV) > 0.0f) {
+        final float invQuantityCustomV = CommonUtil.convertToFloat(getString(tvInvQuantityCustom), 0.0f);
+        final float quantityV = CommonUtil.convertToFloat(quantityCustom, 0.0f);
+        if (Float.compare(quantityV, invQuantityCustomV) > 0.0f) {
             showMessage("输入副计量单位调整数量有误，请重新输入");
             return false;
         }
@@ -200,7 +204,7 @@ public class MCQLACollectFragmnent extends LACollectFragment {
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

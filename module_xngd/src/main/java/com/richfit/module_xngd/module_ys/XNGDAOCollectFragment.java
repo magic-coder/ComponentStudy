@@ -202,6 +202,10 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         }
         //处理情况
         result.processResult = getString(etProcessResult);
+
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
     }
 
@@ -330,6 +334,7 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             spInspectionStatus.setSelection(0);
         }
     }
+
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {

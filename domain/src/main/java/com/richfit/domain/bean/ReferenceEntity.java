@@ -161,6 +161,7 @@ public class ReferenceEntity {
     public String insWeather;
     public String insTemperature;
     public String insHumidity;
+    public String createdBy;
 
     @Override
     public String toString() {

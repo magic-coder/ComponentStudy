@@ -424,6 +424,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             result.recQuantity = item.recQuantity;
             result.location = CommonUtil.toUpperCase(item.location);
             result.recLocation = CommonUtil.toUpperCase(item.recLocation);
+            result.locationType = item.locationType;
             result.batchFlag = CommonUtil.toUpperCase(item.batchFlag);
             result.recBatchFlag = CommonUtil.toUpperCase(item.recBatchFlag);
             result.specialConvert = item.specialConvert;

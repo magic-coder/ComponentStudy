@@ -245,6 +245,7 @@ public class CheckUploadPresenterImp extends UploadPresenterImp {
             result.materialNum = item.materialNum;
             result.materialGroup = item.materialGroup;
             result.materialDesc = item.materialDesc;
+            result.locationType = item.locationType;
             result.unit = item.unit;
             result.modifyFlag = "N";
             result.businessTypeDesc = map.get(BIZTYPE_DESC_KEY);

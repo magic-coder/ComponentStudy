@@ -9,5 +9,5 @@ import java.util.Map;
  */
 
 public interface IDSCXHeadPresenter extends IBaseHeadPresenter<IDSCXHeadView> {
-    void getArrivalInfo(String createdBy,String creationDate,Map<String,Object> extraMap);
+
 }

@@ -441,10 +441,12 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      * @param position:下架仓位的位置
      */
     protected void getTransferSingle(int position) {
-
         //检测是否选择了发出库位
         if (position <= 0) {
-            resetLocation();
+            spLocation.setSelection(0);
+            tvInvQuantity.setText("");
+            tvLocQuantity.setText("");
+            tvTotalQuantity.setText("");
             return;
         }
 
@@ -476,7 +478,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
         if (TextUtils.isEmpty(location)) {
             showMessage("请先输入下架仓位");
-            resetLocation();
+            tvInvQuantity.setText("");
+            tvLocQuantity.setText("");
+            tvTotalQuantity.setText("");
             return;
         }
 
@@ -492,12 +496,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 CommonUtil.convertToInt(lineData.refDocItem), Global.USER_ID);
     }
 
-    private void resetLocation() {
-        spLocation.setSelection(0, true);
-        tvInvQuantity.setText("");
-        tvLocQuantity.setText("");
-        tvTotalQuantity.setText("");
-    }
+
 
     /**
      * 加载该仓位的仓位数量（注意如果可以请求仓位历史数据时，那么说明不需要考虑在物料是否是质检。）
@@ -768,14 +767,16 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         //库存相关的字段回传
         int locationPos = spLocation.getSelectedItemPosition();
-        result.location = mInventoryDatas.get(locationPos).location;
-        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+            result.location = mInventoryDatas.get(locationPos).location;
+            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+            //寄售转自有的标识
+            result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                    && !TextUtils.isEmpty(result.specialInvNum)) ?
+                    "Y" : "N";
+        }
         result.supplierNum = mRefData.supplierNum;
-        //寄售转自有的标识
-        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
-                && !TextUtils.isEmpty(result.specialInvNum)) ?
-                "Y" : "N";
         result.invType = param.invType;
         result.modifyFlag = "N";
         return result;

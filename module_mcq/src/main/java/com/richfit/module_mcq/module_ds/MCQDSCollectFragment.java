@@ -7,6 +7,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.UiUtil;
@@ -24,7 +25,10 @@ import com.richfit.module_mcq.module_ds.imp.MCQDSCollectPresenterImp;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
 import com.richfit.sdk_wzck.base_ds_collect.IDSCollectView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
@@ -36,7 +40,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * 如果应发数量大于建议仓位的库存数量，实发数量等于建议仓位库存数量，实发数量允许修改，
  * 保存之后再重新分配建议仓位和实发数量，建议仓位和实发数量需要扣减相同物料在相应仓位上已经录入的数量，
  * 建议仓位只考虑主计量单位的实发数量。当副计量单位应发数量不为空时，副计量单位的实发数量必输。
- *
+ * <p>
  * 主要逻辑:
  * 选择库存地点—>仓储类型
  * ->获取库存以及获取建议仓位。如果用户输入仓位，那么以用户输入的为准
@@ -74,17 +78,30 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
     //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
     String mAutoLocation;
 
+    //仓储类型->获取库存->获取建议仓位->匹配单条缓存
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         mAutoLocation = null;
         if (list != null && list.length == 2 && !cbSingle.isChecked()) {
             mAutoLocation = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
-            //自动选择仓储类型
+            if (mLocationTypes != null && mLocationTypes.size() > 0 && spLocationType.getAdapter() != null) {
+                String oldLocationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                if (locationType.equals(oldLocationType)) {
+                    if (mInventoryDatas == null || mInventoryDatas.size() == 0) {
+                        showMessage("请先获取库存");
+                        return;
+                    }
+                    //如果当前仓储类型一致,那么直接获取单条缓存
+                    UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
+                    return;
+                }
+            }
+            //如果仓储类型不一致
             UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
     @Override
@@ -164,6 +181,20 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
 
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
+    }
+
     /**
      * 绑定UI。
      */
@@ -182,16 +213,16 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
     //注意这里的position已经是仓储类型的位置了
     @Override
     protected void loadInventory(int position) {
-        if (position <= 0) {
-            tvInvQuantity.setText("");
-            tvLocQuantity.setText("");
-            tvTotalQuantity.setText("");
-            //如果没有选择仓储类型那么清空之前的库存信息
-            if (mLocationAdapter != null) {
-                mInventoryDatas.clear();
-                mLocationAdapter.notifyDataSetChanged();
-            }
-            return;
+        tvInvQuantity.setText("");
+        tvLocQuantity.setText("");
+        tvTotalQuantity.setText("");
+        tvInvQuantityCustom.setText("");
+        tvLocQuantityCustom.setText("");
+        tvTotalQuantityCustom.setText("");
+        //如果没有选择仓储类型那么清空之前的库存信息
+        if (mLocationAdapter != null) {
+            mInventoryDatas.clear();
+            mLocationAdapter.notifyDataSetChanged();
         }
         if (spInv.getAdapter() == null || spInv.getSelectedItemPosition() <= 0) {
             return;
@@ -225,7 +256,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         if (suggestedInventory != null) {
             tvSuggestedLocation.setText(suggestedInventory.locationCombine);
         }
-        if(TextUtils.isEmpty(mAutoLocation)) {
+        if (TextUtils.isEmpty(mAutoLocation)) {
             //如果没有输入下架仓位，那么使用建议仓位
             super.getSuggestedLocationSuccess(suggestedInventory);
         }
@@ -233,10 +264,28 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
 
     @Override
     public void getSuggestedLocationComplete() {
-        if(!TextUtils.isEmpty(mAutoLocation)) {
+        if (!TextUtils.isEmpty(mAutoLocation)) {
             //如果用户输入了下架仓位，匹配输入的下架仓位
             UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
         }
+    }
+
+    @Override
+    protected void getTransferSingle(int position) {
+        if (position <= 0) {
+            spLocation.setSelection(0);
+            tvInvQuantity.setText("");
+            tvLocQuantity.setText("");
+            tvTotalQuantity.setText("");
+            tvInvQuantityCustom.setText("");
+            tvLocQuantityCustom.setText("");
+            tvTotalQuantityCustom.setText("");
+            return;
+        }
+        super.getTransferSingle(position);
+        //这里副计量单位不需要从新计算库存
+        InventoryEntity invData = mInventoryDatas.get(position);
+        tvInvQuantityCustom.setText(invData.invQuantityCustom);
     }
 
     //重写该方法的目的是将副计量单位的仓位数量赋值
@@ -318,6 +367,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         super.loadCacheFail(message);
     }
 
+
     //增加副计量单位的校验
     @Override
     protected boolean refreshQuantity(final String quantity) {
@@ -354,6 +404,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
         result.batchFlag = !isOpenBatchManager ? null : getString(etBatchFlag);
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -384,5 +435,16 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         super.clearAllUI();
         clearCommonUI(tvActQuantityCustom, tvLocQuantityCustom, tvMaterialUnitCustom,
                 tvTotalQuantityCustom, etQuantityCustom, tvSuggestedLocation, tvInvQuantityCustom);
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 }

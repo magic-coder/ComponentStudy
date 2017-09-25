@@ -124,6 +124,7 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     @Override
     public void initData() {
+        super.initData();
         Bundle bundle = getArguments();
         if (bundle != null && mRefData != null) {
             mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
@@ -142,7 +143,6 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
             String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
-        super.initData();
         mPresenter.getDictionaryData("locationType");
     }
 
@@ -150,21 +150,16 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
+        Log.e("yff", "===" + locationTypes);
         if (locationTypes != null) {
             if (mLocationTypes == null) {
                 mLocationTypes = new ArrayList<>();
             }
             mLocationTypes.clear();
             mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
             spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
         }
     }
 
@@ -177,6 +172,35 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         }
         super.loadInventoryInfo();
     }
+
+    //增加副计量单位的赋值
+    @Override
+    protected void getTransferSingle(int position) {
+        final String invQuantity = mInventoryDatas.get(position).invQuantity;
+        final String invQuantityCustom = mInventoryDatas.get(position).invQuantityCustom;
+        //检测是否选择了发出库位
+        if (position <= 0) {
+            spLocation.setSelection(0);
+            tvInvQuantity.setText("");
+            tvLocQuantity.setText("");
+            tvTotalQuantity.setText("");
+            //副计量单位
+            tvInvQuantityCustom.setText("");
+            tvLocQuantityCustom.setText("");
+            tvTotalQuantityCustom.setText("");
+            return;
+        }
+        //如果满足条件，那么先显示库存数量
+        tvInvQuantity.setText(invQuantity);
+        tvInvQuantityCustom.setText(invQuantityCustom);
+
+        mPresenter.getTransferInfoSingle(mRefData.refCodeId, mRefData.refType,
+                mRefData.bizType, mRefLineId, getString(tvMaterialNum),
+                getString(tvBatchFlag),
+                mInventoryDatas.get(position).locationCombine,
+                "", -1, Global.USER_ID);
+    }
+
 
     //绑定缓存
     @Override
@@ -273,7 +297,7 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

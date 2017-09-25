@@ -62,7 +62,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     @BindView(R2.id.sp_special_inv)
     protected Spinner spSpecialInv;
 
-    SpecialInvAdapter mAdapter;
+    protected SpecialInvAdapter mAdapter;
     protected List<InventoryEntity> mInventoryDatas;
     MaterialEntity mHistoryData;
 
@@ -84,7 +84,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                 clearCommonUI(etSendLocation);
                 etSendLocation.setText(location);
                 //获取库存
-                loadInventoryInfo(getString(etSendLocation));
+                loadInventoryInfo(location);
             }
         }
     }
@@ -209,6 +209,13 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
      * @param location
      */
     protected void loadInventoryInfo(String location) {
+        //清除
+        if(mAdapter != null) {
+            mInventoryDatas.clear();
+            mAdapter.notifyDataSetChanged();
+        }
+        tvSendInvQuantity.setText("");
+
         Object tag = etMaterialNum.getTag();
         if (tag == null || TextUtils.isEmpty(tag.toString())) {
             showMessage("请先获取物料信息");
@@ -219,7 +226,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
             showMessage("先输入目标仓位");
             return;
         }
-
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
                 mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
@@ -300,14 +306,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
             showMessage("业务类型为空");
             return false;
         }
-
-//        if (mHistoryData != null) {
-//            manageBatchFlagStatus(etBatchFlag, mHistoryData.batchManagerStatus);
-//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-//                showMessage("请输入批次");
-//                return false;
-//            }
-//        }
 
         if (TextUtils.isEmpty(mRefData.workId)) {
             showMessage("请先在抬头界面选择工厂");

@@ -17,8 +17,6 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_mcq.R;
-import com.richfit.module_mcq.adapter.ASCXRefsAdapter;
-import com.richfit.module_mcq.adapter.DSCXRefsAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +28,10 @@ import java.util.Map;
  */
 
 public class DSCXHeadFragment extends BaseHeadFragment<DSCXHeadPresenterImp>
-        implements IDSCXHeadView, MultiItemTypeAdapter.OnItemClickListener {
+        implements IDSCXHeadView {
 
     RichEditText etCreateDate;
     EditText etCreator;
-    RecyclerView rvRefs;
-    List<ReferenceEntity> mRefList;
 
     @Override
     protected int getContentId() {
@@ -56,9 +52,6 @@ public class DSCXHeadFragment extends BaseHeadFragment<DSCXHeadPresenterImp>
     protected void initView() {
         etCreateDate = mView.findViewById(R.id.et_create_date);
         etCreator = mView.findViewById(R.id.et_creator);
-        rvRefs = mView.findViewById(R.id.base_detail_recycler_view);
-        LinearLayoutManager lm = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
-        rvRefs.setLayoutManager(lm);
     }
 
     @Override
@@ -92,15 +85,7 @@ public class DSCXHeadFragment extends BaseHeadFragment<DSCXHeadPresenterImp>
 
     @Override
     public void operationOnHeader(final String companyCode) {
-        //创建日期必输
-        String createdBy = getString(etCreator);
-        String creationDate = getString(etCreateDate);
-        //清空上次已经选中的单据数据
-        Map<String, Object> extraMap = new HashMap<>();
-        //上架单据查询
-        extraMap.put("refType", mRefType);
-        mRefData = null;
-        mPresenter.getArrivalInfo(createdBy, creationDate, extraMap);
+
     }
 
     @Override
@@ -110,54 +95,22 @@ public class DSCXHeadFragment extends BaseHeadFragment<DSCXHeadPresenterImp>
 
     @Override
     public boolean isNeedShowFloatingButton() {
-        return true;
-    }
-
-    //加载单据列表成功
-    @Override
-    public void loadRefListSuccess(List<ReferenceEntity> refs) {
-        if (mRefList == null) {
-            mRefList = new ArrayList<>();
-        }
-        mRefList.clear();
-        mRefList.addAll(refs);
-        DSCXRefsAdapter adapter = new DSCXRefsAdapter(mActivity, R.layout.mcq_item_dscx_refs, mRefList);
-        rvRefs.setAdapter(adapter);
-        adapter.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void loadRefListFail(String message) {
-        showMessage(message);
-    }
-
-    /**
-     * 明细点击
-     *
-     * @param view
-     * @param holder
-     * @param position
-     */
-    @Override
-    public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
-        ReferenceEntity item = mRefList.get(position);
-        if (mRefData == null) {
-            //点击之后携带相关信息给出明细界面，然后明细界面根据相关信息获取该单据的明细进行展示
-            mRefData = new ReferenceEntity();
-        }
-        //这里给出的是getReferenceInfo接口需要的参数，也就是上架模块需要的bizType和refType
-        mRefData.bizType = "114";
-        mRefData.refType = "17";
-        mRefData.recordNum = item.recordNum;
-        //跳转到明细界面
-        if (mActivity instanceof IBarcodeSystemMain) {
-            IBarcodeSystemMain activity = (IBarcodeSystemMain) mActivity;
-            activity.showFragmentByPosition(BaseFragment.DETAIL_FRAGMENT_INDEX);
-        }
-    }
-
-    @Override
-    public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
     }
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if (mRefData == null) {
+            mRefData = new ReferenceEntity();
+        }
+        //创建日期必输
+        String createdBy = getString(etCreator);
+        String creationDate = getString(etCreateDate);
+        mRefData.createdBy = createdBy;
+        mRefData.creationDate = creationDate;
+        mRefData.bizType = mBizType;
+        mRefData.refType = mRefType;
+    }
+
 }

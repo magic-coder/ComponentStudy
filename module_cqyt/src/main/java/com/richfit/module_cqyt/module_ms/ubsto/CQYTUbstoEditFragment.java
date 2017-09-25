@@ -98,7 +98,8 @@ public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp
             }
             mLocationTypes.clear();
             mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes,false);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes,false);
             spLocationType.setAdapter(adapter);
 
             //默认选择缓存的数据
@@ -175,10 +176,9 @@ public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            Log.e("yff", "locationType = " + locationType);
             queryParam.extraMap.put("locationType", locationType);
         }
         return queryParam;

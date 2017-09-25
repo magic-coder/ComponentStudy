@@ -206,11 +206,11 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
             mRefData.recWorkId = mRefData.workId;
             //应急物资
             mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
+            //项目移交物资
+            mRefData.invType = cbInvType.isChecked() ? "0" : "1";
             //库存类型
             mRefData.specialInvFlag = spSpecialInvType.getSelectedItemPosition() <= 0 ? "N" :
                     "Q";
-            //项目移交物资
-            mRefData.invType = cbInvType.isChecked() ? "0" : "1";
             String projectNum = getString(etProjectNum);
             if (!TextUtils.isEmpty(projectNum)) {
                 mRefData.projectNum = projectNum.split("_")[0];

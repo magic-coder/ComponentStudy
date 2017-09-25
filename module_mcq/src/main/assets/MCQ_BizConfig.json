@@ -258,5 +258,25 @@
     "mode": 1,
     "fragmentType": -1,
     "className": "com.richfit.module_mcq.module_ds.MCQLDSEditFragment"
+  },
+  {
+    "id": "33",
+    "tabTitle": "抬头",
+    "fragmentTag": "mcq_invnquery_head_fragment_tag",
+    "bizType": "3000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_mcq.module_xxcx.MCQInvNHeadFragment"
+  },
+  {
+    "id": "34",
+    "tabTitle": "数据明细",
+    "fragmentTag": "mcq_invnquery_detail_fragment_tag",
+    "bizType": "3000",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_mcq.module_xxcx.MCQInvNDetailFragment"
   }
 ]

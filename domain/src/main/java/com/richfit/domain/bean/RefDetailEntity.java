@@ -178,6 +178,8 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     /*单据状态*/
     public String status;
     public String locationType;
+    //报检单
+    public String declarationRef;
 
     @Override
     public RefDetailEntity clone() {

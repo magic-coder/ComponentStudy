@@ -62,5 +62,7 @@
     <item name="cqyt_sp_ins_expire" type="id" />
     <item name="cqyt_sp_ins_flammable" type="id" />
     <item name="cqyt_sp_ins_effective" type="id" />
+    <item name="cqyt_sp_declaration_ref" type="id" />
+    <item name="cqyt_tv_declaration_ref" type="id" />
 
 </resources>

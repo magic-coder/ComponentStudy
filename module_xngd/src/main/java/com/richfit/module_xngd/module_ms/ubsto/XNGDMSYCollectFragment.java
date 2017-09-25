@@ -1,8 +1,10 @@
 package com.richfit.module_xngd.module_ms.ubsto;
 
+import android.text.TextUtils;
 import android.view.View;
 
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_ms_collect.BaseMSCollectFragment;
 import com.richfit.sdk_wzyk.base_ms_collect.imp.MSCollectPresenterImp;
 
@@ -33,6 +35,15 @@ public class XNGDMSYCollectFragment extends BaseMSCollectFragment<MSCollectPrese
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
+        return  result;
     }
 
     @Override

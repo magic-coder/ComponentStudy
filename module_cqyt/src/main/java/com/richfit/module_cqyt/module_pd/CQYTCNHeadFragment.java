@@ -89,6 +89,4 @@ public class CQYTCNHeadFragment extends CNHeadFragment {
                     "", "", getString(etTransferDate), extraMap);
         }
     }
-
-
 }

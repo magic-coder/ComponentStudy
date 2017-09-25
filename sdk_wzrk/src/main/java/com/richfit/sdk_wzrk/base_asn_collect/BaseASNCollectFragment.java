@@ -3,6 +3,7 @@ package com.richfit.sdk_wzrk.base_asn_collect;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -77,6 +78,8 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     List<String> mLocationList;
     /*是否发不上架*/
     protected boolean isNLocation = false;
+    /*校验仓位是否存在，如果false表示校验该仓位不存在或者没有校验该仓位，不允许保存数据*/
+    protected boolean isLocationChecked = false;
 
     /**
      * 处理扫描
@@ -256,7 +259,6 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         showMessage(message);
     }
 
-
     @Override
     public void loadLocationList(String keyWord, boolean isDropDown) {
         InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
@@ -309,25 +311,46 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
      */
     private void getTransferSingle(final String batchFlag, final String location) {
 
-
-        if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
-            showMessage("批次为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(location)) {
-            showMessage("请先输入上架仓位");
-            return;
-        }
-
         if (mHistoryDetailList == null) {
             showMessage("请先获取物料信息");
             return;
         }
 
+        //检验是否选择了库存地点
+        if (spInv.getSelectedItemPosition() <= 0) {
+            showMessage("请先选择库存地点");
+            return;
+        }
+
+        //批次处理。打开了批次管理而且必须输入，那么检查是否输入了批次
+        if (isOpenBatchManager && etBatchFlag.isEnabled()) {
+            if (TextUtils.isEmpty(batchFlag)) {
+                showMessage("请先输入批次");
+                return;
+            }
+        }
+        if (TextUtils.isEmpty(location) && !isNLocation) {
+            showMessage("请先输入上架仓位");
+            return;
+        }
+
+        if (!isNLocation) {
+            String invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+            //使用库存参数
+            InventoryQueryParam queryParam = provideInventoryQueryParam();
+            mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location,queryParam.extraMap);
+        } else {
+            //如果不上架，那么直接默认仓位检查通过
+            checkLocationSuccess(batchFlag, location);
+        }
+    }
+
+    @Override
+    public void checkLocationSuccess(String batchFlag, String location) {
+        isLocationChecked = true;
+        //开始匹配缓存
         String locQuantity = "0";
         tvLocQuantity.setText(locQuantity);
-
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
@@ -344,6 +367,13 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         }
         tvLocQuantity.setText(locQuantity);
     }
+
+    @Override
+    public void checkLocationFail(String message) {
+        showMessage(message);
+        isLocationChecked = false;
+    }
+
 
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvLocQuantity, tvLocQuantity, etQuantity, etLocation,
@@ -390,19 +420,17 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             showMessage("请先输入上架仓位");
             return false;
         }
+
+        if (!isNLocation && !isLocationChecked) {
+            showMessage("您输入的仓位不存在");
+            return false;
+        }
+
         //物资条码
         if (TextUtils.isEmpty(getString(etMaterialNum))) {
             showMessage("请先输入物料条码");
             return false;
         }
-        //批次.2017年06月28日增加在每一次保存数据的前，重新再次判断是否打开了批次管理
-//        if (mHistoryDetailList != null) {
-//            manageBatchFlagStatus(etBatchFlag, mHistoryDetailList.get(0).batchManagerStatus);
-//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-//                showMessage("请先输入批次");
-//                return false;
-//            }
-//        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");

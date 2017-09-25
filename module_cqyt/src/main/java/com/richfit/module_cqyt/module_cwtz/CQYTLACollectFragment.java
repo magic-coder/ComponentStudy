@@ -36,6 +36,7 @@ public class CQYTLACollectFragment extends LACollectFragment {
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length == 2) {
             String location = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
@@ -49,10 +50,11 @@ public class CQYTLACollectFragment extends LACollectFragment {
                 etSendLocation.setText(location);
                 //自动选择仓储类型
                 UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+                //加载库存
+                loadInventoryInfo(location);
             }
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
     @Override
@@ -77,9 +79,13 @@ public class CQYTLACollectFragment extends LACollectFragment {
         super.initEvent();
         //增加仓储类型的选择获取提示库粗
         RxAdapterView.itemSelections(spLocationType)
-                .filter(a -> spLocationType.getAdapter() != null && mLocationTypes != null
-                        && mLocationTypes.size() > 0)
-                .subscribe(position -> loadInventoryInfo(getString(etSendLocation)));
+                .filter(a -> mInventoryDatas != null && mInventoryDatas.size() > 0 && mAdapter != null)
+                .subscribe(position -> {
+                    //清除缓存
+                    mInventoryDatas.clear();
+                    mAdapter.notifyDataSetChanged();
+                    tvSendInvQuantity.setText("");
+                });
     }
 
     @Override
@@ -116,13 +122,6 @@ public class CQYTLACollectFragment extends LACollectFragment {
         }
     }
 
-    protected void loadInventoryInfo(String location) {
-        //如果没有仓位那么直接返回
-        if(TextUtils.isEmpty(location))
-            return;
-        super.loadInventoryInfo(location);
-    }
-
     @Override
     public boolean checkCollectedDataBeforeSave() {
 
@@ -152,7 +151,7 @@ public class CQYTLACollectFragment extends LACollectFragment {
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

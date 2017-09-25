@@ -502,7 +502,7 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
                 refData.recordCreator = cursor.getString(++index);
                 refData.recordDate = cursor.getString(++index);
                 refData.poNum = cursor.getString(++index);
-                refData.supplierNum = cursor.getString(++index);
+                refData.customer = cursor.getString(++index);
                 refData.supplierDesc = cursor.getString(++index);
                 refData.projectNum = cursor.getString(++index);
                 refData.workCode = cursor.getString(++index);
@@ -615,8 +615,9 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
             //插入数据
             String currentDate = CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1);
 
+            //这里将客户字段写入到了供应商字段
             db.execSQL(sb.toString(), new Object[]{refCodeId, refData.recordNum,
-                    refData.recordCreator, refData.recordDate, "", refData.supplierNum, refData.supplierDesc,
+                    refData.recordCreator, refData.recordDate, "", refData.customer, refData.supplierDesc,
                     refData.projectNum, refData.workCode, refData.workName, refData.supplierEvaluation, "1", "Y",
                     refData.recordCreator, currentDate, refData.recordCreator, currentDate});
 
@@ -644,7 +645,7 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
                     db.execSQL(sb.toString(), new Object[]{data.refLineId, refCodeId, data.lineNum, "", "",
                             data.workId, data.invId, data.materialId, data.quantity, data.quantityCustom, data.qmFlag,
                             data.specialInvFlag, data.unit, data.unitCustom, data.actQuantity, data.actQuantityCustom,
-                            data.materialNum, data.materialDesc, data.materialGroup, "Y",
+                            data.materialNum, data.materialDesc, data.materialGroup, data.status,
                             refData.recordCreator, currentDate, refData.recordCreator, currentDate});
                 }
             }

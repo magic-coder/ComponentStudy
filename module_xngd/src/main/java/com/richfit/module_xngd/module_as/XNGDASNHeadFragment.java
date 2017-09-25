@@ -1,7 +1,10 @@
 package com.richfit.module_xngd.module_as;
 
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.CheckBox;
 
+import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_as.imp.XNGDASNHeadPresenterImp;
 import com.richfit.sdk_wzrk.base_asn_head.BaseASNHeadFragment;
 
@@ -16,6 +19,13 @@ import com.richfit.sdk_wzrk.base_asn_head.BaseASNHeadFragment;
 
 public class XNGDASNHeadFragment extends BaseASNHeadFragment<XNGDASNHeadPresenterImp> {
 
+    //应急物资
+    private CheckBox cbInvFlag;
+
+    @Override
+    public int getContentId() {
+        return R.layout.xngd_fragment_asn_head;
+    }
 
     @Override
     public void initPresenter() {
@@ -31,5 +41,15 @@ public class XNGDASNHeadFragment extends BaseASNHeadFragment<XNGDASNHeadPresente
     public void initView() {
         super.initView();
         llSupplier.setVisibility(View.GONE);
+        cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
+    }
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if (mRefData != null) {
+            //保存抬头的移动类型，是否应急，项目移交物资，
+            mRefData.invFlag = cbInvFlag.isChecked() ? "1" : "0";
+        }
     }
 }

@@ -535,7 +535,14 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             cv.put("quantity", param.quantity);
 
             //煤层气增加副计量单位，长庆增加件数都是用该字段
-            cv.put("quantity_custom", param.quantityCustom);
+            if (!TextUtils.isEmpty(param.quantityCustom)) {
+                cv.put("quantity_custom", param.quantityCustom);
+            }
+
+            //煤层气，长庆增加仓储类型
+            if (!TextUtils.isEmpty(param.locationType)) {
+                cv.put("location_type", param.locationType);
+            }
 
             if (yk) {
                 cv.put("rec_quantity", param.quantity);
@@ -898,7 +905,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
                 .append("M.material_num,M.material_desc,M.material_group,")
                 .append("WORG.org_code as work_code,WORG.org_name as work_name,")
                 .append("IORG.org_code as inv_code,IORG.org_name as inv_name, ")
-                .append("T.unit,T.unit_rate ")
+                .append("T.unit,T.unit_rate,L.location_type ")
                 .append(" from MTL_TRANSACTION_LINES T ")
                 .append(" left join MTL_TRANSACTION_LINES_LOCATION L ")
                 .append(" on T.id = L.trans_line_id ")
@@ -957,6 +964,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
                 detail.invName = cursor.getString(++index);
                 detail.unit = cursor.getString(++index);
                 detail.unitRate = cursor.getFloat(++index);
+                detail.locationType = cursor.getString(++index);
                 //將工廠和庫存地點信息強制賦值到抬頭
                 refData.workId = detail.workId;
                 refData.invId = detail.invId;

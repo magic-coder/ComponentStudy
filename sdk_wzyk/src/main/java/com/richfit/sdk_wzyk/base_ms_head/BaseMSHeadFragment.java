@@ -32,13 +32,19 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
     RichEditText etRefNum;
     @BindView(R2.id.tv_ref_num)
     TextView tvRefNum;
-    //工厂，有些是发出工厂，有些是接收工厂
-    @BindView(R2.id.ll_work)
-    protected LinearLayout llWork;
-    @BindView(R2.id.tv_work_name)
-    protected TextView tvWorkName;
-    @BindView(R2.id.tv_work)
-    TextView tvWork;
+
+    //发出工厂
+    @BindView(R2.id.ll_send_work)
+    protected LinearLayout llSendWork;
+    @BindView(R2.id.tv_send_work)
+    protected TextView tvSendWork;
+
+    //发出接收
+    @BindView(R2.id.ll_rec_work)
+    protected LinearLayout llRecWork;
+    @BindView(R2.id.tv_rec_work)
+    protected TextView tvRecWork;
+
     //库存地点
     @BindView(R2.id.ll_inv)
     protected LinearLayout llInv;
@@ -85,16 +91,17 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
 
     @Override
     protected void initView() {
-        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
+
     }
 
     @Override
     public void initData() {
+        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal() &&
                 !TextUtils.isEmpty(mUploadMsgEntity.transId) && !TextUtils.isEmpty(mUploadMsgEntity.refNum)) {
             etRefNum.setText(mUploadMsgEntity.refNum);
             getRefData(mUploadMsgEntity.refNum);
-            //如果是離線那麼鎖定控件
+            //如果是离线那么锁定控件
             lockUIUnderEditState(etRefNum);
         }
     }
@@ -139,8 +146,10 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
         if (mRefData != null) {
             //单据号
             tvRefNum.setText(mRefData.recordNum);
-            //工厂
-            tvWork.setText(mRefData.workCode);
+            //发出工厂
+            tvSendWork.setText(mRefData.workCode);
+            //接收工厂
+            tvRecWork.setText(mRefData.recWorkCode);
             //库存地点
             tvInv.setText(mRefData.invCode);
         }
@@ -215,12 +224,12 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUI() {
-        clearCommonUI(etRefNum, tvRefNum, tvWork, tvInv);
+        clearCommonUI(etRefNum, tvRefNum, tvSendWork, tvSendWork, tvRecWork, tvInv);
     }
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-        clearCommonUI(etRefNum, tvRefNum, tvWork, tvInv);
+        clearCommonUI(etRefNum, tvRefNum, tvSendWork, tvRecWork, tvInv);
         mRefData = null;
     }
 

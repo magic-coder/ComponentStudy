@@ -351,7 +351,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
         clearStringBuffer();
         sb.append(" SELECT T.ID,T.TRANS_ID,T.TRANS_LINE_ID,T.LOCATION,")
                 .append("L.BATCH_NUM,T.QUANTITY,T.QUANTITY_CUSTOM,T.REC_LOCATION,L.REC_BATCH_NUM,")
-                .append("L.SPECIAL_FLAG,L.SPECIAL_NUM,L.SPECIAL_CONVERT ")
+                .append("L.SPECIAL_FLAG,L.SPECIAL_NUM,L.SPECIAL_CONVERT,T.LOCATION_TYPE ")
                 .append("FROM MTL_TRANSACTION_LINES_LOCATION T , MTL_TRANSACTION_LINES_SPLIT L ")
                 .append(" WHERE T.TRANS_LINE_SPLIT_ID = L.ID ")
                 .append(" AND T.TRANS_LINE_ID = ?")
@@ -379,6 +379,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 locItem.locationCombine = !TextUtils.isEmpty(locItem.specialInvFlag) ?
                         locItem.location + "_" + locItem.specialInvFlag + "_" + locItem.specialInvNum :
                         locItem.location;
+                locItem.locationType = cursor.getString(++index);
                 locations.add(locItem);
             }
             data.locationList = locations;
@@ -966,7 +967,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
         clearStringBuffer();
         sb.append(" SELECT T.ID,T.TRANS_ID,T.TRANS_LINE_ID,T.LOCATION,")
                 .append("L.BATCH_NUM,T.QUANTITY,T.QUANTITY_CUSTOM,T.REC_LOCATION,L.REC_BATCH_NUM,")
-                .append("L.SPECIAL_FLAG,L.SPECIAL_NUM ")
+                .append("L.SPECIAL_FLAG,L.SPECIAL_NUM,T.LOCATION_TYPE ")
                 .append("FROM MTL_TRANSACTION_LINES_LOCATION T,MTL_TRANSACTION_LINES_SPLIT L")
                 .append(" WHERE T.TRANS_LINE_SPLIT_ID = L.ID ")
                 .append(" AND T.TRANS_LINE_ID = ?")
@@ -992,6 +993,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 locItem.locationCombine = !TextUtils.isEmpty(locItem.specialInvFlag) ?
                         locItem.location + "_" + locItem.specialInvFlag + "_" + locItem.specialInvNum :
                         locItem.location;
+                locItem.locationType = cursor.getString(++index);
                 locations.add(locItem);
             }
             data.locationList = locations;

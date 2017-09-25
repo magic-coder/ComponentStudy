@@ -10,6 +10,5 @@ import java.util.List;
  */
 
 public interface IASCXHeadView extends IBaseHeadView {
-    void loadRefListSuccess(List<ReferenceEntity> refs);
-    void loadRefListFail(String message);
+
 }

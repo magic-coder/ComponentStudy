@@ -55,7 +55,7 @@
         android:id="@id/actQuantity"
         style="@style/TableHeaderStyle"
         android:layout_width="120dp"
-        android:text="@string/act_delivery_quantity" />
+        android:text="@string/act_quantity" />
 
     <View style="@style/ItemSeperatorLayout" />
 

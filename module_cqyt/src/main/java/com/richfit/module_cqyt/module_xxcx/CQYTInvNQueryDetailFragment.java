@@ -58,6 +58,7 @@ public class CQYTInvNQueryDetailFragment extends InvNQueryDetailFragment {
     }
 
 
+    //这里将locationType放在了抬头
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();

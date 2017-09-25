@@ -181,7 +181,8 @@ public interface IBasicServiceDao {
      * @param location
      * @return
      */
-    boolean getLocationInfo(String queryType, String workId, String invId, String storageNum, String location);
+    boolean getLocationInfo(String queryType, String workId, String invId, String storageNum,
+                            String location,Map<String,Object> extraMap);
 
     MaterialEntity getMaterialInfo(String queryType, String materialNum);
 

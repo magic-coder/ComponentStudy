@@ -1,8 +1,11 @@
 package com.richfit.module_mcq.module_ds;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 
+import com.richfit.data.constant.Global;
 import com.richfit.sdk_wzck.base_ds_head.BaseDSHeadFragment;
 import com.richfit.sdk_wzck.base_ds_head.imp.DSHeadPresenterImp;
 
@@ -28,7 +31,15 @@ public class MCQDSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
     @Override
     public void initData() {
-       // etRefNum.setText("2-20170907-00230");
+        //读取Intent传递过来的refNum,如果存在那么自动加载数据
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            String refNum = arguments.getString(Global.EXTRA_REF_NUM_KEY);
+            if (!TextUtils.isEmpty(refNum)) {
+                getRefData(refNum);
+            }
+        }
+//       etRefNum.setText("2-20170918-00233");
     }
 
     @Override

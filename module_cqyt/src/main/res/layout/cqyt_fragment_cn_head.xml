@@ -125,7 +125,6 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:id="@id/tv_ref_line_num_name"
                     style="@style/LeftTextViewItemStyle"
                     android:text="@string/location_type" />
 

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
@@ -67,6 +68,7 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         mLineNumForFilter = list[list.length - 1];
         //支持仓储类型的扫描
         if (list != null && list.length == 2 && !cbSingle.isChecked()) {
@@ -79,7 +81,6 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
             getTransferSingle(getString(etBatchFlag), location);
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
     @Override
@@ -443,14 +444,12 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     @Override
     public void saveCollectedDataSuccess(String message) {
         //计算不合格数量，到货-实收
-        float arrivalQ = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
-        float quantityQ = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
-        tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
+        tvUnqualifiedQuantity.setText(String.valueOf(ArithUtil.sub(getString(etArrivalQuantity), getString(etQuantity))));
         super.saveCollectedDataSuccess(message);
 
-        float quantityCustomV = CommonUtil.convertToFloat(getString(etQuantityCustom), 0.0F);
-        float totalQuantityCustomV = CommonUtil.convertToFloat(getString(tvTotalQuantityCustom), 0.0F);
-        tvTotalQuantityCustom.setText(String.valueOf(quantityCustomV + totalQuantityCustomV));
+        //累计件数
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
+                getString(tvTotalQuantityCustom))));
 
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
@@ -520,7 +519,6 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         return menus;
     }
 
-
     @Override
     public void clearAllUI() {
         super.clearAllUI();
@@ -533,7 +531,7 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

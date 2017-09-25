@@ -11,7 +11,7 @@
     <TextView
         android:id="@id/mcq_tv_ref_num"
         style="@style/TableHeaderStyle"
-        android:layout_width="135dp"
+        android:layout_width="140dp"
         android:text="@string/mcq_ref_num" />
 
     <View style="@style/ItemSeperatorLayout" />

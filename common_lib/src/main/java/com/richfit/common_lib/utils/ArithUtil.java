@@ -30,6 +30,18 @@ public class ArithUtil {
         return b1.add(b2).floatValue();
     }
 
+    public static float sub(String value1, String value2) {
+        if (TextUtils.isEmpty(value1)) {
+            value1 = "0";
+        }
+        if (TextUtils.isEmpty(value2)) {
+            value2 = "0";
+        }
+        BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
+        BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
+        return b1.subtract(b2).floatValue();
+    }
+
     /**
      * 计算多个浮点数的和，注意拆箱和装箱的性能
      */

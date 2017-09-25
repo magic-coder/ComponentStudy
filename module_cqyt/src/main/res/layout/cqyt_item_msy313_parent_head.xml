@@ -52,12 +52,12 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
-
+    <!--应发-->
     <TextView
         android:id="@id/actQuantity"
         style="@style/TableHeaderStyle"
         android:layout_width="120dp"
-        android:text="@string/act_quantity" />
+        android:text="@string/act_delivery_quantity" />
 
     <View style="@style/ItemSeperatorLayout" />
 

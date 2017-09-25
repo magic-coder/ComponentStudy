@@ -197,7 +197,7 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
 
     @Override
     public void getUpdateInfoFail(String message) {
-        showMessage(message);
+        //nothing todo
     }
 
 

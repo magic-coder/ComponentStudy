@@ -2,23 +2,31 @@ package com.richfit.module_mcq.module_ds;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_mcq.R;
 import com.richfit.sdk_wzck.base_ds_edit.BaseDSEditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/9/12.
@@ -40,7 +48,10 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
     RichEditText etLocation;
 
     String mQuantityCustom;
-    float mTotalQuantityCustom;
+    float mTotalQuantityCustom; //仓储类型
+    Spinner spLocationType;
+    List<SimpleEntity> mLocationTypes;
+
 
 
     @Override
@@ -61,6 +72,7 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
         etLocation = mView.findViewById(R.id.et_location);
+        spLocationType = mView.findViewById(R.id.sp_location_type);
         //隐藏批次
         mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
         //主计量单位
@@ -90,8 +102,15 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
     }
 
     @Override
-    public void initData() {
+    public void initEvent() {
+        super.initEvent();
+        etLocation.setOnRichEditTouchListener((view, text) -> loadInventoryInfo());
+    }
 
+
+    @Override
+    public void initData() {
+        super.initData();
         //初始化副计量单位的数据
         Bundle bundle = getArguments();
         if (bundle != null && mRefData != null) {
@@ -115,20 +134,29 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
             String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
-        super.initData();
+        mPresenter.getDictionaryData("locationType");
     }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichEditTouchListener((view, text) -> loadInventoryInfo());
-    }
 
     @Override
     public void initDataLazily() {
 
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
+    }
 
     @Override
     protected void loadInventoryInfo() {
@@ -237,9 +265,21 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
-        result.batchFlag = !isOpenBatchManager ? null : getString(tvBatchFlag);
+        result.batchFlag = null;
         result.location = getString(etLocation);
+        //仓储类型
+        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
+    }
 }

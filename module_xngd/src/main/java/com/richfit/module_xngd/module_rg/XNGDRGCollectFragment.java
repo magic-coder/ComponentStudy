@@ -73,19 +73,17 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.moveCause = ((SimpleEntity) spMoveCause.getSelectedItem()).code;
+        result.invFlag = mRefData.invFlag;
+        result.specialInvFlag = mRefData.specialInvFlag;
+        result.projectNum = mRefData.projectNum;
         return result;
-    }
-
-    @Override
-    protected int getOrgFlag() {
-        return 0;
     }
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
@@ -93,11 +91,17 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
         param.extraMap = extraMap;
         return param;
     }
+
     @Override
     public void _onPause() {
         if (spMoveCause.getAdapter() != null) {
             spMoveCause.setSelection(0);
         }
         super._onPause();
+    }
+
+    @Override
+    protected int getOrgFlag() {
+        return 0;
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
@@ -50,6 +51,7 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length == 2 && !cbSingle.isChecked()) {
             String location = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
@@ -60,7 +62,6 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             getTransferSingle(getString(etBatchFlag), location);
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
     @Override
     public int getContentId() {
@@ -324,7 +325,7 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

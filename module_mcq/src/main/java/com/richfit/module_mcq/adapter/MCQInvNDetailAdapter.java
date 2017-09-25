@@ -28,6 +28,7 @@ public class MCQInvNDetailAdapter extends CommonTreeAdapter<InventoryEntity> {
                 .setText(R.id.mcq_material_unit_custom, item.unitCustom)
                 .setText(R.id.location, item.location)
                 .setText(R.id.invQuantity, item.invQuantity)
-                .setText(R.id.mcq_inv_quantity_custom, item.invQuantityCustom);
+                .setText(R.id.mcq_inv_quantity_custom, item.invQuantityCustom)
+                .setText(R.id.mcq_tv_location_type, item.locationType);
     }
 }

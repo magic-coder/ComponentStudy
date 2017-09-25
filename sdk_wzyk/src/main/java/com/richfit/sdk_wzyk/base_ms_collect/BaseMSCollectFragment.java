@@ -760,7 +760,6 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                     && !TextUtils.isEmpty(result.specialInvNum)) ?
                     "Y" : "N";
         }
-
         result.modifyFlag = "N";
         result.invType = param.invType;
         return result;

@@ -48,6 +48,7 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length == 2 && !cbSingle.isChecked()) {
             String location = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
@@ -58,7 +59,6 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
             getTransferSingle(getString(etBatchFlag), location);
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
     @Override
@@ -263,9 +263,9 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
     @Override
     public void saveCollectedDataSuccess(String message) {
         super.saveCollectedDataSuccess(message);
-        float quantityCustomV = CommonUtil.convertToFloat(getString(etQuantityCustom), 0.0F);
-        float totalQuantityCustomV = CommonUtil.convertToFloat(getString(tvTotalQuantityCustom), 0.0F);
-        tvTotalQuantityCustom.setText(String.valueOf(quantityCustomV + totalQuantityCustomV));
+        //累计件数
+        tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
+                getString(tvTotalQuantityCustom))));
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }
@@ -280,7 +280,7 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

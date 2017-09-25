@@ -62,6 +62,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         //支持仓储类型的扫描
         if (list != null && list.length == 2 && !cbSingle.isChecked()) {
             String location = list[Global.LOCATION_POS];
@@ -73,7 +74,6 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
             getTransferSingle(getString(etBatchFlag), location);
             return;
         }
-        super.handleBarCodeScanResult(type, list);
     }
 
 
@@ -168,7 +168,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         }
 
         if ("N".equalsIgnoreCase(lineData.qmFlag) && !"01".equalsIgnoreCase(lineData.status)) {
-            showMessage("该物料是非质检物资，但是单据状态是创建状态，不允许采集");
+            showMessage("该物料是非质检物资，但是单据状态不是创建状态，不允许采集");
             return;
         }
 
@@ -296,16 +296,6 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         }
     }
 
-
-    @Override
-    public boolean checkCollectedDataBeforeSave() {
-        if (spLocationType.getSelectedItemPosition() <= 0) {
-            showMessage("请先选择仓储类型");
-            return false;
-        }
-        return super.checkCollectedDataBeforeSave();
-    }
-
     /**
      * 校验副计量单位的数量
      *
@@ -348,6 +338,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
+        result.batchFlag = !isOpenBatchManager ? null : getString(etBatchFlag);
         //仓储类型
         result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
@@ -385,7 +376,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && spLocationType.getSelectedItemPosition() > 0) {
+        if (mLocationTypes != null) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);

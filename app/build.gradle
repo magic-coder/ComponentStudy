@@ -131,12 +131,12 @@ android {
         }
 
         cqyt {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.177.92:9087/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "SERVER_URL", '"http://10.78.173.127:9087/ktbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 4
-            versionName "1.3"
+            versionName "1.5"
             signingConfig signingConfigs.sign_cqyt
         }
 
@@ -146,7 +146,7 @@ android {
             buildConfigField "String", "APP_NAME", '"mcq"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.3"
+            versionName "1.5"
             signingConfig signingConfigs.sign_mcq
         }
 
@@ -192,9 +192,9 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 //      compile project(':module_qhyt')
-//     compile project(':module_xngd')
-//     compile project(':module_cqyt')
-     compile project(':module_mcq')
+    compile project(':module_xngd')
+  //  compile project(':module_cqyt')
+    //compile project(':module_mcq')
 
 }
 tasks.whenTaskAdded { task ->

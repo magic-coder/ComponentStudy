@@ -86,6 +86,30 @@ public class CQYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
         mShowMsg.setLength(0);
         mExtraTansMap.clear();
         mExtraTansMap.put("refNum", mRefData.recordNum);
+		//到货日期s
+		mExtraTansMap.put("arrivalDate",mRefData.arrivalDate);
+        //报检日期
+		mExtraTansMap.put("inspectionDate",mRefData.inspectionDate);
+        //提货单
+		mExtraTansMap.put("deliveryOrder",mRefData.deliveryOrder);
+        //件数
+		mExtraTansMap.put("quantityCustom",mRefData.quantityCustom);
+        //报检单位
+		mExtraTansMap.put("declaredUnit",mRefData.declaredUnit);
+        // 班
+		mExtraTansMap.put("team",mRefData.team);
+        // 岗位
+		mExtraTansMap.put("post",mRefData.post);
+        // 生产厂家
+		mExtraTansMap.put("manufacture",mRefData.manufacture);
+        //检验单位
+		mExtraTansMap.put("inspectionUnit",mRefData.inspectionUnit);
+        // 备注
+		mExtraTansMap.put("remark",mRefData.remark);
+        // 检验标准及特殊要求
+		mExtraTansMap.put("inspectionStandard",mRefData.inspectionStandard);
+        //提货单
+		mExtraTansMap.put("deliveryOrder",mRefData.deliveryOrder);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }

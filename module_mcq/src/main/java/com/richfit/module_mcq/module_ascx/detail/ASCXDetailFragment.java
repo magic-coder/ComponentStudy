@@ -14,8 +14,9 @@ import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_mcq.R;
-import com.richfit.module_mcq.adapter.ASCXRefLinesAdapter;
+import com.richfit.module_mcq.adapter.ASCXAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +25,8 @@ import java.util.List;
 
 public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterImp, RefDetailEntity>
         implements IASCXDetailView, MultiItemTypeAdapter.OnItemClickListener {
+
+    private List<ReferenceEntity> mDatas;
 
     @Override
     protected int getContentId() {
@@ -58,18 +61,13 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
             return;
         }
 
-        if (TextUtils.isEmpty(mRefData.recordNum)) {
-            showMessage("请现在抬头界面获取单据数据,并选择合适的单据");
-            return;
-        }
-
-        if (TextUtils.isEmpty(mRefData.bizType)) {
-            showMessage("未获取到业务类型");
-            return;
-        }
-
         if (TextUtils.isEmpty(mRefData.refType)) {
             showMessage("未获取到单据类型");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRefData.creationDate)) {
+            showMessage("请先在抬头界面输入创建日期");
             return;
         }
         //开始刷新
@@ -79,24 +77,11 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
     //重写该方法的目的是，我们不在获取整单缓存，转而获取该单据的明细数据
     @Override
     public void onRefresh() {
-        //单据抬头id
-        final String refNum = mRefData.recordNum;
-        //业务类型
-        final String bizType = mRefData.bizType;
-        //单据类型
-        final String refType = mRefData.refType;
-        //移动类型
-        final String moveType = mRefData.moveType;
-        mPresenter.getReference(refNum, refType, bizType, moveType, "", Global.USER_ID);
+        mExtraTansMap.clear();
+        mExtraTansMap.put("refType",mRefData.refType);
+        mPresenter.getArrivalInfo(mRefData.createdBy, mRefData.creationDate, mExtraTansMap);
     }
 
-    @Override
-    public void getReferenceSuccess(ReferenceEntity refData) {
-        List<RefDetailEntity> allNodes = refData.billDetailList;
-        ASCXRefLinesAdapter adapter = new ASCXRefLinesAdapter(mActivity, R.layout.mcq_item_ascx_head, allNodes);
-        adapter.setOnItemClickListener(this);
-        mRecyclerView.setAdapter(adapter);
-    }
 
 
     @Override
@@ -173,7 +158,8 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
         bundle.putString(Global.EXTRA_REF_TYPE_KEY, "16");
         bundle.putString(Global.EXTRA_CAPTION_KEY, "物资上架");
         //必须新增单据号
-        bundle.putString(Global.EXTRA_REF_NUM_KEY,mRefData.recordNum);
+        ReferenceEntity refData = mDatas.get(position);
+        bundle.putString(Global.EXTRA_REF_NUM_KEY, refData.recordNum);
         bundle.putInt(Global.EXTRA_MODE_KEY, Global.ONLINE_MODE);
         intent.putExtras(bundle);
         mActivity.startActivity(intent);
@@ -183,5 +169,24 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
     @Override
     public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
         return false;
+    }
+
+    @Override
+    public void loadRefListSuccess(List<ReferenceEntity> refs) {
+        mSwipeRefreshLayout.setRefreshing(false);
+        if(mDatas == null) {
+            mDatas = new ArrayList<>();
+        }
+        mDatas.clear();
+        mDatas.addAll(refs);
+        ASCXAdapter adapter = new ASCXAdapter(mActivity, R.layout.mcq_item_ascx_refs, mDatas);
+        mRecyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(this);
+    }
+
+    @Override
+    public void loadRefListFail(String message) {
+        showMessage(message);
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

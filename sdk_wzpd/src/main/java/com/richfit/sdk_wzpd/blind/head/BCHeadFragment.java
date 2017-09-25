@@ -28,6 +28,7 @@ import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
@@ -35,6 +36,7 @@ import com.richfit.sdk_wzpd.blind.head.imp.BlindHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -49,7 +51,7 @@ import static com.richfit.data.constant.Global.USER_ID;
 public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
         implements IBlindHeadView {
 
-    private static final String DEFAULT_SPECIAL_FLAG = "Y";
+    protected static final String DEFAULT_SPECIAL_FLAG = "Y";
 
     @BindView(R2.id.ll_check_guide)
     protected LinearLayout llCheckGuide;
@@ -60,23 +62,23 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     @BindView(R2.id.btn_storage_num_level)
     protected RadioButton rbStorageNumLevel;
     @BindView(R2.id.btn_warehouse_level)
-    protected  RadioButton rbWarehouseLevel;
+    protected RadioButton rbWarehouseLevel;
     @BindView(R2.id.sp_work)
-    Spinner spWork;
+    protected Spinner spWork;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected  Spinner spInv;
     @BindView(R2.id.sp_storage_num)
     Spinner spStorageNum;
     @BindView(R2.id.tv_checker)
     TextView tvChecker;
     @BindView(R2.id.et_check_date)
-    RichEditText etTransferDate;
+    protected RichEditText etTransferDate;
 
     /*工厂列表*/
-    List<WorkEntity> mWorkDatas;
+    protected List<WorkEntity> mWorkDatas;
     /*库存地点列表以及适配器*/
     InvAdapter mInvAdapter;
-    List<InvEntity> mInvDatas;
+    protected List<InvEntity> mInvDatas;
     /*库存号列表*/
     List<String> mStorageNums;
 
@@ -127,6 +129,11 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
                     mRefData = null;
                     rbWarehouseLevel.setChecked(true);
                     llWarehouseLevel.setVisibility(View.VISIBLE);
+                    //切换时也可以加载
+                    if (spWork.getAdapter() == null) {
+                        //如果工厂还未初始化
+                        mPresenter.getWorks(0);
+                    }
                 });
 
         /*如果选择仓位级，那么初始化仓库号*/
@@ -138,6 +145,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
                     mRefData = null;
                     rbStorageNumLevel.setChecked(true);
                     llStorageNumLevel.setVisibility(View.VISIBLE);
+                    //切换时也可以加载
                     if (spStorageNum.getAdapter() == null) {
                         mPresenter.getStorageNums(0);
                     }
@@ -150,7 +158,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         tvChecker.setText(Global.LOGIN_ID);
         //因为默认是选择仓库级的，所以在先初始化工厂
-        if (spWork.getAdapter() == null) {
+        if (spWork.getAdapter() == null && rbWarehouseLevel.isChecked()) {
             //如果工厂还未初始化
             mPresenter.getWorks(0);
         }
@@ -223,6 +231,11 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     }
 
     @Override
+    public void loadInvsComplete() {
+
+    }
+
+    @Override
     public void showStorageNums(List<String> storageNums) {
         mStorageNums.clear();
         mStorageNums.addAll(storageNums);
@@ -240,6 +253,11 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
             ArrayAdapter workAdapter = (ArrayAdapter) adapter;
             workAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void loadStorageNumComplete() {
+
     }
 
     /**
@@ -312,19 +330,21 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     /**
      * 开始盘点
      */
-    private void startCheck() {
+    protected void startCheck() {
         //请求抬头信息
         mRefData = null;
         if (rbStorageNumLevel.isChecked()) {
-            //库位级盘点
+            //仓位级盘点
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "01",
                     DEFAULT_SPECIAL_FLAG, mStorageNums.get(spStorageNum.getSelectedItemPosition()),
-                    "", "", getString(etTransferDate));
+                    "", "", getString(etTransferDate),null);
         } else if (rbWarehouseLevel.isChecked()) {
+            //仓库级盘点
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "02",
                     DEFAULT_SPECIAL_FLAG, "",
                     mWorkDatas.get(spWork.getSelectedItemPosition()).workId,
-                    mInvDatas.get(spInv.getSelectedItemPosition()).invId, getString(etTransferDate));
+                    mInvDatas.get(spInv.getSelectedItemPosition()).invId,
+                    getString(etTransferDate),null);
         }
     }
 
@@ -436,8 +456,18 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     }
 
     @Override
-    public void uploadEditedHeadDataFail(String message) {
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
 
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void uploadEditedHeadDataFail(String message) {
+        showMessage(message);
     }
 
     @Override

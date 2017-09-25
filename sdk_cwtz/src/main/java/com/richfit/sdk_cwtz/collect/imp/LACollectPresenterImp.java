@@ -87,7 +87,7 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum,
                         materialNum, materialId, materialGroup,
-                        materialDesc, batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,null)
+                        materialDesc, batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext, "正在获取库存信息...") {
                             @Override
