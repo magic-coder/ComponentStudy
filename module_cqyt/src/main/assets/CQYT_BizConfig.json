@@ -398,5 +398,45 @@
     "mode": 0,
     "fragmentType": 2,
     "className": "com.richfit.module_cqyt.module_whxj.collect.CQYTWHXJCollectFragment"
+  },
+  {
+    "id": "41",
+    "tabTitle": "抬头",
+    "fragmentTag": "cqyt_ws_header_fragment_tag",
+    "bizType": "D3",
+    "refType": "",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_cqyt.module_ws.head.WSHeadFragment"
+  },
+  {
+    "id": "42",
+    "tabTitle": "数据明细",
+    "fragmentTag": "cqyt_ws_detail_fragment_tag",
+    "bizType": "D3",
+    "refType": "",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_cqyt.module_ws.detail.WSDetailFragment"
+  },
+  {
+    "id": "43",
+    "tabTitle": "数据采集",
+    "fragmentTag": "cqyt_ws_collect_fragment_tag",
+    "bizType": "D3",
+    "refType": "",
+    "fragmentType": 2,
+    "mode": 0,
+    "className": "com.richfit.module_cqyt.module_ws.collect.WSCollectFragment"
+  },
+  {
+    "id": "44",
+    "tabTitle": "明细修改",
+    "fragmentTag": "cqyt_ws_edit_fragment_tag",
+    "bizType": "D3",
+    "mode": 0,
+    "refType": "",
+    "fragmentType": -1,
+    "className": "com.richfit.module_cqyt.module_ws.edit.WSEditFragment"
   }
 ]

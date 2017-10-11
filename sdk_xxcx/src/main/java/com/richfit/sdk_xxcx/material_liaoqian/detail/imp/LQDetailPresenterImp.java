@@ -2,6 +2,7 @@ package com.richfit.sdk_xxcx.material_liaoqian.detail.imp;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;

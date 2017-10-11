@@ -10,14 +10,17 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectPresenter;
 import com.richfit.sdk_wzyk.base_ms_collect.IMSCollectView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
@@ -30,6 +33,67 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
     public MSCollectPresenterImp(Context context) {
         super(context);
     }
+
+    /**
+     * 单条数据上传，增加接收仓位的检查
+     * @param result:用户采集的数据(json格式)
+     */
+    @Override
+    public void uploadCollectionDataSingle(ResultEntity result) {
+        mView = getView();
+
+        Flowable<String> flowable;
+        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+            //检查接收仓位
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.recWorkId, result.recInvId, "",
+                    result.recLocation, extraMap),
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";"+ s2);
+        } else {
+            //意味着不上架
+            flowable =    mRepository.uploadCollectionDataSingle(result);
+        }
+
+        ResourceSubscriber<String> subscriber =
+                flowable.compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext) {
+                            @Override
+                            public void _onNext(String s) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataSuccess(s);
+                                }
+                            }
+
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
+                                }
+                            }
+
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onComplete() {
+
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
 
     @Override
     public void getDictionaryData(String... codes) {
@@ -91,7 +155,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
         addSubscriber(subscriber);
     }
 
-    @Override
+   /* @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
                               String location,Map<String,Object> extraMap) {
         mView = getView();
@@ -129,7 +193,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
                             }
                         });
         addSubscriber(subscriber);
-    }
+    }*/
 
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,

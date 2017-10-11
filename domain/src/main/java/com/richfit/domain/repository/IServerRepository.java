@@ -217,4 +217,14 @@ public interface IServerRepository extends IRepository {
      * @return
      */
     Flowable<String> uploadCheckDataOffline(List<ResultEntity> results);
+
+    /**
+     * 获取报检单列表
+     * @param bizType
+     * @param materialNum
+     * @param userId
+     * @param workCode
+     * @param extraMap
+     */
+    Flowable<List<InventoryEntity>> getInspectionInfo(String bizType,String materialNum,String userId,String workCode,Map<String,Object> extraMap);
 }

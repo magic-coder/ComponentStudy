@@ -113,10 +113,6 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
         showMessage("删除成功");
         if (mAdapter != null) {
             mAdapter.removeItemByPosition(position);
-            int itemCount = mAdapter.getItemCount();
-            if (itemCount == 0) {
-                mExtraContainer.setVisibility(View.INVISIBLE);
-            }
         }
     }
 

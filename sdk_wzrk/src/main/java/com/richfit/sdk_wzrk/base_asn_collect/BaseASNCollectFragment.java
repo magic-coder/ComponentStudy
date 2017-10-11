@@ -70,8 +70,10 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     @BindView(R2.id.cb_single)
     CheckBox cbSingle;
 
+    /*库存地点数据和适配器*/
     private InvAdapter mInvAdapter;
     protected List<InvEntity> mInvs;
+    /*单条缓存数据列表*/
     private List<RefDetailEntity> mHistoryDetailList;
     /*上架仓位列表适配器*/
     ArrayAdapter<String> mLocationAdapter;

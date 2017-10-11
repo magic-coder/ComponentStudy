@@ -289,6 +289,8 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
      */
     private void getTransferSingle(final String batchFlag, final String location) {
 
+
+
         if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
             showMessage("批次为空");
             return;

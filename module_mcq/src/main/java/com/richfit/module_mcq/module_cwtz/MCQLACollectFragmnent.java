@@ -18,6 +18,7 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_mcq.R;
 import com.richfit.sdk_cwtz.collect.LACollectFragment;
+import com.richfit.sdk_cwtz.collect.imp.LACollectPresenterImp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,7 +77,6 @@ public class MCQLACollectFragmnent extends LACollectFragment {
             return;
         }
     }
-
 
     @Override
     public int getContentId() {

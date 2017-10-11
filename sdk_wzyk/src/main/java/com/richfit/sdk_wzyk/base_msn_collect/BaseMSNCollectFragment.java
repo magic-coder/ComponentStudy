@@ -213,14 +213,11 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
             etQuantity.setEnabled(!isChecked);
         });
 
-        //点击自动提示控件，显示默认列表。注意这里如果发出仓位没有显示，那么不能显示下拉列表
+        //点击自动提示控件(接收仓位)，显示默认列表。
         RxView.clicks(autoRecLoc)
                 .filter(a -> autoRecLoc.getAdapter() != null && llRecLocation.getVisibility() != View.GONE)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribe(a -> {
-                    hideKeyboard(autoRecLoc);
-                    showAutoCompleteConfig(autoRecLoc);
-                });
+                .subscribe(a -> showAutoCompleteConfig(autoRecLoc));
 
         //用户选择自动提示控件的某一条数据，隐藏输入法
         RxAutoCompleteTextView.itemClickEvents(autoRecLoc)
@@ -417,6 +414,12 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         }
     }
 
+
+    @Override
+    public void loadInventoryFail(String message) {
+        showMessage(message);
+    }
+
     /**
      * 加载发出库存完毕
      */
@@ -440,12 +443,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 mRefData.recWorkCode, mRefData.recInvCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
                 getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
-    }
-
-
-    @Override
-    public void loadInventoryFail(String message) {
-        showMessage(message);
     }
 
     /**

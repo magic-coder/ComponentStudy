@@ -37,6 +37,7 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
      */
     @Override
     public void initDataLazily() {
+        etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面选择工厂");
             return;
@@ -62,21 +63,31 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
             return;
         }
 
+        if(TextUtils.isEmpty(mRefData.orderNum)) {
+            showMessage("请现在抬头输入订单编号");
+            return;
+        }
+
         if ("0".equals(mRefData.invType) && "1".equals(mRefData.invType)) {
             showMessage("项目移交物资不合理");
             return;
         }
-
+        //注意这种必选先禁止物料
         super.initDataLazily();
+
     }
 
+    /**
+     * 注意specialInvFlag和specialInvNum已经在父类添加了
+     * @return
+     */
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.glAccount = mRefData.glAccount;
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
+        result.orderNum = mRefData.orderNum;
         return result;
     }
 

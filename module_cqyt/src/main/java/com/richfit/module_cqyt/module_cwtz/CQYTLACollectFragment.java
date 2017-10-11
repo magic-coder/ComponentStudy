@@ -14,9 +14,6 @@ import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.sdk_cwtz.collect.LACollectFragment;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +58,8 @@ public class CQYTLACollectFragment extends LACollectFragment {
     public int getContentId() {
         return R.layout.cqyt_fragment_la_collect;
     }
+
+
 
     @Override
     public void initView() {

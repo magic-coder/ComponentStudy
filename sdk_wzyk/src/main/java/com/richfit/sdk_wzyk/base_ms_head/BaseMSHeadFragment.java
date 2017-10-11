@@ -39,7 +39,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
     @BindView(R2.id.tv_send_work)
     protected TextView tvSendWork;
 
-    //发出接收
+    //接收工厂
     @BindView(R2.id.ll_rec_work)
     protected LinearLayout llRecWork;
     @BindView(R2.id.tv_rec_work)

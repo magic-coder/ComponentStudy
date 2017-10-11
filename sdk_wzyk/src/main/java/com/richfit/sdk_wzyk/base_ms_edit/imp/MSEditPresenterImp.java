@@ -9,13 +9,16 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.base_ms_edit.IMSEditPresenter;
 import com.richfit.sdk_wzyk.base_ms_edit.IMSEditView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
@@ -29,24 +32,83 @@ public class MSEditPresenterImp extends BaseEditPresenterImp<IMSEditView>
         super(context);
     }
 
+    /**
+     * 单条数据修改，增加接收仓位的检查
+     *
+     * @param result:用户采集的数据(json格式)
+     */
+    @Override
+    public void uploadCollectionDataSingle(ResultEntity result) {
+        mView = getView();
+        Flowable<String> flowable;
+        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+            //检查接收仓位
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.recWorkId, result.recInvId, "",
+                    result.recLocation, extraMap),
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
+        } else {
+            //意味着不上架
+            flowable =    mRepository.uploadCollectionDataSingle(result);
+        }
+        ResourceSubscriber<String> subscriber =
+                flowable.compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext) {
+                            @Override
+                            public void _onNext(String s) {
+
+                            }
+
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_EDIT_DATA_ACTION);
+                                }
+                            }
+
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.saveEditedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.saveEditedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onComplete() {
+                                if (mView != null) {
+                                    mView.saveEditedDataSuccess("修改成功");
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String, Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
             subscriber = mRepository.getStorageNum(workId, workCode, invId, invCode)
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
-                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location, specialInvFlag, storageNum, invType, deviceId,extraMap))
+                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location, specialInvFlag, storageNum, invType, deviceId, extraMap))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, storageNum, invType, deviceId,extraMap)
+                    specialInvFlag, storageNum, invType, deviceId, extraMap)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
         }
@@ -146,9 +208,9 @@ public class MSEditPresenterImp extends BaseEditPresenterImp<IMSEditView>
         mRepository.getDictionaryData(codes)
                 .filter(data -> data != null && data.size() > 0)
                 .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
                     @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                    public void onNext(Map<String, List<SimpleEntity>> data) {
                         if (mView != null) {
                             mView.loadDictionaryDataSuccess(data);
                         }

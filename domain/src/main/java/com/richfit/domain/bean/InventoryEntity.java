@@ -67,6 +67,15 @@ public class InventoryEntity extends TreeNode{
     public String year;
     public String totalQuantityCustom;
 
+    /*报检单*/
+    public String contractNum;
+    public String inspectionDate;
+    public String inspectionNum;
+    public String planNum;
+    public String remark;
+    public String supplierDesc;
+    public String arrivalDate;
+
     @Override
     public String toString() {
         return "InventoryEntity{" +

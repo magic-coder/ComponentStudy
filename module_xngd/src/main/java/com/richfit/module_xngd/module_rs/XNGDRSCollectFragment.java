@@ -57,8 +57,11 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
+        //从单据行里面取出库存标识
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        result.specialInvFlag = lineData.specialInvFlag;
+        result.specialInvNum = lineData.specialInvNum;
         return result;
     }
 

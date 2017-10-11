@@ -373,13 +373,14 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             showMessage("请输入批次");
             return;
         }
-        final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        final InvEntity invEntity = mInvDatas.get(position);
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        InvEntity invEntity = mInvDatas.get(position);
 
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap);
+                lineData.materialId, "", getString(etBatchFlag), lineData.specialInvFlag,
+                lineData.specialInvNum, param.invType, "", param.extraMap);
     }
 
     /**
@@ -495,7 +496,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 getString(etMaterialNum), batchFlag, location, lineData.refDoc,
                 CommonUtil.convertToInt(lineData.refDocItem), Global.USER_ID);
     }
-
 
 
     /**
@@ -767,7 +767,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         //库存相关的字段回传
         int locationPos = spLocation.getSelectedItemPosition();
-        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+        if (mInventoryDatas != null && mInventoryDatas.size() > 0) {
             result.location = mInventoryDatas.get(locationPos).location;
             result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
@@ -831,7 +831,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void getSuggestedLocationComplete() {}
+    public void getSuggestedLocationComplete() {
+    }
 
     @Override
     public void checkLocationFail(String message) {

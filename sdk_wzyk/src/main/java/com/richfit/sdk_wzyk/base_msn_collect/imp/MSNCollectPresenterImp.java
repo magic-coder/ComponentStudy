@@ -38,6 +38,66 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
         super(context);
     }
 
+    /**
+     * 保存单条，检查接收仓位
+     * @param result:用户采集的数据(json格式)
+     */
+    @Override
+    public void uploadCollectionDataSingle(ResultEntity result) {
+        mView = getView();
+
+        Flowable<String> flowable;
+        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+            //如果检查的接收仓位那么需要使用接收工厂和接收库存地点
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.recWorkId, result.recInvId, "",
+                    result.recLocation, extraMap),
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
+        } else {
+            //意味着不上架
+            flowable =    mRepository.uploadCollectionDataSingle(result);
+        }
+
+        ResourceSubscriber<String> subscriber =
+                flowable.compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext) {
+                            @Override
+                            public void _onNext(String s) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataSuccess(s);
+                                }
+                            }
+
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
+                                }
+                            }
+
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.saveCollectedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onComplete() {
+
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
     @Override
     public void getSendInvsByWorks(String workId, int flag) {
         mView = getView();
@@ -154,7 +214,7 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
         return refData;
     }
 
-    @Override
+  /*  @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
                               String location,Map<String,Object> extraMap) {
         mView = getView();
@@ -192,7 +252,7 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
                             }
                         });
         addSubscriber(subscriber);
-    }
+    }*/
 
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
@@ -301,8 +361,6 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
         }
         return tmp;
     }
-
-
 
     @Override
     public void checkWareHouseNum(boolean isOpenWM, String sendWorkId, String sendInvCode,

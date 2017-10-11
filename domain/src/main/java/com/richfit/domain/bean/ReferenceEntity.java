@@ -162,6 +162,8 @@ public class ReferenceEntity {
     public String insTemperature;
     public String insHumidity;
     public String createdBy;
+    public String quantityCustom;
+    public String orderNum;
 
     @Override
     public String toString() {

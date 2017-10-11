@@ -3,10 +3,13 @@ package com.richfit.module_cqyt.module_ws.detail;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
+import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.adapter.WSAdapter;
@@ -19,7 +22,8 @@ import java.util.List;
  * Created by monday on 2017/9/21.
  */
 
-public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, RefDetailEntity> {
+public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, RefDetailEntity>
+        implements IWSDetailView<RefDetailEntity> {
 
     @Override
     protected int getContentId() {
@@ -64,39 +68,6 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
         startAutoRefresh();
     }
 
-
-
-    @Override
-    public void deleteNode(RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
-        if (!"0".equals(state)) {
-            showMessage("已经过账,不允许删除");
-            return;
-        }
-        if (TextUtils.isEmpty(node.transLineId)) {
-            showMessage("该行还未进行数据采集");
-            return;
-        }
-        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
-                mRefData.refType, mRefData.bizType,node.refLineId, Global.USER_ID, position, mCompanyCode);
-    }
-
-    @Override
-    public void editNode(RefDetailEntity node, int position) {
-        String state = (String) SPrefUtil.getData(mBizType, "0");
-        if (!"0".equals(state)) {
-            showMessage("已经过账,不允许修改");
-            return;
-        }
-        //获取与该子节点的物料编码和发出库位一致的发出仓位和接收仓位列表
-        if (mAdapter != null && ASNDetailAdapter.class.isInstance(mAdapter)) {
-            ASNDetailAdapter adapter = (ASNDetailAdapter) mAdapter;
-            ArrayList<String> Locations = adapter.getLocations(position, 0);
-            mPresenter.editNode(Locations, null, null, node, mCompanyCode, mBizType, mRefType,
-                    "物资取样", position);
-        }
-    }
-
     @Override
     public void showNodes(List<RefDetailEntity> allNodes) {
         //显示明细数据
@@ -116,6 +87,35 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
         }
     }
 
+
+    @Override
+    public void deleteNode(RefDetailEntity node, int position) {
+        String state = (String) SPrefUtil.getData(mBizType, "0");
+        if (!"0".equals(state)) {
+            showMessage("已经过账,不允许删除");
+            return;
+        }
+        if (TextUtils.isEmpty(node.transLineId)) {
+            showMessage("该行还未进行数据采集");
+            return;
+        }
+        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
+                mRefData.refType, mRefData.bizType, node.refLineId, Global.USER_ID, position, mCompanyCode);
+    }
+
+    @Override
+    public void editNode(RefDetailEntity node, int position) {
+        String state = (String) SPrefUtil.getData(mBizType, "0");
+        if (!"0".equals(state)) {
+            showMessage("已经过账,不允许修改");
+            return;
+        }
+        //获取与该子节点的物料编码和发出库位一致的发出仓位和接收仓位列表
+        mPresenter.editNode(null, null, null, node, mCompanyCode, mBizType, mRefType,
+                "物资取样", position);
+    }
+
+
     @Override
     public void refreshComplete() {
 
@@ -123,13 +123,37 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
 
     @Override
     public void deleteNodeSuccess(int position) {
+        showMessage("删除成功");
+        if (mAdapter != null) {
+            mAdapter.removeItemByPosition(position);
+        }
+    }
 
+    @Override
+    protected void submit2BarcodeSystem(String transToSapFlag) {
+        String transferFlag = (String) SPrefUtil.getData(mBizType, "0");
+        if ("1".equals(transferFlag)) {
+            showMessage(getString(com.richfit.sdk_wzrk.R.string.msg_detail_off_location));
+            return;
+        }
+        mShowMsg.setLength(0);
+        mExtraTansMap.clear();
+        mPresenter.submitData2BarcodeSystem("", mTransId, mBizType, mRefType, mRefData.voucherDate,
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
     @Override
     public void submitBarcodeSystemSuccess() {
-
+        showSuccessDialog(mShowMsg);
+        if (mAdapter != null) {
+            mAdapter.removeAllVisibleNodes();
+        }
+        mRefData = null;
+        mShowMsg.setLength(0);
+        mTransId = "";
+        mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
+
 
     @Override
     public void submitSAPSuccess() {
@@ -144,13 +168,14 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
 
     @Override
     protected boolean checkTransStateBeforeRefresh() {
-        return false;
+        String state = (String) SPrefUtil.getData(mBizType, "0");
+        if (!"0".equals(state)) {
+            showMessage(getString(R.string.msg_detail_on_location));
+            return false;
+        }
+        return true;
     }
 
-    @Override
-    protected void submit2BarcodeSystem(String tranToSapFlag) {
-
-    }
 
     @Override
     protected void submit2SAP(String tranToSapFlag) {
@@ -160,5 +185,11 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
     @Override
     protected void sapUpAndDownLocation(String transToSapFlag) {
 
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0, 1);
     }
 }

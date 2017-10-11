@@ -5,6 +5,7 @@ import android.widget.Spinner;
 
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
@@ -73,21 +74,19 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.moveCause = ((SimpleEntity) spMoveCause.getSelectedItem()).code;
-        result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
-        result.projectNum = mRefData.projectNum;
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        result.invFlag = lineData.invFlag;
         return result;
     }
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
         param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag", mRefData.invFlag);
-        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
-        extraMap.put("projectNum", mRefData.projectNum);
+        extraMap.put("invFlag", lineData.invFlag);
         param.extraMap = extraMap;
         return param;
     }

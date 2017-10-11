@@ -149,11 +149,6 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         //不论成功或者失败都应该关闭下拉加载动画
         showMessage(message);
         mSwipeRefreshLayout.setRefreshing(false);
-//        mExtraContainer.setVisibility(isSuccess ? View.VISIBLE : View.INVISIBLE);
-//        if (mAdapter != null && !isSuccess) {
-//            //清空历史明细数据
-//            mAdapter.removeAllVisibleNodes();
-//        }
     }
 
     /**

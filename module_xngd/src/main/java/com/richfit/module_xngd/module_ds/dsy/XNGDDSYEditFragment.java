@@ -37,7 +37,6 @@ public class XNGDDSYEditFragment extends BaseDSEditFragment<DSEditPresenterImp> 
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
         return result;
     }
@@ -49,7 +48,7 @@ public class XNGDDSYEditFragment extends BaseDSEditFragment<DSEditPresenterImp> 
         param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String,Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
-        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+        //extraMap.put("specialInvFlag", mRefData.specialInvFlag);
         extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;

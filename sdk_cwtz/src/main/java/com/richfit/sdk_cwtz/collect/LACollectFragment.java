@@ -104,7 +104,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         mPresenter = new LACollectPresenterImp(mActivity);
     }
 
-
     @Override
     public void initDataLazily() {
         etMaterialNum.setEnabled(false);
@@ -229,7 +228,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
                 mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
-                "", "", getString(etBatchFlag), location, "", param.invType, "", "", param.extraMap);
+                "", "", getString(etBatchFlag), location, "","", param.invType, "", param.extraMap);
     }
 
     @Override
@@ -342,6 +341,12 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
         if (TextUtils.isEmpty(getString(tvSendInvQuantity))) {
             showMessage("请先获取有效库存");
+            return false;
+        }
+
+        //必须先判断调整数据是否输入
+        if (TextUtils.isEmpty(getString(etRecQuantity))) {
+            showMessage("调整数量有误");
             return false;
         }
 

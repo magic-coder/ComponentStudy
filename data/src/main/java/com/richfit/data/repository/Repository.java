@@ -516,6 +516,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
     }
 
     @Override
+    public Flowable<List<InventoryEntity>> getInspectionInfo(String bizType, String materialNum, String userId, String workCode, Map<String, Object> extraMap) {
+        return mServerRepository.getInspectionInfo(bizType,materialNum,userId,workCode,extraMap);
+    }
+
+    @Override
     public Flowable<List<ReferenceEntity>> readTransferedData(int bizType) {
         return mLocalRepository.readTransferedData(bizType);
     }

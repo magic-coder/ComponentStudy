@@ -264,7 +264,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     @Override
     public void setupRefLineAdapter(ArrayList<String> refLines) {
-        if(mRefLines == null) {
+        if (mRefLines == null) {
             mRefLines = new ArrayList<>();
         }
         mRefLines.clear();
@@ -330,7 +330,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
     @Override
     public void showInvs(ArrayList<InvEntity> list) {
-        if(mInvDatas == null) {
+        if (mInvDatas == null) {
             mInvDatas = new ArrayList<>();
         }
         //初始化库存地点
@@ -370,13 +370,14 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         if (position <= 0) {
             return;
         }
-        final RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        final InvEntity invEntity = mInvDatas.get(position);
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+        InvEntity invEntity = mInvDatas.get(position);
 
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId, invEntity.invId,
                 lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etSendBatchFlag), "", "", param.invType, "", param.extraMap);
+                lineData.materialId, "", getString(etSendBatchFlag),lineData.specialInvFlag,
+                lineData.specialInvNum, param.invType, "", param.extraMap);
     }
 
     /**
@@ -386,7 +387,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
      */
     @Override
     public void showInventory(List<InventoryEntity> list) {
-        if(mInventoryDatas == null) {
+        if (mInventoryDatas == null) {
             mInventoryDatas = new ArrayList<>();
         }
         mInventoryDatas.clear();
@@ -752,7 +753,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         result.quantity = getString(etQuantity);
         int locationPos = spSendLoc.getSelectedItemPosition();
         //这里需要兼容离线，而离线是没有库存
-        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+        if (mInventoryDatas != null && mInventoryDatas.size() > 0) {
             result.location = mInventoryDatas.get(locationPos).location;
             result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
             result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;

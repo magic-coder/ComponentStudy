@@ -35,6 +35,7 @@ public class XNGDLQDetailFragment extends LQDetailFragment {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
         param.invType = "1";
+
         return param;
     }
 }

@@ -188,7 +188,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode,
                 "", getString(tvMaterialNum), materialId, "", batchFlag, lineData.specialInvFlag,
-                mRefData.supplierNum, param.invType, "", param.extraMap);
+                lineData.specialInvNum, param.invType, "", param.extraMap);
     }
 
     @Override

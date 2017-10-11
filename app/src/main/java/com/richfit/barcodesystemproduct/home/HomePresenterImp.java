@@ -184,6 +184,8 @@ public class HomePresenterImp extends BasePresenter<HomeContract.View>
             //上架单据查询
             case Global.REF_CX:
                 return R.mipmap.icon_module17;
+            case Global.WZQY:
+                return R.mipmap.icon_module14;
         }
         return 0;
     }

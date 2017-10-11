@@ -157,7 +157,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         if (mSuppliers == null) {
             mSuppliers = new ArrayList<>();
         }
-        List<String> suppliers = CommonUtil.toStringArray(simpleEntities);
+        List<String> suppliers = CommonUtil.toStringArray(simpleEntities,true);
         //注意后续需要供应商的id
         mSuppliers.clear();
         mSuppliers.addAll(simpleEntities);

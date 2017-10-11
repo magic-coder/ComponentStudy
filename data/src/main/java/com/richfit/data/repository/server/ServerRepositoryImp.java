@@ -662,6 +662,21 @@ public class ServerRepositoryImp implements IServerRepository {
                 .compose(TransformerHelper.ListTransformer);
     }
 
+    @Override
+    public Flowable<List<InventoryEntity>> getInspectionInfo(String bizType, String materialNum,
+                                                             String userId, String workCode, Map<String, Object> extraMap) {
+
+        mRequestParam.put("businessType", bizType);
+        mRequestParam.put("materialNum", materialNum);
+        mRequestParam.put("userId", userId);
+        mRequestParam.put("workCode", workCode);
+        if(extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
+        return mRequestApi.getInspectionInfo(JsonUtil.map2Json(mRequestParam))
+                .compose(TransformerHelper.handleResponse());
+    }
+
 
     @Override
     public Flowable<MaterialEntity> getMaterialInfo(String queryType, String materialNum) {

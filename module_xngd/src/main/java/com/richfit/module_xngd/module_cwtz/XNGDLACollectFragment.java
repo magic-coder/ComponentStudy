@@ -80,6 +80,11 @@ public class XNGDLACollectFragment extends LACollectFragment {
             return false;
         }
 
+        if (TextUtils.isEmpty(getString(etRecQuantity))) {
+            showMessage("调整数量有误");
+            return false;
+        }
+
         if (!refreshQuantity(getString(etRecQuantity))) {
             showMessage("调整数量有误");
             return false;
@@ -93,18 +98,19 @@ public class XNGDLACollectFragment extends LACollectFragment {
         result.invFlag = mRefData.invFlag;
         result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
-        return  result;
+        return result;
     }
+
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
-        extraMap.put("projectNum",mRefData.projectNum);
+        extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;
         return param;
     }

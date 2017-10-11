@@ -3,10 +3,15 @@ package com.richfit.module_cqyt.module_ws.head;
 import android.content.Context;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
+import com.richfit.common_lib.lib_rx.RxSubscriber;
+import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -15,7 +20,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
  */
 
 public class WSHeadPresenterImp extends BaseHeadPresenterImp<IWSHeadView>
-        implements IWSPresenter {
+        implements IWSHeadPresenter {
 
     public WSHeadPresenterImp(Context context) {
         super(context);
@@ -25,8 +30,7 @@ public class WSHeadPresenterImp extends BaseHeadPresenterImp<IWSHeadView>
     @Override
     public void getWorks(int flag) {
         mView = getView();
-        ResourceSubscriber<ArrayList<WorkEntity>> subscriber =
-                mRepository.getWorks(flag)
+        ResourceSubscriber<ArrayList<WorkEntity>> subscriber = mRepository.getWorks(flag)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new ResourceSubscriber<ArrayList<WorkEntity>>() {
                     @Override
@@ -45,9 +49,49 @@ public class WSHeadPresenterImp extends BaseHeadPresenterImp<IWSHeadView>
 
                     @Override
                     public void onComplete() {
+                    }
+                });
+        addSubscriber(subscriber);
+    }
+    @Override
+    public void deleteCollectionData(String refType, String bizType, String userId, String companyCode) {
+        mView = getView();
+        RxSubscriber<String> subscriber = mRepository.deleteCollectionData("", "", "", refType, bizType, userId, companyCode)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new RxSubscriber<String>(mContext, "正在删除缓存...") {
+                    @Override
+                    public void _onNext(String message) {
+                        if (mView != null) {
+                            mView.deleteCacheSuccess(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onNetWorkConnectError(String message) {
+
+                    }
+
+                    @Override
+                    public void _onCommonError(String message) {
+                        if (mView != null) {
+                            mView.deleteCacheFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onServerError(String code, String message) {
+                        if (mView != null) {
+                            mView.deleteCacheFail(message);
+                        }
+                    }
+
+                    @Override
+                    public void _onComplete() {
 
                     }
                 });
         addSubscriber(subscriber);
     }
+
+
 }

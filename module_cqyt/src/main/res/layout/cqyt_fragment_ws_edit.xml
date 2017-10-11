@@ -29,8 +29,6 @@
 
         </LinearLayout>
 
-        x
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,6 +60,21 @@
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/batch_flag" />
+
+            <TextView
+                android:id="@id/tv_batch_flag"
+                style="@style/RightTextViewItemStyle"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,22 +93,6 @@
                 android:gravity="center_horizontal" />
         </LinearLayout>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/batch_flag" />
-
-            <EditText
-                android:id="@id/et_batch_flag"
-                style="@style/RightEditTextItemStyle"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

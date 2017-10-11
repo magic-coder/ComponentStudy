@@ -49,6 +49,8 @@ public class Global {
     public static final String VSCX = "117";
     public static final String KFXJ = "118";
     public static final String REF_CX = "119";
+    /*物资取样*/
+    public static final String WZQY = "120";
 
     //用户选择的模式
     public static final int ONLINE_MODE = 0x0;
@@ -229,6 +231,8 @@ public class Global {
     public static final String COST_CENTER_DATA = "costCenter";
     public static final String PROJECT_NUM_DATA = "projectNum";
     public static final String GL_ACCOUNT_DATA = "GLAccount";
+    public static final String INTERNAL_ORDER_DATA = "InternalOrder";
+
 
     public static final String EXTRA_QUANTITY_CUSTOM_KEY = "extra_quantity_custom";
     public static final String EXTRA_TOTAL_QUANTITY_CUSTOM_KEY = "extra_total_quantity_custom";

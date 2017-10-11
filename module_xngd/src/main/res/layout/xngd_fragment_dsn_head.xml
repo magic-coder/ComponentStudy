@@ -95,7 +95,23 @@
             android:text="@string/xngd_gl_account" />
 
         <AutoCompleteTextView
-            android:id="@+id/xngd_et_gl_account"
+            android:id="@id/xngd_et_gl_account"
+            style="@style/RightEditTextItemStyle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/collect_row_padding">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="订单" />
+
+        <AutoCompleteTextView
+            android:id="@id/xngd_et_io_account"
             style="@style/RightEditTextItemStyle" />
 
     </LinearLayout>

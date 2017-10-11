@@ -49,14 +49,14 @@ public class WSDetailPresenterImp extends BaseDetailPresenterImp<IWSDetailView>
     public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
                                 String invId, String recWorkId, String recInvId) {
         mView = getView();
-        ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
+        ResourceSubscriber<List<RefDetailEntity>> subscriber =
                 mRepository.getTransferInfo("", refCodeId, bizType, refType, userId, workId, invId,
                         recWorkId, recInvId)
                         .map(data -> trans2Detail(data))
                         .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
+                        .subscribeWith(new ResourceSubscriber<List<RefDetailEntity>>() {
                             @Override
-                            public void onNext(ArrayList<RefDetailEntity> list) {
+                            public void onNext(List<RefDetailEntity> list) {
                                 if (mView != null) {
                                     mView.showNodes(list);
                                 }
@@ -134,13 +134,16 @@ public class WSDetailPresenterImp extends BaseDetailPresenterImp<IWSDetailView>
         bundle.putString(Global.EXTRA_BIZ_TYPE_KEY, bizType);
         bundle.putString(Global.EXTRA_REF_TYPE_KEY, refType);
         bundle.putString(Global.EXTRA_TITLE_KEY, subFunName + "-明细修改");
-        bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
+        bundle.putString(Global.EXTRA_QUANTITY_KEY, node.totalQuantity);
         //批次
         bundle.putString(Global.EXTRA_BATCH_FLAG_KEY, node.batchFlag);
         //报检单
-        bundle.putString(WSEditFragment.EXTRA_DECLARATION_REF_KEY, node.declarationRef);
+        bundle.putString(WSEditFragment.EXTRA_DECLARATION_REF_KEY, node.inspectionNum);
         //备注
         bundle.putString(Global.EXTRA_REMARK_KEY, node.remark);
+
+        //增加transLineId作为删除条件，然后修改
+        bundle.putString(WSEditFragment.EXTRA_TRANS_LINE_ID_KEY, node.transLineId);
 
         intent.putExtras(bundle);
 
@@ -201,40 +204,12 @@ public class WSDetailPresenterImp extends BaseDetailPresenterImp<IWSDetailView>
      *
      * @return
      */
-    private ArrayList<RefDetailEntity> trans2Detail(ReferenceEntity refData) {
-        ArrayList<RefDetailEntity> datas = new ArrayList<>();
-        List<RefDetailEntity> billDetailList = refData.billDetailList;
-        for (RefDetailEntity lineData : billDetailList) {
-            List<LocationInfoEntity> locationList = lineData.locationList;
-            if (locationList != null && locationList.size() > 0) {
-                for (LocationInfoEntity loc : locationList) {
-                    RefDetailEntity data = new RefDetailEntity();
-                    //行明细数据
-                    data.materialId = lineData.materialId;
-                    data.materialNum = lineData.materialNum;
-                    data.materialDesc = lineData.materialDesc;
-                    data.materialGroup = lineData.materialGroup;
-                    data.unit = lineData.unit;
-                    data.price = lineData.price;
-                    data.totalQuantity = lineData.totalQuantity;
-                    data.transLineId = lineData.transLineId;
-                    data.invId = lineData.invId;
-                    data.invCode = lineData.invCode;
-                    //仓位级别数据
-                    data.transId = loc.transId;
-                    data.location = loc.location;
-                    data.batchFlag = loc.batchFlag;
-                    data.quantity = loc.quantity;
-                    data.recLocation = loc.recLocation;
-                    data.recBatchFlag = loc.recBatchFlag;
-                    //本位金额(注意行明细的是本位金额的总和)
-                    data.money = loc.money;
-                    data.locationId = loc.id;
-                    datas.add(data);
-                }
-            }
+    private List<RefDetailEntity> trans2Detail(ReferenceEntity refData) {
+        List<RefDetailEntity> list = refData.billDetailList;
+        for (RefDetailEntity item : list) {
+            item.transId = refData.transId;
         }
-        return datas;
+        return list;
     }
 
 }

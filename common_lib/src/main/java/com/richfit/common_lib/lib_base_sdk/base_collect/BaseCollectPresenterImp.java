@@ -1,6 +1,7 @@
 package com.richfit.common_lib.lib_base_sdk.base_collect;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -11,8 +12,11 @@ import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.reactivex.Flowable;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
@@ -31,9 +35,9 @@ public abstract class BaseCollectPresenterImp<V extends IBaseCollectView> extend
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
+
         ResourceSubscriber<String> subscriber =
-                mRepository.uploadCollectionDataSingle(result)
-                        .compose(TransformerHelper.io2main())
+                mRepository.uploadCollectionDataSingle(result).compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext) {
                             @Override
                             public void _onNext(String s) {

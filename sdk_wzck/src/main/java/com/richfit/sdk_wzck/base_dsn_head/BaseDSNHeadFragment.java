@@ -148,7 +148,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         if(mAutoDatas == null) {
             mAutoDatas = new ArrayList<>();
         }
-        List<String> list = CommonUtil.toStringArray(simpleEntities);
+        List<String> list = CommonUtil.toStringArray(simpleEntities,true);
         mAutoDatas.clear();
         mAutoDatas.addAll(list);
         if (mAutoAdapter == null) {

@@ -20,8 +20,8 @@ public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectVie
      */
     void getInvsByWorkId(String workId, int flag);
 
-    void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                       String location,Map<String,Object> extraMap);
+   /* void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                       String location,Map<String,Object> extraMap);*/
 
     /**
      * 获取库存信息

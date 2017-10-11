@@ -37,8 +37,8 @@ public class XNGDDSNEditFragment extends BaseDSNEditFragment<DSNEditPresenterImp
         ResultEntity result = super.provideResult();
         result.glAccount = mRefData.glAccount;
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
+        result.orderNum = mRefData.orderNum;
         return result;
     }
 

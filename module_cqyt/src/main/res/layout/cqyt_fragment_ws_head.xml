@@ -37,6 +37,6 @@
 
         <com.richfit.common_lib.widget.RichEditText
             android:id="@id/et_transfer_date"
-            style="@style/RightEditTextItemStyle" />
+            style="@style/RightRichEditTextItemStyle" />
     </LinearLayout>
 </LinearLayout>

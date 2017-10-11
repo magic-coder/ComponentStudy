@@ -76,21 +76,19 @@ public class XNGDRGEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         if(spMoveCauses.getSelectedItemPosition() > 0) {
             result.moveCause = ((SimpleEntity)spMoveCauses.getSelectedItem()).code;
         }
-        result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
-        result.projectNum = mRefData.projectNum;
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        result.invFlag = lineData.invFlag;
         return result;
     }
 
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam param = super.provideInventoryQueryParam();
         RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", lineData.invFlag);
-        extraMap.put("specialInvFlag", lineData.specialInvFlag);
         param.extraMap = extraMap;
         return param;
     }

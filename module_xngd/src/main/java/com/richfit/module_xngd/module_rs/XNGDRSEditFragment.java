@@ -44,8 +44,10 @@ public class XNGDRSEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
+        result.specialInvFlag = lineData.specialInvFlag;
+        result.specialInvNum = lineData.specialInvNum;
         return result;
     }
 

@@ -787,10 +787,15 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                     ArrayList<SimpleEntity> list3 = getProjectNumList(workCode, keyWord, defaultItemNum, flag);
                     map.put(key, list3);
                     break;
-                //GLAccount
+                //总账科目
                 case Global.GL_ACCOUNT_DATA:
                     ArrayList<SimpleEntity> list4 = getGLAccountList(workCode, keyWord, defaultItemNum, flag);
                     map.put(key, list4);
+                    break;
+                //订单编号
+                case Global.INTERNAL_ORDER_DATA:
+                    ArrayList<SimpleEntity> list5 = getOrderNumList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key, list5);
                     break;
             }
         }
@@ -975,11 +980,11 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         try {
             sb.append("select B.org_id, B.gl_account,B.gl_account_desc from ")
                     .append(tableName)
-                    .append("  P,BASE_GL_ACCOUNT B ")
+                    .append(" P,BASE_GL_ACCOUNT B ")
                     .append(" where P.parent_id = B.org_id ")
                     .append(" and P.org_level = '2' and P.org_code = ? ");
             if (!TextUtils.isEmpty(keyWord)) {
-                sb.append("and project_num_code like ").append("'%").append(keyWord).append("%'");
+                sb.append(" and project_num_code like ").append("'%").append(keyWord).append("%'");
             } else if (defaultItemNum > 0) {
                 sb.append(" limit 0, ")
                         .append(defaultItemNum);
@@ -991,6 +996,46 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 entity.id = cursor.getString(0);
                 entity.code = cursor.getString(1);
                 entity.name = cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+
+
+    private ArrayList<SimpleEntity> getOrderNumList(String workCode, String keyWord, int defaultItemNum, int flag) {
+
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(workCode))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+
+        Cursor cursor = null;
+        try {
+            sb.append("select B.ID,B.ORDER_NUM from ")
+                    .append(" mtl_internal_order B ")
+                    .append(" where B.COMPANY_ID = ? ");
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append(" and B.ORDER_NUM like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.d("yff", "查询订单号的 sql = " + sb.toString());
+            cursor = db.rawQuery(sb.toString(), new String[]{Global.COMPANY_ID});
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id = cursor.getString(0);
+                entity.code = cursor.getString(1);
                 list.add(entity);
             }
         } catch (Exception e) {

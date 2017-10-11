@@ -36,6 +36,59 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
         super(context);
     }
 
+    @Override
+    public void uploadCollectionDataSingle(ResultEntity result) {
+        mView = getView();
+        Flowable<String> flowable;
+        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+            //检查接收仓位
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.recWorkId, result.recInvId, "",
+                    result.recLocation, extraMap),
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
+        } else {
+            //意味着不上架
+            flowable =    mRepository.uploadCollectionDataSingle(result);
+        }
+        ResourceSubscriber<String> subscriber =
+                flowable.compose(TransformerHelper.io2main())
+                        .subscribeWith(new RxSubscriber<String>(mContext) {
+                            @Override
+                            public void _onNext(String s) {
+
+                            }
+
+                            @Override
+                            public void _onNetWorkConnectError(String message) {
+                                if (mView != null) {
+                                    mView.networkConnectError(Global.RETRY_EDIT_DATA_ACTION);
+                                }
+                            }
+
+                            @Override
+                            public void _onCommonError(String message) {
+                                if (mView != null) {
+                                    mView.saveEditedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onServerError(String code, String message) {
+                                if (mView != null) {
+                                    mView.saveEditedDataFail(message);
+                                }
+                            }
+
+                            @Override
+                            public void _onComplete() {
+                                if (mView != null) {
+                                    mView.saveEditedDataSuccess("修改成功");
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
 
     @Override
     public void getTransferInfoSingle(String bizType, String materialNum, String userId, String workId, String invId, String recWorkId,
@@ -227,57 +280,5 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
             tmp.add(item.location);
         }
         return tmp;
-    }
-
-    @Override
-    public void uploadCollectionDataSingle(ResultEntity result) {
-        mView = getView();
-        Flowable<String> flowable;
-        //这里-1表示离线模式
-        if (isLocal()) {
-            Map<String,Object> extraMap = new HashMap<>();
-            extraMap.put("locationType",result.locationType);
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location,extraMap),
-                    mRepository.uploadCollectionDataSingle(result));
-        } else {
-            flowable = mRepository.uploadCollectionDataSingle(result);
-        }
-        ResourceSubscriber<String> subscriber =
-                flowable.compose(TransformerHelper.io2main())
-                        .subscribeWith(new RxSubscriber<String>(mContext) {
-                            @Override
-                            public void _onNext(String s) {
-
-                            }
-
-                            @Override
-                            public void _onNetWorkConnectError(String message) {
-                                if (mView != null) {
-                                    mView.networkConnectError(Global.RETRY_SAVE_COLLECTION_DATA_ACTION);
-                                }
-                            }
-
-                            @Override
-                            public void _onCommonError(String message) {
-                                if (mView != null) {
-                                    mView.saveEditedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onServerError(String code, String message) {
-                                if (mView != null) {
-                                    mView.saveEditedDataFail(message);
-                                }
-                            }
-
-                            @Override
-                            public void _onComplete() {
-                                if (mView != null) {
-                                    mView.saveEditedDataSuccess("修改成功!");
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
     }
 }

@@ -68,7 +68,7 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
         }
         mShopConditions.clear();
         mShopConditions.addAll(simpleEntities);
-        List<String> list = CommonUtil.toStringArray(mShopConditions);
+        List<String> list = CommonUtil.toStringArray(mShopConditions,false);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp, list);
         spShopCondition.setAdapter(adapter);
     }

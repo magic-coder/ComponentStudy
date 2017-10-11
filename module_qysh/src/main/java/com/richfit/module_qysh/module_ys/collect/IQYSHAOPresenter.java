@@ -1,7 +1,8 @@
 package com.richfit.module_qysh.module_ys.collect;
 
 
-import com.richfit.common_lib.IInterface.IPresenter;
+
+import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.domain.bean.ResultEntity;
 
 /**

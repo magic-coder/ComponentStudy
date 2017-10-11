@@ -33,8 +33,8 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
 
-    void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,Map<String,Object> extraMap
-    );
+    /*void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,Map<String,Object> extraMap
+    );*/
     /**
      * 获取库存信息
      *

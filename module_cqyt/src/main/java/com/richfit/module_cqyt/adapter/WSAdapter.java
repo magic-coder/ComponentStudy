@@ -24,15 +24,15 @@ public class WSAdapter extends CommonTreeAdapter<RefDetailEntity> {
 
     @Override
     protected void convert(ViewHolder holder, RefDetailEntity item, int position) {
-        holder.setVisible(R.id.batchFlag, false);
         holder.setText(R.id.rowNum, String.valueOf(position + 1))
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
                 //批次
                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
-                .setText(R.id.quantity, item.quantity)
-                .setText(R.id.cqyt_tv_declaration_ref, item.declarationRef);
+                .setText(R.id.quantity, item.totalQuantity)
+                .setText(R.id.remark,item.remark)
+                .setText(R.id.cqyt_tv_declaration_ref, item.inspectionNum);
 
     }
 

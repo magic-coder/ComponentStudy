@@ -2,6 +2,8 @@ package com.richfit.module_cqyt.module_ws.collect;
 
 import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2017/9/21.
  */
@@ -20,4 +22,14 @@ public interface IWSCollectPresenter extends IBaseCollectPresenter<IWSCollectVie
     void getTransferSingleInfo(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
+
+    /**
+     * 获取报检单列表
+     * @param bizType
+     * @param materialNum
+     * @param userId
+     * @param workCode
+     * @param extraMap
+     */
+    void getInspectionInfo(String bizType,String materialNum,String userId,String workCode,Map<String,Object> extraMap);
 }

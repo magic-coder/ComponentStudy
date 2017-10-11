@@ -1,6 +1,7 @@
 package com.richfit.sdk_cwtz.collect.imp;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -13,10 +14,15 @@ import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_cwtz.collect.ILACollectPresenter;
 import com.richfit.sdk_cwtz.collect.ILACollectView;
 
+import org.reactivestreams.Subscriber;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Flowable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
@@ -162,9 +168,19 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
+        Flowable<String> flowable;
+        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+            //检查目标仓位
+            Map<String, Object> extraMap = new HashMap<>();
+            extraMap.put("locationType", result.locationType);
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.recLocation, extraMap),
+                    mRepository.transferCollectionData(result), (s, s2) -> s + "\n" + s2);
+        } else {
+            //意味着不上架
+            flowable =    mRepository.transferCollectionData(result);
+        }
         ResourceSubscriber<String> subscriber =
-                mRepository.transferCollectionData(result)
-                        .compose(TransformerHelper.io2main())
+                flowable.compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext) {
                             @Override
                             public void _onNext(String s) {

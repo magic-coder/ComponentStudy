@@ -27,7 +27,7 @@ public class CQYTMSY313HeadFragment extends BaseMSHeadFragment<MSHeadPresenterIm
     @Override
     public void initView() {
         super.initView();
-        llWork.setVisibility(View.GONE);
+        llSendWork.setVisibility(View.GONE);
         llInv.setVisibility(View.GONE);
     }
 

@@ -28,21 +28,16 @@ public class BaseEditPresenterImp<V extends IBaseEditView> extends BasePresenter
         super(context);
     }
 
+    /**
+     * 保存单条修改数据，注意这没有检查仓位，如果子类需要检查，请
+     * 重写该方法，可以检查发出或者接收仓位
+     * @param result:用户采集的数据(json格式)
+     */
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
-        Flowable<String> flowable;
-        if (!TextUtils.isEmpty(result.location) && "barcode".equalsIgnoreCase(result.location)) {
-            //意味着不上架
-            flowable = mRepository.uploadCollectionDataSingle(result);
-        } else {
-            Map<String, Object> extraMap = new HashMap<>();
-            extraMap.put("locationType", result.locationType);
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location, extraMap),
-                    mRepository.uploadCollectionDataSingle(result));
-        }
         ResourceSubscriber<String> subscriber =
-                flowable.compose(TransformerHelper.io2main())
+                mRepository.uploadCollectionDataSingle(result).compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<String>(mContext) {
                             @Override
                             public void _onNext(String s) {

@@ -3,43 +3,25 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ComponentStudy.iml" filepath="$PROJECT_DIR$/ComponentStudy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ComponentStudy.iml" filepath="$PROJECT_DIR$/ComponentStudy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/common_lib/common_lib.iml" filepath="$PROJECT_DIR$/common_lib/common_lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common_lib/common_lib.iml" filepath="$PROJECT_DIR$/common_lib/common_lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module_cqyt/module_cqyt.iml" filepath="$PROJECT_DIR$/module_cqyt/module_cqyt.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_cqyt/module_cqyt.iml" filepath="$PROJECT_DIR$/module_cqyt/module_cqyt.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_klmy/module_klmy.iml" filepath="$PROJECT_DIR$/module_klmy/module_klmy.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_mcq/module_mcq.iml" filepath="$PROJECT_DIR$/module_mcq/module_mcq.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module_mcq/module_mcq.iml" filepath="$PROJECT_DIR$/module_mcq/module_mcq.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module_qhyt/module_qhyt.iml" filepath="$PROJECT_DIR$/module_qhyt/module_qhyt.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_qhyt/module_qhyt.iml" filepath="$PROJECT_DIR$/module_qhyt/module_qhyt.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_qysh/module_qysh.iml" filepath="$PROJECT_DIR$/module_qysh/module_qysh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module_qysh/module_qysh.iml" filepath="$PROJECT_DIR$/module_qysh/module_qysh.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_xngd/module_xngd.iml" filepath="$PROJECT_DIR$/module_xngd/module_xngd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/module_xngd/module_xngd.iml" filepath="$PROJECT_DIR$/module_xngd/module_xngd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_cwtz/sdk_cwtz.iml" filepath="$PROJECT_DIR$/sdk_cwtz/sdk_cwtz.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scandemo/scandemo.iml" filepath="$PROJECT_DIR$/scandemo/scandemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_cwtz/sdk_cwtz.iml" filepath="$PROJECT_DIR$/sdk_cwtz/sdk_cwtz.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_sxcl/sdk_sxcl.iml" filepath="$PROJECT_DIR$/sdk_sxcl/sdk_sxcl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_sxcl/sdk_sxcl.iml" filepath="$PROJECT_DIR$/sdk_sxcl/sdk_sxcl.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzck/sdk_wzck.iml" filepath="$PROJECT_DIR$/sdk_wzck/sdk_wzck.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzck/sdk_wzck.iml" filepath="$PROJECT_DIR$/sdk_wzck/sdk_wzck.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzpd/sdk_wzpd.iml" filepath="$PROJECT_DIR$/sdk_wzpd/sdk_wzpd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzpd/sdk_wzpd.iml" filepath="$PROJECT_DIR$/sdk_wzpd/sdk_wzpd.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzrk/sdk_wzrk.iml" filepath="$PROJECT_DIR$/sdk_wzrk/sdk_wzrk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzrk/sdk_wzrk.iml" filepath="$PROJECT_DIR$/sdk_wzrk/sdk_wzrk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzrs/sdk_wzrs.iml" filepath="$PROJECT_DIR$/sdk_wzrs/sdk_wzrs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzrs/sdk_wzrs.iml" filepath="$PROJECT_DIR$/sdk_wzrs/sdk_wzrs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzyk/sdk_wzyk.iml" filepath="$PROJECT_DIR$/sdk_wzyk/sdk_wzyk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzyk/sdk_wzyk.iml" filepath="$PROJECT_DIR$/sdk_wzyk/sdk_wzyk.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_wzys/sdk_wzys.iml" filepath="$PROJECT_DIR$/sdk_wzys/sdk_wzys.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_wzys/sdk_wzys.iml" filepath="$PROJECT_DIR$/sdk_wzys/sdk_wzys.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sdk_xxcx/sdk_xxcx.iml" filepath="$PROJECT_DIR$/sdk_xxcx/sdk_xxcx.iml" />
       <module fileurl="file://$PROJECT_DIR$/sdk_xxcx/sdk_xxcx.iml" filepath="$PROJECT_DIR$/sdk_xxcx/sdk_xxcx.iml" />
     </modules>
   </component>

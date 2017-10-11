@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzck.base_ds_collect.BaseDSCollectFragment;
@@ -45,7 +46,6 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
         return result;
     }
@@ -61,7 +61,7 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
         param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
-        extraMap.put("specialInvFlag", mRefData.specialInvFlag);
+       // extraMap.put("specialInvFlag", mRefData.specialInvFlag);
         extraMap.put("projectNum",mRefData.projectNum);
         param.extraMap = extraMap;
         return param;

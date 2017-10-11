@@ -10,7 +10,14 @@ import java.util.List;
  */
 
 public interface IWSHeadView extends IBaseHeadView {
-    void showWorks(List<WorkEntity> works);
 
+    void showWorks(List<WorkEntity> works);
     void loadWorksFail(String message);
+
+    /**
+     * 删除缓存
+     * @param message
+     */
+    void deleteCacheSuccess(String message);
+    void deleteCacheFail(String message);
 }

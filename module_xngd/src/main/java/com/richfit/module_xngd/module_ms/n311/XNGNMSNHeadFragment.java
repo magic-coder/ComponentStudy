@@ -250,7 +250,7 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         if (simpleEntities == null || simpleEntities.size() == 0) {
             return;
         }
-        List<String> projectNums = CommonUtil.toStringArray(simpleEntities);
+        List<String> projectNums = CommonUtil.toStringArray(simpleEntities,true);
         mAutoDatas.clear();
         mAutoDatas.addAll(projectNums);
         if (mAutoAdapter == null) {

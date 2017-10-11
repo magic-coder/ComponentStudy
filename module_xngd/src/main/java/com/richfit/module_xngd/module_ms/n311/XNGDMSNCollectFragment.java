@@ -73,8 +73,10 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
-        result.invFlag = mRefData.invFlag;
+        //注意这里由于抬头选择了specialInvFlag，那么所获取的库存都是该值
         result.specialInvFlag = mRefData.specialInvFlag;
+        result.specialInvNum = mRefData.projectNum;
+        result.invFlag = mRefData.invFlag;
         result.projectNum = mRefData.projectNum;
         return  result;
     }
@@ -83,7 +85,7 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-       param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

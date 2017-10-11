@@ -414,12 +414,16 @@ public class CommonUtil {
     }
 
 
-    public static List<String> toStringArray(List<SimpleEntity> list) {
+    public static List<String> toStringArray(List<SimpleEntity> list, boolean withName) {
         List<String> strs = new ArrayList<>();
         if (list == null || list.size() == 0)
             return strs;
         for (SimpleEntity simpleEntity : list) {
-            strs.add(simpleEntity.code + "_" + simpleEntity.name);
+            if (withName) {
+                strs.add(simpleEntity.code + "_" + simpleEntity.name);
+            } else {
+                strs.add(simpleEntity.code);
+            }
         }
         return strs;
     }

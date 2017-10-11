@@ -32,18 +32,24 @@ public class ASEditPresenterImp extends BaseEditPresenterImp<IASEditView>
         super(context);
     }
 
+    /**
+     * 检查上架仓位
+     * @param result:用户采集的数据(json格式)
+     */
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
         Flowable<String> flowable;
-        if (!TextUtils.isEmpty(result.location) && "barcode".equalsIgnoreCase(result.location)) {
-            //意味着不上架
-            flowable = mRepository.uploadCollectionDataSingle(result);
-        } else {
+        if (!TextUtils.isEmpty(result.location) && !"barcode".equalsIgnoreCase(result.location)) {
+           //如果仓位有值，并且不为默认值，那么说明已经填写了仓位，需要检查
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("locationType", result.locationType);
-            flowable = Flowable.concat(mRepository.getLocationInfo("04", result.workId, result.invId, "", result.location, extraMap),
-                    mRepository.uploadCollectionDataSingle(result));
+            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.workId, result.invId, "",
+                    result.location, extraMap),
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
+        } else {
+            //意味着不上架
+            flowable = mRepository.uploadCollectionDataSingle(result);
         }
         ResourceSubscriber<String> subscriber =
                 flowable.compose(TransformerHelper.io2main())

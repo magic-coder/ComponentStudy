@@ -3,6 +3,7 @@ package com.richfit.sdk_xxcx.material_liaoqian.head;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
@@ -131,7 +132,7 @@ public class LQHeadFragment extends BaseFragment<LQHeadPresenterImp>
             tvMaterialDesc.setText(entity.materialDesc);
             tvMaterialGroup.setText(materialGroup);
             tvBatchFlag.setText(batchFlag);
-            tvMaterialUnit.setText(materialUnit);
+            tvMaterialUnit.setText(entity.unit);
         }
     }
 

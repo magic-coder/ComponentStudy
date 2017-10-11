@@ -182,4 +182,11 @@ public class ResultEntity extends TreeNode{
     public String insWeather;
     public String insTemperature;
     public String insHumility;
+    public String contractNum;
+    public String inspectionNum;
+    public String invName;
+    public String planNum;
+    public String supplierDesc;
+    public String workName;
+    public String orderNum;
 }

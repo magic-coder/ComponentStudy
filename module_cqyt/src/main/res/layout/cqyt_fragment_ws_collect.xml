@@ -62,6 +62,21 @@
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/batch_flag" />
+
+            <EditText
+                android:id="@id/et_batch_flag"
+                style="@style/RightEditTextItemStyle"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,23 +91,6 @@
 
             <EditText
                 android:id="@id/et_quantity"
-                style="@style/RightEditTextItemStyle"
-                android:gravity="center_horizontal" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/batch_flag" />
-
-            <EditText
-                android:id="@id/et_batch_flag"
                 style="@style/RightEditTextItemStyle"
                 android:gravity="center_horizontal" />
         </LinearLayout>

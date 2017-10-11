@@ -417,16 +417,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             showMessage("仓位数量为空");
             return false;
         }
-        //2017年06月28日增加批次判断
-//        if(mHistoryDetailList != null) {
-//            RefDetailEntity data = mHistoryDetailList.get(0);
-//            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
-//            if(isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-//                showMessage("请输入批次");
-//                return false;
-//            }
-//        }
-
         //实发数量
         if (!refreshQuantity(getString(etQuantity))) {
             return false;
@@ -467,12 +457,14 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         result.projectNum = mRefData.projectNum;
         //库存相关的字段回传
         int locationPos = spLocation.getSelectedItemPosition();
-        result.location = mInventoryDatas.get(locationPos).location;
-        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
-                && !TextUtils.isEmpty(result.specialInvNum)) ?
-                "Y" : "N";
+        if(mInventoryDatas != null && mInventoryDatas.size() > 0) {
+            result.location = mInventoryDatas.get(locationPos).location;
+            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+            result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                    && !TextUtils.isEmpty(result.specialInvNum)) ?
+                    "Y" : "N";
+        }
         result.invType = param.invType;
         result.invFlag = mRefData.invFlag;
         result.modifyFlag = "N";

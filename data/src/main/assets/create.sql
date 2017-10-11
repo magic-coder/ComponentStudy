@@ -628,3 +628,20 @@ CREATE TABLE mtl_arrival_lines (
   `MATERIAL_GROUP` TEXT,
   PRIMARY KEY (`ID`)
 );
+
+CREATE TABLE mtl_internal_order (
+  "ID" varchar(32) NOT NULL,
+  "COMPANY_ID" varchar(32) default NULL,
+  "ORDER_NUM" varchar(32) default NULL ,
+  "ORDER_TYPE" varchar(10) default NULL ,
+  "DEL_FLAG" varchar(10) default NULL,
+  "RELEASED_FLAG" varchar(10) default NULL ,
+  "CREATED_BY" varchar(32) default NULL,
+  "CREATION_DATE" datetime default NULL ,
+  "LAST_UPDATED_BY" varchar(32) default NULL,
+  "LAST_UPDATE_DATE" datetime default NULL ,
+  PRIMARY KEY  ("ID")
+);
+
+
+

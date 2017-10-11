@@ -34,8 +34,9 @@ public class XNGDMSNEditFragment extends BaseMSNEditFragment<MSNEditPresenterImp
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
-        result.invFlag = mRefData.invFlag;
         result.specialInvFlag = mRefData.specialInvFlag;
+        result.specialInvNum = mRefData.projectNum;
+        result.invFlag = mRefData.invFlag;
         result.projectNum = mRefData.projectNum;
         return  result;
     }

@@ -172,7 +172,8 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         //开始加载库存
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode, "",
-                getString(tvMaterialNum), materialId, "", batchFlag, "", "", param.invType, "", param.extraMap);
+                getString(tvMaterialNum), materialId, "", batchFlag,
+                lineData.specialInvFlag, lineData.specialInvNum, param.invType, "", param.extraMap);
     }
 
     @Override
