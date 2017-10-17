@@ -85,15 +85,6 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
     }
 
     @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
-            hideKeyboard(etLocation);
-            getTransferSingle(getString(etBatchFlag), location);
-        });
-    }
-
-    @Override
     public void initDataLazily() {
         super.initDataLazily();
         //这里让系统不能让用户手动输入批次，必须通过扫码的方式获取批次

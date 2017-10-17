@@ -242,6 +242,7 @@
     <string name="qm_num">质检单号</string>
     <string name="total_arrival_quantity">累计到货数量</string>
     <string name="location_type">仓储类型</string>
+    <string name="rec_location_type">接收仓储类型</string>
 
 
 </resources>

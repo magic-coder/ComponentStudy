@@ -31,11 +31,6 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
         tvQuantityName.setText("实退数量");
     }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
-    }
 
     @Override
     public void initData() {

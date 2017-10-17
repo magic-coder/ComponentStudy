@@ -23,12 +23,6 @@ public class QHYTRSYCollectFragment extends BaseASCollectFragment<ASCollectPrese
     }
 
     @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
-    }
-
-    @Override
     public void initData() {
 
     }

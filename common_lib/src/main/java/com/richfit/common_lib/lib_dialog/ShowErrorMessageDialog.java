@@ -1,5 +1,6 @@
 package com.richfit.common_lib.lib_dialog;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -55,14 +56,17 @@ public class ShowErrorMessageDialog extends DialogFragment {
         //注意这里我们需要显示一个title所以不能设置该属性
 //        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         //启用窗体的扩展特性。
-        getDialog().requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            getDialog().requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        }
         super.onActivityCreated(savedInstanceState);
         //注意这里如果不设置背景Drawable那么使用系统默认有padding的InsetDrawable
 //        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0x00000000));
         getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         //设置自定义的title  layout
-        getDialog().getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-                R.layout.fragment_dialiog_error_title);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            getDialog().getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.fragment_dialiog_error_title);
+        }
         //初始化适配器
         String[] messages = getArguments().getStringArray(MESSAGES_KEY);
 

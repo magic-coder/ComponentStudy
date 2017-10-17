@@ -75,9 +75,18 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     protected LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
+    @BindView(R2.id.tv_location_type_name)
+    protected TextView tvLocationTypeName;
+    @BindView(R2.id.ll_rec_location_type)
+    protected LinearLayout llRecLocationType;
+    @BindView(R2.id.sp_rec_location_type)
+    protected Spinner spRecLocationType;
+    @BindView(R2.id.tv_rec_location_type_name)
+    protected TextView tvRecLocationTypeName;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
+    protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
 
@@ -108,7 +117,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     public void initEvent() {
         //选择下架仓位，刷新库存数量并且请求缓存，注意缓存是用来刷新仓位数量和累计数量
         RxAdapterView.itemSelections(spLocation)
-                .filter(position -> mInventoryDatas != null &&isValidatedLocation())
+                .filter(position -> mInventoryDatas != null && isValidatedLocation())
                 .subscribe(position -> getTransferSingle(position));
         //选择仓储类型获取库存
         RxAdapterView.itemSelections(spLocationType)
@@ -221,7 +230,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
 
     @Override
     public void showInventory(List<InventoryEntity> list) {
-        if(mInventoryDatas == null) {
+        if (mInventoryDatas == null) {
             mInventoryDatas = new ArrayList<>();
         }
         mInventoryDatas.clear();
@@ -262,6 +271,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
 
     /**
      * 选择下拉仓位匹配单条缓存
+     *
      * @param position:下拉仓位的位置
      */
     protected void getTransferSingle(int position) {
@@ -400,9 +410,11 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         result.modifyFlag = "Y";
         result.invType = param.invType;
-        if (isOpenLocationType)
+        if (isOpenLocationType) {
             //仓储类型
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+        }
         return result;
     }
 
@@ -424,17 +436,30 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             if (mLocationTypes == null) {
                 mLocationTypes = new ArrayList<>();
             }
+            if (mRecLocationTypes == null) {
+                mRecLocationTypes = new ArrayList<>();
+            }
             mLocationTypes.clear();
+            mRecLocationTypes.clear();
             mLocationTypes.addAll(locationTypes);
+            mRecLocationTypes.addAll(locationTypes);
+            //发出仓储类型
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
+
+            //接收仓储类型
+            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mRecLocationTypes, false);
+            spRecLocationType.setAdapter(recAdapter);
 
             //默认选择缓存的数据
             Bundle arguments = getArguments();
             if (arguments != null) {
                 String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                String recLocationType = arguments.getString(Global.EXTRA_REC_LOCATION_TYPE_KEY);
                 UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+                UiUtil.setSelectionForSimpleSp(mRecLocationTypes, recLocationType, spRecLocationType);
             }
         }
     }

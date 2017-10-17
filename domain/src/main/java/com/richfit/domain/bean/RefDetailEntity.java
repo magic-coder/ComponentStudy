@@ -180,6 +180,7 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String locationType;
     //报检单
     public String inspectionNum;
+    public String recLocationType;
 
 
     @Override

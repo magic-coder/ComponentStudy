@@ -25,6 +25,7 @@ import com.richfit.common_lib.R;
 import com.richfit.common_lib.lib_dialog.NetConnectErrorDialogFragment;
 import com.richfit.common_lib.lib_dialog.ShowErrorMessageDialog;
 import com.richfit.common_lib.lib_interface.IFragmentState;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.BottomMenuEntity;

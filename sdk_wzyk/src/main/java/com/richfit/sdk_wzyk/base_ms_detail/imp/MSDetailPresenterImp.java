@@ -189,6 +189,8 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
 
                     bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY,node.locationType);
 
+                    bundle.putString(Global.EXTRA_REC_LOCATION_TYPE_KEY,node.recLocationType);
+
                     intent.putExtras(bundle);
 
                     Activity activity = (Activity) mContext;
@@ -416,6 +418,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                 childNode.locationCombine = location.locationCombine;
                 childNode.quantityCustom = location.quantityCustom;
                 childNode.locationType = location.locationType;
+                childNode.recLocationType = location.recLocationType;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

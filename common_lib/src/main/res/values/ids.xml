@@ -259,5 +259,7 @@
     <item name="sp_location_type" type="id"></item>
     <item name="ll_location_type" type="id"></item>
     <item name="tv_location_type" type="id"></item>
+    <item name="tv_location_type_name" type="id"></item>
+    <item name="tv_rec_location_type_name" type="id"></item>
 
 </resources>

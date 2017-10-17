@@ -88,21 +88,10 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
         etArrivalQuantity = (EditText) mView.findViewById(R.id.et_arrival_quantity);
-
         //显示仓储类型
         llLocationType.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        //点击行家仓位加载该仓位的缓存
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
-            hideKeyboard(etLocation);
-            getTransferSingle(getString(etBatchFlag), location);
-        });
-
-    }
 
     @Override
     public void initData() {

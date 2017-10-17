@@ -225,6 +225,15 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        //2017年10月17日新增对上架仓位的点击监听
+        //点击行家仓位加载该仓位的缓存
+        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
+            if(!isNLocation) {
+                hideKeyboard(etLocation);
+                getTransferSingle(getString(etBatchFlag), location);
+            }
+        });
+
         //物料改变恢复批次状态
         RxTextView.textChanges(etMaterialNum)
                 .filter(str -> !TextUtils.isEmpty(str))

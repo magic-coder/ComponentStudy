@@ -69,7 +69,12 @@ android {
         }
 
         //韩城
-
+        sign_hanc {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_hanc_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
     }
 
 
@@ -152,13 +157,14 @@ android {
             signingConfig signingConfigs.sign_mcq
         }
 
-        hc {
+        hanc {
             buildConfigField "String", "SERVER_URL", '"http://10.88.53.5:8080/ktbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"HC_BizConfig.json"'
-            buildConfigField "String", "APP_NAME", '"hc"'
+            buildConfigField "String", "APP_NAME", '"hanc"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
             versionName "1.5"
+            signingConfig signingConfigs.sign_hanc
         }
 
     }
@@ -204,8 +210,9 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 //      compile project(':module_qhyt')
   //  compile project(':module_xngd')
-    compile project(':module_cqyt')
+    //compile project(':module_cqyt')
     //compile project(':module_mcq')
+    compile project(':module_hc')
 
 }
 tasks.whenTaskAdded { task ->

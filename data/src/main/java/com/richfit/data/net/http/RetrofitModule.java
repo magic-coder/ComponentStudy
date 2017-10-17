@@ -48,7 +48,7 @@ public class RetrofitModule {
                 return chain.proceed(newRequest);
             };
             //打印拦截器
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.i("yff", message));
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor(message -> Log.e("yff", message));
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient httpClient = new OkHttpClient.Builder()

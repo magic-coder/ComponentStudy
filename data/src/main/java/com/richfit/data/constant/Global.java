@@ -70,7 +70,7 @@ public class Global {
     public static final String DLSH = "dlsh";
     //煤层气
     public static final String MCQ = "mcq";
-    public static final String HC = "hc";
+    public static final String HANC = "hanc";
 
 
     /*全局日期格式*/
@@ -160,6 +160,7 @@ public class Global {
     public static final String EXTRA_BIZ_TYPE_KEY = "extra_biz_type";
     public static final String EXTRA_REF_TYPE_KEY = "extra_ref_type";
     public static final String EXTRA_LOCATION_TYPE_KEY = "location_type";
+    public static final String EXTRA_REC_LOCATION_TYPE_KEY = "rec_location_type";
     public static final String EXTRA_DEVICE_ID_KEY = "extra_device_id";
 
     public static final String EXTRA_REC_LOCATION_KEY = "extra_rec_location";

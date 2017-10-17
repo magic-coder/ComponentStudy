@@ -101,15 +101,6 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
     }
 
     @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
-            hideKeyboard(etLocation);
-            getTransferSingle(getString(etBatchFlag), location);
-        });
-    }
-
-    @Override
     public void initData() {
         super.initData();
     }

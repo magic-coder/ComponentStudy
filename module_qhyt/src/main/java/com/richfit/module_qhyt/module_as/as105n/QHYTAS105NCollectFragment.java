@@ -34,17 +34,6 @@ public class  QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectP
     }
 
     @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> {
-            hideKeyboard(etLocation);
-            getTransferSingle(getString(etBatchFlag), location);
-        });
-    }
-
-
-
-    @Override
     public void initData() {
 
     }

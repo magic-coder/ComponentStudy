@@ -26,9 +26,7 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
 
     EditText etMaterialNum;
     EditText etLocation;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
+
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -44,7 +42,7 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
             String location = list[0];
             clearCommonUI(etLocation);
             etLocation.setText(location);
-        } else if (list != null && list.length == 2) {
+        } else if (list != null && list.length == 2 && isOpenLocationType) {
             String location = list[0];
             String locationType = list[Global.LOCATION_TYPE_POS];
             clearCommonUI(etLocation);
@@ -66,32 +64,9 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
         llMaterialDesc.setVisibility(View.GONE);
         etLocation = mView.findViewById(R.id.et_location);
         etMaterialNum = mView.findViewById(R.id.et_material_num);
-
         //显示仓储类型
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void initData() {
-        super.initData();
-        mPresenter.getDictionaryData("locationType");
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
-
 
     @Override
     public void _onPause() {
@@ -99,7 +74,6 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
         if (mRefData != null) {
             mRefData.materialNum = getString(etMaterialNum);
             mRefData.location = getString(etLocation);
-            mRefData.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
     }
 

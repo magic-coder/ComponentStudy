@@ -94,9 +94,19 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
+    @BindView(R2.id.tv_location_type_name)
+    protected TextView tvLocationTypeName;
+    @BindView(R2.id.ll_rec_location_type)
+    protected LinearLayout llRecLocationType;
+    @BindView(R2.id.sp_rec_location_type)
+    protected Spinner spRecLocationType;
+    @BindView(R2.id.tv_rec_location_type_name)
+    protected TextView tvRecLocationTypeName;
+
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
+    protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
     /*单据行选项*/
@@ -156,7 +166,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                 //扫描发出仓位
                 UiUtil.setSelectionForLocation(mInventoryDatas, location, spSendLoc);
             }
-        }else if (list != null && list.length == 2 && !cbSingle.isChecked() && isOpenLocationType) {
+        } else if (list != null && list.length == 2 && !cbSingle.isChecked() && isOpenLocationType) {
             mAutoLocation = null;
             mAutoLocation = list[Global.LOCATION_POS];
             String locationType = list[Global.LOCATION_TYPE_POS];
@@ -434,7 +444,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId, invEntity.invId,
                 lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etSendBatchFlag),lineData.specialInvFlag,
+                lineData.materialId, "", getString(etSendBatchFlag), lineData.specialInvFlag,
                 lineData.specialInvNum, param.invType, "", param.extraMap);
     }
 
@@ -833,8 +843,10 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         }
         result.modifyFlag = "N";
         result.invType = param.invType;
-        if (isOpenLocationType)
+        if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+        }
         return result;
     }
 
@@ -878,10 +890,22 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             if (mLocationTypes == null) {
                 mLocationTypes = new ArrayList<>();
             }
+            if (mRecLocationTypes == null) {
+                mRecLocationTypes = new ArrayList<>();
+            }
             mLocationTypes.clear();
+            mRecLocationTypes.clear();
             mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            mRecLocationTypes.addAll(locationTypes);
+            //发出仓储类型
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
             spLocationType.setAdapter(adapter);
+
+            //接收仓储类型
+            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mRecLocationTypes, false);
+            spRecLocationType.setAdapter(recAdapter);
         }
     }
 

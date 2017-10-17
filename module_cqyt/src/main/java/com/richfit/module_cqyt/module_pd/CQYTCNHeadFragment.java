@@ -21,22 +21,14 @@ import java.util.Map;
 
 public class CQYTCNHeadFragment extends CNHeadFragment {
 
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-
-    @Override
-    public int getContentId() {
-        return R.layout.cqyt_fragment_cn_head;
-    }
 
     @Override
     public void initView() {
         super.initView();
         LinearLayout llCheckGuide = mView.findViewById(R.id.ll_check_guide);
         llCheckGuide.setVisibility(View.GONE);
-
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        //打开仓储类型
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
 
@@ -49,44 +41,6 @@ public class CQYTCNHeadFragment extends CNHeadFragment {
         llStorageNumLevel.setVisibility(View.VISIBLE);
         if (spStorageNum.getAdapter() == null) {
             mPresenter.getStorageNums(0);
-        }
-    }
-
-    @Override
-    public void loadStorageNumComplete() {
-        mPresenter.getDictionaryData("locationType");
-    }
-
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
-
-    @Override
-    protected void startCheck() {
-        //请求抬头信息
-        mRefData = null;
-        if (rbStorageNumLevel.isChecked()) {
-            //库位级盘点
-            if (mStorageNums == null || mStorageNums.size() <= 0) {
-                showMessage("仓库号未初始化");
-                return;
-            }
-            Map<String, Object> extraMap = new HashMap<>();
-            extraMap.put("locationType", mLocationTypes.get(spLocationType.getSelectedItemPosition()).code);
-            mPresenter.getCheckInfo(Global.USER_ID, mBizType, "01",
-                    mSpecialFlag, mStorageNums.get(spStorageNum.getSelectedItemPosition()),
-                    "", "", getString(etTransferDate), extraMap);
         }
     }
 }

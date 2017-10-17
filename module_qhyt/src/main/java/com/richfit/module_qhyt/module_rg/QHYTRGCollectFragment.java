@@ -17,8 +17,8 @@ public class QHYTRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
 
     @Override
     protected void initView() {
-        quantityName.setText("实退数量");
-        actQuantityName.setText("应退数量");
+        tvQuantityName.setText("实退数量");
+        tvActQuantityName.setText("应退数量");
     }
 
     @Override

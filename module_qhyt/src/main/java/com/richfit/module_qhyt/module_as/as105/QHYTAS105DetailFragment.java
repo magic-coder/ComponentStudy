@@ -82,6 +82,4 @@ public class QHYTAS105DetailFragment extends BaseASDetailFragment<QHYTAS105Detai
         menus.get(1).transToSapFlag = "Z03";
         return menus.subList(0, 2);
     }
-
-
 }

@@ -18,6 +18,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.BottomDialogMenuAdapter;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
 import com.richfit.common_lib.utils.DateChooseHelper;
@@ -35,6 +36,7 @@ import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.blind.head.imp.BlindHeadPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -73,6 +75,11 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     TextView tvChecker;
     @BindView(R2.id.et_check_date)
     protected RichEditText etTransferDate;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    protected Spinner spLocationType;
 
     /*工厂列表*/
     protected List<WorkEntity> mWorkDatas;
@@ -81,6 +88,10 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     protected List<InvEntity> mInvDatas;
     /*库存号列表*/
     List<String> mStorageNums;
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
 
     @Override
     protected int getContentId() {
@@ -155,6 +166,8 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void initData() {
+        //检测是否打开仓储类型,false表示不打开
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         tvChecker.setText(Global.LOGIN_ID);
         //因为默认是选择仓库级的，所以在先初始化工厂
@@ -232,7 +245,10 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void loadInvsComplete() {
-
+        if(isOpenLocationType) {
+            //库存地点加载完毕
+            mPresenter.getDictionaryData("locationType");
+        }
     }
 
     @Override
@@ -333,18 +349,23 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     protected void startCheck() {
         //请求抬头信息
         mRefData = null;
+        Map<String, Object> extraMap = null;
+        if(isOpenLocationType) {
+            extraMap = new HashMap<>();
+            extraMap.put("locationType", mLocationTypes.get(spLocationType.getSelectedItemPosition()).code);
+        }
         if (rbStorageNumLevel.isChecked()) {
             //仓位级盘点
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "01",
                     DEFAULT_SPECIAL_FLAG, mStorageNums.get(spStorageNum.getSelectedItemPosition()),
-                    "", "", getString(etTransferDate),null);
+                    "", "", getString(etTransferDate),extraMap);
         } else if (rbWarehouseLevel.isChecked()) {
             //仓库级盘点
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "02",
                     DEFAULT_SPECIAL_FLAG, "",
                     mWorkDatas.get(spWork.getSelectedItemPosition()).workId,
                     mInvDatas.get(spInv.getSelectedItemPosition()).invId,
-                    getString(etTransferDate),null);
+                    getString(etTransferDate),extraMap);
         }
     }
 
@@ -457,7 +478,16 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
     }
 
     @Override

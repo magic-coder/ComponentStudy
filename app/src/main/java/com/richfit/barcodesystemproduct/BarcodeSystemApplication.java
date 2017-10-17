@@ -92,7 +92,7 @@ public class BarcodeSystemApplication extends BaseApplication {
 //                    baseUrl = "http://10.88.53.5:8080/gdbk_middleware/MobileProcess/";
                     break;
                     //韩城
-                case Global.HC:
+                case Global.HANC:
                     baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
                     break;
             }
