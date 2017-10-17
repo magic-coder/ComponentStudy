@@ -27,6 +27,6 @@ public class CQYTUbstoChildItemDelegate implements ItemViewDelegate<RefDetailEnt
                .setText(R.id.batchFlag,item.batchFlag)
                .setText(R.id.quantity,item.quantity)
                .setText(R.id.cqyt_tv_quantity_custom,item.quantityCustom)
-               .setText(R.id.cqyt_tv_location_type,item.locationType);
+               .setText(R.id.tv_location_type,item.locationType);
     }
 }

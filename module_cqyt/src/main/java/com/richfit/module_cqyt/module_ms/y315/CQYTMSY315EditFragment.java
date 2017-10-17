@@ -31,10 +31,6 @@ import java.util.Map;
 public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     EditText etQuantityCustom;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-
 
     @Override
     public int getContentId() {
@@ -61,8 +57,7 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
         tvBatchFlagName.setText("接收批次");
         tvLocationName.setText("接收仓位");
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -73,33 +68,11 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
             String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
             etQuantityCustom.setText(quantityCustom);
         }
-        mPresenter.getDictionaryData("locationType");
     }
 
     @Override
     public void initDataLazily() {
 
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
-        }
     }
 
     @Override
@@ -124,8 +97,6 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 

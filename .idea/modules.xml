@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_cqyt/module_cqyt.iml" filepath="$PROJECT_DIR$/module_cqyt/module_cqyt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_hc/module_hc.iml" filepath="$PROJECT_DIR$/module_hc/module_hc.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_klmy/module_klmy.iml" filepath="$PROJECT_DIR$/module_klmy/module_klmy.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_mcq/module_mcq.iml" filepath="$PROJECT_DIR$/module_mcq/module_mcq.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_qhyt/module_qhyt.iml" filepath="$PROJECT_DIR$/module_qhyt/module_qhyt.iml" />

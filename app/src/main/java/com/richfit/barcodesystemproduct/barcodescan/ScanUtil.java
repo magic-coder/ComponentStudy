@@ -30,7 +30,7 @@ public class ScanUtil {
     // 瑞飞手持
     private static final String WZ_RECT_DATA_ACTION = "com.android.scancontext";
     private static final String WZ_START_SCAN_ACTION = "android.intent.action.FUNCTION_BUTTON_DOWN";
-    private static final String WZ_STOP_SCAN = "android.intent.action.FUNCTION_BUTTON_UP";
+    private static final String WZ_STOP_SCAN_ACTION = "android.intent.action.FUNCTION_BUTTON_UP";
 
     // 宿主上下文
     private WeakReference<Context> mContext;
@@ -52,12 +52,13 @@ public class ScanUtil {
         public void onReceive(Context context,
                               Intent intent) {
             String action = intent.getAction();
-            Log.e("yff","action = " + action);
+            Log.e("Serial_Log","action = " + action);
             if (action.equals(WZ_RECT_DATA_ACTION)) {
                 String data = intent.getStringExtra("Scan_context");
                 if (listener != null) {
                     listener.getBarcode(data);
                 }
+                Log.e("Serial_Log","data = " + data);
             } else if (action.equals(RECE_DATA_ACTION)) {
                 String data = intent.getStringExtra("se4500");
                 if (listener != null) {
@@ -90,8 +91,8 @@ public class ScanUtil {
             if (context == null)
                 return;
             Intent intent = new Intent();
-            intent.setAction(WZ_START_SCAN_ACTION);
             intent.setAction(START_SCAN_ACTION);
+            intent.setAction(WZ_START_SCAN_ACTION);
             context.sendBroadcast(intent, null);
         }
     }
@@ -106,7 +107,7 @@ public class ScanUtil {
             return;
         Intent intent = new Intent();
         intent.setAction(STOP_SCAN_ACTION);
-        intent.setAction(WZ_STOP_SCAN);
+        intent.setAction(WZ_STOP_SCAN_ACTION);
         context.sendBroadcast(intent);
     }
 

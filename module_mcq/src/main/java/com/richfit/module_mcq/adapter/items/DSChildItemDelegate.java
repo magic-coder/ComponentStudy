@@ -26,7 +26,7 @@ public class DSChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
 
         holder.setText(R.id.location, Global.DEFAULT_LOCATION.equalsIgnoreCase(item.location) ? "" : item.location);
         holder.setText(R.id.quantity, item.quantity);
-        holder.setText(R.id.mcq_tv_location_type,item.locationType);
+        holder.setText(R.id.tv_location_type,item.locationType);
         holder.setText(R.id.mcq_quantity_custom, item.quantityCustom);
     }
 }

@@ -34,10 +34,6 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
 
     EditText etQuantityCustom;
 
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-
     @Override
     public int getContentId() {
         return R.layout.cqyt_fragment_msy313_edit;
@@ -53,8 +49,7 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         llRecBatch.setVisibility(View.VISIBLE);
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
 

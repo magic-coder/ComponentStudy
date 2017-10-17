@@ -2,12 +2,16 @@ package com.richfit.sdk_wzrk.base_as_edit;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.common_lib.utils.L;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -17,6 +21,7 @@ import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +65,16 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     protected LinearLayout llLocation;
     @BindView(R2.id.ll_location_quantity)
     protected LinearLayout llLocationQuantity;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    protected Spinner spLocationType;
 
-
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
     //已经上架的所有仓位
     protected List<String> mLocations;
     ///要修改子节点的id
@@ -87,6 +100,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
 
     @Override
     public void initData() {
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         final String location = bundle.getString(Global.EXTRA_LOCATION_KEY);
         final String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
@@ -119,6 +133,30 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             }
             etQuantity.setText(mQuantity);
             tvTotalQuantity.setText(totalQuantity);
+        }
+        //如果打开了仓储类型需要获取仓储类型数据源
+        if (isOpenBatchManager)
+            mPresenter.getDictionaryData("locationType");
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
         }
     }
 
@@ -211,6 +249,9 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         result.supplierNum = mRefData.supplierNum;
+        //仓储类型
+        if (isOpenLocationType)
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "Y";
         return result;
     }
@@ -231,10 +272,6 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
                 break;
         }
         super.retry(retryAction);
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
     }
 
     @Override

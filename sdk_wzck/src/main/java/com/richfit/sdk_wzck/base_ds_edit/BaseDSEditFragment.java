@@ -3,13 +3,17 @@ package com.richfit.sdk_wzck.base_ds_edit;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InventoryEntity;
@@ -27,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by monday on 2016/11/21.
@@ -59,6 +64,16 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     protected TextView tvTotalQuantity;
     @BindView(R2.id.tv_inv_quantity)
     protected TextView tvInvQuantity;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    protected Spinner spLocationType;
+
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
 
     protected String mRefLineId;
     protected String mLocationId;
@@ -88,6 +103,14 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         RxAdapterView.itemSelections(spLocation)
                 .filter(position -> mInventoryDatas != null && isValidatedLocation())
                 .subscribe(position -> getTransferSingle(position));
+
+        //选择仓储类型获取库存
+        RxAdapterView.itemSelections(spLocationType)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(a -> isOpenLocationType)
+                //注意工厂和库存地点必须使用行里面的
+                .subscribe(position -> loadInventoryInfo());
     }
 
     /**
@@ -110,6 +133,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
 
     @Override
     public void initData() {
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
@@ -140,12 +164,42 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             //下载库存
             loadInventoryInfo();
         }
+        if (isOpenLocationType)
+            mPresenter.getDictionaryData("locationType");
     }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
+        }
+    }
+
 
     /**
      * 获取库存。注意这里获取的是所有仓位的库存，在用户选择仓位之后进行过滤选择
      */
     protected void loadInventoryInfo() {
+        //拦截住在仓储类型还未初始化就去获取库粗
+        if (isOpenLocationType && (spLocationType.getAdapter() == null || mLocationTypes == null ||
+                mLocationTypes.size() == 0)) {
+            return;
+        }
         //清除之前匹配的缓存
         tvInvQuantity.setText("");
         tvLocQuantity.setText("");
@@ -255,9 +309,18 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             //如果有缓存，但是可能匹配不上
             tvLocQuantity.setText("0");
             //匹配每一个缓存
+            boolean isMatch = false;
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             for (LocationInfoEntity info : locationInfos) {
-                if (isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
-                        batchFlag.equalsIgnoreCase(info.batchFlag) : location.equalsIgnoreCase(info.locationCombine)) {
+                if (isOpenLocationType) {
+                    isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
+                            batchFlag.equalsIgnoreCase(info.batchFlag) && locationType.equalsIgnoreCase(info.locationType) :
+                            location.equalsIgnoreCase(info.locationCombine) && locationType.equalsIgnoreCase(info.locationType);
+                } else {
+                    isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
+                            batchFlag.equalsIgnoreCase(info.batchFlag) : location.equalsIgnoreCase(info.locationCombine);
+                }
+                if (isMatch) {
                     tvLocQuantity.setText(info.quantity);
                     break;
                 }
@@ -348,6 +411,9 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
         result.quantity = getString(etQuantity);
         result.invType = param.invType;
+        if (isOpenLocationType)
+            //仓储类型
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "Y";
         return result;
     }
@@ -364,7 +430,14 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     }
 
     @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 
     @Override

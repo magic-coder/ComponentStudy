@@ -28,22 +28,18 @@ public class CQYTAS103ParentHeadItemDelegate implements ItemViewDelegate<RefDeta
         holder.setText(R.id.materialNum, item.materialNum);
         holder.setText(R.id.materialDesc, item.materialDesc);
         holder.setText(R.id.materialGroup, item.materialGroup);
-        holder.setText(R.id.materialUnit,item.unit);
+        holder.setText(R.id.materialUnit, item.unit);
         //应发数量
         holder.setText(R.id.actQuantity, item.actQuantity);
         //累计数量
         holder.setText(R.id.totalQuantity, item.totalQuantity);
         //累计到货数量
-        holder.setText(R.id.totalArrivalQuantity,item.totalArrivalQuantity);
+        holder.setText(R.id.totalArrivalQuantity, item.totalArrivalQuantity);
         //累计件数
         holder.setText(R.id.cqyt_tv_total_quantity_custom, item.totalQuantityCustom);
         //工厂
         holder.setText(R.id.work, item.workCode);
         //库存地点
         holder.setText(R.id.inv, item.invCode);
-      /*  //验收结果
-        holder.setText(R.id.inspectionResult, item.inspectionResult);
-        //不合格数量
-        holder.setText(R.id.cqyt_tv_unqualified_quantity, item.unqualifiedQuantity);*/
     }
 }

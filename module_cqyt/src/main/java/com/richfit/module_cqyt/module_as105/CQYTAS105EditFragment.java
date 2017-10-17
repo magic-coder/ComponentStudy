@@ -34,9 +34,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     EditText etQuantityCustom;
 
     List<SimpleEntity> mMoveCauses;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
 
     @Override
     protected int getContentId() {
@@ -63,23 +60,20 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
         spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void initData() {
         Bundle bundle = getArguments();
         String returnQuantity = bundle.getString(Global.EXTRA_RETURN_QUANTITY_KEY);
-        //String projectText = bundle.getString(Global.EXTRA_PROJECT_TEXT_KEY);
         String moveCauseDesc = bundle.getString(Global.EXTRA_MOVE_CAUSE_DESC_KEY);
+        String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
         etReturnQuantity.setText(returnQuantity);
-        //etProjectText.setText(projectText);
         etMoveCauseDesc.setText(moveCauseDesc);
         spMoveCause.setEnabled(false);
-        String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
         etQuantityCustom.setText(quantityCustom);
-        mPresenter.getDictionaryData("moveCause","locationType");
+        mPresenter.getDictionaryData("moveCause");
         super.initData();
     }
 
@@ -90,6 +84,7 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        super.loadDictionaryDataSuccess(data);
         List<SimpleEntity> moveCauses = data.get("moveCause");
         String moveCause = getArguments().getString(Global.EXTRA_MOVE_CAUSE_KEY);
         if (moveCauses != null && !TextUtils.isEmpty(moveCause)) {
@@ -104,23 +99,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mMoveCauses);
             spMoveCause.setAdapter(adapter);
             UiUtil.setSelectionForSimpleSp(mMoveCauses, moveCause, spMoveCause);
-        }
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
         }
     }
 
@@ -153,8 +131,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         result.moveCauseDesc = getString(etMoveCauseDesc);
         //件数
         result.quantityCustom = getString(etQuantityCustom);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 }

@@ -68,6 +68,8 @@ android {
             storePassword 'yff3445683'
         }
 
+        //韩城
+
     }
 
 
@@ -148,6 +150,15 @@ android {
             versionCode 1
             versionName "1.5"
             signingConfig signingConfigs.sign_mcq
+        }
+
+        hc {
+            buildConfigField "String", "SERVER_URL", '"http://10.88.53.5:8080/ktbk_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"HC_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"hc"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 1
+            versionName "1.5"
         }
 
     }

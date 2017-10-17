@@ -35,5 +35,7 @@ public class MSYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
         //特殊库存
         holder.setText(R.id.specialInvFlag,item.specialInvFlag);
         holder.setText(R.id.specialInvNum,item.specialInvNum);
+        holder.setText(R.id.tv_location_type,item.locationType);
+
     }
 }

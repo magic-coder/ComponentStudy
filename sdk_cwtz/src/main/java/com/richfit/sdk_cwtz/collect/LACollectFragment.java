@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -25,6 +29,7 @@ import com.richfit.sdk_cwtz.adapter.SpecialInvAdapter;
 import com.richfit.sdk_cwtz.collect.imp.LACollectPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +66,22 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     //增加特殊库存
     @BindView(R2.id.sp_special_inv)
     protected Spinner spSpecialInv;
+    //增加源仓位仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    //增加目标仓位仓储类型
+    @BindView(R2.id.ll_rec_location_type)
+    protected LinearLayout llRecLocationType;
+    @BindView(R2.id.sp_location_type)
+    Spinner spLocationType;
+    @BindView(R2.id.sp_rec_location_type)
+    Spinner spRecLocationType;
 
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    protected List<SimpleEntity> mRecLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
     protected SpecialInvAdapter mAdapter;
     protected List<InventoryEntity> mInventoryDatas;
     MaterialEntity mHistoryData;
@@ -84,6 +104,22 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                 clearCommonUI(etSendLocation);
                 etSendLocation.setText(location);
                 //获取库存
+                loadInventoryInfo(location);
+            }
+        } else if (list != null && list.length == 2 && isOpenLocationType) {
+            String location = list[Global.LOCATION_POS];
+            String locationType = list[Global.LOCATION_TYPE_POS];
+            //目标仓位
+            if (etRecLocation.hasFocus() && etRecLocation.isFocused()) {
+                clearCommonUI(etRecLocation);
+                etRecLocation.setText(location);
+            } else {
+                //源仓位
+                clearCommonUI(etSendLocation);
+                etSendLocation.setText(location);
+                //自动选择仓储类型
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+                //加载库存
                 loadInventoryInfo(location);
             }
         }
@@ -152,6 +188,16 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         RxAdapterView.itemSelections(spSpecialInv)
                 .filter(pos -> pos > 0)
                 .subscribe(pos -> tvSendInvQuantity.setText(mInventoryDatas.get(pos).invQuantity));
+
+        //增加仓储类型的选择获取提示库粗
+        RxAdapterView.itemSelections(spLocationType)
+                .filter(a -> mInventoryDatas != null && mInventoryDatas.size() > 0 && mAdapter != null)
+                .subscribe(position -> {
+                    //清除缓存
+                    mInventoryDatas.clear();
+                    mAdapter.notifyDataSetChanged();
+                    tvSendInvQuantity.setText("");
+                });
     }
 
     @Override
@@ -161,7 +207,9 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     public void initData() {
-
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+        if (isOpenLocationType)
+            mPresenter.getDictionaryData("locationType");
     }
 
     /**
@@ -209,7 +257,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
      */
     protected void loadInventoryInfo(String location) {
         //清除
-        if(mAdapter != null) {
+        if (mAdapter != null) {
             mInventoryDatas.clear();
             mAdapter.notifyDataSetChanged();
         }
@@ -228,7 +276,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
                 mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
-                "", "", getString(etBatchFlag), location, "","", param.invType, "", param.extraMap);
+                "", "", getString(etBatchFlag), location, "", "", param.invType, "", param.extraMap);
     }
 
     @Override
@@ -253,11 +301,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     @Override
     public void getInventoryFail(String message) {
         showMessage(message);
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
     }
 
     @Override
@@ -376,6 +419,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         result.invFlag = mInventoryDatas.get(position).invFlag;
         result.specialInvFlag = mInventoryDatas.get(position).specialInvFlag;
         result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
+        if (isOpenLocationType) {
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+        }
         return result;
     }
 
@@ -413,11 +460,49 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         super.retry(action);
     }
 
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            if (mRecLocationTypes == null) {
+                mRecLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mRecLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            mRecLocationTypes.addAll(locationTypes);
+            //发出仓储类型
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //接收仓储类型
+            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mRecLocationTypes, false);
+            spRecLocationType.setAdapter(recAdapter);
+        }
+    }
+
 
     @Override
     public void _onPause() {
         super._onPause();
         clearAllUI();
         clearCommonUI(etMaterialNum, etBatchFlag);
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 }

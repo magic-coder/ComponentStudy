@@ -65,7 +65,7 @@
     <View style="@style/ItemSeperatorLayout" />
 
     <TextView
-        android:id="@id/mcq_tv_location_type"
+        android:id="@id/tv_location_type"
         style="@style/TableHeaderStyle"
         android:layout_width="120dp"
         android:text="@string/location_type" />

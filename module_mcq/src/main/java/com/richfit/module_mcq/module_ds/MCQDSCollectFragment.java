@@ -71,38 +71,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
     //建议下架仓位
     TextView tvSuggestedLocation;
 
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
 
-    //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
-    String mAutoLocation;
-
-    //仓储类型->获取库存->获取建议仓位->匹配单条缓存
-    @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        super.handleBarCodeScanResult(type, list);
-        mAutoLocation = null;
-        if (list != null && list.length == 2 && !cbSingle.isChecked()) {
-            mAutoLocation = list[Global.LOCATION_POS];
-            String locationType = list[Global.LOCATION_TYPE_POS];
-            if (mLocationTypes != null && mLocationTypes.size() > 0 && spLocationType.getAdapter() != null) {
-                String oldLocationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-                if (locationType.equals(oldLocationType)) {
-                    if (mInventoryDatas == null || mInventoryDatas.size() == 0) {
-                        showMessage("请先获取库存");
-                        return;
-                    }
-                    //如果当前仓储类型一致,那么直接获取单条缓存
-                    UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
-                    return;
-                }
-            }
-            //如果仓储类型不一致
-            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            return;
-        }
-    }
 
     @Override
     public int getContentId() {
@@ -123,7 +92,6 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         tvInvQuantityCustom = mView.findViewById(R.id.mcq_tv_inv_quantity_custom);
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvSuggestedLocation = mView.findViewById(R.id.mcq_tv_suggested_location);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
         //实际下架仓位
         TextView tvLocationName = mView.findViewById(R.id.mcq_location_name);
         tvLocationName.setText("实际下架仓位");
@@ -154,45 +122,9 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         //隐藏批次
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
 
-    }
+        //打开仓储类型
+        llLocationType.setVisibility(View.VISIBLE);
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-
-        //选择库存地点触发仓储类型的初始化
-        RxAdapterView.itemSelections(spInv)
-                .filter(a -> spInv.getSelectedItemPosition() > 0)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> mPresenter.getDictionaryData("locationType"));
-
-        //选择仓储类型加载库存(这里不增加过来>0条件的目标是当用户从>0切回<=0时需要清除一些字段)
-        RxAdapterView.itemSelections(spLocationType)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventory(position));
-    }
-
-    @Override
-    public void initData() {
-
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
     }
 
     /**
@@ -404,7 +336,6 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
         result.batchFlag = !isOpenBatchManager ? null : getString(etBatchFlag);
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -437,14 +368,4 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
                 tvTotalQuantityCustom, etQuantityCustom, tvSuggestedLocation, tvInvQuantityCustom);
     }
 
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
-    }
 }

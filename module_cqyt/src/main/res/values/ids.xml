@@ -49,7 +49,6 @@
     <item name="cqyt_et_material_num" type="id"/>
     <item name="cqyt_et_material_desc" type="id"/>
     <item name="cqyt_tv_quantity" type="id"/>
-    <item name="cqyt_tv_location_type" type="id" />
     <item name="cqyt_et_ins_weather" type="id" />
     <item name="cqyt_et_ins_temperature" type="id" />
     <item name="cqyt_et_ins_humidity" type="id" />

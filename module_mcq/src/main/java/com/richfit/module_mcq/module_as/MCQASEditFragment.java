@@ -43,11 +43,6 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     String mQuantityCustom;
     float mTotalQuantityCustom;
 
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-
-
     @Override
     public int getContentId() {
         return R.layout.mcq_fragment_as_edit;
@@ -70,7 +65,6 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
 
         //主计量单位
         TextView tvMaterialUniName = mView.findViewById(R.id.mcq_tv_material_unit_name);
@@ -92,6 +86,9 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
         //隐藏批次
         mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
+
+        //打开仓储类型
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -113,33 +110,11 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
             final String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
-        mPresenter.getDictionaryData("locationType");
     }
 
     @Override
     public void initDataLazily() {
 
-    }
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
-        }
     }
 
     //增加副计量单位数量的校验
@@ -191,8 +166,6 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
         result.batchFlag = !isOpenBatchManager ? null : getString(tvBatchFlag);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 }

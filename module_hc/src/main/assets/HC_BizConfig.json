@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1",
+    "tabTitle": "抬头",
+    "fragmentTag": "hc_as_head_fragment_tag",
+    "bizType": "11",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.module_hc.module_as.HCAS101HeadFragment"
+  },
+  {
+    "id": "2",
+    "tabTitle": "数据明细",
+    "fragmentTag": "hc_as_detail_fragment_tag",
+    "bizType": "11",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 1,
+    "className": "com.richfit.module_hc.module_as.HCAS101DetailFragment"
+  },
+  {
+    "id": "2",
+    "tabTitle": "数据采集",
+    "fragmentTag": "hc_as_collect_fragment_tag",
+    "bizType": "11",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.module_hc.module_as.HCAS101CollectFragment"
+  },
+  {
+    "id": "3",
+    "tabTitle": "数据修改",
+    "fragmentTag": "hc_as_collect_fragment_tag",
+    "bizType": "11",
+    "refType": "0",
+    "mode": 0,
+    "fragmentType": -1,
+    "className": "com.richfit.module_hc.module_as.HCAS101EditFragment"
+  }
+
+]

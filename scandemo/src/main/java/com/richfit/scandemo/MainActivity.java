@@ -2,6 +2,7 @@ package com.richfit.scandemo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 mScanUtil.stopScan();
                 break;
             case KeyEvent.KEYCODE_STEM_2:
-                mScanUtil.startScan();
+                mScanUtil.stopScan();
                 break;
         }
         return super.onKeyUp(keyCode, event);

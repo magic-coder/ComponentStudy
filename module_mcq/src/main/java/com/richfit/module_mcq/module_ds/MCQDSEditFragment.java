@@ -54,9 +54,6 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     String mQuantityCustom;
     float mTotalQuantityCustom;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
 
     @Override
     public int getContentId() {
@@ -76,7 +73,6 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
         tvInvQuantityCustom = mView.findViewById(R.id.mcq_tv_inv_quantity_custom);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
         //隐藏批次
         mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
         //主计量单位
@@ -103,17 +99,9 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         //主计量单位累计数量
         TextView tvTotalQuantityName = mView.findViewById(R.id.mcq_total_quantity_name);
         tvTotalQuantityName.setText("主计量单位累计数量");
-    }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        //选择仓储类型获取库存
-        RxAdapterView.itemSelections(spLocationType)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventoryInfo());
+        //显示仓储类型
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
 
@@ -143,35 +131,8 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
             String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
-        mPresenter.getDictionaryData("locationType");
     }
 
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        Log.e("yff", "===" + locationTypes);
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
-
-    //拦截住在仓储类型还未初始化就去获取库粗
-    @Override
-    protected void loadInventoryInfo() {
-        if (spLocationType.getAdapter() == null || mLocationTypes == null ||
-                mLocationTypes.size() == 0) {
-            return;
-        }
-        super.loadInventoryInfo();
-    }
 
     //增加副计量单位的赋值
     @Override
@@ -289,19 +250,6 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
         result.batchFlag = !isOpenBatchManager ? null : getString(tvBatchFlag);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
-    }
-
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
     }
 }

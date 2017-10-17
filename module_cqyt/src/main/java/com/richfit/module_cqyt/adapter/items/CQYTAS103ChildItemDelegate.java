@@ -29,6 +29,6 @@ public class CQYTAS103ChildItemDelegate implements ItemViewDelegate<RefDetailEnt
                .setText(R.id.quantity,item.quantity)
                //件数
                .setText(R.id.cqyt_tv_quantity_custom,item.quantityCustom)
-               .setText(R.id.cqyt_tv_location_type,item.locationType);
+               .setText(R.id.tv_location_type,item.locationType);
     }
 }

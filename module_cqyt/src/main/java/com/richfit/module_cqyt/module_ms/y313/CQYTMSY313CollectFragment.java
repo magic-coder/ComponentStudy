@@ -44,35 +44,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
 
     EditText etQuantityCustom;
     TextView tvTotalQuantityCustom;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-    String mAutoLocation;
-
-    @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        super.handleBarCodeScanResult(type, list);
-        mAutoLocation = null;
-        if (list != null && list.length == 2 && !cbSingle.isChecked()) {
-            mAutoLocation = list[Global.LOCATION_POS];
-            String locationType = list[Global.LOCATION_TYPE_POS];
-            if (mLocationTypes != null && mLocationTypes.size() > 0 && spLocationType.getAdapter() != null) {
-                String oldLocationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-                if (locationType.equals(oldLocationType)) {
-                    if (mInventoryDatas == null || mInventoryDatas.size() == 0) {
-                        showMessage("请先获取库存");
-                        return;
-                    }
-                    //如果当前仓储类型一致,那么直接获取单条缓存
-                    UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
-                    return;
-                }
-            }
-            //如果仓储类型不一致
-            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            return;
-        }
-    }
 
     @Override
     public int getContentId() {
@@ -95,43 +66,7 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         sendWorkName.setText("工厂");
 
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
-    }
-
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        //选择库存地点触发仓储类型的初始化
-        RxAdapterView.itemSelections(spSendInv)
-                .filter(a -> spSendInv.getSelectedItemPosition() > 0)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> mPresenter.getDictionaryData("locationType"));
-
-        RxAdapterView.itemSelections(spLocationType)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventory(position));
-    }
-
-    @Override
-    public void initData(){}
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes,false);
-            spLocationType.setAdapter(adapter);
-        }
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -156,104 +91,11 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         etRecBatchFlag.setText(getString(etSendBatchFlag));
     }
 
-    //重写加载库存，目的是如果选择的仓储类型是0那么清除之前的库存信息
-    //注意这里的position已经是仓储类型的位置了
-    @Override
-    protected void loadInventory(int position) {
-        tvInvQuantity.setText("");
-        tvLocQuantity.setText("");
-        tvTotalQuantity.setText("");
-        //如果没有选择仓储类型那么清空之前的库存信息
-        if (mLocationAdapter != null) {
-            mInventoryDatas.clear();
-            mLocationAdapter.notifyDataSetChanged();
-        }
-        if (spSendInv.getAdapter() == null || spSendInv.getSelectedItemPosition() <= 0) {
-            return;
-        }
-        super.loadInventory(spSendInv.getSelectedItemPosition());
-    }
-
-    @Override
-    public void loadInventoryComplete() {
-        //如果仓储条码中没有仓位那么不加载单条缓存
-        if(TextUtils.isEmpty(mAutoLocation)) {
-            return;
-        }
-        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
-    }
-
-    //重写该方法的目的是获取累计件数缓存以及件数缓存。另外就是增加存储类型匹配条件
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String locationCombine) {
+        super.onBindCache(cache,batchFlag,locationCombine);
         if (cache != null) {
-            tvTotalQuantity.setText(cache.totalQuantity);
             tvTotalQuantityCustom.setText(cache.totalQuantityCustom);
-            //查询该行的locationInfo
-            List<LocationInfoEntity> locationInfos = cache.locationList;
-            if (locationInfos == null || locationInfos.size() == 0) {
-                //没有缓存
-                tvLocQuantity.setText("0");
-                return;
-            }
-
-            //当前输入批次是否与缓存的批次一致
-            if (isOpenBatchManager && !TextUtils.isEmpty(mCachedBatchFlag)) {
-                if (!mCachedBatchFlag.equalsIgnoreCase(batchFlag)) {
-                    showMessage("您输入的批次有误，请重新输入");
-                    return;
-                }
-            }
-
-            //如果有缓存，但是可能匹配不上
-            tvLocQuantity.setText("0");
-            //匹配每一个缓存
-            for (LocationInfoEntity cachedItem : locationInfos) {
-                if ("barcode".equalsIgnoreCase(cachedItem.location)) {
-                    //不显示该仓位的值
-                    return;
-                }
-                //缓存和输入的都为空或者都不为空而且相等
-                boolean isMatch = false;
-
-                isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
-                        (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
-                                batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
-
-                String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-                if (!isOpenBatchManager) {
-                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
-                            && locationType.equalsIgnoreCase(cachedItem.locationType);
-                } else {
-                    if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
-                                && locationType.equalsIgnoreCase(cachedItem.locationType);
-                    } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)
-                                && locationType.equalsIgnoreCase(cachedItem.locationType);
-                    }
-                }
-                L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
-
-                //注意它没有匹配次成功可能是批次页可能是仓位。
-                if (isMatch) {
-                    mCachedBatchFlag = cachedItem.batchFlag;
-                    tvLocQuantity.setText(cachedItem.quantity);
-                    break;
-                }
-            }
-            //锁定库存地点
-            final String cachedInvId = cache.invId;
-            if (!TextUtils.isEmpty(cachedInvId)) {
-                int pos = -1;
-                for (InvEntity data : mInvDatas) {
-                    pos++;
-                    if (cachedInvId.equals(data.invId))
-                        break;
-                }
-                spSendInv.setEnabled(false);
-                spSendInv.setSelection(pos);
-            }
         }
     }
 
@@ -287,7 +129,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -296,7 +137,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         super.saveCollectedDataSuccess(message);
         //累计件数
         tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom), getString(tvTotalQuantityCustom))));
-
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }
@@ -313,14 +153,4 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         return 0;
     }
 
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
-    }
 }

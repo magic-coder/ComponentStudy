@@ -28,5 +28,6 @@ public class DSYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
         holder.setText(R.id.quantity, item.quantity);
         holder.setText(R.id.specialInvFlag, item.specialInvFlag);
         holder.setText(R.id.specialInvNum, item.specialInvNum);
+        holder.setText(R.id.tv_location_type,item.locationType);
     }
 }

@@ -26,32 +26,11 @@ import java.util.Map;
 public class CQYTLACollectFragment extends LACollectFragment {
 
     EditText etQuantityCustom;
-    Spinner spLocationType;
-    Spinner spRecLocationType;
-    List<SimpleEntity> mLocationTypes;
-    List<SimpleEntity> mRecLocationTypes;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
         super.handleBarCodeScanResult(type, list);
-        if (list != null && list.length == 2) {
-            String location = list[Global.LOCATION_POS];
-            String locationType = list[Global.LOCATION_TYPE_POS];
-            //目标仓位
-            if (etRecLocation.hasFocus() && etRecLocation.isFocused()) {
-                clearCommonUI(etRecLocation);
-                etRecLocation.setText(location);
-            } else {
-                //源仓位
-                clearCommonUI(etSendLocation);
-                etSendLocation.setText(location);
-                //自动选择仓储类型
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-                //加载库存
-                loadInventoryInfo(location);
-            }
-            return;
-        }
+
     }
 
     @Override
@@ -66,75 +45,9 @@ public class CQYTLACollectFragment extends LACollectFragment {
         super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         //源仓位仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
+        llLocationType.setVisibility(View.VISIBLE);
         //目标仓位仓储类型
-        mView.findViewById(R.id.ll_rec_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
-        spRecLocationType = mView.findViewById(R.id.sp_rec_location_type);
-    }
-
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        //增加仓储类型的选择获取提示库粗
-        RxAdapterView.itemSelections(spLocationType)
-                .filter(a -> mInventoryDatas != null && mInventoryDatas.size() > 0 && mAdapter != null)
-                .subscribe(position -> {
-                    //清除缓存
-                    mInventoryDatas.clear();
-                    mAdapter.notifyDataSetChanged();
-                    tvSendInvQuantity.setText("");
-                });
-    }
-
-    @Override
-    public void initData() {
-        super.initData();
-        mPresenter.getDictionaryData("locationType");
-    }
-
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            if (mRecLocationTypes == null) {
-                mRecLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mRecLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            mRecLocationTypes.addAll(locationTypes);
-            //发出仓储类型
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //接收仓储类型
-            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mRecLocationTypes, false);
-            spRecLocationType.setAdapter(recAdapter);
-        }
-    }
-
-    @Override
-    public boolean checkCollectedDataBeforeSave() {
-
-        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到源仓储类型");
-            return false;
-        }
-
-        if (mRecLocationTypes == null && mRecLocationTypes.size() <= 0) {
-            showMessage("未获取到目标仓储类型");
-            return false;
-        }
-
-        return super.checkCollectedDataBeforeSave();
+        llRecLocationType.setVisibility(View.VISIBLE);
     }
 
 
@@ -142,20 +55,7 @@ public class CQYTLACollectFragment extends LACollectFragment {
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-        result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         return result;
-    }
-
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
     }
 
 }

@@ -26,7 +26,9 @@ public class ASYChildItemDelegate implements ItemViewDelegate<RefDetailEntity> {
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
 
         holder.setText(R.id.location, Global.DEFAULT_LOCATION.equalsIgnoreCase(item.location) ? "" : item.location);
-        holder.setText(R.id.batchFlag,Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag);
+        holder.setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag);
         holder.setText(R.id.quantity, item.quantity);
+        //增加仓储类型
+        holder.setText(R.id.tv_location_type, item.locationType);
     }
 }

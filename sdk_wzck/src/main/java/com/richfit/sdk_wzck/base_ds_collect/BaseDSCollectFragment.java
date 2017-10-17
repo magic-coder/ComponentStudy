@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.L;
@@ -37,6 +39,7 @@ import com.richfit.sdk_wzck.R;
 import com.richfit.sdk_wzck.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -87,8 +90,16 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
     protected TextView tvTotalQuantity;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    protected Spinner spLocationType;
 
-
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
     /*单据行选项*/
     protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
@@ -104,6 +115,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected boolean isBatchValidate = true;
     /*批次拆分。默认是不进行批次拆分*/
     protected boolean isSplitBatchFlag = false;
+    //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
+    protected String mAutoLocation;
 
     @Override
     protected int getContentId() {
@@ -112,6 +125,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先在抬头界面获取相关数据");
+            return;
+        }
         super.handleBarCodeScanResult(type, list);
         if (list != null && list.length > 12) {
             if (!etMaterialNum.isEnabled()) {
@@ -132,6 +149,25 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 final String location = list[0];
                 UiUtil.setSelectionForLocation(mInventoryDatas, location, spLocation);
             }
+        } else if (list != null && list.length == 2 && !cbSingle.isChecked() && isOpenLocationType) {
+            mAutoLocation = null;
+            mAutoLocation = list[Global.LOCATION_POS];
+            String locationType = list[Global.LOCATION_TYPE_POS];
+            if (mLocationTypes != null && mLocationTypes.size() > 0 && spLocationType.getAdapter() != null) {
+                String oldLocationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                if (locationType.equals(oldLocationType)) {
+                    if (mInventoryDatas == null || mInventoryDatas.size() == 0) {
+                        showMessage("请先获取库存");
+                        return;
+                    }
+                    //如果当前仓储类型一致,那么直接获取单条缓存
+                    UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
+                    return;
+                }
+            }
+            //如果仓储类型不一致
+            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            return;
         }
     }
 
@@ -178,13 +214,27 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> loadInventory(position));
+                .subscribe(position -> {
+                    if (isOpenLocationType) {
+                        loadInventory(position);
+                    } else {
+                        mPresenter.getDictionaryData("locationType");
+                    }
+                });
+
+
+        //选择仓储类型加载库存(这里不增加过来>0条件的目标是当用户从>0切回<=0时需要清除一些字段)
+        RxAdapterView.itemSelections(spLocationType)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(pos -> spInv.getAdapter() != null && spInv.getSelectedItemPosition() > 0)
+                //注意工厂和库存地点必须使用行里面的
+                .subscribe(position -> loadInventory(spInv.getSelectedItemPosition()));
 
         //下架仓位,选择下架仓位刷新库存数量，并且获取缓存。注意这里必须检查库存是否加载
         RxAdapterView
                 .itemSelections(spLocation)
-                .filter(position -> (mInventoryDatas != null && mInventoryDatas.size() > 0 &&
-                        position.intValue() <= mInventoryDatas.size() - 1))
+                .filter(position -> (mInventoryDatas != null && mInventoryDatas.size() > 0 && position.intValue() <= mInventoryDatas.size() - 1))
                 .filter(a -> spInv.getAdapter() != null)
                 .subscribe(position -> getTransferSingle(position));
 
@@ -193,6 +243,12 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             etQuantity.setText(isChecked ? "1" : "");
             etQuantity.setEnabled(!isChecked);
         });
+    }
+
+    @Override
+    public void initData() {
+        //检测是否打开仓储类型,false表示不打开
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
     }
 
     /**
@@ -415,10 +471,15 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     /**
      * 如果获取库存成功，可以获取建议仓位
+     * 如果打开了仓储类型那么这里的逻辑上，扫描仓储类型先匹配仓储类型->触发下载最新库存->匹配下架仓位->触发单条缓存匹配
      */
     @Override
     public void loadInventoryComplete() {
-
+        if (TextUtils.isEmpty(mAutoLocation)) {
+            return;
+        }
+        //自动匹配下架仓位，并获取缓存
+        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
     }
 
     @Override
@@ -533,15 +594,20 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
+                String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+
                 //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
                 if (!isOpenBatchManager) {
-                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                    isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                            && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                 } else {
                     if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                     } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
                     }
                 }
 
@@ -558,17 +624,28 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 showMessage("批次输入有误，请检查批次是否与缓存批次输入一致");
             }
             //锁定库存地点
-            final String cachedInvId = cache.invId;
-            if (!TextUtils.isEmpty(cachedInvId)) {
-                int pos = -1;
-                for (InvEntity data : mInvDatas) {
-                    pos++;
-                    if (cachedInvId.equals(data.invId))
-                        break;
-                }
-                spInv.setEnabled(false);
-                spInv.setSelection(pos);
+            if (cache != null) {
+                lockInv(cache.invId);
             }
+        }
+    }
+
+    /**
+     * 锁住库存地点
+     *
+     * @param cachedInvId:缓存的库存地点
+     */
+    protected void lockInv(String cachedInvId) {
+        //锁定库存地点
+        if (!TextUtils.isEmpty(cachedInvId)) {
+            int pos = -1;
+            for (InvEntity data : mInvDatas) {
+                pos++;
+                if (cachedInvId.equals(data.invId))
+                    break;
+            }
+            spInv.setEnabled(false);
+            spInv.setSelection(pos);
         }
     }
 
@@ -778,6 +855,8 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         }
         result.supplierNum = mRefData.supplierNum;
         result.invType = param.invType;
+        if (isOpenLocationType)
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "N";
         return result;
     }
@@ -801,6 +880,16 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -842,6 +931,17 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     @Override
     public void checkLocationSuccess(String batchFlag, String location) {
 
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 
     protected abstract int getOrgFlag();

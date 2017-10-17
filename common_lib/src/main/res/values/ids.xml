@@ -258,5 +258,6 @@
     <item name="tv_creation_date" type="id"></item>
     <item name="sp_location_type" type="id"></item>
     <item name="ll_location_type" type="id"></item>
+    <item name="tv_location_type" type="id"></item>
 
 </resources>

@@ -30,9 +30,6 @@ import java.util.Map;
 public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     TextView tvInsLotQuantity;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
 
     @Override
     public void initPresenter() {
@@ -54,8 +51,7 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         tvActQuantityName.setText("允许过账数量");
         tvQuantityName.setText("过账数量");
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -63,7 +59,6 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         super.initData();
         final RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
         tvInsLotQuantity.setText(lineData.orderQuantity);
-        mPresenter.getDictionaryData("locationType");
     }
 
     @Override
@@ -71,27 +66,6 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
     }
 
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
-        }
-    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -134,14 +108,5 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         mQuantity = quantityV + "";
         mTotalQuantity = residualQuantity;
         return true;
-    }
-
-
-    @Override
-    public ResultEntity provideResult() {
-        ResultEntity result = super.provideResult();
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-        return result;
     }
 }

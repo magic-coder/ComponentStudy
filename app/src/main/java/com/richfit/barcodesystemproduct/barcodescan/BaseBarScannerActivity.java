@@ -99,6 +99,9 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
             case KeyEvent.KEYCODE_FUNCTION:
                 mScanUtil.startScan();
                 break;
+            case KeyEvent.KEYCODE_STEM_2:
+                mScanUtil.startScan();
+                break;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -123,6 +126,9 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                 mScanUtil.stopScan();
                 break;
             case KeyEvent.KEYCODE_FUNCTION:
+                mScanUtil.stopScan();
+                break;
+            case KeyEvent.KEYCODE_STEM_2:
                 mScanUtil.stopScan();
                 break;
         }

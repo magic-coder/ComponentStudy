@@ -70,6 +70,8 @@ public class Global {
     public static final String DLSH = "dlsh";
     //煤层气
     public static final String MCQ = "mcq";
+    public static final String HC = "hc";
+
 
     /*全局日期格式*/
     public static final String GLOBAL_DATE_PATTERN_TYPE1 = "yyyyMMdd";

@@ -49,8 +49,6 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     String mQuantityCustom;
     float mTotalQuantityCustom; //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
 
 
 
@@ -72,7 +70,6 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
         etLocation = mView.findViewById(R.id.et_location);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
         //隐藏批次
         mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
         //主计量单位
@@ -99,6 +96,8 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         //主计量单位累计数量
         TextView tvTotalQuantityName = mView.findViewById(R.id.mcq_total_quantity_name);
         tvTotalQuantityName.setText("主计量单位累计数量");
+
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -134,7 +133,6 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
             String totalQuantityCustom = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_CUSTOM_KEY);
             tvTotalQuantityCustom.setText(totalQuantityCustom);
         }
-        mPresenter.getDictionaryData("locationType");
     }
 
 
@@ -143,20 +141,6 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     }
 
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
 
     @Override
     protected void loadInventoryInfo() {
@@ -267,19 +251,6 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         result.quantityCustom = getString(etQuantityCustom);
         result.batchFlag = null;
         result.location = getString(etLocation);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
-    }
-
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
     }
 }

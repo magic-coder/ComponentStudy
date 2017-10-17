@@ -20,6 +20,6 @@ public class CQYTMSY313ChildItemDelegate extends MSYChildItemDelegate {
     public void convert(ViewHolder holder, RefDetailEntity item, int position) {
         super.convert(holder, item, position);
         holder.setText(R.id.cqyt_tv_quantity_custom, item.quantityCustom)
-                .setText(R.id.cqyt_tv_location_type,item.locationType);
+                .setText(R.id.tv_location_type,item.locationType);
     }
 }

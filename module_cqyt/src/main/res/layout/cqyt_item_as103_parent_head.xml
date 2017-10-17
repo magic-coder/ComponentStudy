@@ -99,20 +99,4 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
-   <!-- <TextView
-        android:id="@id/inspectionResult"
-        style="@style/TableHeaderStyle"
-        android:layout_width="120dp"
-        android:text="@string/inspection_result" />
-
-    <View style="@style/ItemSeperatorLayout" />
-
-    <TextView
-        android:id="@id/cqyt_tv_unqualified_quantity"
-        style="@style/TableHeaderStyle"
-        android:layout_width="120dp"
-        android:text="@string/cqyt_unqualified_quantity" />
-
-    <View style="@style/ItemSeperatorLayout" />-->
-
 </LinearLayout>

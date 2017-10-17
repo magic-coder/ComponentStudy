@@ -26,7 +26,7 @@ public class CQYTAOChildItemDelegate implements ItemViewDelegate<RefDetailEntity
         holder.setText(R.id.location, item.location)
                 .setText(R.id.batchFlag, item.batchFlag)
                 .setText(R.id.quantity, item.quantity)
-                .setText(R.id.cqyt_tv_location_type, item.locationType);
+                .setText(R.id.tv_location_type, item.locationType);
     }
 }
 

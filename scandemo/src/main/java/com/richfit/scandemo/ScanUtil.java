@@ -50,7 +50,6 @@ public class ScanUtil {
         IntentFilter iFilter = new IntentFilter();
         iFilter.addAction(WZ_RECT_DATA_ACTION);
         iFilter.addAction(RECE_DATA_ACTION);
-        iFilter.addAction(DL_RECT_DATE_ACTION);
         context.registerReceiver(receiver, iFilter);
     }
 
@@ -58,12 +57,13 @@ public class ScanUtil {
         public void onReceive(Context context,
                               Intent intent) {
             String action = intent.getAction();
-            Log.e("yff","action = " + action);
+            Log.e("Serial_Log","action = " + action);
             if (action.equals(WZ_RECT_DATA_ACTION)) {
                 String data = intent.getStringExtra("Scan_context");
                 if (listener != null) {
                     listener.getBarcode(data);
                 }
+                Log.e("Serial_Log","data = " + data);
             } else if (action.equals(RECE_DATA_ACTION)) {
                 String data = intent.getStringExtra("se4500");
                 if (listener != null) {
@@ -73,9 +73,16 @@ public class ScanUtil {
                     data = data.replace("\u0000", "");
                     listener.getBarcode(data);
                 }
-            } else if(action.equals(DL_RECT_DATE_ACTION)) {
-
             }
+//            } else if(action.equals(DL_RECT_DATE_ACTION)) {
+//                String data1 = intent.getStringExtra("Scan_context");
+//                String data2 = intent.getStringExtra("com.android.scancontext");
+//                String data3 = intent.getStringExtra("Start.Scan.BarCode");
+//                Log.e("yff","data = " + data3);
+//            } else if("com.android.scancontext".equals(action)) {
+//                String data = intent.getStringExtra("Scan_context");
+//                Log.e("yff","data = " + data);
+//            }
         }
     };
 
@@ -100,7 +107,6 @@ public class ScanUtil {
             Intent intent = new Intent();
             intent.setAction(START_SCAN_ACTION);
             intent.setAction(WZ_START_SCAN_ACTION);
-            intent.setAction(DL_START_SCAN_ACTION);
             context.sendBroadcast(intent, null);
         }
     }
@@ -116,7 +122,6 @@ public class ScanUtil {
         Intent intent = new Intent();
         intent.setAction(STOP_SCAN_ACTION);
         intent.setAction(WZ_STOP_SCAN_ACTION);
-        intent.setAction(DL_STOP_SCAN_ACTION);
         context.sendBroadcast(intent);
     }
 

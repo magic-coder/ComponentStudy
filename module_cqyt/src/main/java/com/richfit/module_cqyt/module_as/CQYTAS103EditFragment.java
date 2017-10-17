@@ -41,9 +41,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
     TextView tvUnqualifiedQuantity;
     EditText etQuantityCustom;
     EditText etArrivalQuantity;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
+
 
     @Override
     public int getContentId() {
@@ -68,8 +66,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         etArrivalQuantity = (EditText) mView.findViewById(R.id.arrival_quantity);
         //显示仓储类型
-        mView.findViewById(R.id.ll_location_type).setVisibility(View.VISIBLE);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -90,7 +87,7 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             tvUnqualifiedQuantity.setText(String.valueOf(arrivalQ - quantityQ));
             UiUtil.setSelectionForSp(items, inspectionResult, spInspectionResult);
         }
-        mPresenter.getDictionaryData("locationType");
+
     }
 
 
@@ -99,26 +96,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
 
     }
 
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
-        }
-    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -171,8 +148,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         result.quantityCustom = getString(etQuantityCustom);
         //到货数量
         result.arrivalQuantity = getString(etArrivalQuantity);
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 }
