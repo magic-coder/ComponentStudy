@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -22,14 +24,18 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * 注意从明细界面过来的发出仓位是LocationCombine集合，接收仓位是location集合
@@ -63,7 +69,26 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     protected AppCompatAutoCompleteTextView autoRecLoc;
     @BindView(R2.id.tv_rec_batch_flag)
     protected TextView tvRecBatchFlag;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    protected Spinner spLocationType;
+    @BindView(R2.id.tv_location_type_name)
+    protected TextView tvLocationTypeName;
+    @BindView(R2.id.ll_rec_location_type)
+    protected LinearLayout llRecLocationType;
+    @BindView(R2.id.sp_rec_location_type)
+    protected Spinner spRecLocationType;
+    @BindView(R2.id.tv_rec_location_type_name)
+    protected TextView tvRecLocationTypeName;
 
+
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    protected List<SimpleEntity> mRecLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
     protected String mLocationId;
     String mQuantity;
     /*修改前的发出仓位*/
@@ -105,6 +130,15 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
                     //获取缓存
                     loadLocationQuantity(position);
                 });
+
+        //选择仓储类型获取库存
+        RxAdapterView.itemSelections(spLocationType)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(a -> isOpenLocationType)
+                //注意工厂和库存地点必须使用行里面的
+                .subscribe(position -> loadInventoryInfo());
+
         //点击自动提示控件，显示默认列表
         RxView.clicks(autoRecLoc)
                 .filter(a -> autoRecLoc.getAdapter() != null)
@@ -189,16 +223,28 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     @Override
     public void loadTransferSingleInfoComplete() {
         //获取库存信息
-        InventoryQueryParam param = provideInventoryQueryParam();
-        mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
-                CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
-                "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
+        loadInventoryInfo();
     }
 
     @Override
     public void loadTransferSingleInfoFail(String message) {
         showMessage(message);
+    }
+
+    protected void loadInventoryInfo() {
+        //拦截住在仓储类型还未初始化就去获取库粗
+        if (isOpenLocationType && (spLocationType.getAdapter() == null || mLocationTypes == null ||
+                mLocationTypes.size() == 0)) {
+            mPresenter.getDictionaryData("locationType");
+            return;
+        }
+
+        //获取发出库存信息
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
+                CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
+                "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
+                "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
     }
 
     @Override
@@ -346,26 +392,30 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         String locQuantity = "0";
         String recLocation = "";
         String recBatchFlag = getString(tvRecBatchFlag);
+        boolean isMatched = false;
+        String locationType = "";
+        if(isOpenLocationType) {
+            locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
 
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    if (!TextUtils.isEmpty(batchFlag)) {
-                        if (locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
-                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag)) {
-                            locQuantity = locationInfo.quantity;
-                            recLocation = locationInfo.recLocation;
-                            recBatchFlag = locationInfo.recBatchFlag;
-                            break;
-                        }
-                    } else {
-                        if (locationCombine.equalsIgnoreCase(locationInfo.locationCombine)) {
-                            locQuantity = locationInfo.quantity;
-                            recLocation = locationInfo.recLocation;
-                            recBatchFlag = locationInfo.recBatchFlag;
-                            break;
-                        }
+                    if(isOpenLocationType) {
+                        isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType):
+                                locationCombine.equalsIgnoreCase(locationInfo.locationCombine) && locationType.equals(locationInfo.locationType);
+                    }else {
+                        isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
+                                locationCombine.equalsIgnoreCase(locationInfo.locationCombine);
+                    }
+                    if (isMatched) {
+                        locQuantity = locationInfo.quantity;
+                        recLocation = locationInfo.recLocation;
+                        recBatchFlag = locationInfo.recBatchFlag;
+                        break;
                     }
                 }
             }
@@ -476,6 +526,10 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         result.quantity = getString(etQuantity);
         result.modifyFlag = "Y";
         result.invType = param.invType;
+        if (isOpenLocationType) {
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+        }
         return result;
     }
 
@@ -487,6 +541,50 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         if (locationPos >= 0 && locationPos < mInventoryDatas.size()) {
             mSendLocationCombine = mInventoryDatas.get(locationPos).locationCombine;
         }
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            if (mRecLocationTypes == null) {
+                mRecLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mRecLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            mRecLocationTypes.addAll(locationTypes);
+            //发出仓储类型
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //接收仓储类型
+            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mRecLocationTypes, false);
+            spRecLocationType.setAdapter(recAdapter);
+        }
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+            queryParam.extraMap.put("recLocationType",recLocationType);
+        }
+        return queryParam;
     }
 
 

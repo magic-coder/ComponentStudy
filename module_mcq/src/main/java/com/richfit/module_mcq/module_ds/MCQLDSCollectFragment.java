@@ -53,23 +53,6 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
     TextView tvSuggestedLocation;
     RichEditText etLocation;
     boolean isLocationChecked;
-    //仓储类型
-    Spinner spLocationType;
-    List<SimpleEntity> mLocationTypes;
-
-
-    @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        super.handleBarCodeScanResult(type, list);
-        if (list != null && list.length == 2 && !cbSingle.isChecked()) {
-            String location = list[Global.LOCATION_POS];
-            String locationType = list[Global.LOCATION_TYPE_POS];
-            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            etLocation.setText(location);
-            checkLocation(getString(etBatchFlag), location);
-            return;
-        }
-    }
 
 
     @Override
@@ -91,7 +74,6 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
         etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
         tvTotalQuantityCustom = mView.findViewById(R.id.mcq_tv_total_quantity_custom);
         tvSuggestedLocation = mView.findViewById(R.id.mcq_tv_suggested_location);
-        spLocationType = mView.findViewById(R.id.sp_location_type);
 
         etLocation = mView.findViewById(R.id.et_location);
         // etSpecialInvFlag = (EditText) mView.findViewById(R.id.et_special_inv_flag);
@@ -127,46 +109,21 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
         //禁用下架仓位
         spLocation.setEnabled(false);
+
+        //打开仓储类型
+        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void initEvent() {
         super.initEvent();
-
-        //选择库存地点触发仓储类型的初始化
-        RxAdapterView.itemSelections(spInv)
-                .filter(a -> spInv.getSelectedItemPosition() > 0)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                //注意工厂和库存地点必须使用行里面的
-                .subscribe(position -> mPresenter.getDictionaryData("locationType"));
-
-        //开启输入仓位点击事件
+        //开启输入仓位点击事件，并且将仓位点击事件修改为检测仓位
         etLocation.setOnRichEditTouchListener((view, location) -> {
             hideKeyboard(etLocation);
             checkLocation(getString(etBatchFlag), location);
         });
     }
 
-    @Override
-    public void initData() {
-
-    }
-
-
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
 
     /**
      * 绑定UI。
@@ -280,18 +237,25 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
+                String locationType = "";
+                if(isOpenLocationType) {
+                    locationType  = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                }
+
                 //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
                 if (!isOpenBatchManager) {
-                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                    isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                            && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                 } else {
                     if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                     } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
                     }
                 }
-
                 L.e("isBatchValidate = " + isBatchValidate + "; isMatch = " + isMatch);
 
                 //注意它没有匹配成功，可能是批次没有匹配也可能是仓位没有匹配。
@@ -420,7 +384,6 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
         result.quantityCustom = getString(etQuantityCustom);
         result.location = getString(etLocation);
         result.batchFlag = null;
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -453,14 +416,4 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
                 tvTotalQuantityCustom, etQuantityCustom, tvSuggestedLocation);
     }
 
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
-    }
 }

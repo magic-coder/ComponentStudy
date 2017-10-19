@@ -29,10 +29,10 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/5/25.
  */
 
-public class LocQTPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
+public class LocQTDetailPresenterImp extends BaseDetailPresenterImp<ILocQTDetailView>
         implements ILocQTDetailPresenter {
 
-    public LocQTPresenterImp(Context context) {
+    public LocQTDetailPresenterImp(Context context) {
         super(context);
     }
 

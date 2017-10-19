@@ -32,7 +32,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     EditText etMoveCauseDesc;
     Spinner spMoveCause;
     EditText etQuantityCustom;
-
     List<SimpleEntity> mMoveCauses;
 
     @Override
@@ -112,11 +111,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         }
         if (Float.valueOf(quantityCustom) < 0.0f) {
             showMessage("件数不合理");
-            return false;
-        }
-
-        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
             return false;
         }
         return super.checkCollectedDataBeforeSave();

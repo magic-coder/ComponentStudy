@@ -25,6 +25,7 @@ import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -307,7 +308,10 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
             tvLocQuantity.setText("0");
             //匹配每一个缓存
             boolean isMatch = false;
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            String locationType = "";
+            if(isOpenLocationType) {
+                locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            }
             for (LocationInfoEntity info : locationInfos) {
                 if (isOpenLocationType) {
                     isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
@@ -467,6 +471,20 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     @Override
     public void loadDictionaryDataFail(String message) {
         showMessage(message);
+    }
+
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+            queryParam.extraMap.put("recLocationType",recLocationType);
+        }
+        return queryParam;
     }
 
     @Override

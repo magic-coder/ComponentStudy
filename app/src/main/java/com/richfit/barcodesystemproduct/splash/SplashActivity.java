@@ -108,6 +108,17 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
     }
 
     /**
+     * 判断快捷扫描是否勾选。如果不勾选跳转到系统设置中进行设置
+     */
+    private boolean judgeProperty() {
+        //如果该渠道的isServiceDL为true说明使用的是SPEEDATA的手持
+        if (!BuildConfig.ISSERVICEDL)
+            return false;
+        String result = SysProp.get("persist.sys.keyreport", "false");
+        return result.equals("false");
+    }
+
+    /**
      * 如果该地址能够连接到服务器。所有的地区公司不论是否存在离线业务都先下载数据库
      */
     @Override
@@ -122,14 +133,22 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
     }
 
     /**
-     * 判断快捷扫描是否勾选。如果不勾选跳转到系统设置中进行设置
+     * 如果基础数据下载完毕或者不是第一次进入该app那么直接同步基础数据
      */
-    private boolean judgeProperty() {
-        //如果该渠道的isServiceDL为true说明使用的是SPEEDATA的手持
-        if (!BuildConfig.ISSERVICEDL)
-            return false;
-        String result = SysProp.get("persist.sys.keyreport", "false");
-        return result.equals("false");
+    @Override
+    public void downDBComplete() {
+        Log.d("yff", "下载基础DB成功");
+        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, false);
+        startSyncBasicData();
+    }
+
+    @Override
+    public void downDBFail(String message) {
+        showMessage(message);
+        Log.d("yff", "下载基础DB失败");
+        //如果下载错误，强制下次下载
+        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, true);
+        toLogin();
     }
 
 
@@ -196,26 +215,6 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
             toLogin();
         }
     }
-
-    /**
-     * 如果基础数据下载完毕或者不是第一次进入该app那么直接同步基础数据
-     */
-    @Override
-    public void downDBComplete() {
-        Log.d("yff", "下载基础DB成功");
-        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, false);
-        startSyncBasicData();
-    }
-
-    @Override
-    public void downDBFail(String message) {
-        showMessage(message);
-        Log.d("yff", "下载基础DB失败");
-        //如果下载错误，强制下次下载
-        SPrefUtil.saveData(Global.IS_APP_FIRST_KEY, true);
-        toLogin();
-    }
-
 
     @Override
     public void networkConnectError(String retryAction) {

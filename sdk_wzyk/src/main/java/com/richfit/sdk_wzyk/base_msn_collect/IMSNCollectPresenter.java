@@ -85,4 +85,6 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
                            final String recWorkId, final String recInvCode, int flag);
 
     void getDeviceInfo(String deviceId);
+
+    void getDictionaryData(String... codes);
 }

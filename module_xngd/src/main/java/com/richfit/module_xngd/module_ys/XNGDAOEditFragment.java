@@ -154,7 +154,8 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         //处理情况
         result.processResult = getString(etProcessResult);
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
+        result.specialInvFlag = mRefData.billDetailList.get(mPosition).specialInvFlag;
+        result.specialInvNum = mRefData.billDetailList.get(mPosition).specialInvNum;
         result.projectNum = mRefData.projectNum;
         return result;
     }

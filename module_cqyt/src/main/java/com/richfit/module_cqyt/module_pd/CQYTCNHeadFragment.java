@@ -21,7 +21,6 @@ import java.util.Map;
 
 public class CQYTCNHeadFragment extends CNHeadFragment {
 
-
     @Override
     public void initView() {
         super.initView();

@@ -1,24 +1,39 @@
 package com.richfit.module_xngd.module_rs;
 
 import android.text.TextUtils;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
+
+import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 退库申请单退库，库存地点不让修改---张颖
+ * 增加金额，累计金额
  * Created by monday on 2017/6/21.
  */
 
 public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
+
+    EditText etMoney;
+    TextView tvTotalMoney;
+
+    @Override
+    public int getContentId() {
+        return R.layout.xngd_fragment_rs_collect;
+    }
 
     @Override
     public void initPresenter() {
@@ -29,6 +44,8 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     protected void initView() {
         tvActQuantityName.setText("应退数量");
         tvQuantityName.setText("实退数量");
+        etMoney = mView.findViewById(R.id.xngd_et_money);
+        tvTotalMoney = mView.findViewById(R.id.xngd_tv_total_money);
     }
 
 
@@ -41,6 +58,14 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
     public void loadInvComplete() {
         super.loadInvComplete();
         spInv.setEnabled(false);
+    }
+
+    @Override
+    public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
+        super.onBindCache(cache, batchFlag, location);
+        if (!isNLocation && cache != null) {
+            tvTotalMoney.setText(cache.totalMoney);
+        }
     }
 
     @Override
@@ -57,6 +82,7 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         result.specialInvFlag = lineData.specialInvFlag;
         result.specialInvNum = lineData.specialInvNum;
+        result.money = getString(etMoney);
         return result;
     }
 
@@ -83,6 +109,27 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
             showMessage("您输入的仓位格式不正确");
             return false;
         }
+        if(TextUtils.isEmpty(getString(etMoney))) {
+            showMessage("请输入金额");
+            return false;
+        }
         return super.checkCollectedDataBeforeSave();
+    }
+
+
+    @Override
+    public void saveCollectedDataSuccess(String message) {
+        super.saveCollectedDataSuccess(message);
+        tvTotalMoney.setText(String.valueOf(ArithUtil.add(getString(etMoney), getString(tvTotalMoney))));
+        if (!cbSingle.isChecked()) {
+            etMoney.setText("");
+        }
+    }
+
+
+    @Override
+    public void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etMoney, tvTotalMoney);
     }
 }

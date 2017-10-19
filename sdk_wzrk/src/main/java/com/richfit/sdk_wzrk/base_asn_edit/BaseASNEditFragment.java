@@ -4,11 +4,15 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.common_lib.utils.L;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -16,10 +20,13 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -50,11 +57,21 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
     protected EditText etQuantity;
+    //增加仓储类型
+    @BindView(R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(R2.id.sp_location_type)
+    Spinner spLocationType;
+
 
     String mQuantity;
     List<RefDetailEntity> mHistoryDetailList;
     String mLocation;
     String mLocationId;
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
 
     /*是否上架*/
     protected boolean isLocation = true;
@@ -82,6 +99,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
         final String materialId = bundle.getString(Global.EXTRA_MATERIAL_ID_KEY);
         //库位
+
         final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         //批次
@@ -110,6 +128,8 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                 mRefData.recInvId, batchFlag, "", -1);
+
+
     }
 
     @Override
@@ -127,12 +147,39 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     @Override
     public void loadTransferSingleInfoFail(String message) {
         showMessage(message);
+        //如果打开了仓储类型需要获取仓储类型数据源
+        if (isOpenBatchManager)
+            mPresenter.getDictionaryData("locationType");
     }
 
     @Override
     public void loadTransferSingeInfoComplete() {
         //设置上架仓位，系统自动匹配最新的缓存
         etLocation.setText(mLocation);
+        //如果打开了仓储类型需要获取仓储类型数据源
+        if (isOpenBatchManager)
+            mPresenter.getDictionaryData("locationType");
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+
+            //默认选择缓存的数据
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            }
+        }
     }
 
     /**
@@ -240,6 +287,9 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         result.quantity = getString(etQuantity);
         result.projectNum = mRefData.projectNum;
         result.supplierId = mRefData.supplierId;
+        //仓储类型
+        if (isOpenLocationType)
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "Y";
         return result;
     }
@@ -265,4 +315,9 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         super.retry(retryAction);
     }
 
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
 }

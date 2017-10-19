@@ -122,7 +122,6 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
 
                     }
                 });
-
     }
 
     private List<String> changeInv2Locations(List<InventoryEntity> invs) {

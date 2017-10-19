@@ -13,7 +13,7 @@ import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.TreeNode;
 import com.richfit.sdk_sxcl.R;
 import com.richfit.sdk_sxcl.adapter.LocQTDetailAdapter;
-import com.richfit.sdk_sxcl.basedetail.imp.LocQTPresenterImp;
+import com.richfit.sdk_sxcl.basedetail.imp.LocQTDetailPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import static com.richfit.common_lib.utils.SPrefUtil.getData;
  * Created by monday on 2017/5/25.
  */
 
-public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, RefDetailEntity>
+public abstract class LocQTDetailFragment<P extends ILocQTDetailPresenter> extends BaseDetailFragment<P , RefDetailEntity>
         implements ILocQTDetailView {
 
     @Override
@@ -32,10 +32,6 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
         return R.layout.sxcl_fragment_locqt_detail;
     }
 
-    @Override
-    public void initPresenter() {
-        mPresenter = new LocQTPresenterImp(mActivity);
-    }
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
@@ -177,7 +173,7 @@ public class LocQTDetailFragment extends BaseDetailFragment<LocQTPresenterImp, R
 
     @Override
     public void submitBarcodeSystemSuccess() {
-        setRefreshing(false, "下架成功");
+        setRefreshing(false, "上下架处理成功");
         showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();

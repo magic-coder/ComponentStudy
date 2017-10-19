@@ -164,6 +164,8 @@ public class ReferenceEntity {
     public String createdBy;
     public String quantityCustom;
     public String orderNum;
+    public String projectNumDesc;
+    public String costCenterDesc;
 
     @Override
     public String toString() {

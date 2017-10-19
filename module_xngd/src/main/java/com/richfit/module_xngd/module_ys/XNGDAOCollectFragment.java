@@ -204,7 +204,8 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         result.processResult = getString(etProcessResult);
 
         result.invFlag = mRefData.invFlag;
-        result.specialInvFlag = mRefData.specialInvFlag;
+        result.specialInvFlag = lineData.specialInvFlag;
+		result.specialInvNum = lineData.specialInvNum;
         result.projectNum = mRefData.projectNum;
         return result;
     }

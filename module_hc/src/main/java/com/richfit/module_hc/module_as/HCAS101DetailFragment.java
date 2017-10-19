@@ -14,6 +14,7 @@ import java.util.List;
  */
 
 public class HCAS101DetailFragment extends BaseASDetailFragment<ASDetailPresenterImp>{
+
     @Override
     public void initPresenter() {
         mPresenter = new ASDetailPresenterImp(mActivity);

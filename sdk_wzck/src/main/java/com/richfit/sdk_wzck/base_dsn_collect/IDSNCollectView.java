@@ -4,8 +4,10 @@ import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/23.
@@ -25,6 +27,10 @@ public interface IDSNCollectView extends IBaseCollectView {
      */
     void showInventory(List<InventoryEntity> list);
     void loadInventoryFail(String message);
+    void loadInventoryComplete();
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 
     /**
      * 输入物料获取缓存后，刷新界面

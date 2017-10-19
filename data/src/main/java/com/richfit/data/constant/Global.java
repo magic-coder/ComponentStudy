@@ -235,6 +235,15 @@ public class Global {
     public static final String PROJECT_NUM_DATA = "projectNum";
     public static final String GL_ACCOUNT_DATA = "GLAccount";
     public static final String INTERNAL_ORDER_DATA = "InternalOrder";
+    //大连石化客户
+    public static final String CUSTOMER_DATA = "customer";
+    //大连石业务范围
+    public static final String BIZ_RANGE_DATA = "bizRange";
+    //移动原因
+    public static final String MOVE_REASON_DATA = "moveReason";
+    //大连石化利润中心
+    public static final String PROFIT_CENTER_DATA = "profitCenter";
+
 
 
     public static final String EXTRA_QUANTITY_CUSTOM_KEY = "extra_quantity_custom";

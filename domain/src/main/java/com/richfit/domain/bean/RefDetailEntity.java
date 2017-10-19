@@ -181,6 +181,7 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     //报检单
     public String inspectionNum;
     public String recLocationType;
+    public String totalMoney;
 
 
     @Override

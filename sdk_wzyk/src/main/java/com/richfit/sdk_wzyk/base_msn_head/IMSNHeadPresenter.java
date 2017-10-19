@@ -3,6 +3,8 @@ package com.richfit.sdk_wzyk.base_msn_head;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2016/11/20.
  */
@@ -36,8 +38,8 @@ public interface IMSNHeadPresenter extends IBaseHeadPresenter<IMSNHeadView> {
      * @param keyWord
      * @param defaultItemNum
      * @param flag
-     * @param bizType
+     * @param key
      */
-    void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType);
+    void getAutoComList(String workCode, Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String key);
 
 }

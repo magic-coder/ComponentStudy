@@ -41,7 +41,6 @@ import io.reactivex.Flowable;
 
 public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
 
-
     EditText etReturnQuantity;
     EditText etMoveCauseDesc;
     Spinner spMoveCause;
@@ -49,9 +48,7 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
     EditText etQuantityCustom;
     //累计件数
     TextView tvTotalQuantityCustom;
-
     List<SimpleEntity> mMoveCauses;
-
 
     @Override
     protected int getContentId() {
@@ -179,6 +176,7 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        super.loadDictionaryDataSuccess(data);
         List<SimpleEntity> moveCauses = data.get("moveCause");
         if (moveCauses != null) {
             if (mMoveCauses == null) {
@@ -189,28 +187,7 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mMoveCauses);
             spMoveCause.setAdapter(adapter);
         }
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
     }
-
-    //重写该方法，在获取提示库存之前清除历史库存
-    @Override
-    public void loadLocationList(boolean isDropDown) {
-        if (mLocationList != null && mLocationAdapter != null) {
-            mLocationList.clear();
-            mLocationAdapter.notifyDataSetChanged();
-        }
-        super.loadLocationList(isDropDown);
-    }
-
 
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
@@ -306,17 +283,12 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         result.returnQuantity = getString(etReturnQuantity);
         //移动原因描述
         result.moveCauseDesc = getString(etMoveCauseDesc);
-
         //移动原因
         if (spMoveCause.getSelectedItemPosition() > 0) {
             result.moveCause = mMoveCauses.get(spMoveCause.getSelectedItemPosition()).code;
         }
-
         //件数
         result.quantityCustom = getString(etQuantityCustom);
-
-        //仓储类型
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
@@ -331,7 +303,6 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         //累计件数
         tvTotalQuantityCustom.setText(String.valueOf(ArithUtil.add(getString(etQuantityCustom),
                 getString(tvTotalQuantityCustom))));
-
         if (!cbSingle.isChecked()) {
             etQuantityCustom.setText("");
         }
@@ -343,21 +314,6 @@ public class CQYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         if (spMoveCause.getAdapter() != null) {
             spMoveCause.setSelection(0);
         }
-        //将仓储类型回到原始位置
-        if(spLocationType.getAdapter() != null) {
-            spLocationType.setSelection(0);
-        }
         super._onPause();
-    }
-
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
     }
 }

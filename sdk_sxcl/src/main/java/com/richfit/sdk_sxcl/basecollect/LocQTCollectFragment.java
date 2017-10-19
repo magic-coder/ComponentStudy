@@ -48,7 +48,7 @@ import butterknife.BindView;
  * Created by monday on 2017/5/26.
  */
 
-public abstract class BaseLocQTCollectFragment extends BaseCollectFragment<LocQTCollectPresenterImp>
+public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTCollectPresenterImp>
         implements ILocQTCollectView {
 
 
@@ -760,7 +760,6 @@ public abstract class BaseLocQTCollectFragment extends BaseCollectFragment<LocQT
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         ResultEntity result = new ResultEntity();
         InventoryQueryParam param = provideInventoryQueryParam();
-
         result.businessType = mRefData.bizType;
         result.refCodeId = mRefData.refCodeId;
         result.refCode = mRefData.recordNum;
@@ -784,12 +783,12 @@ public abstract class BaseLocQTCollectFragment extends BaseCollectFragment<LocQT
         }
         result.batchFlag = getString(tvBatchFlag);
         result.quantity = getString(etQuantity);
-        result.modifyFlag = "N";
         result.specialConvert = "N";
         result.invType = param.invType;
         result.refDoc = lineData.refDoc;
         result.refDocItem = lineData.refDocItem;
         result.supplierNum = mRefData.supplierNum;
+        result.modifyFlag = "N";
         return result;
     }
 

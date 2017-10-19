@@ -37,4 +37,6 @@ public interface IASNCollectPresenter extends IBaseCollectPresenter<IASNCollectV
     void checkLocation(String queryType, String workId, String invId, String batchFlag,
                        String location,Map<String,Object> extraMap);
 
+    void getDictionaryData(String... codes);
+
 }

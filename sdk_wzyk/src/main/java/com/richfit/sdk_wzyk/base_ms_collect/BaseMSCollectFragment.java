@@ -37,6 +37,7 @@ import com.richfit.sdk_wzyk.R;
 import com.richfit.sdk_wzyk.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -235,9 +236,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                 //注意工厂和库存地点必须使用行里面的
                 .subscribe(position -> {
                     if (isOpenLocationType) {
-                        loadInventory(position);
-                    } else {
                         mPresenter.getDictionaryData("locationType");
+                    } else {
+                        loadInventory(position);
                     }
                 });
 
@@ -587,7 +588,10 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                String locationType = "";
+                if(isOpenLocationType) {
+                    locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                }
 
                 //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
@@ -912,6 +916,19 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     @Override
     public void loadDictionaryDataFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+            queryParam.extraMap.put("recLocationType",recLocationType);
+        }
+        return queryParam;
     }
 
     protected abstract int getOrgFlag();

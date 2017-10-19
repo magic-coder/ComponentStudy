@@ -7,8 +7,11 @@ import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_xngd.R;
+import com.richfit.module_xngd.adapter.XNGDRSDetailAdapter;
 import com.richfit.module_xngd.module_rs.imp.XNGDRSDetailPresenterImp;
+import com.richfit.sdk_wzrk.adapter.ASYDetailAdapter;
 import com.richfit.sdk_wzrk.base_as_detail.BaseASDetailFragment;
 
 import java.util.List;
@@ -18,6 +21,16 @@ import java.util.List;
  */
 
 public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPresenterImp>{
+
+    @Override
+    public int getContentId() {
+        return R.layout.xngd_fragment_rs_detail;
+    }
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
 
     @Override
     public void initPresenter() {
@@ -48,14 +61,16 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
     }
 
     @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
-        return menus.subList(0, 1);
-    }
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
+    public void showNodes(List<RefDetailEntity> allNodes) {
+        saveTransId(allNodes);
+        if (mAdapter == null) {
+            mAdapter = new XNGDRSDetailAdapter(mActivity, allNodes);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setOnItemEditAndDeleteListener(this);
+            mAdapter.setAdapterStateListener(this);
+        } else {
+            mAdapter.addAll(allNodes);
+        }
     }
 
     @Override
@@ -77,4 +92,11 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
+        return menus.subList(0, 1);
+    }
+
 }

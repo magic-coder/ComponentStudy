@@ -26,8 +26,8 @@ public class QHYTRSYEditFragment extends BaseASEditFragment<ASEditPresenterImp> 
 
     @Override
     protected void initView() {
-        actQuantityName.setText("应退数量");
-        quantityName.setText("实退数量");
+        tvActQuantityName.setText("应退数量");
+        tvQuantityName.setText("实退数量");
     }
 
     @Override

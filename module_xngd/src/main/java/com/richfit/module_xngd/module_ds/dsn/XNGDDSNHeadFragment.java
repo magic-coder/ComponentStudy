@@ -82,7 +82,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
                 .subscribe(position ->
-                    mPresenter.getAutoComList(mWorks.get(position).workCode,
+                    mPresenter.getAutoComList(mWorks.get(position).workCode,null,
                             getString(etAutoComp), 100, getOrgFlag(), mBizType, Global.COST_CENTER_DATA,
                             Global.GL_ACCOUNT_DATA,Global.INTERNAL_ORDER_DATA)
                 );
@@ -101,7 +101,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mGLAccounts != null &&
                         mGLAccounts.size() > 0 && !filterKeyWord(str,mGLAccounts) && spWork.getSelectedItemPosition() > 0)
-                .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
+                .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
                         getString(etGLAccount), 100, getOrgFlag(), mBizType, Global.GL_ACCOUNT_DATA));
 
         //------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mOrderNums != null &&
                         mOrderNums.size() > 0 && !filterKeyWord(str,mOrderNums) && spWork.getSelectedItemPosition() > 0)
-                .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
+                .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
                         getString(etOrderNum), 100, getOrgFlag(), mBizType, Global.INTERNAL_ORDER_DATA));
     }
 

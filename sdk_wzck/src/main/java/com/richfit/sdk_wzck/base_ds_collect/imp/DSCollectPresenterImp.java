@@ -207,7 +207,6 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
 
                     }
                 });
-
     }
 
     @Override

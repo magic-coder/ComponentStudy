@@ -72,7 +72,6 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
             String quantityCustom = bundle.getString(Global.EXTRA_QUANTITY_CUSTOM_KEY);
             etQuantityCustom.setText(quantityCustom);
         }
-        mPresenter.getDictionaryData("locationType");
     }
 
 
@@ -80,41 +79,6 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
     public void initDataLazily() {
     }
 
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes,false);
-            spLocationType.setAdapter(adapter);
-
-            //默认选择缓存的数据
-            Bundle arguments = getArguments();
-            if (arguments != null) {
-                String locationType = arguments.getString(Global.EXTRA_LOCATION_TYPE_KEY);
-                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
-            }
-        }
-    }
-
-    //拦截住在仓储类型还未初始化就去获取库粗
-    @Override
-    protected void loadInventoryInfo() {
-        if (spLocationType.getAdapter() == null || mLocationTypes == null ||
-                mLocationTypes.size() == 0) {
-            return;
-        }
-        if (spLocationType.getSelectedItemPosition() <= 0 && spLocation.getAdapter() != null) {
-            //清除之前的库存
-            spLocation.setSelection(0);
-            return;
-        }
-        super.loadInventoryInfo();
-    }
 
     @Override
     public boolean checkCollectedDataBeforeSave() {
@@ -127,62 +91,15 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
             showMessage("件数不合理");
             return false;
         }
-
-        if(mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
-            return false;
-        }
-
-        if(spLocationType.getSelectedItemPosition() <= 0) {
-            showMessage("请先选择仓储类型");
-            return false;
-        }
         return super.checkCollectedDataBeforeSave();
     }
 
-    //增加仓储类型匹配条件
-    @Override
-    public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
-        if (cache != null) {
-            tvTotalQuantity.setText(cache.totalQuantity);
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            //查询该行的locationInfo
-            List<LocationInfoEntity> locationInfos = cache.locationList;
-            if (locationInfos == null || locationInfos.size() == 0) {
-                //没有缓存
-                tvLocQuantity.setText("0");
-                return;
-            }
-            //如果有缓存，但是可能匹配不上
-            tvLocQuantity.setText("0");
-            //匹配每一个缓存
-            for (LocationInfoEntity info : locationInfos) {
-                if (isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
-                        batchFlag.equalsIgnoreCase(info.batchFlag) && locationType.equalsIgnoreCase(info.locationType) :
-                        location.equalsIgnoreCase(info.locationCombine) && locationType.equalsIgnoreCase(info.locationType)) {
-                    tvLocQuantity.setText(info.quantity);
-                    break;
-                }
-            }
-        }
-    }
 
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.quantityCustom = getString(etQuantityCustom);
-        result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         return result;
     }
 
-    @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
-    }
 }

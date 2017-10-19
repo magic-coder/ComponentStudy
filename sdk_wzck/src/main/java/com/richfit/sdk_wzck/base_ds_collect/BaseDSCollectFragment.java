@@ -99,7 +99,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
+    protected boolean isOpenLocationType = false;
     /*单据行选项*/
     protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
@@ -216,9 +216,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 //注意工厂和库存地点必须使用行里面的
                 .subscribe(position -> {
                     if (isOpenLocationType) {
-                        loadInventory(position);
-                    } else {
                         mPresenter.getDictionaryData("locationType");
+                    } else {
+                        loadInventory(position);
                     }
                 });
 
@@ -482,21 +482,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spLocation);
     }
 
-    @Override
-    public void saveCollectedDataSuccess(String message) {
-        showMessage(message);
-        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
-        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
-        if (!cbSingle.isChecked()) {
-            etQuantity.setText("");
-        }
-    }
-
-    @Override
-    public void saveCollectedDataFail(String message) {
-        showMessage("保存数据失败;" + message);
-    }
-
     /**
      * 获取单条缓存。注意这必须先确定好批次和仓位是否输入，因为系统将用批次和仓位匹配缓存信息。
      *
@@ -593,9 +578,10 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
                 isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
-
-                String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-
+                String locationType = "";
+                if(isOpenLocationType) {
+                    locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                }
                 //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
                 if (!isOpenBatchManager) {
@@ -862,23 +848,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void _onPause() {
-        super._onPause();
-        clearAllUI();
-    }
-
-    @Override
-    public void retry(String retryAction) {
-        switch (retryAction) {
-            //获取单条缓存失败
-            case Global.RETRY_LOAD_SINGLE_CACHE_ACTION:
-                getTransferSingle(spLocation.getSelectedItemPosition());
-                break;
-        }
-        super.retry(retryAction);
-    }
-
-    @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
@@ -934,6 +903,22 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
+    public void saveCollectedDataSuccess(String message) {
+        showMessage(message);
+        tvTotalQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvTotalQuantity))));
+        tvLocQuantity.setText(String.valueOf(ArithUtil.add(getString(etQuantity), getString(tvLocQuantity))));
+        if (!cbSingle.isChecked()) {
+            etQuantity.setText("");
+        }
+    }
+
+    @Override
+    public void saveCollectedDataFail(String message) {
+        showMessage("保存数据失败;" + message);
+    }
+
+
+    @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
         if (mLocationTypes != null && isOpenLocationType) {
@@ -942,6 +927,27 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             queryParam.extraMap.put("locationType", locationType);
         }
         return queryParam;
+    }
+
+    @Override
+    public void _onPause() {
+        super._onPause();
+        //将仓储类型回到原始位置
+        if(spLocationType.getAdapter() != null) {
+            spLocationType.setSelection(0);
+        }
+        clearAllUI();
+    }
+
+    @Override
+    public void retry(String retryAction) {
+        switch (retryAction) {
+            //获取单条缓存失败
+            case Global.RETRY_LOAD_SINGLE_CACHE_ACTION:
+                getTransferSingle(spLocation.getSelectedItemPosition());
+                break;
+        }
+        super.retry(retryAction);
     }
 
     protected abstract int getOrgFlag();

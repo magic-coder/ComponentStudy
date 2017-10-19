@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -15,22 +17,30 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
+import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrs.R;
 import com.richfit.sdk_wzrs.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -42,9 +52,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> extends BaseCollectFragment<P>
         implements IRSNCollectView {
 
-
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_group)
@@ -52,28 +61,41 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     @BindView(R2.id.tv_material_unit)
     TextView tvMaterialUnit;
     @BindView(R2.id.tv_special_inv_flag)
-    TextView tvSpecialInvFlag;
+    protected TextView tvSpecialInvFlag;
     @BindView(R2.id.et_batch_flag)
-    EditText etBatchFlag;
+    protected EditText etBatchFlag;
     @BindView(R2.id.sp_inv)
-    Spinner spInv;
+    protected Spinner spInv;
     @BindView(R2.id.et_location)
-    RichAutoEditText etLocation;
+    protected RichAutoEditText etLocation;
     @BindView(R2.id.tv_location_quantity)
     TextView tvLocQuantity;
     @BindView(R2.id.et_quantity)
-    EditText etQuantity;
+    protected EditText etQuantity;
     @BindView(R2.id.cb_single)
     CheckBox cbSingle;
+    //增加仓储类型
+    @BindView(com.richfit.common_lib.R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(com.richfit.common_lib.R2.id.sp_location_type)
+    Spinner spLocationType;
 
-    //库存地点
+    /*库存地点数据和适配器*/
     private InvAdapter mInvAdapter;
-    private List<InvEntity> mInvs;
-    /*缓存的历史仓位数量*/
+    protected List<InvEntity> mInvs;
+    /*单条缓存数据列表*/
     private List<RefDetailEntity> mHistoryDetailList;
     /*上架仓位列表适配器*/
     ArrayAdapter<String> mLocationAdapter;
     List<String> mLocationList;
+    /*是否发不上架*/
+    protected boolean isNLocation = false;
+    /*校验仓位是否存在，如果false表示校验该仓位不存在或者没有校验该仓位，不允许保存数据*/
+    protected boolean isLocationChecked = false;
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
 
     /**
      * 处理扫描
@@ -97,10 +119,19 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             } else {
                 loadMaterialInfo(materialNum, batchFlag);
             }
-        }else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
+        } else if (list != null && list.length == 1 && !cbSingle.isChecked()) {
             final String location = list[0];
             clearCommonUI(etLocation);
             etLocation.setText(location);
+            getTransferSingle(getString(etBatchFlag), location);
+        } else if (list != null && list.length == 2 && !cbSingle.isChecked() && isOpenLocationType) {
+            //处理仓储类型
+            String location = list[Global.LOCATION_POS];
+            String locationType = list[Global.LOCATION_TYPE_POS];
+            clearCommonUI(etLocation);
+            etLocation.setText(location);
+            //自动选择仓储类型
+            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
             getTransferSingle(getString(etBatchFlag), location);
         }
     }
@@ -118,13 +149,14 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
 
     @Override
     public void initEvent() {
-         /*扫描后者手动输入物资条码*/
+        //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             //请求接口获取获取物料
             hideKeyboard(view);
             loadMaterialInfo(materialNum, getString(etBatchFlag));
         });
 
+        //监听物料的改变，清除当前物料的批次状态(2017年修改，这里能够保证保存当前物料后，用户可以手动修改物料并且输入批次)
         RxTextView.textChanges(etMaterialNum)
                 .filter(str -> !TextUtils.isEmpty(str))
                 .subscribe(e -> {
@@ -132,29 +164,48 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
                     etBatchFlag.setEnabled(true);
                 });
 
-        //对于质检物资(不上架)通过库存地点来获取缓存，如果需要上架选择库存地点获取上架仓位列表
-        RxAdapterView.itemSelections(spInv)
-                .filter(pos -> pos > 0)
-                .subscribe(pos -> loadLocationList(false));
 
         //上架仓位,匹配缓存的历史仓位数量
         etLocation.setOnRichAutoEditTouchListener((view, location) -> {
             hideKeyboard(etLocation);
             if (cbSingle.isChecked())
                 return;
-            getTransferSingle(getString(etBatchFlag), getString(etLocation));
+            getTransferSingle(getString(etBatchFlag), location);
         });
 
-        //监听上架仓位时时变化
+        //监听库存地点，加载上架仓位
+        RxAdapterView.itemSelections(spInv)
+                .filter(pos -> pos > 0)
+                .subscribe(pos -> {
+                    if (isOpenLocationType) {
+                        //如果打开
+                        mPresenter.getDictionaryData("locationType");
+                    } else {
+                        loadLocationList(false);
+                    }
+                });
+
+        //增加仓储类型的选择获取提示库粗
+        RxAdapterView.itemSelections(spLocationType)
+                .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
+                        && mLocationTypes.size() > 0)
+                .subscribe(position -> loadLocationList(false));
+
+
+        //监听上架仓位输入，及时清空仓位数量
         RxTextView.textChanges(etLocation)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(a -> tvLocQuantity.setText(""));
 
+        //监听输入的关键字
+        RxTextView.textChanges(etLocation)
+                .debounce(100, TimeUnit.MILLISECONDS)
+                .filter(str -> !TextUtils.isEmpty(str) && mLocationList != null &&
+                        mLocationList.size() > 0 && !filterKeyWord(str.toString()))
+                .subscribe(a -> loadLocationList(true));
 
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
-        //注意这里由于不在请求接口，所以先执行了，然后执行了上面的监听
         RxAutoCompleteTextView.itemClickEvents(etLocation)
-                .delay(100, TimeUnit.MILLISECONDS)
                 .subscribe(a -> {
                     hideKeyboard(etLocation);
                     getTransferSingle(getString(etBatchFlag), getString(etLocation));
@@ -168,17 +219,32 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     }
 
     @Override
+    public void initData() {
+        //检测是否打开仓储类型,false表示不打开
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    }
+
+    @Override
     public void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
-            showMessage("请先在抬头界面选择工厂");
+            showMessage("请先在抬头界面输入必要的数据");
             return;
         }
+
+        if (TextUtils.isEmpty(mRefData.moveType)) {
+            showMessage("请先在抬头选择移动类型");
+            return;
+        }
+
         if (TextUtils.isEmpty(mRefData.workId)) {
-            showMessage("请先在抬头界面选择工厂");
+            showMessage("请先选择工厂");
             return;
         }
+
         etMaterialNum.setEnabled(true);
+        etLocation.setEnabled(!isNLocation);
+        //恢复批次
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
         //加载发出工厂下的发出库位
@@ -217,21 +283,19 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         showMessage(message);
     }
 
-
     @Override
     public void bindCommonCollectUI(ReferenceEntity refData, String batchFlag) {
+        RefDetailEntity data = refData.billDetailList.get(0);
         isOpenBatchManager = true;
         etBatchFlag.setEnabled(true);
-        RefDetailEntity data = refData.billDetailList.get(0);
         manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
         //刷新UI
         etMaterialNum.setTag(data.materialId);
         tvMaterialDesc.setText(data.materialDesc);
         tvMaterialGroup.setText(data.materialGroup);
         tvMaterialUnit.setText(data.unit);
-        if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-            etBatchFlag.setText(data.batchFlag);
-        }
+        tvSpecialInvFlag.setText(mRefData.specialInvFlag);
+        etBatchFlag.setText(!TextUtils.isEmpty(data.batchFlag) ? data.batchFlag : batchFlag);
         mHistoryDetailList = refData.billDetailList;
     }
 
@@ -241,25 +305,32 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     }
 
     @Override
-    public void loadLocationList(boolean isDropDown) {
-        if (mHistoryDetailList != null && mHistoryDetailList.size() > 0) {
-            RefDetailEntity lineData = mHistoryDetailList.get(0);
-            InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
-            InventoryQueryParam param = provideInventoryQueryParam();
-            mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
-                    invEntity.invId, mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                    lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap, isDropDown);
-        }
+    public void loadLocationList( boolean isDropDown) {
+        InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
+        mPresenter.getLocationList(mRefData.workId, mRefData.workCode, invEntity.invId,
+                invEntity.invCode, getString(etLocation), 100, getInteger(R.integer.orgNorm), isDropDown);
     }
 
+    /**
+     * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
+     *
+     * @param keyWord
+     * @return
+     */
+    private boolean filterKeyWord(String keyWord) {
+        Pattern pattern = Pattern.compile("^" + keyWord);
+        for (String item : mLocationList) {
+            Matcher matcher = pattern.matcher(item);
+            while (matcher.find()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     public void loadInventoryFail(String message) {
         showMessage(message);
-        if (mLocationAdapter != null) {
-            mLocationList.clear();
-            etLocation.setAdapter(null);
-        }
     }
 
     @Override
@@ -283,39 +354,69 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         }
     }
 
-
     /**
      * 匹配历史仓位数量
      */
     private void getTransferSingle(final String batchFlag, final String location) {
-
-
-
-        if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
-            showMessage("批次为空");
-            return;
-        }
-
-        if (TextUtils.isEmpty(location)) {
-            showMessage("请先输入上架仓位");
-            return;
-        }
 
         if (mHistoryDetailList == null) {
             showMessage("请先获取物料信息");
             return;
         }
 
+        //检验是否选择了库存地点
+        if (spInv.getSelectedItemPosition() <= 0) {
+            showMessage("请先选择库存地点");
+            return;
+        }
+
+        //批次处理。打开了批次管理而且必须输入，那么检查是否输入了批次
+        if (isOpenBatchManager && etBatchFlag.isEnabled()) {
+            if (TextUtils.isEmpty(batchFlag)) {
+                showMessage("请先输入批次");
+                return;
+            }
+        }
+        if (TextUtils.isEmpty(location) && !isNLocation) {
+            showMessage("请先输入上架仓位");
+            return;
+        }
+
+        if (!isNLocation) {
+            String invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
+            //使用库存参数
+            InventoryQueryParam queryParam = provideInventoryQueryParam();
+            mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location, queryParam.extraMap);
+        } else {
+            //如果不上架，那么直接默认仓位检查通过
+            checkLocationSuccess(batchFlag, location);
+        }
+    }
+
+    @Override
+    public void checkLocationSuccess(String batchFlag, String location) {
+        isLocationChecked = true;
+        //开始匹配缓存
         String locQuantity = "0";
         tvLocQuantity.setText(locQuantity);
-
+        boolean isMatched = false;
+        String locationType = "";
+        if (isOpenLocationType) {
+            locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    final boolean isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
-                            && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
-                            location.equalsIgnoreCase(locationInfo.location);
+                    if(isOpenLocationType) {
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType) :
+                                location.equalsIgnoreCase(locationInfo.location) && locationType.equals(locationInfo.locationType);
+                    }else {
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
+                                location.equalsIgnoreCase(locationInfo.location);
+                    }
                     if (isMatched) {
                         locQuantity = locationInfo.quantity;
                         break;
@@ -326,10 +427,17 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         tvLocQuantity.setText(locQuantity);
     }
 
-    private void clearAllUI() {
-        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit, tvSpecialInvFlag,
-                tvLocQuantity, tvLocQuantity, etQuantity, etLocation, etMaterialNum, etBatchFlag);
-        //库存地点
+    @Override
+    public void checkLocationFail(String message) {
+        showMessage(message);
+        isLocationChecked = false;
+    }
+
+
+    protected void clearAllUI() {
+        clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvLocQuantity, tvLocQuantity, etQuantity, etLocation,
+                etMaterialNum, etBatchFlag, tvSpecialInvFlag, tvMaterialUnit);
+        //库存地点，注意这里不清除数据
         if (spInv.getAdapter() != null) {
             spInv.setSelection(0);
         }
@@ -344,6 +452,22 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     @Override
     public boolean checkCollectedDataBeforeSave() {
 
+        if (!etMaterialNum.isEnabled()) {
+            showMessage("请先获取物料信息");
+            return false;
+        }
+
+        if (mRefData == null) {
+            showMessage("请先在抬头界面输入必要的数据");
+            return false;
+        }
+
+
+        if (TextUtils.isEmpty(mRefData.workId)) {
+            showMessage("请先选择工厂");
+            return false;
+        }
+
         //库存地点
         if (spInv.getSelectedItemPosition() <= 0) {
             showMessage("请先选择库存地点");
@@ -351,24 +475,21 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         }
 
         //上架仓位
-        if (TextUtils.isEmpty(getString(etLocation))) {
+        if (!isNLocation && TextUtils.isEmpty(getString(etLocation))) {
             showMessage("请先输入上架仓位");
             return false;
         }
+
+        if (!isNLocation && !isLocationChecked) {
+            showMessage("您输入的仓位不存在");
+            return false;
+        }
+
         //物资条码
         if (TextUtils.isEmpty(getString(etMaterialNum))) {
             showMessage("请先输入物料条码");
             return false;
         }
-//        //批次
-//        if (mHistoryDetailList != null) {
-//            RefDetailEntity data = mHistoryDetailList.get(0);
-//            manageBatchFlagStatus(etBatchFlag, data.batchManagerStatus);
-//            if (isOpenBatchManager && TextUtils.isEmpty(getString(etBatchFlag))) {
-//                showMessage("请先输入批次");
-//                return false;
-//            }
-//        }
         //实发数量
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请先输入实收数量");
@@ -402,15 +523,17 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
         result.invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
         result.recWorkId = mRefData.recWorkId;
         result.recInvId = mRefData.recInvId;
-        result.materialId = etMaterialNum.getTag().toString();
+        result.materialId = CommonUtil.Obj2String(etMaterialNum.getTag());
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
-        result.location = getString(etLocation);
+        result.location = !isNLocation ? getString(etLocation) : Global.DEFAULT_LOCATION;
         result.quantity = getString(etQuantity);
         result.specialInvFlag = getString(tvSpecialInvFlag);
-        result.supplierId = mRefData.supplierId;
-        result.costCenter = mRefData.costCenter;
         result.projectNum = mRefData.projectNum;
+        result.supplierId = mRefData.supplierId;
         result.invType = param.invType;
+        //仓储类型
+        if (isOpenLocationType)
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "N";
         return result;
     }
@@ -419,19 +542,14 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     public void _onPause() {
         super._onPause();
         clearAllUI();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mLocationAdapter = null;
-        mLocationList.clear();
+        clearCommonUI(etMaterialNum, etBatchFlag);
     }
 
     @Override
     public void saveCollectedDataSuccess(String message) {
         showMessage(message);
-        tvLocQuantity.setText(getString(etQuantity));
+        if (!isNLocation)
+            tvLocQuantity.setText(getString(etQuantity));
         if (!cbSingle.isChecked()) {
             etQuantity.setText("");
         }
@@ -441,4 +559,42 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
     public void saveCollectedDataFail(String message) {
         showMessage("保存数据失败;" + message);
     }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        //加载仓储类型完毕，初始化下拉
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+    /**
+     * 默认增加仓储类型的维度
+     *
+     * @return
+     */
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
+    }
 }
+

@@ -32,5 +32,6 @@
     <item name="xngd_tv_inv_type" type="id"></item>
     <item name="xngd_et_gl_account" type="id"></item>
     <item name="xngd_et_io_account" type="id"></item>
+    <item name="xngd_tv_total_money" type="id" />
 
 </resources>

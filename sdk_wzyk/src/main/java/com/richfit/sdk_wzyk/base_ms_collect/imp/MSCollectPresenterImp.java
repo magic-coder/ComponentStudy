@@ -2,6 +2,7 @@ package com.richfit.sdk_wzyk.base_ms_collect.imp;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -41,7 +42,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
-
+        Log.e("yff","recLocation = " + result.recLocation);
         Flowable<String> flowable;
         if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
             //检查接收仓位

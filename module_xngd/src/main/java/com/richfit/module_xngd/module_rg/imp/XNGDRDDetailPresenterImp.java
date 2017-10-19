@@ -138,7 +138,7 @@ public class XNGDRDDetailPresenterImp extends DSDetailPresenterImp {
                     //实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_KEY, node.quantity);
                     //退货原因
-                    bundle.putString(XNGDRGEditFragment.EXTRA_MOVE_CAUSE_KEY, node.moveCause);
+                    bundle.putString(XNGDRGEditFragment.EXTRA_MOVE_CAUSE_KEY, parentNode.moveCause);
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;
                     activity.startActivity(intent);

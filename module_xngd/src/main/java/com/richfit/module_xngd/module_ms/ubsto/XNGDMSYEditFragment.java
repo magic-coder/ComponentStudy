@@ -16,6 +16,7 @@ import java.util.Map;
  */
 
 public class XNGDMSYEditFragment extends BaseMSEditFragment<MSEditPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new MSEditPresenterImp(mActivity);

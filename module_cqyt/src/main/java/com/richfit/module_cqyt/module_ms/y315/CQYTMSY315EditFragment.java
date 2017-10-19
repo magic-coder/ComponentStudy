@@ -86,10 +86,6 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
             showMessage("件数不合理");
             return false;
         }
-        if(mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
-            return false;
-        }
         return super.checkCollectedDataBeforeSave();
     }
 
@@ -99,5 +95,4 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
         result.quantityCustom = getString(etQuantityCustom);
         return result;
     }
-
 }

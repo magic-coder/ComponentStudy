@@ -23,4 +23,6 @@ public interface IASNEditPresenter extends IBaseEditPresenter<IASNEditView> {
     void getTransferInfoSingle(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
+
+    void getDictionaryData(String... codes);
 }

@@ -100,12 +100,12 @@ public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
 
 
     @Override
-    public void getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType,
+    public void getAutoComList(String workCode,Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String bizType,
                                     String ...keys) {
         mView = getView();
 
         ResourceSubscriber<Map<String,List<SimpleEntity>>> subscriber =
-                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag,keys)
+                mRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag,keys)
                         .filter(map -> map != null && map.size() > 0)
                         .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
                             @Override

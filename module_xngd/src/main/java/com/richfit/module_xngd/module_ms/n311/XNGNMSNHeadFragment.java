@@ -92,7 +92,7 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null && mAutoDatas.size() > 0
                         && !filterKeyWord(str))
-                .subscribe(a -> mPresenter.getProjectNumList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,
+                .subscribe(a -> mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,null,
                         getString(etProjectNum), 100, 0, mBizType));
     }
 
@@ -181,8 +181,8 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
                     .subscribe(pos -> spRecInv.setSelection(pos.intValue()), e -> Log.d("yff", e.getMessage()), () -> lockUIUnderEditState(spRecInv));
         }
         //加载项目编号
-        mPresenter.getProjectNumList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,
-                getString(etProjectNum), 100, 0, mBizType);
+        mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,null,
+                getString(etProjectNum), 100, 0, Global.PROJECT_NUM_DATA);
     }
 
     private boolean filterKeyWord(CharSequence keyWord) {

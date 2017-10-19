@@ -104,7 +104,7 @@ public interface IBasicServiceDao {
     boolean checkWareHouseNum(String sendWorkId, String sendInvCode, String recWorkId, String recInvCode, int flag);
 
 
-    Map<String,List<SimpleEntity>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag,
+    Map<String,List<SimpleEntity>> getAutoComList(String workCode,Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag,
                                                   String ...keys);
 
     /**

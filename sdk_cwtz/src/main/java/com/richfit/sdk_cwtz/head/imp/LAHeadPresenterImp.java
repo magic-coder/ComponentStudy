@@ -135,10 +135,10 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
     }
 
     @Override
-    public void getProjectNumList(String workCode, String keyWord, int defaultItemNum, int flag, String bizType) {
+    public void getAutoComList(String workCode,Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String bizType) {
         mView = getView();
         ResourceSubscriber<ArrayList<String>> subscriber =
-                mRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, Global.PROJECT_NUM_DATA)
+                mRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag, Global.PROJECT_NUM_DATA)
                         .filter(map -> map != null && map.size() > 0)
                         .map(map -> convert2StrList(map))
                         .compose(TransformerHelper.io2main())

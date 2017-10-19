@@ -24,4 +24,5 @@ public interface IRSNEditPresenter extends IBaseEditPresenter<IRSNEditView> {
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
 
+    void getDictionaryData(String... codes);
 }

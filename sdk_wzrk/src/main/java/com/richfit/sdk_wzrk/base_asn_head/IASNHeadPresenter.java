@@ -3,6 +3,8 @@ package com.richfit.sdk_wzrk.base_asn_head;
 
 import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 
+import java.util.Map;
+
 /**
  * Created by monday on 2016/11/16.
  */
@@ -19,7 +21,8 @@ public interface IASNHeadPresenter extends IBaseHeadPresenter<IASNHeadView> {
      *
      * @param workCode:工厂编码
      */
-    void getSupplierList(String workCode, String keyWord, int defaultItemNum, int flag);
+    void getAutoComList(String workCode, Map<String,Object> extraMap,String keyWord, int defaultItemNum,
+                        int flag,String key);
 
     /**
      * 获取移动类型列表

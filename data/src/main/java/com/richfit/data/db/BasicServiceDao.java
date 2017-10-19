@@ -764,7 +764,8 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
     }
 
     @Override
-    public Map<String, List<SimpleEntity>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
+    public Map<String, List<SimpleEntity>> getAutoComList(String workCode,Map<String,Object> extraMap,
+                                                          String keyWord, int defaultItemNum, int flag, String... keys) {
         Map<String, List<SimpleEntity>> map = new HashMap<>();
         if (keys == null || keys.length == 0) {
             return map;
@@ -797,6 +798,28 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                     ArrayList<SimpleEntity> list5 = getOrderNumList(workCode, keyWord, defaultItemNum, flag);
                     map.put(key, list5);
                     break;
+                //为客户
+                case Global.CUSTOMER_DATA:
+                    List<SimpleEntity> customerList = getCustomerList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key,customerList);
+                    break;
+                //5为利润中心
+                case Global.PROFIT_CENTER_DATA:
+                    List<SimpleEntity> profitCenter = getProfitCenterList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key,profitCenter);
+                    break;
+                //移动原因
+                case Global.MOVE_REASON_DATA:
+                    String moveType = (String) extraMap.get("moveType");
+                    List<SimpleEntity> moveCauseList = getMoveCauseList(moveType, keyWord, defaultItemNum, flag);
+                    map.put(key,moveCauseList);
+                    break;
+                //业务范围
+                case Global.BIZ_RANGE_DATA:
+                    List<SimpleEntity> businessScopeList=getBusinessScopeList(workCode, keyWord, defaultItemNum, flag);
+                    map.put(key,businessScopeList);
+                    break;
+
             }
         }
         return map;
@@ -984,7 +1007,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                     .append(" where P.parent_id = B.org_id ")
                     .append(" and P.org_level = '2' and P.org_code = ? ");
             if (!TextUtils.isEmpty(keyWord)) {
-                sb.append(" and project_num_code like ").append("'%").append(keyWord).append("%'");
+                sb.append(" and gl_account like ").append("'%").append(keyWord).append("%'");
             } else if (defaultItemNum > 0) {
                 sb.append(" limit 0, ")
                         .append(defaultItemNum);
@@ -1462,4 +1485,167 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         db.close();
         return batch_flag;
     }
+
+    private List<SimpleEntity> getCustomerList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(workCode))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+        Cursor cursor = null;
+        try {
+            sb.append("select id,CUSTOMER,CUSTOMER_DESC from ")
+                    .append("base_customer ")
+                    .append("where COMPANY_ID = ? ");
+
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append("like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.e("yff", "查询sql = " + sb.toString());
+            cursor = db.rawQuery(sb.toString(), new String[]{Global.COMPANY_ID});
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id
+
+                        = cursor.getString(0);
+                entity.code = cursor.getString(1);
+                entity.name
+
+                        = cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+
+
+    private List<SimpleEntity> getProfitCenterList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(workCode))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+        Cursor cursor = null;
+        try {
+            sb.append("select id,PROFIT_CENTER,PROFIT_CENTER_DESC from ")
+                    .append("base_profit_center ")
+                    .append("where COMPANY_ID = ? ");
+
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append("like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.e("yff", "查询sql = " + sb.toString());
+            cursor = db.rawQuery(sb.toString(), new String[]{Global.COMPANY_ID});
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id = cursor.getString(0);
+                entity.code = cursor.getString(1);
+                entity.name = cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+
+    private List<SimpleEntity> getMoveCauseList(String moveType, String keyWord, int defaultItemNum, int flag) {
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(moveType))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+        Cursor cursor = null;
+        try {
+            sb.append("select id,MOVE_CAUSE_CODE,MOVE_CAUSE_DESC from ")
+                    .append("base_move_cause ")
+                    .append("where MOVE_TYPE = ? ");
+
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append("like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.e("yff", "查询sql = " + sb.toString());
+            //此处移动原因是根据moveType查询的
+            cursor = db.rawQuery(sb.toString(), new String[]{moveType});
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id = cursor.getString(0);
+                entity.code = cursor.getString(1);
+                entity.name= cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+    private List<SimpleEntity> getBusinessScopeList(String workCode, String keyWord, int defaultItemNum, int flag) {
+        ArrayList<SimpleEntity> list = new ArrayList<>();
+        if (TextUtils.isEmpty(workCode))
+            return list;
+        SQLiteDatabase db = getReadableDB();
+        StringBuffer sb = new StringBuffer();
+        Cursor cursor = null;
+        try {
+            sb.append("select id,BUSINESS_SCOPE,BUSINESS_SCOPE_DESC from ")
+                    .append(" base_business_scope  ")
+                    .append("where 1=1 ");
+
+            if (!TextUtils.isEmpty(keyWord)) {
+                sb.append("like ").append("'%").append(keyWord).append("%'");
+            } else if (defaultItemNum > 0) {
+                sb.append(" limit 0, ")
+                        .append(defaultItemNum);
+            }
+            Log.e("yff", "查询sql = " + sb.toString());
+            cursor = db.rawQuery(sb.toString(), null);
+            while (cursor.moveToNext()) {
+                SimpleEntity entity = new SimpleEntity();
+                entity.id = cursor.getString(0);
+                entity.code = cursor.getString(1);
+                entity.name = cursor.getString(2);
+                list.add(entity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return list;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+            db.close();
+        }
+        return list;
+    }
+
+
 }

@@ -74,11 +74,6 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
             return false;
         }
 
-        if(mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
-            return false;
-        }
-
         if (TextUtils.isEmpty(getString(etQuantity))) {
             showMessage("请输入入库数量");
             return false;

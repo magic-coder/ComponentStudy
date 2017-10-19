@@ -236,9 +236,11 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
-    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode,Map<String,Object> extraMap,
+                                                                    String keyWord, int defaultItemNum, int flag, String... keys) {
         return Flowable.just(keyWord).flatMap(key -> {
-            Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode, key, defaultItemNum, flag, keys);
+            Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode,extraMap,
+                    key, defaultItemNum, flag, keys);
             if (map == null || map.size() == 0) {
                 return Flowable.error(new Throwable("未获取到基础数据,请检查是否您选择的工厂是否正确或者是否在设置界面同步过基础数据"));
             }

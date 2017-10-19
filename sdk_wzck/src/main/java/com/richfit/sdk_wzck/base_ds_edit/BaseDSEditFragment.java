@@ -73,7 +73,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
+    protected boolean isOpenLocationType = false;
 
     protected String mRefLineId;
     protected String mLocationId;
@@ -310,7 +310,10 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             tvLocQuantity.setText("0");
             //匹配每一个缓存
             boolean isMatch = false;
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            String locationType = "";
+            if(isOpenLocationType) {
+                locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            }
             for (LocationInfoEntity info : locationInfos) {
                 if (isOpenLocationType) {
                     isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
@@ -454,6 +457,4 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         }
         super.retry(retryAction);
     }
-
-
 }

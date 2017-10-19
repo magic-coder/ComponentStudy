@@ -71,8 +71,6 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
     //建议下架仓位
     TextView tvSuggestedLocation;
 
-
-
     @Override
     public int getContentId() {
         return R.layout.mcq_fragment_ds_collect;
@@ -250,15 +248,23 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) &&
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
+                String locationType = "";
+                if(isOpenLocationType) {
+                    locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                }
+
                 //这里匹配的逻辑是，如果打开了匹配管理，那么如果输入了批次通过批次和仓位匹配，而且如果批次没有输入，那么通过仓位匹配。
                 //如果没有打开批次管理，那么直接通过仓位匹配
                 if (!isOpenBatchManager) {
-                    isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                    isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                            && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                 } else {
                     if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine);
                     } else if (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag)) {
-                        isMatch = locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
+                        isMatch = isOpenLocationType ? locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)
+                                && locationType.equalsIgnoreCase(cachedItem.locationType) : locationCombine.equalsIgnoreCase(cachedItem.locationCombine) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag);
                     }
                 }
 

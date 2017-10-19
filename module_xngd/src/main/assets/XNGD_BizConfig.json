@@ -507,7 +507,7 @@
     "mode": 0,
     "refType": "13",
     "fragmentType": 1,
-    "className": "com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment"
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocDetailFragment"
   },
   {
     "id": "56",
@@ -627,7 +627,7 @@
     "mode": 0,
     "refType": "9",
     "fragmentType": 1,
-    "className": "com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment"
+    "className": "com.richfit.module_xngd.module_sxcl.XNGDLocDetailFragment"
   },
   {
     "id": "68",

@@ -34,12 +34,15 @@ public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresent
     //增加仓储巡检扫描
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
-        super.handleBarCodeScanResult(type,list);
-        if (list != null && list.length == 2 ) {
+        super.handleBarCodeScanResult(type, list);
+        if (list != null && list.length == 1) {
             final String location = list[0];
             etLocation.setText("");
             etLocation.setText(location);
-            return;
+        } else if (list != null && list.length == 2) {
+            final String location = list[0];
+            etLocation.setText("");
+            etLocation.setText(location);
         }
     }
 
@@ -201,10 +204,10 @@ public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresent
         result.storageNum = mRefData.storageNum;
         result.location = CommonUtil.toUpperCase(getString(etLocation));
         result.voucherDate = mRefData.voucherDate;
-		if(!TextUtils.isEmpty(result.voucherDate)) {
-            result.year = result.voucherDate.substring(0,4);
-			result.duration = result.voucherDate.substring(4,6);
-		}
+        if (!TextUtils.isEmpty(result.voucherDate)) {
+            result.year = result.voucherDate.substring(0, 4);
+            result.duration = result.voucherDate.substring(4, 6);
+        }
         result.userId = Global.USER_ID;
         result.workId = mRefData.workId;
         result.invId = mRefData.invId;

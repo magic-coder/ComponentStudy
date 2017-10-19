@@ -419,8 +419,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
     }
 
     @Override
-    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag, String... keys) {
-        return mLocalRepository.getAutoComList(workCode, keyWord, defaultItemNum, flag, keys);
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode,Map<String,Object> extraMap,
+                                                                    String keyWord, int defaultItemNum, int flag, String... keys) {
+        return mLocalRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag, keys);
     }
 
 

@@ -391,6 +391,7 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                 childNode.transLineId = location.transLineId;
                 childNode.locationId = location.id;
                 childNode.locationType = location.locationType;
+                childNode.money = location.money;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

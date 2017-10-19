@@ -2,6 +2,10 @@ package com.richfit.sdk_wzrs.base_rsn_edit;
 
 import com.richfit.common_lib.lib_base_sdk.base_edit.IBaseEditView;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/2.
@@ -20,4 +24,7 @@ public interface IRSNEditView extends IBaseEditView {
     void loadTransferSingleInfoFail(String message);
 
     void loadTransferSingeInfoComplete();
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

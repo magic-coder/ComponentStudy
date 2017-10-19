@@ -66,13 +66,6 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         llLocationType.setVisibility(View.VISIBLE);
     }
 
-
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
-    }
-
     @Override
     public void initData() {
         mPresenter.getDictionaryData("moveCause");
@@ -126,7 +119,6 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
             UiUtil.setSelectionForSimpleSp(mMoveCauses, cache.moveCause, spMoveCause);
         }
     }
-
 
     @Override
     protected boolean refreshQuantity(final String quantity) {

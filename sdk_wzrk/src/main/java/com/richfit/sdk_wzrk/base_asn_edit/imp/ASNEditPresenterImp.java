@@ -9,10 +9,12 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.base_asn_edit.IASNEditPresenter;
 import com.richfit.sdk_wzrk.base_asn_edit.IASNEditView;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Flowable;
@@ -129,5 +131,33 @@ public class ASNEditPresenterImp extends BaseEditPresenterImp<IASNEditView>
                     }
                 });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String, List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }

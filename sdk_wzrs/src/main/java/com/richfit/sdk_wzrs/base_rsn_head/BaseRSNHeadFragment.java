@@ -19,12 +19,14 @@ import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzrs.R;
 import com.richfit.sdk_wzrs.R2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -50,8 +52,8 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     WorkAdapter mWorkAdapter;
     List<WorkEntity> mWorks;
 
-    List<String> mCostCenters;
-    ArrayAdapter mCostCenterAdapter;
+    protected List<String> mAutoDatas;
+    protected ArrayAdapter mAutoAdapter;
 
     @Override
     protected int getContentId() {
@@ -62,7 +64,7 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     public void initVariable(Bundle savedInstanceState) {
         mRefData = null;
         mWorks = new ArrayList<>();
-        mCostCenters = new ArrayList<>();
+        mAutoDatas = new ArrayList<>();
     }
 
     /**
@@ -88,8 +90,8 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
         //修改自动提示控件，说明用户需要锁乳关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etAutoComp)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mCostCenters != null &&
-                        mCostCenters.size() > 0 && !filterKeyWord(str) && spWork.getSelectedItemPosition() > 0)
+                .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null &&
+                        mAutoDatas.size() > 0 && !filterKeyWord(str) && spWork.getSelectedItemPosition() > 0)
                 .subscribe(a -> mPresenter.getAutoCompleteList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
                         getString(etAutoComp), 100, ORG_FLAG, mBizType));
 
@@ -129,16 +131,20 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     }
 
     @Override
-    public void showAutoCompleteList(List<String> list) {
-        mCostCenters.clear();
-        mCostCenters.addAll(list);
-        if (mCostCenterAdapter == null) {
-            mCostCenterAdapter = new ArrayAdapter<>(mActivity,
-                    android.R.layout.simple_dropdown_item_1line, mCostCenters);
-            etAutoComp.setAdapter(mCostCenterAdapter);
-            setAutoCompleteConfig(etAutoComp);
-        } else {
-            mCostCenterAdapter.notifyDataSetChanged();
+    public void showAutoCompleteList(Map<String,List<SimpleEntity>> data) {
+        if(data != null) {
+            List<SimpleEntity> simpleEntities = data.get(Global.COST_CENTER_DATA);
+            List<String> list = CommonUtil.toStringArray(simpleEntities,true);
+            mAutoDatas.clear();
+            mAutoDatas.addAll(list);
+            if (mAutoAdapter == null) {
+                mAutoAdapter = new ArrayAdapter<>(mActivity,
+                        android.R.layout.simple_dropdown_item_1line, mAutoDatas);
+                etAutoComp.setAdapter(mAutoAdapter);
+                setAutoCompleteConfig(etAutoComp);
+            } else {
+                mAutoAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -159,7 +165,7 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     }
 
     private boolean filterKeyWord(CharSequence keyWord) {
-        for (String item : mCostCenters) {
+        for (String item : mAutoDatas) {
             if (item.contains(keyWord)) {
                 return true;
             }

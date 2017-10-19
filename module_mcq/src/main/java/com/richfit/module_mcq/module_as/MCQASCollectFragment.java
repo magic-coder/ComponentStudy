@@ -136,30 +136,6 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
 
     }
 
-    @Override
-    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-        List<SimpleEntity> locationTypes = data.get("locationType");
-        if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
-        }
-    }
-
-    //重写该方法，在获取提示库存之前清除历史库存
-    @Override
-    public void loadLocationList(boolean isDropDown) {
-        if (mLocationList != null && mLocationAdapter != null) {
-            mLocationList.clear();
-            mLocationAdapter.notifyDataSetChanged();
-        }
-        super.loadLocationList(isDropDown);
-    }
 
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {

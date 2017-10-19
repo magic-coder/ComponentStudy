@@ -49,4 +49,6 @@ public interface IDSNCollectPresenter extends IBaseCollectPresenter<IDSNCollectV
                           String location, String batchFlag, String specialInvFag, String specialInvNum,
                           String invType, String deviceId,Map<String,Object> extraMap);
 
+    void getDictionaryData(String... codes);
+
 }

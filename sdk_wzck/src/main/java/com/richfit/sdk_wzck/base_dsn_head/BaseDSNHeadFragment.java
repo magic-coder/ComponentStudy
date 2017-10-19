@@ -84,7 +84,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         //选择工厂，初始化供应商或者项目编号
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
-                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position).workCode,
+                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position).workCode,null,
                         getString(etAutoComp), 100, getOrgFlag(), mBizType,getAutoComDataType()));
 
         //点击自动提示控件，显示默认列表
@@ -102,7 +102,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null &&
                         mAutoDatas.size() > 0 && !filterKeyWord(str,mAutoDatas) && spWork.getSelectedItemPosition() > 0)
-                .subscribe(a -> mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
+                .subscribe(a -> mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
                         getString(etAutoComp), 100, getOrgFlag(), mBizType,getAutoComDataType()));
 
         //如果是离线直接获取缓存，不能让用户删除缓存

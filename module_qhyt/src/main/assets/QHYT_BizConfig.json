@@ -467,7 +467,7 @@
     "mode": 0,
     "refType": "9",
     "fragmentType": 1,
-    "className": "com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment"
+    "className": "com.richfit.module_qhyt.module_sxcl.QHYTLocQTDetailFragment"
   },
   {
     "id": "48",

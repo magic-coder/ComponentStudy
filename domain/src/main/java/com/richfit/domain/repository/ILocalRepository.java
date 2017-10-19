@@ -101,7 +101,8 @@ public interface ILocalRepository extends IRepository {
      * @param keys
      * @return
      */
-    Flowable<Map<String,List<SimpleEntity>>> getAutoComList(String workCode, String keyWord, int defaultItemNum, int flag,String ...keys);
+    Flowable<Map<String,List<SimpleEntity>>> getAutoComList(String workCode,Map<String,Object> extraMap,
+                                                            String keyWord, int defaultItemNum, int flag,String ...keys);
 
     /**
      * 保存所有业务的页面信息。

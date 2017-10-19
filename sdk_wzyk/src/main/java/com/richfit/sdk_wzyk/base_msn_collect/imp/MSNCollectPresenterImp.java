@@ -15,6 +15,7 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzyk.base_msn_collect.IMSNCollectPresenter;
 import com.richfit.sdk_wzyk.base_msn_collect.IMSNCollectView;
 
@@ -96,6 +97,35 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
                             }
                         });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
     @Override
@@ -348,7 +378,9 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
 
                             @Override
                             public void _onComplete() {
-
+                                if(mView != null) {
+                                    mView.loadRecLocationsComplete();
+                                }
                             }
                         });
         addSubscriber(subscriber);

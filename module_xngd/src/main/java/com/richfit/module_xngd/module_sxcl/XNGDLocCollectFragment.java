@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.sdk_sxcl.basecollect.BaseLocQTCollectFragment;
+import com.richfit.sdk_sxcl.basecollect.LocQTCollectFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by monday on 2017/7/28.
  */
 
-public class XNGDLocCollectFragment extends BaseLocQTCollectFragment {
+public class XNGDLocCollectFragment extends LocQTCollectFragment {
 
 
     @Override

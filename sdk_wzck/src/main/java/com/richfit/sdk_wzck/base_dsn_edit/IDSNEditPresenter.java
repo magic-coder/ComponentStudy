@@ -40,4 +40,6 @@ public interface IDSNEditPresenter extends IBaseEditPresenter<IDSNEditView> {
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag, String specialInvNum,
                           String invType, String deviceId,Map<String,Object> extraMap);
+
+    void getDictionaryData(String... codes);
 }

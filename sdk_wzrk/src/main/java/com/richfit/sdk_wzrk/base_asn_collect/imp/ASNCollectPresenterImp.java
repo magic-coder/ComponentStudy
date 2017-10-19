@@ -9,6 +9,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzrk.base_asn_collect.IASNCollectPresenter;
 import com.richfit.sdk_wzrk.base_asn_collect.IASNCollectView;
 
@@ -60,12 +61,13 @@ public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectV
     }
 
     @Override
-    public void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
+    public void getLocationList(String workId, String workCode, String invId, String invCode,
+                                String keyWord, int defaultItemNum, int flag,
                                 boolean isDropDown) {
         mView = getView();
 
         if (TextUtils.isEmpty(workCode) && TextUtils.isEmpty(workId)) {
-            mView.getLocationListFail("获取到工厂信息");
+            mView.loadInventoryFail("获取到工厂信息");
             return;
         }
 
@@ -77,20 +79,22 @@ public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectV
                             @Override
                             public void onNext(List<String> list) {
                                 if (mView != null) {
-                                    mView.getLocationListSuccess(list, isDropDown);
+                                    mView.showInventory(list);
                                 }
                             }
 
                             @Override
                             public void onError(Throwable t) {
                                 if (mView != null) {
-                                    mView.getLocationListFail(t.getMessage());
+                                    mView.loadInventoryFail(t.getMessage());
                                 }
                             }
 
                             @Override
                             public void onComplete() {
-
+                                if(mView != null) {
+                                    mView.loadInventoryComplete(isDropDown);
+                                }
                             }
                         });
         addSubscriber(subscriber);
@@ -144,6 +148,33 @@ public class ASNCollectPresenterImp extends BaseCollectPresenterImp<IASNCollectV
         addSubscriber(subscriber);
     }
 
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
 
     @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,

@@ -28,16 +28,9 @@ public class CQYTLACollectFragment extends LACollectFragment {
     EditText etQuantityCustom;
 
     @Override
-    public void handleBarCodeScanResult(String type, String[] list) {
-        super.handleBarCodeScanResult(type, list);
-
-    }
-
-    @Override
     public int getContentId() {
         return R.layout.cqyt_fragment_la_collect;
     }
-
 
 
     @Override

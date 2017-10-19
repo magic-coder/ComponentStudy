@@ -163,6 +163,7 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         if (cache != null) {
             tvTotalQuantity.setText(cache.totalQuantity);
             tvTotalQuantityCustom.setText(cache.totalQuantityCustom);
+
             //查询该行的locationInfo
             List<LocationInfoEntity> locationInfos = cache.locationList;
             if (locationInfos == null || locationInfos.size() == 0) {
@@ -174,10 +175,23 @@ public class MCQLDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
             //如果有缓存，但是可能匹配不上
             tvLocQuantity.setText("0");
             tvLocQuantityCustom.setText("0");
+            boolean isMatch = false;
+            String locationType = "";
+            if(isOpenLocationType) {
+                locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            }
+
             //匹配每一个缓存
             for (LocationInfoEntity info : locationInfos) {
-                if (isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
-                        batchFlag.equalsIgnoreCase(info.batchFlag) : location.equalsIgnoreCase(info.locationCombine)) {
+                if (isOpenLocationType) {
+                    isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
+                            batchFlag.equalsIgnoreCase(info.batchFlag) && locationType.equalsIgnoreCase(info.locationType) :
+                            location.equalsIgnoreCase(info.locationCombine) && locationType.equalsIgnoreCase(info.locationType);
+                } else {
+                    isMatch = isOpenBatchManager ? location.equalsIgnoreCase(info.locationCombine) &&
+                            batchFlag.equalsIgnoreCase(info.batchFlag) : location.equalsIgnoreCase(info.locationCombine);
+                }
+                if (isMatch) {
                     tvLocQuantity.setText(info.quantity);
                     tvLocQuantityCustom.setText(info.quantityCustom);
                     break;

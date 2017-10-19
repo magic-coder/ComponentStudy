@@ -8,11 +8,14 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzck.base_dsn_edit.IDSNEditPresenter;
 import com.richfit.sdk_wzck.base_dsn_edit.IDSNEditView;
 
 import java.util.List;
 import java.util.Map;
+
+import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
  * Created by monday on 2017/2/27.
@@ -71,6 +74,35 @@ public class DSNEditPresenterImp extends BaseEditPresenterImp<IDSNEditView>
                     }
                 });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
     }
 
     @Override

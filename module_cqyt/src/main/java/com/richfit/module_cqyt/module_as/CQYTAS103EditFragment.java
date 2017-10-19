@@ -108,7 +108,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
             showMessage("件数不合理");
             return false;
         }
-
         //处理到货数量
         final float quantityV = CommonUtil.convertToFloat(getString(etQuantity), 0.0F);
         final float arrivalQuantityV = CommonUtil.convertToFloat(getString(etArrivalQuantity), 0.0F);
@@ -118,10 +117,6 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         }
         if (Float.compare(quantityV, arrivalQuantityV) > 0.0f) {
             showMessage("输入实收数量不能大于到货数量");
-            return false;
-        }
-        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
             return false;
         }
         return super.checkCollectedDataBeforeSave();

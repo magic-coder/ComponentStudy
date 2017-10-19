@@ -9,6 +9,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.widget.RichAutoEditText;
+import com.richfit.data.constant.Global;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_cwtz.head.LAHeadFragment;
 
@@ -58,8 +59,8 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
         RxTextView.textChanges(etProjectNum)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null && mAutoDatas.size() > 0 && !filterKeyWord(str))
-                .subscribe(a -> mPresenter.getProjectNumList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
-                        getString(etProjectNum), 100, 0, mBizType));
+                .subscribe(a -> mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
+                        getString(etProjectNum), 100, 0, Global.PROJECT_NUM_DATA));
     }
 
     @Override
@@ -113,8 +114,8 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
     @Override
     public void loadInvsComplete() {
         //不能够选择完工厂后直接记载库存地点和项目编号，因为并发范围数据出现异常
-        mPresenter.getProjectNumList(mWorks.get(spWork.getSelectedItemPosition()).workCode,
-                getString(etProjectNum), 100, 0, mBizType);
+        mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
+                getString(etProjectNum), 100, 0, Global.PROJECT_NUM_DATA);
     }
 
     @Override

@@ -64,7 +64,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         etRecBatchFlag.setEnabled(false);
         //发出工厂改为工厂
         sendWorkName.setText("工厂");
-
         //显示仓储类型
         llLocationType.setVisibility(View.VISIBLE);
     }
@@ -110,18 +109,6 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
             showMessage("件数不合理");
             return false;
         }
-
-        if(mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
-            return false;
-        }
-
-
-        if (mLocationTypes == null || mLocationTypes.size() <= 0) {
-            showMessage("未获取到仓储类型");
-            return false;
-        }
-
         return super.checkCollectedDataBeforeSave();
     }
 

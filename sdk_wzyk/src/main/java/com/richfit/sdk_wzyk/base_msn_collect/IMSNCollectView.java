@@ -6,8 +6,10 @@ import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2016/11/20.
@@ -34,6 +36,7 @@ public interface IMSNCollectView extends IBaseCollectView {
      * */
     void showRecLocations(List<String> recLocations);
     void loadRecLocationsFail(String message);
+    void loadRecLocationsComplete();
 
     /**
      * 输入物料获取缓存后，刷新界面
@@ -46,6 +49,9 @@ public interface IMSNCollectView extends IBaseCollectView {
 
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
     /**
      * 检查ERP仓库号是否一致
      */

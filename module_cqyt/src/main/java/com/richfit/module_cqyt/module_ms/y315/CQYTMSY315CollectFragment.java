@@ -66,12 +66,6 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
         llLocationType.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void initEvent() {
-        super.initEvent();
-        /*监听上架仓位点击事件(注意如果是必检物资该监听无效)*/
-        etLocation.setOnRichAutoEditTouchListener((view, location) -> getTransferSingle(getString(etBatchFlag), location));
-    }
 
     //增加危化品物料的拦截
     @Override
@@ -93,7 +87,6 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
         super.bindCommonCollectUI();
     }
 
-    //重写该方法的目的是获取累计件数缓存以及件数缓存。另外就是增加存储类型匹配条件
     @Override
     public void onBindCache(RefDetailEntity cache, String batchFlag, String location) {
         super.onBindCache(cache, batchFlag, location);

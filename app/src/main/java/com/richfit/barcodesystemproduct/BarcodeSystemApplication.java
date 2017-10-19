@@ -87,6 +87,7 @@ public class BarcodeSystemApplication extends BaseApplication {
                     //大连石化
                     baseUrl = "http://10.82.53.52:8080/ktbk_middleware/MobileProcess/";
                     break;
+                   //煤层气
                 case Global.MCQ:
                     baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
 //                    baseUrl = "http://10.88.53.5:8080/gdbk_middleware/MobileProcess/";

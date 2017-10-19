@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/root_id"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/detail_parent_node_bg"
+    android:orientation="horizontal">
+
+     <include
+         android:id="@id/tmp"
+         layout="@layout/wzrk_item_asy_detail_parent_header"/>
+
+    <View style="@style/ItemSeperatorLayout" />
+
+    <TextView
+        android:id="@id/xngd_tv_total_money"
+        style="@style/TableHeaderStyle"
+        android:layout_width="80dp"
+        android:text="@string/xngd_total_money" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+</LinearLayout>

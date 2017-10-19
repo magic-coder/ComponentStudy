@@ -86,6 +86,11 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
             final String location = list[0];
             etCheckLocation.setText("");
             etCheckLocation.setText(location);
+        } else if (list != null && list.length == 2 & !cbSingle.isChecked()) {
+            final String location = list[0];
+            etCheckLocation.setText("");
+            etCheckLocation.setText(location);
+            return;
         }
     }
 
@@ -384,6 +389,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
         result.invId = mRefData.invId;
         result.materialId = data.materialId;
         result.quantity = getString(etQuantity);
+        result.locationType = mRefData.locationType;
         result.modifyFlag = "N";
         return result;
     }

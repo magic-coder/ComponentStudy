@@ -643,5 +643,40 @@ CREATE TABLE mtl_internal_order (
   PRIMARY KEY  ("ID")
 );
 
+CREATE TABLE "base_business_scope" (
+  "ID" varchar(32) NOT NULL,
+  "BUSINESS_SCOPE" varchar(32) ,
+  "BUSINESS_SCOPE_DESC" varchar(300) ,
+  PRIMARY KEY ("ID")
+);
+
+
+CREATE TABLE "base_customer" (
+  "ID" varchar(32) ,
+  "COMPANY_ID" varchar(32) ,
+  "CUSTOMER" varchar(32),
+  "CUSTOMER_DESC" varchar(300),
+  PRIMARY KEY ("ID")
+);
+
+
+
+CREATE TABLE "base_move_cause" (
+  "ID" varchar(32) NOT NULL ,
+  "MOVE_TYPE" varchar(10) ,
+  "MOVE_CAUSE_CODE" varchar(10) ,
+  "MOVE_CAUSE_DESC" varchar(100) ,
+  PRIMARY KEY ("ID")
+);
+
+CREATE TABLE "base_profit_center" (
+  "ID" varchar(32) ,
+  "COMPANY_ID" varchar(32) ,
+  "PROFIT_CENTER" varchar(100) ,
+  "PROFIT_CENTER_DESC" varchar(200) ,
+  PRIMARY KEY ("ID")
+);
+
+
 
 

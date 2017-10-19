@@ -157,6 +157,7 @@ public class SplashPresenterImp extends BasePresenter<ISplashView>
         }
         final String savePath = file.getAbsolutePath();
         final String url = BarcodeSystemApplication.baseUrl + "downloadInitialDB?macAddress=" + Global.MAC_ADDRESS;
+
         L.e("下载基础数据库的url = " + url);
 
         ResourceObserver<DownloadStatus> observer = mRxDownload.download(url, dbName, savePath)

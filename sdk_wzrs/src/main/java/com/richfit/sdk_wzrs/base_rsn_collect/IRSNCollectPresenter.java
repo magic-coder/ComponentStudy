@@ -10,7 +10,8 @@ import java.util.Map;
  */
 
 public interface IRSNCollectPresenter extends IBaseCollectPresenter<IRSNCollectView> {
-
+    void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
+                         boolean isDropDown);
     /**
      * 获取库存地点列表
      *
@@ -31,18 +32,9 @@ public interface IRSNCollectPresenter extends IBaseCollectPresenter<IRSNCollectV
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
 
-    /**
-     * 获取库存信息
-     *
-     * @param workId:工厂id
-     * @param invId：库存地点id
-     * @param materialId：物料id
-     * @param location：仓位
-     * @param batchFlag:批次
-     * @param invType：库存类型
-     */
-    void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
-                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap,boolean isDropDown);
+    void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                       String location,Map<String,Object> extraMap);
+
+    void getDictionaryData(String... codes);
 
 }

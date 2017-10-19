@@ -52,7 +52,7 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
     @BindView(com.richfit.common_lib.R2.id.ll_location_type)
     protected LinearLayout llLocationType;
     @BindView(com.richfit.common_lib.R2.id.sp_location_type)
-    protected Spinner spLocationType;
+    Spinner spLocationType;
 
 
     /*工厂*/
@@ -67,6 +67,16 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
     protected List<SimpleEntity> mLocationTypes;
     /*是否启用仓储类型*/
     protected boolean isOpenLocationType = false;
+
+    @Override
+    public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type,list);
+        if (list != null && list.length == 2 && isOpenLocationType) {
+            String locationType = list[Global.LOCATION_TYPE_POS];
+            //自动选择仓储类型
+            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+        }
+    }
 
     @Override
     protected int getContentId() {

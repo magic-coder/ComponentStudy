@@ -69,7 +69,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     @BindView(R2.id.ll_location_type)
     protected LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
-    protected Spinner spLocationType;
+    Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;

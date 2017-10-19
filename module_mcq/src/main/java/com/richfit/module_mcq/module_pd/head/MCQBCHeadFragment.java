@@ -25,11 +25,6 @@ public class MCQBCHeadFragment extends BCHeadFragment {
     private final String storageNum = "1Q0";
 
     @Override
-    public int getContentId() {
-        return R.layout.mcq_fragment_pd_head;
-    }
-
-    @Override
     public void initView() {
         resetUI();
         super.initView();

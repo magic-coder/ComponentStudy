@@ -43,12 +43,10 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
             clearCommonUI(etLocation);
             etLocation.setText(location);
         } else if (list != null && list.length == 2 && isOpenLocationType) {
+            //如果扫描的是带仓储类型的仓位条码，依然要处理仓位
             String location = list[0];
-            String locationType = list[Global.LOCATION_TYPE_POS];
             clearCommonUI(etLocation);
             etLocation.setText(location);
-            //自动选择仓储类型
-            UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
         }
     }
 

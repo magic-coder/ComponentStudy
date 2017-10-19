@@ -121,7 +121,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @BindView(R2.id.ll_location_type)
     protected LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
-    protected Spinner spLocationType;
+    Spinner spLocationType;
 
 
     /*当前匹配的行明细（行号）*/
@@ -200,7 +200,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             //自动选择仓储类型
             UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
             getTransferSingle(getString(etBatchFlag), location);
-            return;
         }
     }
 
@@ -228,7 +227,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         //2017年10月17日新增对上架仓位的点击监听
         //点击行家仓位加载该仓位的缓存
         etLocation.setOnRichAutoEditTouchListener((view, location) -> {
-            if(!isNLocation) {
+            if (!isNLocation) {
                 hideKeyboard(etLocation);
                 getTransferSingle(getString(etBatchFlag), location);
             }
@@ -609,7 +608,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             mLocationList.clear();
             mLocationAdapter.notifyDataSetChanged();
         }
-
         spInv.setEnabled(true);
     }
 
@@ -650,12 +648,16 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                 isBatchValidate = !isOpenBatchManager ? true : ((TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) ||
                         (!TextUtils.isEmpty(cachedItem.batchFlag) && !TextUtils.isEmpty(batchFlag) && batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
-                String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                String locationType = "";
+                if (isOpenLocationType) {
+                    locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+                }
 
                 //从长庆开始增加仓储类型的匹配条件
                 if (!isOpenBatchManager) {
                     //没有打开批次管理，直接使用仓位匹配
-                    isMatch = isOpenLocationType ? location.equalsIgnoreCase(cachedItem.location) && locationType.equalsIgnoreCase(cachedItem.locationType) :
+                    isMatch = isOpenLocationType ? location.equalsIgnoreCase(cachedItem.location) &&
+                            locationType.equalsIgnoreCase(cachedItem.locationType) :
                             location.equalsIgnoreCase(cachedItem.location);
                 } else {
                     if (TextUtils.isEmpty(cachedItem.batchFlag) && TextUtils.isEmpty(batchFlag)) {
@@ -905,6 +907,10 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @Override
     public void _onPause() {
         super._onPause();
+        //将仓储类型回到原始位置
+        if (spLocationType.getAdapter() != null) {
+            spLocationType.setSelection(0);
+        }
         clearAllUI();
     }
 

@@ -85,8 +85,8 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         //选择工厂获取供应商
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0 && llSupplier.getVisibility() != View.GONE)
-                .subscribe(position -> mPresenter.getSupplierList(mWorks.get(position.intValue()).workCode,
-                        getString(etSupplier), 20, 0));
+                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position.intValue()).workCode,null,
+                        getString(etSupplier), 20,0, Global.SUPPLIER_DATA));
 
         //供应商
         RxView.clicks(etSupplier)
