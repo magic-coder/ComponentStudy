@@ -21,6 +21,7 @@ import com.richfit.module_cqyt.adapter.XJDetailAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/7/3.
@@ -36,6 +37,7 @@ public class CQYTWHXJCollectFragment extends BaseCollectFragment<CQYTWHXJCollect
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
+        super.handleBarCodeScanResult(type, list);
         if (list != null && list.length <= 2) {
             final String location = list[0];
             etInsLocation.setText("");
@@ -83,8 +85,10 @@ public class CQYTWHXJCollectFragment extends BaseCollectFragment<CQYTWHXJCollect
 
     @Override
     public void initDataLazily() {
+        Map<String,Object> extraMap = new HashMap<>();
+        extraMap.put("inspectionType",mRefData.inspectionType);
         mPresenter.getTransferInfo(null, "", mBizType, "", Global.USER_ID,
-                "", "", "", "");
+                "", "", "", "",extraMap);
     }
 
 
@@ -152,8 +156,10 @@ public class CQYTWHXJCollectFragment extends BaseCollectFragment<CQYTWHXJCollect
         showMessage(message);
         clearAllUI();
         //调用缓存
+        Map<String,Object> extraMap = new HashMap<>();
+        extraMap.put("inspectionType",mRefData.inspectionType);
         mPresenter.getTransferInfo(null, "", mBizType, "", Global.USER_ID,
-                "", "", "", "");
+                "", "", "", "",extraMap);
     }
 
     @Override
@@ -189,8 +195,10 @@ public class CQYTWHXJCollectFragment extends BaseCollectFragment<CQYTWHXJCollect
     public void deleteNodeSuccess(int position) {
         showMessage("删除成功");
         //获取最新缓存，刷新界面
+        Map<String,Object> extraMap = new HashMap<>();
+        extraMap.put("inspectionType",mRefData.inspectionType);
         mPresenter.getTransferInfo(null, "", mBizType, "", Global.USER_ID,
-                "", "", "", "");
+                "", "", "", "",extraMap);
     }
 
     @Override

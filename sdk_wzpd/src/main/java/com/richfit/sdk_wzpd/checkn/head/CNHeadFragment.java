@@ -64,13 +64,13 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
     @BindView(R2.id.ll_storage_num_level)
     protected LinearLayout llStorageNumLevel;
 
+	 //库存级
+    @BindView(R2.id.btn_warehouse_level)
+    protected   RadioButton rbWarehouseLevel;
+
     //仓位级
     @BindView(R2.id.btn_storage_num_level)
     protected RadioButton rbStorageNumLevel;
-
-    //库存级
-    @BindView(R2.id.btn_warehouse_level)
-    protected   RadioButton rbWarehouseLevel;
 
     @BindView(R2.id.sp_work)
     protected  Spinner spWork;

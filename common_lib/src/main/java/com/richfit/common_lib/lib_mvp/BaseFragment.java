@@ -402,6 +402,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         if (views == null || views.length == 0)
             return;
         for (View view : views) {
+            if(view == null)
+                continue;
             view.setVisibility(visibility);
         }
     }
@@ -459,6 +461,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
      * @return
      */
     protected RefDetailEntity getLineData(String lineNum) {
+        if(TextUtils.isEmpty(lineNum))
+            return null;
         int lineIndex = getIndexByLineNum(lineNum);
         if (lineIndex < 0) {
             mRefData.billDetailList.get(0);

@@ -580,19 +580,19 @@ public class LocalRepositoryImp implements ILocalRepository {
     @Override
     public Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType,
                                                      String refType, String userId, String workId,
-                                                     String invId, String recWorkId, String recInvId) {
+                                                     String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
         if (TextUtils.isEmpty(bizType)) {
             return Flowable.error(new Throwable("未获取到缓存"));
         }
         return Flowable.just(bizType)
                 .flatMap(type -> Flowable.just(getTransferInfoInner(recordNum, refCodeId, type,
-                        refType, userId, workId, invId, recWorkId, recInvId)))
+                        refType, userId, workId, invId, recWorkId, recInvId,extraMap)))
                 .flatMap(refData -> processReferenceError(refData, bizType, "未获取到缓存"));
     }
 
     private ReferenceEntity getTransferInfoInner(String recordNum, String refCodeId, String businessType,
                                                  String refType, String userId, String workId, String invId,
-                                                 String recWorkId, String recInvId) {
+                                                 String recWorkId, String recInvId,Map<String,Object> extraMap) {
 
         ReferenceEntity refData = null;
         switch (businessType) {
@@ -612,7 +612,7 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "113"://入库通知单
             case "114"://出库通知单
                 refData = mTransferServiceDao.getBusinessTransferInfoRef(recordNum, refCodeId, businessType, refType,
-                        userId, workId, invId, recWorkId, recInvId);
+                        userId, workId, invId, recWorkId, recInvId,extraMap);
                 break;
             case "16":// 其他入库-无参考
             case "25":// 其他出库-无参考
@@ -632,7 +632,7 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "93":// 代管料退库-HRM
             case "94":// 代管料调拨-HRM
                 refData = mTransferServiceDao.getBusinessTransferInfo(recordNum, refCodeId, businessType, refType,
-                        userId, workId, invId, recWorkId, recInvId);
+                        userId, workId, invId, recWorkId, recInvId,extraMap);
                 break;
         }
         return refData;

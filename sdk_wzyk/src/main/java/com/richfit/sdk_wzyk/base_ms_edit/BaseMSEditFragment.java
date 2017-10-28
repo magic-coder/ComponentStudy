@@ -90,7 +90,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
-
+    private boolean isOpenRecLocationType = false;
     protected String mRefLineId;
     protected String mLocationId;
     protected int mPosition;
@@ -148,6 +148,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
     @Override
     public void initData() {
         isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
@@ -417,6 +418,8 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         if (isOpenLocationType) {
             //仓储类型
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
+        if(isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -480,9 +483,14 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         if (mLocationTypes != null && isOpenLocationType) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);
-            queryParam.extraMap.put("recLocationType",recLocationType);
+
+        }
+        if (mRecLocationTypes != null && isOpenRecLocationType) {
+            if (queryParam.extraMap == null)
+                queryParam.extraMap = new HashMap<>();
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
     }

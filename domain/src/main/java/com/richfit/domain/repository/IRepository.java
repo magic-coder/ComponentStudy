@@ -78,7 +78,7 @@ public interface IRepository {
      * @param recInvId：接搜库存地点id
      */
     Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType, String refType, String userId,
-                                              String workId, String invId, String recWorkId, String recInvId);
+                                              String workId, String invId, String recWorkId, String recInvId,Map<String,Object> extraMap);
 
     /**
      * 数据采集界面获取单条缓存。

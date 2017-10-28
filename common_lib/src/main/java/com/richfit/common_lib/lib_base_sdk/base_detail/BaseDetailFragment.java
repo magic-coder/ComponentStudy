@@ -123,7 +123,7 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         //开始获取整单缓存，注意由于在获取缓存之前进行了必要的检查，而这里不管是否有参考
         //都调用的是同一个接口，所以在具体的业务时，子类必须检验响应的参数。
         mPresenter.getTransferInfo(mRefData, refCodeId, bizType, refType,
-                Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId, mRefData.recInvId);
+                Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId, mRefData.recInvId,null);
     }
 
     /**

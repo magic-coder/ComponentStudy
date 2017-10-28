@@ -10,6 +10,7 @@ import android.widget.Spinner;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
@@ -137,9 +138,6 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
-        //是否应急
-        //修改成明细取该字段
-        result.invFlag = mRefData.billDetailList.get(mPosition).invFlag;
         //全检数量
         result.allQuantity = getString(etAllQuantity);
         //抽检数量
@@ -153,7 +151,9 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         }
         //处理情况
         result.processResult = getString(etProcessResult);
-        result.invFlag = mRefData.invFlag;
+        //是否应急
+        //修改成明细取该字段
+        result.invFlag = mRefData.billDetailList.get(mPosition).invFlag;
         result.specialInvFlag = mRefData.billDetailList.get(mPosition).specialInvFlag;
         result.specialInvNum = mRefData.billDetailList.get(mPosition).specialInvNum;
         result.projectNum = mRefData.projectNum;
@@ -164,10 +164,11 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
+        RefDetailEntity lineData = mRefData.billDetailList.get(mPosition);
         param.queryType = "03";
         param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("invFlag", lineData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
         extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;

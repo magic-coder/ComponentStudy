@@ -2,9 +2,13 @@ package com.richfit.module_xngd.module_ds.dsy;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
+import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_ds.dsy.imp.XNGDSLLDetailPresenterImp;
 import com.richfit.sdk_wzck.base_ds_detail.BaseDSDetailFragment;
 
@@ -30,6 +34,15 @@ public class XNGDDSYDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPr
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+    }
+
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int viewType) {
+        if(viewType == Global.CHILD_NODE_HEADER_TYPE||
+                viewType == Global.CHILD_NODE_ITEM_TYPE) {
+            holder.setVisible(R.id.tv_location_type, false);
+        }
     }
 
     @Override

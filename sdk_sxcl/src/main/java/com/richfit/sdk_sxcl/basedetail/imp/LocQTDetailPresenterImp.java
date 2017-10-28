@@ -38,11 +38,12 @@ public class LocQTDetailPresenterImp extends BaseDetailPresenterImp<ILocQTDetail
 
     @Override
     public void getTransferInfo(final ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                                String userId, String workId, String invId, String recWorkId, String recInvId) {
+                                String userId, String workId, String invId, String recWorkId, String recInvId,
+                                Map<String,Object> extraMap) {
         mView = getView();
         ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
                 mRepository.getTransferInfo("", refCodeId, bizType, refType,
-                        "", "", "", "", "")
+                        "", "", "", "", "",extraMap)
                         .zipWith(Flowable.just(refData), (cache, data) -> createNodesByCache(data, cache))
                         .flatMap(nodes -> sortNodes(nodes))
                         .compose(TransformerHelper.io2main())

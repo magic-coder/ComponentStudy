@@ -23,7 +23,8 @@ public interface IBaseDetailPresenter<V extends IBaseDetailView> extends IPresen
      * @param refType：单据类型
      */
     void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                         String userId, String workId, String invId, String recWorkId, String recInvId);
+                         String userId, String workId, String invId, String recWorkId, String recInvId,
+                         Map<String,Object> extraMap);
 
     /**
      * 删除一个子节点

@@ -1211,10 +1211,10 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                     sb.append("'").append(authOrgs.get(i)).append("'").append(i == authOrgs.size() - 1 ? "" : ",");
                 }
                 sb.append(" ) ");
-                sb.append(" and org_level = ? ");
+                sb.append(" and org_level = '2' ");
             }
             sb.append(")");
-            cursor = db.rawQuery(sb.toString(), new String[]{"3", "2"});
+            cursor = db.rawQuery(sb.toString(), new String[]{"3"});
             list.add("请选择");
             while (cursor.moveToNext()) {
                 String storageNum = cursor.getString(0);

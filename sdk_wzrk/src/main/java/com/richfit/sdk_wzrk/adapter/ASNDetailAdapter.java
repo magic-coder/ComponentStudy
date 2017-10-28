@@ -29,7 +29,7 @@ public class ASNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
-                .setText(R.id.materialUnit,item.unit)
+                .setText(R.id.materialUnit, item.unit)
                 //批次
                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 //库存地点
@@ -37,7 +37,8 @@ public class ASNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 //上架仓位
                 .setText(R.id.location, item.location)
                 //入库数量
-                .setText(R.id.quantity, item.quantity);
+                .setText(R.id.quantity, item.quantity)
+                .setText(R.id.tv_location_type, item.locationType);
     }
 
     public ArrayList<String> getLocations(int position, int flag) {

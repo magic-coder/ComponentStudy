@@ -174,8 +174,8 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
     public void checkAppVersion(UpdateEntity info) {
         //获取当前的版本号
         String currentVersionName = CommonUtil.getCurrentVersionName(this.getApplicationContext());
-        float versionName = Float.parseFloat(currentVersionName);
-        float appVersion = Float.parseFloat(info.appVersion);
+        float versionName = CommonUtil.convertToFloat(currentVersionName,0.0F);
+        float appVersion = CommonUtil.convertToFloat(info.appVersion,0.0F);
         Log.e("yff", "versionName = " + versionName + "; appVersion = " + appVersion);
         if (appVersion > versionName) {
             //提示用户需要更新

@@ -31,14 +31,6 @@ public class BarcodeSystemApplication extends BaseApplication {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-
-        //只有主进程以及SDK版本5.0以下才走。
-//        if (isMainProcess(BarcodeSystemApplication.this) && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-//            if (!dexOptDone(base)) {
-//                preLoadDex(base);
-//            }
-//            MultiDex.install(this);
-//        }
         MultiDex.install(this);
     }
 

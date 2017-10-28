@@ -29,13 +29,14 @@ public class DSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
                 .setText(R.id.materialNum, item.materialNum)
                 .setText(R.id.materialDesc, item.materialDesc)
                 .setText(R.id.materialGroup, item.materialGroup)
-                .setText(R.id.materialUnit,item.unit)
+                .setText(R.id.materialUnit, item.unit)
                 .setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 .setText(R.id.inv, item.invCode)
                 .setText(R.id.location, item.location)
                 .setText(R.id.quantity, item.totalQuantity)
                 .setText(R.id.specialInvFlag, item.specialInvFlag)
-                .setText(R.id.specialInvNum, item.specialInvNum);
+                .setText(R.id.specialInvNum, item.specialInvNum)
+                .setText(R.id.tv_location_type, item.locationType);
     }
 
     public ArrayList<String> getLocations(int position, int flag) {

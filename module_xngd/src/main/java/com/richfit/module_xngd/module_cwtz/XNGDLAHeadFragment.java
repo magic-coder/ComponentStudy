@@ -10,11 +10,13 @@ import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_xngd.R;
 import com.richfit.sdk_cwtz.head.LAHeadFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -119,9 +121,14 @@ public class XNGDLAHeadFragment extends LAHeadFragment {
     }
 
     @Override
-    public void showProjectNums(ArrayList<String> projectNums) {
+    public void showProjectNums(Map<String,List<SimpleEntity>> map) {
+        List<SimpleEntity> list = map.get(Global.PROJECT_NUM_DATA);
+        if(list == null || list.size() == 0)
+            return;
         mAutoDatas.clear();
-        mAutoDatas.addAll(projectNums);
+        for (SimpleEntity item : list) {
+            mAutoDatas.add(item.code + "_" + item.name);
+        }
         if (mAutoAdapter == null) {
             mAutoAdapter = new ArrayAdapter<>(mActivity,
                     android.R.layout.simple_dropdown_item_1line, mAutoDatas);

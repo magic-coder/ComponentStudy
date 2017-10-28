@@ -136,7 +136,7 @@ public class MSHeadPresenterImp extends BaseHeadPresenterImp<IMSHeadView>
     @Override
     public void getTransferInfo(final ReferenceEntity refData, String refCodeId, String bizType, String refType) {
         mView = getView();
-        ResourceSubscriber<ReferenceEntity> subscriber = mRepository.getTransferInfo("", refCodeId, bizType, refType, "", "", "", "", "")
+        ResourceSubscriber<ReferenceEntity> subscriber = mRepository.getTransferInfo("", refCodeId, bizType, refType, "", "", "", "", "",null)
                 .zipWith(Flowable.just(refData), (cache, data) -> createHeaderByCache(cache, data))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new ResourceSubscriber<ReferenceEntity>() {

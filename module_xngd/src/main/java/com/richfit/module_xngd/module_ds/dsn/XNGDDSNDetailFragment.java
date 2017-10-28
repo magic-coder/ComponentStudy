@@ -3,9 +3,14 @@ package com.richfit.module_xngd.module_ds.dsn;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.View;
 
+import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_ds.dsn.imp.XNGDDSNDetailPresenterImp;
 import com.richfit.sdk_wzck.base_dsn_detail.BaseDSNDetailFragment;
 
@@ -27,6 +32,15 @@ public class XNGDDSNDetailFragment extends BaseDSNDetailFragment<XNGDDSNDetailPr
     protected void initVariable(@Nullable Bundle savedInstanceState) {
 
     }
+
+   @Override
+   public void initView() {
+       super.initView();
+       View tvLocationType = mView.findViewById(R.id.tv_location_type);
+       if(tvLocationType != null) {
+           tvLocationType.setVisibility(View.GONE);
+       }
+   }
 
     @Override
     public void initEvent() {

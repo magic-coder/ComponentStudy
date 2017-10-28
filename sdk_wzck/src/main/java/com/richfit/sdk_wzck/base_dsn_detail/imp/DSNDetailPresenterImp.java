@@ -52,11 +52,11 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
      */
     @Override
     public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
-                                String invId, String recWorkId, String recInvId) {
+                                String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
         mView = getView();
         ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
                 mRepository.getTransferInfo("", refCodeId, bizType, refType, userId, workId, invId,
-                        recWorkId, recInvId)
+                        recWorkId, recInvId,extraMap)
                         .map(data -> trans2Detail(data))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {

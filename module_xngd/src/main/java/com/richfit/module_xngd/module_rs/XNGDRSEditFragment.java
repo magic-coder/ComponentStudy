@@ -79,11 +79,6 @@ public class XNGDRSEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         if (!super.checkCollectedDataBeforeSave())
             return false;
 
-        if(TextUtils.isEmpty(getString(etMoney))) {
-            showMessage("请输入金额");
-            return false;
-        }
-
         float totalMoneyV = CommonUtil.convertToFloat(getString(tvTotalMoney), 0.0f);
         float collectedMoney = CommonUtil.convertToFloat(mMoney, 0.0f);
         float moneyV = CommonUtil.convertToFloat(getString(etMoney), 0.0f);

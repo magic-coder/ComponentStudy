@@ -113,6 +113,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
+    private boolean isOpenRecLocationType = false;
     /*ERP仓库号是否一致，对于ERP仓库号一致的物料，必须输入接收仓位，否者不能输入。但是前提
     * 是必须先知道是否打开了WM。如果没有打开那么不需要查询*/
     protected boolean isOpenWM = true;
@@ -248,12 +249,23 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 });
 
         //选择仓储类型加载库存(这里不增加过来>0条件的目标是当用户从>0切回<=0时需要清除一些字段)
+
         RxAdapterView.itemSelections(spLocationType)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(pos -> spSendInv.getAdapter() != null && spSendInv.getSelectedItemPosition() > 0)
+                .filter(pos -> spSendInv.getAdapter() != null && spSendInv.getSelectedItemPosition() > 0
+                        && isOpenLocationType)
                 //注意工厂和库存地点必须使用行里面的
                 .subscribe(position -> loadInventory(spSendInv.getSelectedItemPosition()));
+
+
+        RxAdapterView.itemSelections(spRecLocationType)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(pos -> spSendInv.getAdapter() != null && spSendInv.getSelectedItemPosition() > 0
+                        && isOpenRecLocationType)
+                //注意工厂和库存地点必须使用行里面的
+                .subscribe(position -> loadRecInventoryInfo());
 
         //选择发出仓位，查询历史仓位数量以及历史接收仓位
         RxAdapterView
@@ -285,6 +297,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     public void initData() {
         //检测是否打开仓储类型,false表示不打开
         isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
     }
 
 
@@ -459,7 +472,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     }
 
     /**
-     * 加载库存成功
+     * 加载发出库存成功
      */
     @Override
     public void showInventory(List<InventoryEntity> list) {
@@ -487,6 +500,24 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
      */
     @Override
     public void loadInventoryComplete() {
+        //如果打开了接收仓储类型，那么由仓储类型触发加载接收库存
+        if(isOpenRecLocationType && TextUtils.isEmpty(mAutoLocation)) {
+            return;
+        }
+        //加载接收库存
+        loadRecInventoryInfo();
+        //如果是扫描带仓储类型的仓位，那么这里自动匹配仓储类型
+        if (!isOpenRecLocationType && TextUtils.isEmpty(mAutoLocation)) {
+            return;
+        }
+        //自动匹配下架仓位，并获取缓存
+        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
+    }
+
+    /**
+     * 加载接收库存
+     */
+    private void loadRecInventoryInfo() {
         //开始加载接收的库存
         if (mRefData == null) {
             showMessage("请先在抬头界面选择合适的移库数据");
@@ -556,23 +587,11 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         }
         if (tmp.size() > 0)
             setAutoCompleteConfig(autoRecLoc, tmp, autoRecLoc.getWidth());
-
-        //如果是扫描带仓储类型的仓位，那么这里自动匹配仓储类型
-        if (TextUtils.isEmpty(mAutoLocation)) {
-            return;
-        }
-        //自动匹配下架仓位，并获取缓存
-        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
     }
 
     @Override
     public void loadRecLocationsComplete() {
-        //如果是扫描带仓储类型的仓位，那么这里自动匹配仓储类型
-        if (TextUtils.isEmpty(mAutoLocation)) {
-            return;
-        }
-        //自动匹配下架仓位，并获取缓存
-        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
+
     }
 
     /**
@@ -830,6 +849,8 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 "Y" : "N";
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
+        if(isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -936,9 +957,14 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         if (mLocationTypes != null && isOpenLocationType) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);
-            queryParam.extraMap.put("recLocationType",recLocationType);
+
+        }
+        if (mRecLocationTypes != null && isOpenRecLocationType) {
+            if (queryParam.extraMap == null)
+                queryParam.extraMap = new HashMap<>();
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
     }

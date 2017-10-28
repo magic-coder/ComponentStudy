@@ -27,7 +27,7 @@ public class MSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
         holder.setText(R.id.materialNum, item.materialNum);
         holder.setText(R.id.materialDesc, item.materialDesc);
         holder.setText(R.id.materialGroup, item.materialGroup);
-        holder.setText(R.id.materialUnit,item.unit);
+        holder.setText(R.id.materialUnit, item.unit);
         //发出库位
         holder.setText(R.id.sendInv, item.invCode);
         //发出仓位
@@ -42,7 +42,8 @@ public class MSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
         holder.setText(R.id.recBatchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.recBatchFlag) ? "" : item.recBatchFlag);
         //特殊库存
         holder.setText(R.id.specialInvFlag, item.specialInvFlag)
-                .setText(R.id.specialInvNum, item.specialInvNum);
+                .setText(R.id.specialInvNum, item.specialInvNum)
+                .setText(R.id.tv_location_type, item.locationType);
     }
 
     /**

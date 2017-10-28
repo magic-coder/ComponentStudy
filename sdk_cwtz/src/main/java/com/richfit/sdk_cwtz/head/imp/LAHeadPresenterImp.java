@@ -137,16 +137,15 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
     @Override
     public void getAutoComList(String workCode,Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String bizType) {
         mView = getView();
-        ResourceSubscriber<ArrayList<String>> subscriber =
+        ResourceSubscriber<Map<String,List<SimpleEntity>>> subscriber =
                 mRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag, Global.PROJECT_NUM_DATA)
                         .filter(map -> map != null && map.size() > 0)
-                        .map(map -> convert2StrList(map))
                         .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<String>>() {
+                        .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
                             @Override
-                            public void onNext(ArrayList<String> list) {
+                            public void onNext(Map<String,List<SimpleEntity>> map) {
                                 if (mView != null) {
-                                    mView.showProjectNums(list);
+                                    mView.showProjectNums(map);
                                 }
                             }
 
@@ -165,15 +164,5 @@ public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
         addSubscriber(subscriber);
     }
 
-    private ArrayList<String> convert2StrList(Map<String,List<SimpleEntity>> map) {
-        ArrayList<String> strs = new ArrayList<>();
-        List<SimpleEntity> simpleEntities = map.get(Global.GL_ACCOUNT_DATA);
-        if(simpleEntities == null || simpleEntities.size() ==0)
-            return strs;
-        List<SimpleEntity> list = map.get(Global.PROJECT_NUM_DATA);
-        for (SimpleEntity item : list) {
-            strs.add(item.code + "_" + item.name);
-        }
-        return strs;
-    }
+
 }

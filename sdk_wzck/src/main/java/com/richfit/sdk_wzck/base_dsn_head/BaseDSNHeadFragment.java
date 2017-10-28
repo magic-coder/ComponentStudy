@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -47,6 +48,8 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
     @BindView(R2.id.sp_work)
     protected Spinner spWork;
+    @BindView(R2.id.ll_auto_comp)
+    protected LinearLayout llAutoComp;
     @BindView(R2.id.et_auto_comp)
     protected AutoCompleteTextView etAutoComp;
     @BindView(R2.id.tv_auto_comp_name)

@@ -38,11 +38,11 @@ public class RSNDetailPresenterImp extends BaseDetailPresenterImp<IRSNDetailView
 
     @Override
     public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
-                                String invId, String recWorkId, String recInvId) {
+                                String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
         mView = getView();
         ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
                 mRepository.getTransferInfo("", refCodeId, bizType, refType, userId, workId, invId,
-                        recWorkId, recInvId)
+                        recWorkId, recInvId,extraMap)
                         .map(data -> trans2Detail(data))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
@@ -71,8 +71,9 @@ public class RSNDetailPresenterImp extends BaseDetailPresenterImp<IRSNDetailView
     }
 
     @Override
-    public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, int position, String companyCode) {
+    public void deleteNode(String lineDeleteFlag, String transId, String transLineId,
+                           String locationId, String refType, String bizType,
+                           String refLine,String userId,int position, String companyCode) {
         RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
                 locationId, refType, bizType, "", "", position, companyCode)
                 .compose(TransformerHelper.io2main())

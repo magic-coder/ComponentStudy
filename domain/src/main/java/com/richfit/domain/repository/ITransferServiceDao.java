@@ -2,6 +2,8 @@ package com.richfit.domain.repository;
 
 import com.richfit.domain.bean.ReferenceEntity;
 
+import java.util.Map;
+
 /**
  * 获取本地缓存接口
  * Created by monday on 2017/3/29.
@@ -25,7 +27,7 @@ public interface ITransferServiceDao {
      */
     ReferenceEntity getBusinessTransferInfo(String recordNum, String refCodeId, String bizType,
                                             String refType, String userId, String workId,
-                                            String invId, String recWorkId, String recInvId);
+                                            String invId, String recWorkId, String recInvId,Map<String,Object> extraMap);
 
     /**
      * 获取有参考业务的整单缓存
@@ -41,7 +43,7 @@ public interface ITransferServiceDao {
      */
     ReferenceEntity getBusinessTransferInfoRef(String recordNum, String refCodeId, String bizType,
                                                String refType, String userId, String workId,
-                                               String invId, String recWorkId, String recInvId);
+                                               String invId, String recWorkId, String recInvId,Map<String,Object> extraMap);
     /**
      *  获取验收业务的缓存
      * @param refCodeId

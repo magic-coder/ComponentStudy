@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:background="@drawable/detail_child_node_bg">
 
-
-
     <View style="@style/ItemSeperatorLayout" />
 
     <TextView

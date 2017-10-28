@@ -3,6 +3,7 @@ package com.richfit.sdk_wzyk.base_msn_edit;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -89,6 +90,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
+    private boolean isOpenRecLocationType = false;
     protected String mLocationId;
     String mQuantity;
     /*修改前的发出仓位*/
@@ -139,6 +141,13 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
                 //注意工厂和库存地点必须使用行里面的
                 .subscribe(position -> loadInventoryInfo());
 
+        RxAdapterView.itemSelections(spRecLocationType)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(a -> isOpenRecLocationType)
+                //注意工厂和库存地点必须使用行里面的
+                .subscribe(position -> loadRecInventoryInfo());
+
         //点击自动提示控件，显示默认列表
         RxView.clicks(autoRecLoc)
                 .filter(a -> autoRecLoc.getAdapter() != null)
@@ -155,6 +164,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
 
     @Override
     public void initData() {
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -231,6 +242,9 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         showMessage(message);
     }
 
+    /**
+     * 加载发出库存
+     */
     protected void loadInventoryInfo() {
         //拦截住在仓储类型还未初始化就去获取库粗
         if (isOpenLocationType && (spLocationType.getAdapter() == null || mLocationTypes == null ||
@@ -285,6 +299,15 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
      */
     @Override
     public void loadInventoryComplete() {
+        if(isOpenRecLocationType)
+            return;
+        loadRecInventoryInfo();
+    }
+
+    /**
+     * 加载接收库存
+     */
+    private void loadRecInventoryInfo() {
         //开始加载接收的库存
         if (mRefData == null) {
             showMessage("请先在抬头界面选择合适的移库数据");
@@ -528,6 +551,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         result.invType = param.invType;
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
+        if(isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -580,9 +605,14 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         if (mLocationTypes != null && isOpenLocationType) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);
-            queryParam.extraMap.put("recLocationType",recLocationType);
+
+        }
+        if (mRecLocationTypes != null && isOpenRecLocationType) {
+            if (queryParam.extraMap == null)
+                queryParam.extraMap = new HashMap<>();
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
     }

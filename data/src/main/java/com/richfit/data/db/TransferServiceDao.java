@@ -12,6 +12,7 @@ import com.richfit.domain.repository.ITransferServiceDao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/3/29.
@@ -39,7 +40,8 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
     @Override
     public ReferenceEntity getBusinessTransferInfo(String recordNum, String refCodeId, String bizType,
                                                    String refType, String userId, String workId,
-                                                   String invId, String recWorkId, String recInvId) {
+                                                   String invId, String recWorkId, String recInvId,
+                                                   Map<String,Object> extraMap) {
         SQLiteDatabase db = getWritableDB();
         ReferenceEntity refData = new ReferenceEntity();
         String[] selections;
@@ -224,7 +226,8 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
     @Override
     public ReferenceEntity getBusinessTransferInfoRef(String recordNum, String refCodeId, String bizType,
                                                       String refType, String userId, String workId,
-                                                      String invId, String recWorkId, String recInvId) {
+                                                      String invId, String recWorkId, String recInvId,
+                                                      Map<String,Object> extraMap) {
         // 查 transId 条件bizType、refType、refCodeId、createdBy
         ReferenceEntity refData = new ReferenceEntity();
 

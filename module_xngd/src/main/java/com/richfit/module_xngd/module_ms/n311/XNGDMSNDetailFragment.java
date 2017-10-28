@@ -2,9 +2,11 @@ package com.richfit.module_xngd.module_ms.n311;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_ms.n311.imp.XNGDMSN311DetailPresenterImp;
 import com.richfit.sdk_wzyk.base_msn_detail.BaseMSNDetailFragment;
 
@@ -24,6 +26,16 @@ public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<XNGDMSN311Detai
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
 
+    }
+
+    //隐藏仓储类型
+    @Override
+    public void initView() {
+        super.initView();
+        View tvLocationType = mView.findViewById(R.id.tv_location_type);
+        if(tvLocationType != null) {
+            tvLocationType.setVisibility(View.GONE);
+        }
     }
 
     @Override

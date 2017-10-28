@@ -110,6 +110,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected List<SimpleEntity> mRecLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
+    private boolean isOpenRecLocationType = false;
     /*单据行选项*/
     protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
@@ -268,6 +269,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     public void initData() {
         //检测是否打开仓储类型,false表示不打开
         isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
     }
 
 
@@ -589,7 +591,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
                                 batchFlag.equalsIgnoreCase(cachedItem.batchFlag)));
 
                 String locationType = "";
-                if(isOpenLocationType) {
+                if (isOpenLocationType) {
                     locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
                 }
 
@@ -849,6 +851,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         result.invType = param.invType;
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
+        if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -924,9 +928,14 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         if (mLocationTypes != null && isOpenLocationType) {
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);
-            queryParam.extraMap.put("recLocationType",recLocationType);
+
+        }
+        if (mRecLocationTypes != null && isOpenRecLocationType) {
+            if (queryParam.extraMap == null)
+                queryParam.extraMap = new HashMap<>();
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
     }

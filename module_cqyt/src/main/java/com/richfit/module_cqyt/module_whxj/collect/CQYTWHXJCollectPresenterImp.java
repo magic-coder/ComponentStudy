@@ -10,6 +10,7 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.module_cqyt.module_xj.collect.CQYTXJCollectContract;
 
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.subscribers.ResourceSubscriber;
 
@@ -26,10 +27,10 @@ public class CQYTWHXJCollectPresenterImp extends BaseCollectPresenterImp<CQYWHTX
 
     @Override
     public void getTransferInfo(final ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                                String userId, String workId, String invId, String recWorkId, String recInvId) {
+                                String userId, String workId, String invId, String recWorkId, String recInvId, Map<String,Object> extraMap) {
         mView = getView();
 
-        mRepository.getTransferInfo("", "", bizType, refType, userId, workId, invId, recWorkId, recInvId)
+        mRepository.getTransferInfo("", "", bizType, refType, userId, workId, invId, recWorkId, recInvId,extraMap)
                 .filter(data -> data != null && data.billDetailList.size() > 0
                         && data.billDetailList.get(0).locationList != null && data.billDetailList.get(0).locationList.size() >0)
                 .map(data -> data.billDetailList.get(0).locationList)

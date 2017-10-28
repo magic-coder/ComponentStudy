@@ -3,6 +3,7 @@ package com.richfit.sdk_wzrk.base_asn_edit;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -72,7 +73,6 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     protected List<SimpleEntity> mLocationTypes;
     /*是否启用仓储类型*/
     private boolean isOpenLocationType = false;
-
     /*是否上架*/
     protected boolean isLocation = true;
 
@@ -94,6 +94,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
 
     @Override
     public void initData() {
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -147,9 +148,6 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     @Override
     public void loadTransferSingleInfoFail(String message) {
         showMessage(message);
-        //如果打开了仓储类型需要获取仓储类型数据源
-        if (isOpenBatchManager)
-            mPresenter.getDictionaryData("locationType");
     }
 
     @Override

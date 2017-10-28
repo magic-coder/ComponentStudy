@@ -5,9 +5,11 @@ import android.support.annotation.NonNull;
 import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/5/26.
@@ -63,4 +65,7 @@ public interface ILocQTCollectView extends IBaseCollectView {
     void showLocationList(List<String> list);
     void loadLocationListComplete(boolean isDropDown);
     void loadLocationListFail(String message);
+
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

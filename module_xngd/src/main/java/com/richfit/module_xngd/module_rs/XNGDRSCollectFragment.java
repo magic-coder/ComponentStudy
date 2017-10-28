@@ -109,10 +109,6 @@ public class XNGDRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
             showMessage("您输入的仓位格式不正确");
             return false;
         }
-        if(TextUtils.isEmpty(getString(etMoney))) {
-            showMessage("请输入金额");
-            return false;
-        }
         return super.checkCollectedDataBeforeSave();
     }
 

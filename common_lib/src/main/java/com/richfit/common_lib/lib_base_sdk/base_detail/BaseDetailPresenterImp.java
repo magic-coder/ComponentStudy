@@ -33,7 +33,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
 
     @Override
     public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                                String userId, String workId, String invId, String recWorkId, String recInvId) {
+                                String userId, String workId, String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
 
     }
 

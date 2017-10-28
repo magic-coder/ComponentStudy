@@ -16,6 +16,8 @@ import com.richfit.module_xngd.module_as.imp.XNGDASNDetailPresenterImp;
 import com.richfit.sdk_wzrk.base_asn_detail.BaseASNDetailFragment;
 import com.richfit.sdk_wzrk.base_asn_detail.imp.ASNDetailPresenterImp;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 /**
@@ -53,7 +55,8 @@ public class XNGDASNDetailFragment extends BaseASNDetailFragment<XNGDASNDetailPr
     public void initView() {
         super.initView();
         TextView tvBatchFlag = (TextView) mView.findViewById(R.id.batchFlag);
-        setVisibility(View.GONE,tvBatchFlag);
+        TextView tvLocationType = mView.findViewById(R.id.tv_location_type);
+        setVisibility(View.GONE,tvBatchFlag,tvLocationType);
     }
 
 

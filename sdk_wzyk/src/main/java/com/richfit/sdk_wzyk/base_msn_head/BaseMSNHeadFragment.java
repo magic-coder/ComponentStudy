@@ -46,6 +46,8 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     protected Spinner spSendWork;
 
     //发出库位
+    @BindView(R2.id.ll_send_inv)
+    protected LinearLayout llSendInv;
     @BindView(R2.id.sp_send_inv)
     protected Spinner spSendInv;
 

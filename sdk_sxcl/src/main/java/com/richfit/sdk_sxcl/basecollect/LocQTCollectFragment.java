@@ -7,9 +7,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -18,6 +20,7 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.LocationAdapter;
+import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.ArithUtil;
 import com.richfit.common_lib.utils.SPrefUtil;
@@ -32,12 +35,15 @@ import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_sxcl.R;
 import com.richfit.sdk_sxcl.R2;
 import com.richfit.sdk_sxcl.basecollect.imp.LocQTCollectPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -71,8 +77,6 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     TextView tvInv;
     @BindView(R2.id.tv_act_quantity)
     TextView tvActQuantity;
-    @BindView(R2.id.tv_inv_type)
-    TextView tvInvType;
     @BindView(R2.id.tv_batch_flag)
     TextView tvBatchFlag;
     //下架仓位
@@ -93,6 +97,12 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     CheckBox cbSingle;
     @BindView(R2.id.tv_total_quantity)
     TextView tvTotalQuantity;
+    //增加仓储类型
+    @BindView(com.richfit.common_lib.R2.id.ll_location_type)
+    protected LinearLayout llLocationType;
+    @BindView(com.richfit.common_lib.R2.id.sp_location_type)
+    Spinner spLocationType;
+
 
     /*当前匹配的行明细（行号）*/
     protected ArrayList<String> mRefLines;
@@ -110,6 +120,10 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     List<String> mSLocationList;
     /*上下架处理标识,S标识上架,H表示下架*/
     private String mSHFlag;
+    /*仓储类型*/
+    protected List<SimpleEntity> mLocationTypes;
+    /*是否启用仓储类型*/
+    private boolean isOpenLocationType = false;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -237,11 +251,36 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
                 .filter(a -> mSLocationList != null && mSLocationList.size() > 0)
                 .subscribe(a -> showAutoCompleteConfig(etSLocation));
+
+        //监听仓储类型
+        //增加仓储类型的选择获取提示库粗
+        RxAdapterView.itemSelections(spLocationType)
+                .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
+                        && mLocationTypes.size() > 0)
+                .subscribe(position -> {
+                    RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
+                    if (lineData == null) {
+                        showMessage("请先获取物料信息");
+                        return;
+                    }
+                    if (isOpenLocationType) {
+                        //如果打开了仓储类型
+                        if ("S".equalsIgnoreCase(mSHFlag)) {
+                            //上架
+                            loadLocationList(false);
+                        } else if ("H".equalsIgnoreCase(mSHFlag)) {
+                            //下架
+                            loadInventory();
+                        }
+                    }
+                });
+
     }
 
     @Override
     public void initData() {
-
+        //检测是否打开仓储类型,false表示不打开
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
     }
 
 
@@ -352,8 +391,6 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
         tvWork.setText(lineData.workName);
         //库存地点
         tvInv.setText(lineData.invName);
-        //库存类型
-        tvInvType.setText(lineData.invType);
         //允许进行上下架的数量(应收数量)
         tvActQuantity.setText(lineData.actQuantity);
         //批次处理
@@ -368,10 +405,18 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
             //如果是上架，那么获取上架仓位参考列表
             tvLocQuantity.setText("");
             tvTotalQuantity.setText("");
-            loadLocationList(false);
+            if (isOpenLocationType) {
+                mPresenter.getDictionaryData("locationType");
+            } else {
+                loadLocationList(false);
+            }
         } else {
             //如果是下架
-            loadInventory();
+            if (isOpenLocationType) {
+                mPresenter.getDictionaryData("locationType");
+            } else {
+                loadInventory();
+            }
         }
     }
 
@@ -498,7 +543,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
             return;
         }
         //这里不考虑是否上架
-        mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location,null);
+        mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location, null);
     }
 
     @Override
@@ -584,14 +629,30 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
                 return;
             }
             tvLocQuantity.setText("0");
+            String locationType = "";
+            if (isOpenLocationType) {
+                locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            }
             for (LocationInfoEntity cachedItem : locationInfos) {
                 boolean isMatch;
-                if (!TextUtils.isEmpty(batchFlag)) {
-                    //如果有批次
-                    isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) && location.equalsIgnoreCase(cachedItem.location);
+                if (isOpenLocationType) {
+                    if (!TextUtils.isEmpty(batchFlag)) {
+                        //如果有批次
+                        isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) &&
+                                location.equalsIgnoreCase(cachedItem.location) && locationType.equalsIgnoreCase(cachedItem.locationType);
+                    } else {
+                        isMatch = location.equalsIgnoreCase(cachedItem.location) && locationType.equalsIgnoreCase(cachedItem.locationType);
+                        ;
+                    }
                 } else {
-                    isMatch = location.equalsIgnoreCase(cachedItem.location);
+                    if (!TextUtils.isEmpty(batchFlag)) {
+                        //如果有批次
+                        isMatch = batchFlag.equalsIgnoreCase(cachedItem.batchFlag) && location.equalsIgnoreCase(cachedItem.location);
+                    } else {
+                        isMatch = location.equalsIgnoreCase(cachedItem.location);
+                    }
                 }
+
                 if (isMatch) {
                     tvLocQuantity.setText(cachedItem.quantity);
                     break;
@@ -624,7 +685,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
      * 不论扫描的是否是同一个物料，都清除控件的信息。
      */
     private void clearAllUI() {
-        clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvInv, tvInvType, tvLocQuantity,
+        clearCommonUI(tvMaterialDesc, tvWork, tvActQuantity, tvInv, tvLocQuantity,
                 etQuantity, tvLocQuantity, tvSpecialInvFlag, tvInvQuantity, tvTotalQuantity, cbSingle,
                 etMaterialNum, tvBatchFlag, etSLocation, tvMaterialUnit);
 
@@ -788,6 +849,9 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
         result.refDoc = lineData.refDoc;
         result.refDocItem = lineData.refDocItem;
         result.supplierNum = mRefData.supplierNum;
+        //仓储类型
+        if (isOpenLocationType)
+            result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "N";
         return result;
     }
@@ -833,5 +897,43 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
         super.onDestroy();
         mSLocationAdapter = null;
         mSLocationList.clear();
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+        //加载仓储类型完毕，初始化下拉
+        List<SimpleEntity> locationTypes = data.get("locationType");
+        if (locationTypes != null) {
+            if (mLocationTypes == null) {
+                mLocationTypes = new ArrayList<>();
+            }
+            mLocationTypes.clear();
+            mLocationTypes.addAll(locationTypes);
+            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                    mLocationTypes, false);
+            spLocationType.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
+
+    /**
+     * 默认增加仓储类型的维度
+     *
+     * @return
+     */
+    @Override
+    protected InventoryQueryParam provideInventoryQueryParam() {
+        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
+        if (mLocationTypes != null && isOpenLocationType) {
+            queryParam.extraMap = new HashMap<>();
+            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("locationType", locationType);
+        }
+        return queryParam;
     }
 }

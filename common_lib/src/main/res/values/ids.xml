@@ -49,6 +49,7 @@
     <item name="et_approval_date" type="id"></item>
     <item name="et_arrival_date" type="id"></item>
     <item name="rv_show_photo" type="id"></item>
+    <item name="ll_auto_comp" type="id"></item>
     <item name="id_delete_image" type="id"></item>
     <item name="id_select_all_image" type="id"></item>
     <item name="et_arrival_quantity" type="id"></item>

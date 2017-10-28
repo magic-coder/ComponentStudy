@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -89,6 +90,7 @@ public class UpdateActivity extends BaseActivity<UpdateContract.Presenter> imple
      * @param saveName
      */
     private void startLoadLatestApk(String url, String saveName) {
+        Log.e("yff","下载url = " + url);
         String apkCacheDir = FileUtil.getApkCacheDir(this.getApplicationContext());
         mPresenter.loadLatestApp(url, saveName, apkCacheDir);
     }

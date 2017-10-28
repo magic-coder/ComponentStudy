@@ -188,7 +188,6 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         //是否应急
         //修改成明细取该字段
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        result.invFlag = lineData.invFlag;
         //全检数量
         result.allQuantity = getString(etAllQuantity);
         //抽检数量
@@ -203,7 +202,7 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         //处理情况
         result.processResult = getString(etProcessResult);
 
-        result.invFlag = mRefData.invFlag;
+        result.invFlag = lineData.invFlag;
         result.specialInvFlag = lineData.specialInvFlag;
 		result.specialInvNum = lineData.specialInvNum;
         result.projectNum = mRefData.projectNum;
@@ -340,10 +339,11 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
+        RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         param.queryType = "03";
         param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
-        extraMap.put("invFlag", mRefData.invFlag);
+        extraMap.put("invFlag", lineData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);
         extraMap.put("projectNum", mRefData.projectNum);
         param.extraMap = extraMap;

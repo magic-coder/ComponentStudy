@@ -11,6 +11,7 @@ import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_cwtz.R;
 import com.richfit.sdk_cwtz.R2;
@@ -18,6 +19,7 @@ import com.richfit.sdk_cwtz.head.imp.LAHeadPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -130,7 +132,7 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     }
 
     @Override
-    public void showProjectNums(ArrayList<String> projectNums) {
+    public void showProjectNums(Map<String,List<SimpleEntity>> map) {
 
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -121,6 +122,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
 
     @Override
     public void initData() {
+        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);

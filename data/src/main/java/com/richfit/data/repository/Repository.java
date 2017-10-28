@@ -317,11 +317,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
      */
     @Override
     public Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType, String refType, String userId,
-                                                     String workId, String invId, String recWorkId, String recInvId) {
+                                                     String workId, String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
         return isLocal ? mLocalRepository.getTransferInfo(recordNum, refCodeId, bizType, refType, userId,
-                workId, invId, recWorkId, recInvId) :
+                workId, invId, recWorkId, recInvId,extraMap) :
                 mServerRepository.getTransferInfo(recordNum, refCodeId, bizType, refType, userId,
-                        workId, invId, recWorkId, recInvId);
+                        workId, invId, recWorkId, recInvId,extraMap);
     }
 
     @Override

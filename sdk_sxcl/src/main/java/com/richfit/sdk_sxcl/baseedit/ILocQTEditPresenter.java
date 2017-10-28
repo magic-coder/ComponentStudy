@@ -38,4 +38,7 @@ public interface ILocQTEditPresenter extends IBaseEditPresenter<ILocQTEditView> 
      */
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId, String materialNum,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
+
+    void getDictionaryData(String... codes);
 }
+

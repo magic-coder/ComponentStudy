@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'me.tatarka.retrolambda'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
 //apply plugin: 'com.dodola.rocoofix'
 
@@ -26,7 +26,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-
+        flavorDimensions "versionCode"
         manifestPlaceholders = [CHANNEL: "qhyt"]
     }
 
@@ -86,12 +86,22 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //修改生成的apk名字，格式为 app名_版本号_打包时间_渠道名_release.apk
+//            applicationVariants.all { variant ->
+//                variant.outputs.each { output ->
+//                    def oldFile = output.outputFile
+//                    if (variant.buildType.name.equals('release')) {
+//                        def releaseApkName = getProductName() + "_v${variant.productFlavors[0].versionName}_${releaseTime()}_" + variant.productFlavors[0].name + '_release.apk'
+//                        output.outputFile = new File(oldFile.parent, releaseApkName)
+//                    }
+//                }
+//            }
             applicationVariants.all { variant ->
-                variant.outputs.each { output ->
+                variant.outputs.all { output ->
+
                     def oldFile = output.outputFile
                     if (variant.buildType.name.equals('release')) {
-                        def releaseApkName = getProductName() + "_v${variant.productFlavors[0].versionName}_${releaseTime()}_" + variant.productFlavors[0].name + '_release.apk'
-                        output.outputFile = new File(oldFile.parent, releaseApkName)
+                        outputFileName = getProductName() + "_v${variant.productFlavors[0].versionName}_${releaseTime()}_" + variant.productFlavors[0].name + '_release.apk'
+                        //output.outputFile = new File(oldFile.parent, releaseApkName)
                     }
                 }
             }
@@ -104,7 +114,6 @@ android {
             minifyEnabled false
         }
     }
-
 
     productFlavors {
         qysh {
@@ -133,7 +142,7 @@ android {
             buildConfigField "String", "APP_NAME", '"xngd"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.0"
+            versionName "1.2"
             signingConfig signingConfigs.sign_xngd
         }
 
@@ -143,7 +152,7 @@ android {
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 4
-            versionName "1.5"
+            versionName "1.51"
             signingConfig signingConfigs.sign_cqyt
         }
 
@@ -209,8 +218,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 //      compile project(':module_qhyt')
-    compile project(':module_xngd')
-    //compile project(':module_cqyt')
+   // compile project(':module_xngd')
+    compile project(':module_cqyt')
     //compile project(':module_mcq')
     //compile project(':module_hc')
 

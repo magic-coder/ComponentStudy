@@ -6,6 +6,7 @@ import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/7/3.
@@ -48,7 +49,8 @@ public interface CQYTXJCollectContract {
          * @param refType：单据类型
          */
         void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                             String userId, String workId, String invId, String recWorkId, String recInvId);
+                             String userId, String workId, String invId, String recWorkId, String recInvId,
+                             Map<String,Object> extraMap);
 
         /**
          * 删除一个子节点

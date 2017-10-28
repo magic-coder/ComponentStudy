@@ -2,10 +2,12 @@ package com.richfit.sdk_cwtz.head;
 
 import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.domain.bean.WorkEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/2/7.
@@ -21,7 +23,7 @@ public interface ILAHeadView extends BaseView {
     void loadInvsComplete();
 
 
-    void showProjectNums(ArrayList<String> projectNums);
+    void showProjectNums(Map<String,List<SimpleEntity>> map);
     void loadProjectNumsFail(String message);
 
     void getStorageNumSuccess(String storageNum);

@@ -175,7 +175,7 @@ public class ServerRepositoryImp implements IServerRepository {
      */
     @Override
     public Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType, String refType, String userId,
-                                                     String workId, String invId, String recWorkId, String recInvId) {
+                                                     String workId, String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
         mRequestParam.clear();
         mRequestParam.put("refCodeId", refCodeId);
         mRequestParam.put("businessType", bizType);
@@ -186,6 +186,9 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("recordNum", CommonUtil.toUpperCase(recordNum));
         mRequestParam.put("recWorkId", recWorkId);
         mRequestParam.put("recInvId", recInvId);
+        if(extraMap != null) {
+            mRequestParam.putAll(extraMap);
+        }
 
         return mRequestApi.getCacheTransfereInfo(JsonUtil.map2Json(mRequestParam))
                 .compose(TransformerHelper.handleResponse());

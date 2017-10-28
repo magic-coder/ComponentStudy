@@ -28,6 +28,17 @@ public class XNGDRGDetailFragment extends BaseDSDetailFragment<XNGDRDDetailPrese
     }
 
     @Override
+    public void onBindViewHolder(ViewHolder holder, int viewType) {
+        if(viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
+            holder.setVisible(R.id.tv_location_type, false);
+        }
+
+        if(holder.getItemViewType() == Global.CHILD_NODE_HEADER_TYPE) {
+            holder.setText(R.id.quantity,"实退数量");
+        }
+    }
+
+    @Override
     protected void initView() {
         actQuantityName.setText("应退数量");
         super.initView();
@@ -41,14 +52,6 @@ public class XNGDRGDetailFragment extends BaseDSDetailFragment<XNGDRDDetailPrese
     @Override
     public void initData() {
 
-    }
-
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        if(holder.getItemViewType() == Global.CHILD_NODE_HEADER_TYPE) {
-            holder.setText(R.id.quantity,"实退数量");
-        }
     }
 
     @Override
