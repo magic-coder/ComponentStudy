@@ -53,7 +53,7 @@ public interface ILocQTCollectView extends IBaseCollectView {
     /**
      * 加载上架仓位
      */
-    void loadLocationList(boolean isDropDown);
+    void loadLocationList();
 
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
@@ -63,9 +63,6 @@ public interface ILocQTCollectView extends IBaseCollectView {
      * @param list
      */
     void showLocationList(List<String> list);
-    void loadLocationListComplete(boolean isDropDown);
+    void loadLocationListComplete();
     void loadLocationListFail(String message);
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

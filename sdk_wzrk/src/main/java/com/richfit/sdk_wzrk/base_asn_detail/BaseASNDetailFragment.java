@@ -28,7 +28,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             setRefreshing(false, "获取明细失败,请现在抬头界面选择相应的参数");
             return;
@@ -58,11 +58,6 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
         } else {
             mAdapter.addAll(nodes);
         }
-    }
-
-    @Override
-    public void refreshComplete() {
-
     }
 
     /**

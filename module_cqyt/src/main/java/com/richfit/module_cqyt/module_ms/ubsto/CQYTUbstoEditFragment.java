@@ -50,11 +50,10 @@ public class CQYTUbstoEditFragment extends BaseDSEditFragment<DSEditPresenterImp
 
     @Override
     protected void initView() {
+        super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         TextView tvBatchFlagName = (TextView) mView.findViewById(R.id.tv_batch_flag_name);
         tvBatchFlagName.setText("发出批次");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

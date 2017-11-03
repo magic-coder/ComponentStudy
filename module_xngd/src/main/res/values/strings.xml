@@ -15,4 +15,5 @@
     <string name="xngd_money1">金额</string>
     <string name="xngd_total_money">累计金额</string>
     <string name="xngd_gl_account">总账科目</string>
+    <string name="xngd_material_state">物资状态</string>
 </resources>

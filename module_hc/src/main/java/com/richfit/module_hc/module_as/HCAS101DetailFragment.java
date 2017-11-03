@@ -20,10 +20,6 @@ public class HCAS101DetailFragment extends BaseASDetailFragment<ASDetailPresente
         mPresenter = new ASDetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initEvent() {

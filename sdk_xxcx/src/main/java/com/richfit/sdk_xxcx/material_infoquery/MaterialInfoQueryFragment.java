@@ -62,13 +62,13 @@ public class MaterialInfoQueryFragment extends BaseFragment<MaterialInfoQueryPre
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new MaterialInfoQueryPresenterImp(mActivity);
     }
 
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //手动输入物料编码查询物料信息
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             hideKeyboard(view);
@@ -77,12 +77,12 @@ public class MaterialInfoQueryFragment extends BaseFragment<MaterialInfoQueryPre
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
     }
 

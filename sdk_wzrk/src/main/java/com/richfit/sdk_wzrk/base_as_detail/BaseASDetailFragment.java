@@ -28,15 +28,6 @@ import butterknife.BindView;
 public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         BaseDetailFragment<P, RefDetailEntity> implements IASDetailView<RefDetailEntity> {
 
-    /*应收数量*/
-    @BindView(R2.id.actQuantity)
-    protected TextView tvActQuantity;
-    /*库存地点*/
-    @BindView(R2.id.inv)
-    protected TextView tvInv;
-    /*工厂*/
-    @BindView(R2.id.work)
-    protected TextView tvWork;
 
     @Override
     protected int getContentId() {
@@ -48,7 +39,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
      * 子类如果需要检测更多的字段应该重写该方法。
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             showMessage("请现在抬头界面获取单据数据");
             return;
@@ -90,12 +81,6 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         }
     }
 
-    @Override
-    public void refreshComplete() {
-
-    }
-
-
     /**
      * 修改明细里面的子节点。注意如果该明细界面不具有父子节点结构那么需要重写该方法。
      *
@@ -114,7 +99,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
     }
 
     /**
-     * 删除子节点信息。注意如果该明细界面不具有父子节点结构那么需要重写该方法。
+     * 删除子节点信息。
      *
      * @param node
      * @param position

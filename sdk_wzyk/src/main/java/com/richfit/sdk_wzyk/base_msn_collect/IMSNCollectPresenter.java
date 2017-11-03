@@ -32,9 +32,8 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
     void getTransferInfoSingle(String bizType, String materialNum, String userId, String workId,
                                String invId, String recWorkId, String recInvId, String batchFlag,
                                String refDoc, int refDocItem);
-
-    /*void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,Map<String,Object> extraMap
-    );*/
+    //离线检查仓位
+    void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,Map<String,Object> extraMap);
     /**
      * 获取库存信息
      *
@@ -49,7 +48,7 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId,Map<String,Object> extraMap);
+                          String invType,Map<String,Object> extraMap);
 
     /**
      * 获取接收仓位的库存
@@ -66,12 +65,11 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
      * @param specialInvFlag
      * @param specialInvNum
      * @param invType
-     * @param deviceId
      */
     void getInventoryInfoOnRecLocation(String queryType, String workId, String invId, String workCode,
                                        String invCode, String storageNum, String materialNum, String materialId,
                                        String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                                       String invType, String deviceId,Map<String,Object> extraMap);
+                                       String invType,Map<String,Object> extraMap);
 
     /**
      * 检查ERP仓库号是否一致
@@ -85,6 +83,4 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
                            final String recWorkId, final String recInvCode, int flag);
 
     void getDeviceInfo(String deviceId);
-
-    void getDictionaryData(String... codes);
 }

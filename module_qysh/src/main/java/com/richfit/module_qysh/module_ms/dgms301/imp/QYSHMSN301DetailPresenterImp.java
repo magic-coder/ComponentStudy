@@ -1,4 +1,4 @@
-package com.richfit.module_qysh.module_ms.imp;
+package com.richfit.module_qysh.module_ms.dgms301.imp;
 
 import android.content.Context;
 

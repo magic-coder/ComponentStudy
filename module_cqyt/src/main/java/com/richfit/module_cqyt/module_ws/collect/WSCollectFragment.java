@@ -84,11 +84,6 @@ public class WSCollectFragment extends BaseCollectFragment<WSCollectPresenterImp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
-    @Override
     protected void initView() {
         etMaterialNum = mView.findViewById(R.id.et_material_num);
         tvMaterialDesc = mView.findViewById(R.id.tv_material_desc);

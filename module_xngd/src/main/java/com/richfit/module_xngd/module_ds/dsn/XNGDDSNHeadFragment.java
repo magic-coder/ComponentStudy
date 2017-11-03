@@ -1,6 +1,7 @@
 package com.richfit.module_xngd.module_ds.dsn;
 
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -20,6 +21,7 @@ import com.richfit.sdk_wzck.base_dsn_head.BaseDSNHeadFragment;
 import com.richfit.sdk_wzck.base_dsn_head.imp.DSNHeadPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +52,11 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
     private List<String> mGLAccounts;
     private List<String> mOrderNums;
 
+    @Override
+    public void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
+        mDropDown = new HashMap<>();
+    }
 
     @Override
     public int getContentId() {
@@ -81,10 +88,13 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         //选择工厂，初始化成本中心和总账科目
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
+                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), false))
+                .doOnNext(a -> mDropDown.put(etGLAccount.getId(), false))
+                .doOnNext(a -> mDropDown.put(etOrderNum.getId(), false))
                 .subscribe(position ->
                     mPresenter.getAutoComList(mWorks.get(position).workCode,null,
-                            getString(etAutoComp), 100, getOrgFlag(), mBizType, Global.COST_CENTER_DATA,
-                            Global.GL_ACCOUNT_DATA,Global.INTERNAL_ORDER_DATA)
+                            getString(etAutoComp), 100, getOrgFlag(),
+                            Global.COST_CENTER_DATA, Global.GL_ACCOUNT_DATA,Global.INTERNAL_ORDER_DATA)
                 );
         //点击自动提示控件，显示默认列表
         RxView.clicks(etGLAccount)
@@ -99,10 +109,10 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         //修改自动提示控件，说明用户需要用关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etGLAccount)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mGLAccounts != null &&
-                        mGLAccounts.size() > 0 && !filterKeyWord(str,mGLAccounts) && spWork.getSelectedItemPosition() > 0)
+                .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str,mGLAccounts))
+                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), true))
                 .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
-                        getString(etGLAccount), 100, getOrgFlag(), mBizType, Global.GL_ACCOUNT_DATA));
+                        getString(etGLAccount), 100, getOrgFlag(), Global.GL_ACCOUNT_DATA));
 
         //------------------------------------------------------------------------------------------
         //订单
@@ -119,10 +129,10 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         //修改自动提示控件，说明用户需要用关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etOrderNum)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mOrderNums != null &&
-                        mOrderNums.size() > 0 && !filterKeyWord(str,mOrderNums) && spWork.getSelectedItemPosition() > 0)
+                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), true))
+                .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str,mOrderNums))
                 .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
-                        getString(etOrderNum), 100, getOrgFlag(), mBizType, Global.INTERNAL_ORDER_DATA));
+                        getString(etOrderNum), 100, getOrgFlag(), Global.INTERNAL_ORDER_DATA));
     }
 
     @Override
@@ -168,45 +178,43 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
 
     @Override
     public void showAutoCompleteList(Map<String,List<SimpleEntity>> map) {
+        super.showAutoCompleteList(map);
         List<SimpleEntity> glAccounts = map.get(Global.GL_ACCOUNT_DATA);
-        if(glAccounts == null || glAccounts.size() == 0) {
-            //注意这里可能是父类的数据
-            super.showAutoCompleteList(map);
-            return;
+        if(glAccounts != null && glAccounts.size() > 0) {
+            List<String> glAccountList=  CommonUtil.toStringArray(glAccounts,true);
+            if(mGLAccounts == null) {
+                mGLAccounts = new ArrayList<>();
+            }
+            mGLAccounts.clear();
+            mGLAccounts.addAll(glAccountList);
+            ArrayAdapter<String>  glAdapter = new ArrayAdapter<>(mActivity,
+                    android.R.layout.simple_dropdown_item_1line, mGLAccounts);
+            etGLAccount.setAdapter(glAdapter);
+            setAutoCompleteConfig(etGLAccount);
+            boolean isDropDownGlAccount = CommonUtil.convertToBoolean(mDropDown.get(etGLAccount.getId()), false);
+            if (isDropDownGlAccount) {
+                showAutoCompleteConfig(etGLAccount);
+            }
         }
-        List<String> glAccountList=  CommonUtil.toStringArray(glAccounts,true);
-        if(mGLAccounts == null) {
-            mGLAccounts = new ArrayList<>();
-        }
-        mGLAccounts.clear();
-        mGLAccounts.addAll(glAccountList);
-        ArrayAdapter<String>  glAdapter = new ArrayAdapter<>(mActivity,
-                android.R.layout.simple_dropdown_item_1line, mGLAccounts);
-        etGLAccount.setAdapter(glAdapter);
-        setAutoCompleteConfig(etGLAccount);
-
 
         //初始化订单编号
         List<SimpleEntity> orderNums = map.get(Global.INTERNAL_ORDER_DATA);
-        if(orderNums == null || orderNums.size() == 0) {
-            //注意这里可能是父类的数据
-            super.showAutoCompleteList(map);
-            return;
+        if(orderNums != null && orderNums.size() > 0) {
+            List<String> orderNumList=  CommonUtil.toStringArray(orderNums,false);
+            if(mOrderNums == null) {
+                mOrderNums = new ArrayList<>();
+            }
+            mOrderNums.clear();
+            mOrderNums.addAll(orderNumList);
+            ArrayAdapter<String>  orderNumAdapter = new ArrayAdapter<>(mActivity,
+                    android.R.layout.simple_dropdown_item_1line, mOrderNums);
+            etOrderNum.setAdapter(orderNumAdapter);
+            setAutoCompleteConfig(etOrderNum);
+            boolean isDropDownOrderNum = CommonUtil.convertToBoolean(mDropDown.get(etOrderNum.getId()), false);
+            if (isDropDownOrderNum) {
+                showAutoCompleteConfig(etOrderNum);
+            }
         }
-        List<String> orderNumList=  CommonUtil.toStringArray(orderNums,false);
-        if(mOrderNums == null) {
-            mOrderNums = new ArrayList<>();
-        }
-        mOrderNums.clear();
-        mOrderNums.addAll(orderNumList);
-        ArrayAdapter<String>  orderNumAdapter = new ArrayAdapter<>(mActivity,
-                android.R.layout.simple_dropdown_item_1line, mOrderNums);
-        etOrderNum.setAdapter(orderNumAdapter);
-        setAutoCompleteConfig(etOrderNum);
-
-
-        //注意回调父类方法初始化它的数据
-        super.showAutoCompleteList(map);
     }
 
 

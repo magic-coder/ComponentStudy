@@ -59,6 +59,7 @@ public class MCQLACollectFragmnent extends LACollectFragment {
 
     @Override
     public void initView() {
+        super.initView();
         tvMainMaterialUnitName = mView.findViewById(R.id.mcq_tv_main_material_unit_name);
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvMainInvQuantityName = mView.findViewById(R.id.mcq_tv_send_inv_quantity_name);
@@ -70,9 +71,6 @@ public class MCQLACollectFragmnent extends LACollectFragment {
         tvMainQuantityName.setText("主计量单位调整数量");
         //隐藏批次
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
-
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

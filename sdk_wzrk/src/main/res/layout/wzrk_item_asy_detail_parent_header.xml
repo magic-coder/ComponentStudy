@@ -17,15 +17,6 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
-    <!--105非必检，因为非必检105的明细与标准非常接近，所以写入标准-->
-    <TextView
-        android:id="@id/lineNum105"
-        style="@style/TableHeaderStyle"
-        android:layout_width="120dp"
-        android:text="@string/line_num_105"
-        android:visibility="gone" />
-
-    <View style="@style/ItemSeperatorLayout" />
 
     <TextView
         android:id="@id/materialNum"
@@ -90,15 +81,6 @@
         style="@style/TableHeaderStyle"
         android:layout_width="120dp"
         android:text="@string/work" />
-
-    <View style="@style/ItemSeperatorLayout" />
-
-
-    <TextView
-        android:id="@id/inv"
-        style="@style/TableHeaderStyle"
-        android:layout_width="120dp"
-        android:text="@string/inv" />
 
     <View style="@style/ItemSeperatorLayout" />
 

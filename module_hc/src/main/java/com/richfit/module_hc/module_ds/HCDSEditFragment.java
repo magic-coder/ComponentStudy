@@ -10,14 +10,10 @@ import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
  */
 
 public class HCDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new DSEditPresenterImp(mActivity);
-    }
-
-    @Override
-    protected void initView() {
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -43,12 +43,8 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         TextView tvInvName = (TextView) mView.findViewById(R.id.tv_inv_name);
         TextView tvBatchFlagName = (TextView) mView.findViewById(R.id.tv_batch_flag_name);
@@ -56,8 +52,6 @@ public class CQYTMSY315EditFragment extends BaseASEditFragment<ASEditPresenterIm
         tvInvName.setText("接收库位");
         tvBatchFlagName.setText("接收批次");
         tvLocationName.setText("接收仓位");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

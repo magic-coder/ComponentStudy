@@ -3,6 +3,7 @@ package com.richfit.sdk_cwtz.head.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.TransformerHelper;
@@ -22,7 +23,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/2/7.
  */
 
-public class LAHeadPresenterImp extends BasePresenter<ILAHeadView>
+public class LAHeadPresenterImp extends BaseHeadPresenterImp<ILAHeadView>
         implements ILAHeadPresenter {
 
     ILAHeadView mView;

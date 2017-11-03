@@ -537,7 +537,7 @@ public class ServerRepositoryImp implements IServerRepository {
                                                             String materialNum, String materialId, String materialGroup,
                                                             String materialDesc, String batchFlag, String location,
                                                             String specialInvFlag, String specialInvNum, String invType,
-                                                            String deviceId, Map<String, Object> extraMap) {
+                                                            Map<String, Object> extraMap) {
         mRequestParam.clear();
         mRequestParam.put("queryType", queryType);
         mRequestParam.put("workId", workId);
@@ -554,7 +554,6 @@ public class ServerRepositoryImp implements IServerRepository {
         mRequestParam.put("invType", invType);
         mRequestParam.put("specialInvFlag", specialInvFlag);
         mRequestParam.put("specialInvNum", specialInvNum);
-        mRequestParam.put("deviceId", deviceId);
         if (extraMap != null) {
             mRequestParam.putAll(extraMap);
         }

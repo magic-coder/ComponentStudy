@@ -1,5 +1,6 @@
 package com.richfit.sdk_cwtz.head;
 
+import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
 import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.SimpleEntity;
@@ -13,7 +14,7 @@ import java.util.Map;
  * Created by monday on 2017/2/7.
  */
 
-public interface ILAHeadView extends BaseView {
+public interface ILAHeadView extends IBaseHeadView {
 
     void showWorks(List<WorkEntity> works);
     void loadWorksFail(String message);

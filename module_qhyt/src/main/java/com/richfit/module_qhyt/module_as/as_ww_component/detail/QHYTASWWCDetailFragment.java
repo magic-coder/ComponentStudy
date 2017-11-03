@@ -44,6 +44,7 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
      */
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         Bundle bundle = getArguments();
         mRefDetail = null;
         if (bundle != null) {
@@ -165,7 +166,8 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
             return;
         }
         mPresenter.deleteNode("N", node.transId, node.transLineId,
-                node.locationId, mRefData.refType, mRefData.bizType, position, mCompanyCode);
+                node.locationId, mRefData.refType, mRefData.bizType,
+                node.refLineId,Global.USER_ID, position, mCompanyCode);
     }
 
     /**
@@ -230,5 +232,45 @@ public class QHYTASWWCDetailFragment extends BaseDetailFragment<QYHTASWWCDetailP
     @Override
     public boolean isNeedShowFloatingButton() {
         return false;
+    }
+
+    /**
+     * 通过单据行的行号得到该行在单据明细列表中的位置
+     *
+     * @param lineNum:单据行号
+     * @return 返回该行号对应的行明细在明细列表的索引
+     */
+    protected int getIndexByLineNum(String lineNum) {
+        int index = -1;
+        if (TextUtils.isEmpty(lineNum))
+            return index;
+
+        if (mRefData == null || mRefData.billDetailList == null
+                || mRefData.billDetailList.size() == 0)
+            return index;
+
+        for (RefDetailEntity detailEntity : mRefData.billDetailList) {
+            index++;
+            if (lineNum.equalsIgnoreCase(detailEntity.lineNum))
+                break;
+
+        }
+        return index;
+    }
+
+    /**
+     * 获取行明细
+     *
+     * @param lineNum:单据行号
+     * @return
+     */
+    protected RefDetailEntity getLineData(String lineNum) {
+        if(TextUtils.isEmpty(lineNum))
+            return null;
+        int lineIndex = getIndexByLineNum(lineNum);
+        if (lineIndex < 0) {
+            mRefData.billDetailList.get(0);
+        }
+        return mRefData.billDetailList.get(lineIndex);
     }
 }

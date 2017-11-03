@@ -29,9 +29,6 @@ public interface IDSNCollectView extends IBaseCollectView {
     void loadInventoryFail(String message);
     void loadInventoryComplete();
 
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
-
     /**
      * 输入物料获取缓存后，刷新界面
      * @param refData

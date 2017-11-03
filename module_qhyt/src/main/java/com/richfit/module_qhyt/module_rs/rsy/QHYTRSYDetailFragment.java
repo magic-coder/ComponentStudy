@@ -1,6 +1,7 @@
 package com.richfit.module_qhyt.module_rs.rsy;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.data.constant.Global;
@@ -20,8 +21,11 @@ public class QHYTRSYDetailFragment extends BaseASDetailFragment<ASDetailPresente
 
     @Override
     protected void initView() {
-        tvActQuantity.setText("应退数量");
         super.initView();
+        TextView actQuantity = mView.findViewById(R.id.actQuantity);
+        if(actQuantity != null) {
+            actQuantity.setText("应退数量");
+        }
     }
 
     @Override

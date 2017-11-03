@@ -29,20 +29,6 @@ public class XNGDDSNDetailFragment extends BaseDSNDetailFragment<XNGDDSNDetailPr
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-   @Override
-   public void initView() {
-       super.initView();
-       View tvLocationType = mView.findViewById(R.id.tv_location_type);
-       if(tvLocationType != null) {
-           tvLocationType.setVisibility(View.GONE);
-       }
-   }
-
-    @Override
     public void initEvent() {
 
     }
@@ -51,13 +37,6 @@ public class XNGDDSNDetailFragment extends BaseDSNDetailFragment<XNGDDSNDetailPr
     public void initData() {
 
     }
-
-    @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
-        return tmp.subList(0,1);
-    }
-
 
     /**
      * 第一步过账成功后直接跳转
@@ -73,4 +52,17 @@ public class XNGDDSNDetailFragment extends BaseDSNDetailFragment<XNGDDSNDetailPr
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
     }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0,1);
+    }
+
+    @Override
+    protected String getSubFunName() {
+        return "紧急出库";
+    }
+
+
 }

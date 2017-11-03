@@ -23,7 +23,6 @@ public class QHYTUbSto351HeadFragment extends BaseMSHeadFragment {
     @Override
     public void initView() {
         llInv.setVisibility(View.GONE);
-        tvWorkName.setText("发出工厂");
         super.initView();
     }
 

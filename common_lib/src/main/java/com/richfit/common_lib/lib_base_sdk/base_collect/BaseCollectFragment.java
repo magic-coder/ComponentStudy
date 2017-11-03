@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,10 +19,12 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Flowable;
 
@@ -34,7 +38,6 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
 
     private InputMethodManager imm;
 
-
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
         //遍历该View树，去除所有的角点
@@ -47,6 +50,13 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
             imm.hideSoftInputFromWindow(mView.getWindowToken(), 0);
         }
     }
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        isOpenLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+        isOpenRecLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+    }
+
 
     /**
      * 保存数据入库
@@ -156,6 +166,48 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
         return Flowable.just(lineNums);
     }
 
+
+
+    /**
+     * 通过单据行的行号得到该行在单据明细列表中的位置
+     *
+     * @param lineNum:单据行号
+     * @return 返回该行号对应的行明细在明细列表的索引
+     */
+    protected int getIndexByLineNum(String lineNum) {
+        int index = -1;
+        if (TextUtils.isEmpty(lineNum))
+            return index;
+
+        if (mRefData == null || mRefData.billDetailList == null
+                || mRefData.billDetailList.size() == 0)
+            return index;
+
+        for (RefDetailEntity detailEntity : mRefData.billDetailList) {
+            index++;
+            if (lineNum.equalsIgnoreCase(detailEntity.lineNum))
+                break;
+
+        }
+        return index;
+    }
+
+    /**
+     * 获取行明细
+     *
+     * @param lineNum:单据行号
+     * @return
+     */
+    protected RefDetailEntity getLineData(String lineNum) {
+        if(TextUtils.isEmpty(lineNum))
+            return null;
+        int lineIndex = getIndexByLineNum(lineNum);
+        if (lineIndex < 0) {
+            mRefData.billDetailList.get(0);
+        }
+        return mRefData.billDetailList.get(lineIndex);
+    }
+
     /**
      * 遍历View树，去除该树上面所有的焦点，以解决扫描的问题
      *
@@ -208,4 +260,22 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
             return 0;
         }
     }
+
+
+    @Override
+    public void saveCollectedDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
+    }
+
 }

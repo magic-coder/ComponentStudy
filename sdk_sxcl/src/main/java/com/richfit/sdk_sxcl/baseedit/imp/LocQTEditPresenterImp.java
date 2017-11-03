@@ -33,40 +33,11 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
     }
 
     @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-    }
-
-    @Override
     public void getInventoryInfo(String queryType, String workId, String invId,
                                  String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location,
                                  String batchFlag, String specialInvFlag, String specialInvNum,
-                                 String invType, String deviceId, Map<String, Object> extraMap) {
+                                 String invType, Map<String, Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber = null;
         if ("04".equals(queryType)) {
@@ -74,7 +45,7 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId, extraMap))
+                            specialInvFlag, specialInvNum, invType, extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
@@ -82,7 +53,7 @@ public class LocQTEditPresenterImp extends BaseEditPresenterImp<ILocQTEditView>
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId, extraMap)
+                    specialInvFlag, specialInvNum, invType, extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));

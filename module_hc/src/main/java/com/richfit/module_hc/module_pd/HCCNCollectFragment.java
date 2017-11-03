@@ -10,12 +10,4 @@ import com.richfit.sdk_wzpd.checkn.collect.CNCollectFragment;
 
 public class HCCNCollectFragment extends CNCollectFragment {
 
-
-    @Override
-    public ResultEntity provideResult() {
-        ResultEntity result = super.provideResult();
-        result.locationType = mRefData.locationType;
-        return result;
-    }
-
 }

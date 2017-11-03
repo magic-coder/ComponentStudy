@@ -1,6 +1,7 @@
 package com.richfit.sdk_cwtz.head;
 
 
+import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by monday on 2017/2/7.
  */
 
-public interface ILAHeadPresenter extends IPresenter<ILAHeadView> {
+public interface ILAHeadPresenter extends IBaseHeadPresenter<ILAHeadView> {
 
     void getWorks(int flag);
 

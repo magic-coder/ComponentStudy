@@ -65,9 +65,6 @@ public interface IDSCollectView extends IBaseCollectView {
     void loadCacheSuccess();
     void loadCacheFail(String message);
 
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
-
     //增加建议仓位
     void getSuggestedLocationSuccess(InventoryEntity suggestedInventory);
     void getSuggestedLocationFail(String message);

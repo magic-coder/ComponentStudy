@@ -83,6 +83,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
 
     @Override
     protected void initView() {
+        super.initView();
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvActQuantityCustom = mView.findViewById(R.id.mcq_tv_act_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
@@ -120,8 +121,10 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
         //隐藏批次
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
 
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void initData() {
 
     }
 
@@ -178,7 +181,7 @@ public class MCQDSCollectFragment extends BaseDSCollectFragment<MCQDSCollectPres
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                 mRefData.recInvId, param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap);
+                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     @Override

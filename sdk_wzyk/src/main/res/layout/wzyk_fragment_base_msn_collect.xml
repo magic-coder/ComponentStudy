@@ -73,41 +73,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/ll_device_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/device_location" />
-
-            <TextView
-                android:id="@id/tv_device_location"
-                style="@style/RightTextViewItemStyle" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@id/ll_device_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/device_name" />
-
-            <TextView
-                android:id="@id/tv_device_name"
-                style="@style/RightTextViewItemStyle" />
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@id/ll_batch_flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -155,7 +121,7 @@
             <TextView
                 android:id="@id/tv_location_type_name"
                 style="@style/LeftTextViewItemStyle"
-                android:text="@string/location_type" />
+                android:text="@string/send_location_type" />
 
             <Spinner
                 android:id="@id/sp_location_type"
@@ -250,7 +216,6 @@
             android:visibility="gone">
 
             <TextView
-                android:id="@id/tv_rec_location_type_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/rec_location_type" />
 
@@ -274,13 +239,12 @@
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@id/auto_rec_location"
-                android:clickable="true"
                 style="@style/RightEditTextItemStyle" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/ll_rec_batch"
+            android:id="@id/ll_rec_batch_flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

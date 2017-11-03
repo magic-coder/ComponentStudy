@@ -2,6 +2,7 @@ package com.richfit.module_xngd.module_rs;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
@@ -20,17 +21,13 @@ import java.util.List;
  * Created by monday on 2017/6/21.
  */
 
-public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPresenterImp>{
+public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPresenterImp> {
 
     @Override
     public int getContentId() {
         return R.layout.xngd_fragment_rs_detail;
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initPresenter() {
@@ -39,8 +36,10 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
 
     @Override
     protected void initView() {
-        tvActQuantity.setText("应退数量");
         super.initView();
+        TextView actQuantity = mView.findViewById(R.id.actQuantity);
+        if (actQuantity != null)
+            actQuantity.setText("应退数量");
     }
 
     @Override
@@ -55,8 +54,9 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int viewType) {
-        if(viewType == Global.CHILD_NODE_HEADER_TYPE) {
-            viewHolder.setText(R.id.quantity,"实退数量");
+        super.onBindViewHolder(viewHolder, viewType);
+        if (viewType == Global.CHILD_NODE_HEADER_TYPE) {
+            viewHolder.setText(R.id.quantity, "实退数量");
         }
     }
 
@@ -71,11 +71,6 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
         } else {
             mAdapter.addAll(allNodes);
         }
-    }
-
-    @Override
-    protected String getSubFunName() {
-        return "退库申请";
     }
 
     /**
@@ -99,4 +94,8 @@ public class XNGDRSDetailFragment extends BaseASDetailFragment<XNGDRSDetailPrese
         return menus.subList(0, 1);
     }
 
+    @Override
+    protected String getSubFunName() {
+        return "退库申请";
+    }
 }

@@ -1,6 +1,7 @@
 package com.richfit.sdk_xxcx.inventory_query_n.header;
 
 
+import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
 import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.SimpleEntity;
@@ -13,7 +14,7 @@ import java.util.Map;
  * Created by monday on 2017/5/25.
  */
 
-public interface IInvNQueryHeaderView extends BaseView {
+public interface IInvNQueryHeaderView extends IBaseHeadView {
     void showWorks(List<WorkEntity> works);
 
     void loadWorksFail(String message);

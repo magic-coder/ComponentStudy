@@ -92,14 +92,12 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected TextView tvTotalQuantity;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    protected boolean isOpenLocationType = false;
     /*单据行选项*/
     protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
@@ -117,11 +115,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected boolean isSplitBatchFlag = false;
     //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
     protected String mAutoLocation;
-
-    @Override
-    protected int getContentId() {
-        return R.layout.wzck_fragment_base_dsy_collect;
-    }
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -172,16 +165,15 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
-
+    protected int getContentId() {
+        return R.layout.wzck_fragment_base_dsy_collect;
     }
-
 
     /**
      * 注册所有UI事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             hideKeyboard(etMaterialNum);
@@ -198,10 +190,9 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
         //监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
         //这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI
-        RxTextView.textChanges(etBatchFlag)
+       /* RxTextView.textChanges(etBatchFlag)
                 .filter(str -> !TextUtils.isEmpty(str) && spInv.getAdapter() != null)
-                // .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .subscribe(batch -> resetCommonUIPartly());
+                .subscribe(batch -> resetCommonUIPartly());*/
 
         //监听单据行
         RxAdapterView.itemSelections(spRefLine)
@@ -246,16 +237,17 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     }
 
     @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * 检查抬头界面的必要的字段是否已经赋值
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面获取单据数据");
@@ -436,7 +428,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 lineData.materialId, "", getString(etBatchFlag), lineData.specialInvFlag,
-                lineData.specialInvNum, param.invType, "", param.extraMap);
+                lineData.specialInvNum, param.invType, param.extraMap);
     }
 
     /**
@@ -475,7 +467,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
      */
     @Override
     public void loadInventoryComplete() {
-        if (TextUtils.isEmpty(mAutoLocation)) {
+        if (isOpenLocationType && TextUtils.isEmpty(mAutoLocation)) {
             return;
         }
         //自动匹配下架仓位，并获取缓存
@@ -859,11 +851,6 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
             spLocationType.setAdapter(adapter);
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override

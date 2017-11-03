@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -32,7 +33,7 @@ import butterknife.BindView;
  * Created by monday on 2017/3/10.
  */
 
-public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPresenterImp>
+public class QHYTASWWCCollectFragment extends BaseCollectFragment<QHYTASWWCCollectPresenterImp>
         implements QHYTASWWCCollectContract.QingHaiWWCCollectView {
 
 
@@ -79,6 +80,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInventoryDatas = new ArrayList<>();
     }
 
@@ -172,7 +174,7 @@ public class QHYTASWWCCollectFragment extends BaseFragment<QHYTASWWCCollectPrese
         if (isOpenBatchManager) {
             mPresenter.getInventoryInfo("01", lineData.workId,
                     "", lineData.workCode, "", "", getString(tvMaterialNum),
-                    lineData.materialId, "", "", "O", mRefData.supplierNum, "1", "",null);
+                    lineData.materialId, "", "", "O", mRefData.supplierNum, "1",null);
         } else {
             //如果没有打开批次，直接获取缓存
             loadLocationQuantity("");

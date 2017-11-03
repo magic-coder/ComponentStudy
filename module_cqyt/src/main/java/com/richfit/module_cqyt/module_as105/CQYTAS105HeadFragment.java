@@ -14,13 +14,6 @@ import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 
 public class CQYTAS105HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
 
-
-    @NonNull
-    @Override
-    protected String getMoveType() {
-        return "1";
-    }
-
     @Override
     public void initPresenter() {
         mPresenter = new ASHeadPresenterImp(mActivity);
@@ -28,12 +21,18 @@ public class CQYTAS105HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
 
     @Override
     protected void initView() {
-        llSupplier.setVisibility(View.VISIBLE);
         super.initView();
+        llSupplier.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void initDataLazily() {
 
+    }
+
+    @NonNull
+    @Override
+    protected String getMoveType() {
+        return "1";
     }
 }

@@ -3,6 +3,7 @@ package com.richfit.sdk_xxcx.inventory_query_n.header.imp;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadPresenterImp;
 import com.richfit.common_lib.lib_mvp.BasePresenter;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
 import com.richfit.data.constant.Global;
@@ -24,7 +25,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
  * Created by monday on 2017/5/25.
  */
 
-public class InvNQueryHeaderPresenterImp extends BasePresenter<IInvNQueryHeaderView>
+public class InvNQueryHeaderPresenterImp extends BaseHeadPresenterImp<IInvNQueryHeaderView>
         implements IInvNQueryHeaderPresenter {
 
     IInvNQueryHeaderView mView;

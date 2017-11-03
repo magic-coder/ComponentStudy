@@ -29,5 +29,4 @@ public class MCQBCDetailFragment extends BCDetailFragment {
             mAdapter.addAll(allNodes);
         }
     }
-
 }

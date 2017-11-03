@@ -12,8 +12,9 @@ import java.util.Map;
 
 public interface IASNCollectPresenter extends IBaseCollectPresenter<IASNCollectView> {
 
-    void getLocationList(String workId, String workCode, String invId, String invCode, String keyWord, int defaultItemNum, int flag,
-                         boolean isDropDown);
+    void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
+                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
+                          String specialInvFlag, String specialInvNum, String invType, Map<String,Object> extraMap);
     /**
      * 获取库存地点列表
      *
@@ -36,7 +37,4 @@ public interface IASNCollectPresenter extends IBaseCollectPresenter<IASNCollectV
 
     void checkLocation(String queryType, String workId, String invId, String batchFlag,
                        String location,Map<String,Object> extraMap);
-
-    void getDictionaryData(String... codes);
-
 }

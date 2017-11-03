@@ -38,8 +38,9 @@ public interface IMSNHeadPresenter extends IBaseHeadPresenter<IMSNHeadView> {
      * @param keyWord
      * @param defaultItemNum
      * @param flag
-     * @param key
+     * @param keys
      */
-    void getAutoComList(String workCode, Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String key);
+    void getAutoComList(String workCode, Map<String,Object> extraMap, String keyWord,
+                        int defaultItemNum, int flag, String... keys);
 
 }

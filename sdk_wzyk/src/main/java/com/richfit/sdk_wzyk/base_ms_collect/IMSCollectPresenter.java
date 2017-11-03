@@ -20,8 +20,9 @@ public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectVie
      */
     void getInvsByWorkId(String workId, int flag);
 
-   /* void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                       String location,Map<String,Object> extraMap);*/
+    //离线检查仓位
+    void checkLocation(String queryType, String workId, String invId, String batchFlag,
+                       String location,Map<String,Object> extraMap);
 
     /**
      * 获取库存信息
@@ -35,7 +36,7 @@ public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectVie
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
+                          String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap);
 
     /**
      * 获取单条缓存
@@ -49,6 +50,4 @@ public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectVie
      */
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
-
-    void getDictionaryData(String... codes);
 }

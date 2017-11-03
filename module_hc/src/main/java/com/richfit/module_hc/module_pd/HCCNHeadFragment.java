@@ -9,10 +9,4 @@ import com.richfit.sdk_wzpd.checkn.head.CNHeadFragment;
 
 public class HCCNHeadFragment extends CNHeadFragment {
 
-    @Override
-    public void initView() {
-        super.initView();
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
-    }
 }

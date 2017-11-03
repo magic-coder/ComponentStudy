@@ -75,4 +75,9 @@ public class QHYTDSNDetailFragment extends BaseDSNDetailFragment<DSNDetailPresen
         mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, tranToSapFlag, mExtraTansMap);
     }
+
+    @Override
+    protected String getSubFunName() {
+        return "无仓考出库";
+    }
 }

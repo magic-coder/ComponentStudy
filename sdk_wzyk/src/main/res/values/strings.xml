@@ -1,2 +1,3 @@
 <resources>
+    <string name="send_location_type">发出仓储类型</string>
 </resources>

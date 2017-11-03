@@ -35,23 +35,19 @@ public class XNGDASNEditFragment extends BaseASNEditFragment<ASNEditPresenterImp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         etMoney = (EditText) mView.findViewById(R.id.xngd_et_money);
     }
 
     @Override
     public void initData() {
+        super.initData();
         Bundle arguments = getArguments();
         if (arguments != null) {
             String money = arguments.getString(XNGDASNEditFragment.EXTRA_MONEY_KEY);
             etMoney.setText(money);
         }
-        super.initData();
     }
 
     @Override

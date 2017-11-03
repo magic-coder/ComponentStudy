@@ -15,6 +15,7 @@ import com.richfit.common_lib.lib_rv_animation.Animation.animators.FadeInDownAni
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
 import com.richfit.module_cqyt.adapter.XJDetailAdapter;
 
@@ -54,11 +55,6 @@ public class CQYTWHXJCollectFragment extends BaseCollectFragment<CQYTWHXJCollect
     @Override
     public void initPresenter() {
         mPresenter = new CQYTWHXJCollectPresenterImp(mActivity);
-    }
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
     }
 
     @Override

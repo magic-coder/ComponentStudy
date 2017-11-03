@@ -25,7 +25,6 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
     TextView tvSendWork;
     //装运条件
     Spinner spShopCondition;
-
     List<SimpleEntity> mShopConditions;
 
     @Override
@@ -40,7 +39,6 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
 
     @Override
     public void initView() {
-        super.initView();
         tvSendWork = (TextView) mView.findViewById(R.id.tv_send_work);
         llCreator.setVisibility(View.GONE);
         spShopCondition = mView.findViewById(R.id.cqyt_sp_shop_condition);
@@ -48,6 +46,7 @@ public class CQYTUbstoHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp
 
     @Override
     public void initData() {
+        super.initData();
         mPresenter.getDictionaryData("shopCondition");
     }
 

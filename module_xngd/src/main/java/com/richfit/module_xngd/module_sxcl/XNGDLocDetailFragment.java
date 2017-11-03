@@ -1,6 +1,9 @@
 package com.richfit.module_xngd.module_sxcl;
 
+import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.module_xngd.module_sxcl.imp.XNGDLocDetailPresenterImp;
 import com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment;
 

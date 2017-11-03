@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.widget.RichEditText;
@@ -17,9 +18,13 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.MaterialEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.blind.collect.imp.BlindCollectPresenterImp;
+
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -29,7 +34,7 @@ import butterknife.BindView;
  * Created by monday on 2017/3/3.
  */
 
-public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
+public class BCCollectFragment extends BaseCollectFragment<BlindCollectPresenterImp>
         implements IBlindCollectView {
 
 
@@ -77,6 +82,15 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
         mPresenter = new BlindCollectPresenterImp(mActivity);
     }
 
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected void initView() {
+
+    }
     /**
      * 注册所有UI事件
      */
@@ -287,10 +301,6 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
         }
     }
 
-    @Override
-    public void saveCollectedDataFail(String message) {
-        showMessage(message);
-    }
 
     private void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, etQuantity, cbSingle);
@@ -313,13 +323,7 @@ public class BCCollectFragment extends BaseFragment<BlindCollectPresenterImp>
         super.retry(action);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
 
-    }
 
-    @Override
-    protected void initView() {
 
-    }
 }

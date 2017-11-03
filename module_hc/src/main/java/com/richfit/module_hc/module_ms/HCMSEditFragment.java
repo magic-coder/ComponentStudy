@@ -10,14 +10,10 @@ import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
  */
 
 public class HCMSEditFragment extends BaseMSEditFragment<MSEditPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new MSEditPresenterImp(mActivity);
-    }
-
-    @Override
-    protected void initView() {
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

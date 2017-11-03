@@ -56,10 +56,6 @@ public class MCQBCColectFragment extends BaseCollectFragment<BlindCollectPresent
         mPresenter = new BlindCollectPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {

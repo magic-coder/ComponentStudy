@@ -37,95 +37,6 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
         super(context);
     }
 
-    /**
-     * 注意获取无参考的整单缓存时，单据数据refData为null
-     *
-     * @param refData：抬头界面获取的单据数据
-     * @param refCodeId：单据id
-     * @param bizType:业务类型
-     * @param refType：单据类型
-     * @param userId
-     * @param workId
-     * @param invId
-     * @param recWorkId
-     * @param recInvId
-     */
-    @Override
-    public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
-                                String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
-        mView = getView();
-        ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
-                mRepository.getTransferInfo("", refCodeId, bizType, refType, userId, workId, invId,
-                        recWorkId, recInvId,extraMap)
-                        .map(data -> trans2Detail(data))
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
-                            @Override
-                            public void onNext(ArrayList<RefDetailEntity> list) {
-                                if (mView != null) {
-                                    mView.showNodes(list);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.setRefreshing(false, t.getMessage());
-                                }
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                if (mView != null) {
-                                    mView.refreshComplete();
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType,String refLineId,String userId, int position, String companyCode) {
-        RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, refLineId,userId, position, companyCode)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext) {
-                    @Override
-                    public void _onNext(String s) {
-
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.deleteNodeSuccess(position);
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,
                          ReferenceEntity refData, RefDetailEntity node,
@@ -164,107 +75,13 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
         //下架仓位集合
         bundle.putStringArrayList(Global.EXTRA_LOCATION_LIST_KEY, sendLocations);
 
+        //备注
+        bundle.putString(Global.EXTRA_REMARK_KEY, node.remark);
+
         intent.putExtras(bundle);
 
         Activity activity = (Activity) mContext;
         activity.startActivity(intent);
-    }
-
-    @Override
-    public void submitData2BarcodeSystem(String refCodeId,String transId, String bizType, String refType, String userId, String voucherDate,
-                                         String transToSapFlag, Map<String, Object> extraHeaderMap) {
-        mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId,extraHeaderMap),
-                mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
-                .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnError(str -> SPrefUtil.saveData(bizType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType, "1"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemSuccess();
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void submitData2SAP(String transId, String bizType, String refType, String userId,
-                               String voucherDate, String transToSapFlag, Map<String, Object> extraHeaderMap) {
-        mView = getView();
-        RxSubscriber<String> subscriber = mRepository.transferCollectionData(transId, bizType, refType, userId,
-                voucherDate, transToSapFlag, extraHeaderMap)
-                .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType, "0"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_UPLOAD_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null ) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitSAPSuccess();
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
     }
 
     @Override
@@ -320,9 +137,10 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
      *
      * @return
      */
-    private ArrayList<RefDetailEntity> trans2Detail(ReferenceEntity refData) {
+    @Override
+    protected ArrayList<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
         ArrayList<RefDetailEntity> datas = new ArrayList<>();
-        List<RefDetailEntity> billDetailList = refData.billDetailList;
+        List<RefDetailEntity> billDetailList = cache.billDetailList;
         for (RefDetailEntity target : billDetailList) {
             List<LocationInfoEntity> locationList = target.locationList;
             if (locationList != null && locationList.size() > 0) {
@@ -339,6 +157,7 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
                     data.transLineId = target.transLineId;
                     data.invId = target.invId;
                     data.invCode = target.invCode;
+                    data.remark = target.remark;
 
                     //子节点的数据
                     data.transId = loc.transId;

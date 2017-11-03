@@ -68,6 +68,7 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
 
     @Override
     protected void initView() {
+        super.initView();
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvActQuantityCustom = mView.findViewById(R.id.mcq_tv_act_quantity_custom);
         tvLocQuantityCustom = mView.findViewById(R.id.mcq_tv_location_quantity_custom);
@@ -109,9 +110,6 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
         mView.findViewById(R.id.mcq_ll_batch_flag).setVisibility(View.GONE);
         //禁用下架仓位
         spLocation.setEnabled(false);
-
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -122,6 +120,11 @@ public class MCQLDSCollectFragment extends BaseDSCollectFragment<DSCollectPresen
             hideKeyboard(etLocation);
             checkLocation(getString(etBatchFlag), location);
         });
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
 

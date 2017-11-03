@@ -59,12 +59,8 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         etAllQuantity = (EditText) mView.findViewById(R.id.xngd_et_all_quantity);
         etPartQuantity = (EditText) mView.findViewById(R.id.xngd_et_part_quantity);
         spInspectionType = (Spinner) mView.findViewById(R.id.xngd_sp_inspection_type);
@@ -72,10 +68,7 @@ public class XNGDAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         etProcessResult = (EditText) mView.findViewById(R.id.xngd_et_process_result);
     }
 
-    @Override
-    public void initEvent() {
 
-    }
 
     @Override
     public void initData() {

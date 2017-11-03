@@ -24,11 +24,12 @@ public class XNGDMSYCollectFragment extends BaseMSCollectFragment<MSCollectPrese
 
     @Override
     protected void initView() {
+        super.initView();
         llRecBatch.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
 

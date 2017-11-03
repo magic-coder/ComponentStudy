@@ -13,21 +13,17 @@ import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
  */
 
 public class HCRSEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new ASEditPresenterImp(mActivity);
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         tvActQuantityName.setText("应退数量");
         tvQuantityName.setText("实退数量");
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -51,6 +52,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * 物资移库无参考数据采集界面基类。
  * 主要的流程：用户输入物料和批次->获取缓存->选择发出仓位->匹配出仓位数量。
  * 注意这里获取到的缓存包括了所有的仓位级别的缓存
+ * 物资无参考移库，默认接收信息是开启的
  * Created by monday on 2016/11/20.
  */
 
@@ -91,29 +93,24 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     protected EditText etRecBatchFlag;
     @BindView(R2.id.ll_rec_location)
     protected LinearLayout llRecLocation;
-    @BindView(R2.id.ll_rec_batch)
+    @BindView(R2.id.ll_rec_batch_flag)
     protected LinearLayout llRecBatch;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
     @BindView(R2.id.tv_location_type_name)
     protected TextView tvLocationTypeName;
     @BindView(R2.id.ll_rec_location_type)
-    protected LinearLayout llRecLocationType;
+    LinearLayout llRecLocationType;
     @BindView(R2.id.sp_rec_location_type)
     protected Spinner spRecLocationType;
-    @BindView(R2.id.tv_rec_location_type_name)
-    protected TextView tvRecLocationTypeName;
 
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     protected List<SimpleEntity> mRecLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
-    private boolean isOpenRecLocationType = false;
     /*ERP仓库号是否一致，对于ERP仓库号一致的物料，必须输入接收仓位，否者不能输入。但是前提
     * 是必须先知道是否打开了WM。如果没有打开那么不需要查询*/
     protected boolean isOpenWM = true;
@@ -126,8 +123,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     private LocationAdapter mSendLocAdapter;
     /*缓存的历史仓位数量*/
     protected List<RefDetailEntity> mHistoryDetailList;
-    /*新增设备Id*/
-    protected String mDeviceId;
     protected boolean isLocationChecked = false;
     //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
     protected String mAutoLocation;
@@ -193,13 +188,25 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mSendInvs = new ArrayList<>();
         mInventoryDatas = new ArrayList<>();
         isOpenWM = getWMOpenFlag();
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if (isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+
+        if (isOpenRecLocationType) {
+            llRecLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             //请求接口获取获取物料
@@ -219,23 +226,24 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         // dedounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
         // throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
         //但是这是使用debonce，resetCommonUIPartly将延迟执行到发出库位显示默认位置之后，导致抬头界面的默认发出库位选择失效
-        RxTextView.textChanges(etSendBatchFlag)
+       /* RxTextView.textChanges(etSendBatchFlag)
                 .filter(str -> !TextUtils.isEmpty(str))
-                .subscribe(batch -> resetCommonUIPartly());
+                .subscribe(batch -> resetCommonUIPartly());*/
 
 
         //用户输入或者修改发出批次，同时默认接收批次与发出批次一致
-        if (etSendBatchFlag.isEnabled() && etRecBatchFlag.isEnabled() &&
+        /*if (etSendBatchFlag.isEnabled() && etRecBatchFlag.isEnabled() &&
                 TextUtils.isEmpty(getString(etRecBatchFlag))) {
             RxTextView.textChanges(etSendBatchFlag)
                     .debounce(100, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .subscribe(str -> etRecBatchFlag.setText(str));
-        }
+        }*/
 
         //库存地点。选择库存地点获取发出仓位的库存
         RxAdapterView.itemSelections(spSendInv)
                 .filter(a -> spSendLoc.isEnabled())
+                .filter(pos -> pos > 0)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(position -> {
                     if (isOpenLocationType) {
@@ -249,7 +257,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 });
 
         //选择仓储类型加载库存(这里不增加过来>0条件的目标是当用户从>0切回<=0时需要清除一些字段)
-
         RxAdapterView.itemSelections(spLocationType)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -292,17 +299,8 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     }
 
-
     @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
-    }
-
-
-    @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         //检查抬头界面的数据
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
@@ -328,6 +326,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         isOpenBatchManager = true;
         etSendBatchFlag.setEnabled(true);
     }
+
 
     protected void loadMaterialInfo(String materialNum, String batchFlag) {
         if (TextUtils.isEmpty(materialNum)) {
@@ -468,7 +467,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                 mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
+                getString(etSendBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     /**
@@ -500,18 +499,15 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
      */
     @Override
     public void loadInventoryComplete() {
-        //如果打开了接收仓储类型，那么由仓储类型触发加载接收库存
-        if(isOpenRecLocationType && TextUtils.isEmpty(mAutoLocation)) {
-            return;
+        if(isOpenLocationType && !TextUtils.isEmpty(mAutoLocation)) {
+            //如果打开发出仓储类型，并且扫描到了不同仓储类型，那么需要自动匹配发出仓位
+            UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
         }
-        //加载接收库存
-        loadRecInventoryInfo();
-        //如果是扫描带仓储类型的仓位，那么这里自动匹配仓储类型
-        if (!isOpenRecLocationType && TextUtils.isEmpty(mAutoLocation)) {
-            return;
+
+        //如果没有打开接收仓储类型，那么接收仓位的库存由此处触发
+        if(!isOpenRecLocationType) {
+            loadRecInventoryInfo();
         }
-        //自动匹配下架仓位，并获取缓存
-        UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
     }
 
     /**
@@ -535,7 +531,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                 mRefData.recWorkCode, mRefData.recInvCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
+                getString(etSendBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     /**
@@ -838,8 +834,6 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         result.quantity = getString(etQuantity);
         result.invType = param.invType;
         result.modifyFlag = "N";
-        //庆阳添加设备号
-        result.deviceId = mDeviceId;
         int locationPos = spSendLoc.getSelectedItemPosition();
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
@@ -850,7 +844,7 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
-        if(isOpenRecLocationType) {
+        if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -874,7 +868,8 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit,
-                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag, autoRecLoc, etMaterialNum, etSendBatchFlag);
+                tvInvQuantity, tvLocQuantity, etQuantity, etRecBatchFlag,
+                autoRecLoc, etMaterialNum, etSendBatchFlag);
 
         //发出库位(注意由于发出库位是一进来就加载的,所以不能清理)
         if (spSendInv.getAdapter() != null) {
@@ -924,31 +919,30 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
+            if(isOpenLocationType) {
+                if (mLocationTypes == null) {
+                    mLocationTypes = new ArrayList<>();
+                }
+                mLocationTypes.clear();
+                mLocationTypes.addAll(locationTypes);
             }
-            if (mRecLocationTypes == null) {
-                mRecLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mRecLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            mRecLocationTypes.addAll(locationTypes);
             //发出仓储类型
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
 
-            //接收仓储类型
-            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mRecLocationTypes, false);
-            spRecLocationType.setAdapter(recAdapter);
+            if(isOpenRecLocationType) {
+                if (mRecLocationTypes == null) {
+                    mRecLocationTypes = new ArrayList<>();
+                }
+                mRecLocationTypes.clear();
+                mRecLocationTypes.addAll(locationTypes);
+                //接收仓储类型
+                SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mRecLocationTypes, false);
+                spRecLocationType.setAdapter(recAdapter);
+            }
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override
@@ -986,14 +980,13 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
                 mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                         mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                         CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                        getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
+                        getString(etSendBatchFlag), "", "", param.invType, param.extraMap);
                 break;
             case Global.RETRY_LOAD_REC_INVENTORY_ACTION:
-
                 mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                         mRefData.recWorkCode, mRefData.recInvCode, "", getString(etMaterialNum),
                         CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                        getString(etSendBatchFlag), "", "", param.invType, mDeviceId, param.extraMap);
+                        getString(etSendBatchFlag), "", "", param.invType, param.extraMap);
                 break;
         }
         super.retry(retryAction);

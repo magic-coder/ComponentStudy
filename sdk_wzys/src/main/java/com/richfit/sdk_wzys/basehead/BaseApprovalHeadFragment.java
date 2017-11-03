@@ -64,11 +64,6 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
-    @Override
     protected void initView() {
         etApprovalDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         erArrivalDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
@@ -78,7 +73,7 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
      * 绑定事件。
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //请求单据信息
         etRefNum.setOnRichEditTouchListener((view, refNum) -> {
             hideKeyboard(view);
@@ -95,7 +90,7 @@ public abstract class BaseApprovalHeadFragment extends BaseHeadFragment<Approval
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         ArrayAdapter adapter = new ArrayAdapter(mActivity, R.layout.item_simple_sp, APPROVAL_TYPES);
         spApprovalType.setAdapter(adapter);
     }

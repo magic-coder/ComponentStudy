@@ -38,7 +38,7 @@ public interface IMSNEditPresenter extends IBaseEditPresenter<IMSNEditView> {
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId,Map<String,Object> extraMap);
+                          String invType,Map<String,Object> extraMap);
 
     /**
      * 获取接收仓位的库存
@@ -55,14 +55,10 @@ public interface IMSNEditPresenter extends IBaseEditPresenter<IMSNEditView> {
      * @param specialInvFlag
      * @param specialInvNum
      * @param invType
-     * @param deviceId
      */
     void getInventoryInfoOnRecLocation(String queryType, String workId, String invId, String workCode,
                                        String invCode, String storageNum, String materialNum, String materialId,
                                        String location, String batchFlag, String specialInvFlag, String specialInvNum,
-                                       String invType, String deviceId,Map<String,Object> extraMap);
-
-    void getDictionaryData(String... codes);
-
+                                       String invType,Map<String,Object> extraMap);
 }
 

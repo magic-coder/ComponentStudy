@@ -68,6 +68,7 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
 
     @Override
     protected void initView() {
+        super.initView();
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvActQuantityCustom = mView.findViewById(R.id.mcq_tv_act_quantity_custom);
         etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
@@ -95,14 +96,11 @@ public class MCQASCollectFragment extends BaseASCollectFragment<ASCollectPresent
         llBatchFlag.setVisibility(View.GONE);
         //隐藏特殊库存标识
         mView.findViewById(R.id.mcq_ll_special_inv).setVisibility(View.GONE);
-
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void initData() {
-        super.initData();
+    protected void initData() {
+
     }
 
     /**

@@ -25,6 +25,8 @@ public class ReferenceEntity {
     public String refType;
     /*移动类型*/
     public String moveType;
+    //临时控制字段
+    public String sapMoveType;
     /*业务类型*/
     public String bizType;
     /*工厂*/
@@ -166,6 +168,10 @@ public class ReferenceEntity {
     public String orderNum;
     public String projectNumDesc;
     public String costCenterDesc;
+    public String businessScope;
+    public String profitCenter;
+    public String network;
+    public String deliveryTo;
 
     @Override
     public String toString() {

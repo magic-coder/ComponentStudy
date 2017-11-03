@@ -35,12 +35,6 @@ public class WSDetailFragment extends BaseDetailFragment<WSDetailPresenterImp, R
         mPresenter = new WSDetailPresenterImp(mActivity);
     }
 
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
     @Override
     public void initEvent() {
 

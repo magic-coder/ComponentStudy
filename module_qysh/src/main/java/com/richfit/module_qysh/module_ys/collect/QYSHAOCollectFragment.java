@@ -93,7 +93,6 @@ public class QYSHAOCollectFragment extends BaseCollectFragment<QYSHAOPresenterIm
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
-
         if (list != null && list.length > 12) {
             final String materialNum = list[Global.MATERIAL_POS];
             final String batchFlag = list[Global.BATCHFALG_POS];
@@ -114,6 +113,7 @@ public class QYSHAOCollectFragment extends BaseCollectFragment<QYSHAOPresenterIm
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mRefLines = new ArrayList<>();
         mInvDatas = new ArrayList<>();
     }

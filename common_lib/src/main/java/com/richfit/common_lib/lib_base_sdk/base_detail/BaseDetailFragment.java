@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import java.util.List;
  * 所有明细界面公共基类。注意因为明细界面的控件已经固定，所以可以抽象出来。
  * 2017年7月20日进行修改，将数据上传，上架，下架等所有任务的消息(包括凭证和错误消息)
  * 统一处理，子类字需要关心该任务正确时的处理。
+ * 从长庆开始加入仓储类型，默认明细时显示仓储类型，通过WMFLAG自动隐藏仓储类型
  * Created by monday on 2017/3/17.
  */
 
@@ -64,6 +66,11 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
     /*数据上传01/05等业务，在开发后期需要增加的字段*/
     protected HashMap<String, Object> mExtraTansMap = new HashMap<>();
 
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        isOpenLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+        isOpenRecLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+    }
 
     @Nullable
     @Override
@@ -89,6 +96,20 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         LinearLayoutManager lm = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(lm);
         mRecyclerView.setItemAnimator(new FadeInDownAnimator());
+
+        //隐藏只有父节点的仓储类型
+        if(!isOpenLocationType) {
+            View tvLocationType = mView.findViewById(R.id.tv_location_type);
+            if(tvLocationType != null) {
+                tvLocationType.setVisibility(View.GONE);
+            }
+        }
+        if(!isOpenRecLocationType) {
+            View tvRecLocationType = mView.findViewById(R.id.tv_rec_location_type);
+            if(tvRecLocationType != null) {
+                tvRecLocationType.setVisibility(View.GONE);
+            }
+        }
     }
 
     /**
@@ -126,6 +147,10 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId, mRefData.recInvId,null);
     }
 
+    @Override
+    public void refreshComplete() {
+        setRefreshing(true, "获取明细缓存成功");
+    }
     /**
      * 保存明细节点的TransId
      */
@@ -332,7 +357,20 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int viewType) {
-
+        //如果打开了wm仓位管理，那么说明需要显示仓储类型；
+        //如果没有打开wm仓位管理，那么需要隐藏仓储类型
+        if(!isOpenLocationType) {
+            //这里仅仅针对的是具有父子结构的隐藏
+            if (viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
+                holder.setVisible(R.id.tv_location_type, false);
+            }
+        }
+        if(!isOpenRecLocationType) {
+            //这里仅仅针对的是具有父子结构的隐藏
+            if (viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
+                holder.setVisible(R.id.tv_rec_location_type, false);
+            }
+        }
     }
 
     /**

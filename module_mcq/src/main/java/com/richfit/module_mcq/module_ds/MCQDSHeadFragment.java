@@ -24,13 +24,13 @@ public class MCQDSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
     @Override
     public void initView() {
-        super.initView();
         //打开客户
         llCustomer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void initData() {
+        super.initData();
         //读取Intent传递过来的refNum,如果存在那么自动加载数据
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -39,7 +39,6 @@ public class MCQDSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
                 getRefData(refNum);
             }
         }
-//       etRefNum.setText("2-20170918-00233");
     }
 
     @Override

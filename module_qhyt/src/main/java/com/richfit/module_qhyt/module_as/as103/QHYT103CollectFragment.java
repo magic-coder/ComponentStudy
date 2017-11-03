@@ -9,6 +9,9 @@ import com.richfit.module_qhyt.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 2017年06年19打开批次，但是不检查批次必输。
  * Created by monday on 2017/6/12.
@@ -45,8 +48,10 @@ public class QHYT103CollectFragment extends BaseASCollectFragment<ASCollectPrese
         isNLocation = true;
     }
 
+
     @Override
     public void initView() {
+        super.initView();
         llLocation.setVisibility(View.GONE);
         llLocationQuantity.setVisibility(View.GONE);
     }

@@ -21,7 +21,6 @@ public class QHYTDSXSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp>
     @Override
     public void initView() {
         llCustomer.setVisibility(View.VISIBLE);
-        super.initView();
     }
 
     @Override

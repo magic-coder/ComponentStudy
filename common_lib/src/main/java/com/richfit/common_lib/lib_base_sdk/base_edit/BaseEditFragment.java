@@ -1,9 +1,18 @@
 package com.richfit.common_lib.lib_base_sdk.base_edit;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,6 +23,12 @@ public abstract class BaseEditFragment<P extends IBaseEditPresenter> extends Bas
         implements IBaseEditView {
 
     AlertDialog.Builder mDialog;
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        isOpenLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+        isOpenRecLocationType = Global.OPEN_LOCATION_TYPE.equals(Global.WMFLAG);
+    }
 
     @Override
     public void showOperationMenuOnCollection(final String companyCode) {
@@ -44,17 +59,23 @@ public abstract class BaseEditFragment<P extends IBaseEditPresenter> extends Bas
     }
 
     @Override
-    public ResultEntity provideResult() {
-        return null;
-    }
-
-    @Override
     public void saveEditedDataSuccess(String message) {
         showMessage(message);
     }
 
     @Override
     public void saveEditedDataFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
         showMessage(message);
     }
 

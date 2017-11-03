@@ -2,9 +2,11 @@ package com.richfit.module_xngd.module_ds.dsn;
 
 
 import android.text.TextUtils;
+import android.widget.EditText;
 
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.module_xngd.R;
 import com.richfit.sdk_wzck.base_dsn_collect.BaseDSNCollectFragment;
 import com.richfit.sdk_wzck.base_dsn_collect.imp.DSNCollectPresenterImp;
 
@@ -17,6 +19,14 @@ import java.util.Map;
 
 public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPresenterImp> {
 
+
+    EditText etRemark;
+
+    @Override
+    public int getContentId() {
+        return R.layout.xngd_fragment_dsn_collect;
+    }
+
     @Override
     public void initPresenter() {
         mPresenter = new DSNCollectPresenterImp(mActivity);
@@ -24,11 +34,12 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
 
     @Override
     protected void initView() {
-
+        super.initView();
+        etRemark = mView.findViewById(R.id.et_remark);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
@@ -58,12 +69,12 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
             return;
         }
 
-        if(TextUtils.isEmpty(mRefData.glAccount)) {
+        if (TextUtils.isEmpty(mRefData.glAccount)) {
             showMessage("请先在抬头界面输入总账科目");
             return;
         }
 
-        if(TextUtils.isEmpty(mRefData.orderNum)) {
+        if (TextUtils.isEmpty(mRefData.orderNum)) {
             showMessage("请现在抬头输入订单编号");
             return;
         }
@@ -79,6 +90,7 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
 
     /**
      * 注意specialInvFlag和specialInvNum已经在父类添加了
+     *
      * @return
      */
     @Override
@@ -88,6 +100,7 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
         result.invFlag = mRefData.invFlag;
         result.projectNum = mRefData.projectNum;
         result.orderNum = mRefData.orderNum;
+        result.remark = getString(etRemark);
         return result;
     }
 
@@ -96,7 +109,7 @@ public class XNGDDSNCollectFragment extends BaseDSNCollectFragment<DSNCollectPre
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
-        param.invType = TextUtils.isEmpty( mRefData.invType) ? "1" :  mRefData.invType;
+        param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);
         extraMap.put("specialInvFlag", mRefData.specialInvFlag);

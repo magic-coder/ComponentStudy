@@ -12,9 +12,13 @@ import com.richfit.common_lib.lib_base_sdk.base_edit.BaseEditFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.blind.edit.imp.BlindEditPresenterImp;
+
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -180,7 +184,6 @@ public class BCEditFragment extends BaseEditFragment<BlindEditPresenterImp>
         super.saveEditedDataFail(message);
         etCheckQuantity.setText("");
     }
-
 
     @Override
     public void networkConnectError(String retryAction) {

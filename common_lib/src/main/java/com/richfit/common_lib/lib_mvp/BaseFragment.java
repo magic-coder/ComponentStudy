@@ -73,6 +73,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected String mTabTitle;
     /*批次管理，默认是打开的*/
     protected boolean isOpenBatchManager = true;
+    /*仓储类型*/
+    protected boolean isOpenLocationType = false;
+    protected boolean isOpenRecLocationType = false;
     private static List<BottomMenuEntity> mBottomMenus;
     private static InventoryQueryParam mInventoryParam;
 
@@ -152,7 +155,8 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     //获取布局文件
     protected abstract int getContentId();
 
-    public abstract void initPresenter();
+    //初始化presenter层
+    protected abstract void initPresenter();
 
     protected void showMessage(String message) {
         if (mView != null) {
@@ -324,16 +328,16 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     protected abstract void initView();
 
     //注册所有的监听事件,可以不实现
-    public abstract void initEvent();
+    protected abstract void initEvent();
 
     /**
      * 初始化数据, 可以不实现.该方法在onResume方法中调用，说明在大部分的时候
      * 该方法只会调用一次，也就是我们需要初始化一下静态的数据。比如单据类型等。
      */
-    public abstract void initData();
+    protected abstract void initData();
 
     //赖加载数据。该方法在Fragment可见的时候调用。可以动态的加载数据
-    public abstract void initDataLazily();
+    protected abstract void initDataLazily();
 
     //该方法在fragment不可见的时候调用，相当于onPause方法，用户保存抬头界面相关数据。
     public void _onPause() {
@@ -396,19 +400,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     }
 
     /**
-     * 设置view的可见性
-     */
-    protected void setVisibility(int visibility, View... views) {
-        if (views == null || views.length == 0)
-            return;
-        for (View view : views) {
-            if(view == null)
-                continue;
-            view.setVisibility(visibility);
-        }
-    }
-
-    /**
      * 清除公共空控件的数据
      */
     protected void clearCommonUI(View... views) {
@@ -429,46 +420,6 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
         }
     }
 
-
-    /**
-     * 通过单据行的行号得到该行在单据明细列表中的位置
-     *
-     * @param lineNum:单据行号
-     * @return 返回该行号对应的行明细在明细列表的索引
-     */
-    protected int getIndexByLineNum(String lineNum) {
-        int index = -1;
-        if (TextUtils.isEmpty(lineNum))
-            return index;
-
-        if (mRefData == null || mRefData.billDetailList == null
-                || mRefData.billDetailList.size() == 0)
-            return index;
-
-        for (RefDetailEntity detailEntity : mRefData.billDetailList) {
-            index++;
-            if (lineNum.equalsIgnoreCase(detailEntity.lineNum))
-                break;
-
-        }
-        return index;
-    }
-
-    /**
-     * 获取行明细
-     *
-     * @param lineNum:单据行号
-     * @return
-     */
-    protected RefDetailEntity getLineData(String lineNum) {
-        if(TextUtils.isEmpty(lineNum))
-            return null;
-        int lineIndex = getIndexByLineNum(lineNum);
-        if (lineIndex < 0) {
-            mRefData.billDetailList.get(0);
-        }
-        return mRefData.billDetailList.get(lineIndex);
-    }
 
 
 }

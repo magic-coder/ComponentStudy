@@ -15,6 +15,10 @@ import java.util.Map;
 
 public class XNGDLocCollectFragment extends LocQTCollectFragment {
 
+    @Override
+    protected void initData() {
+
+    }
 
     @Override
     public ResultEntity provideResult() {
@@ -41,4 +45,6 @@ public class XNGDLocCollectFragment extends LocQTCollectFragment {
         param.extraMap = extraMap;
         return param;
     }
+
+
 }

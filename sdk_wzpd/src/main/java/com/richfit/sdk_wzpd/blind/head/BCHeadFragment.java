@@ -77,7 +77,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     protected RichEditText etTransferDate;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
 
@@ -90,8 +90,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
     List<String> mStorageNums;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
+
 
     @Override
     protected int getContentId() {
@@ -105,17 +104,18 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInvDatas = new ArrayList<>();
         mWorkDatas = new ArrayList<>();
         mStorageNums = new ArrayList<>();
-        mRefData = null;
     }
 
     @Override
     protected void initView() {
-
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
-
 
     /**
      * 注册点击事件
@@ -166,8 +166,6 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         tvChecker.setText(Global.LOGIN_ID);
         //因为默认是选择仓库级的，所以在先初始化工厂
@@ -473,7 +471,7 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-
+        super.clearAllUIAfterSubmitSuccess();
     }
 
     @Override

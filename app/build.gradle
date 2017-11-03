@@ -142,7 +142,7 @@ android {
             buildConfigField "String", "APP_NAME", '"xngd"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.2"
+            versionName "1.0"
             signingConfig signingConfigs.sign_xngd
         }
 
@@ -162,7 +162,7 @@ android {
             buildConfigField "String", "APP_NAME", '"mcq"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.5"
+            versionName "1.0"
             signingConfig signingConfigs.sign_mcq
         }
 
@@ -172,7 +172,7 @@ android {
             buildConfigField "String", "APP_NAME", '"hanc"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.5"
+            versionName "1.0"
             signingConfig signingConfigs.sign_hanc
         }
 
@@ -217,9 +217,10 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-//      compile project(':module_qhyt')
+    compile project(':module_qysh')
+   // compile project(':module_qhyt')
    // compile project(':module_xngd')
-    compile project(':module_cqyt')
+   // compile project(':module_cqyt')
     //compile project(':module_mcq')
     //compile project(':module_hc')
 

@@ -37,7 +37,7 @@ public class QHYTAS103DetailPresenterImp extends ASDetailPresenterImp {
         super(context);
     }
 
-
+    //重写第一步数据上传，增加图片上传
     @Override
     public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {

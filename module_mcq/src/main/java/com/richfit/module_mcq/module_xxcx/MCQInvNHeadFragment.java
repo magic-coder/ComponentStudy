@@ -49,11 +49,10 @@ public class MCQInvNHeadFragment extends InvNQueryHeaderFragment {
 
     @Override
     public void initView() {
+        super.initView();
         llMaterialClass.setVisibility(View.GONE);
         llMaterialDesc.setVisibility(View.GONE);
         etLocation = mView.findViewById(R.id.et_location);
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
 

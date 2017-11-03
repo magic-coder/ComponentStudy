@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.utils.SPrefUtil;
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_qhyt.R;
@@ -28,11 +30,6 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
     @Override
     public void initPresenter() {
         mPresenter = new QHYTAS103DetailPresenterImp(mActivity);
-    }
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
     }
 
     @Override
@@ -66,33 +63,15 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
     }
 
     /**
-     * 必须重写删除结点的回调方法，因为103有参考入库不具有父子结点的结构
-     * @param node
-     * @param position
-     */
-    @Override
-    public void deleteNode(final RefDetailEntity node, int position) {
-        if (!TextUtils.isEmpty(mShowMsg)) {
-            showMessage("已经过账,不允许删除");
-            return;
-        }
-        if (TextUtils.isEmpty(node.transLineId)) {
-            showMessage("该行还未进行数据采集");
-            return;
-        }
-        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
-                mRefData.refType, mRefData.bizType, position, mCompanyCode);
-    }
-
-    /**
      * 修改节点的数据，这里我们需要给出已经其他节点的上架仓位集合。
      * @param node
      * @param position
      */
     @Override
     public void editNode(final RefDetailEntity node, int position) {
-        if (!TextUtils.isEmpty(mShowMsg)) {
-            showMessage("已经过账,不允许修改");
+        String state = (String) SPrefUtil.getData(mBizType + mRefType, "0");
+        if (!"0".equals(state)) {
+            showMessage("已经过账,不允许删除");
             return;
         }
         if (TextUtils.isEmpty(node.transLineId)) {
@@ -108,6 +87,40 @@ public class QHYTAS103DetailFragment extends BaseASDetailFragment<QHYTAS103Detai
         }
     }
 
+    /**
+     * 必须重写删除结点的回调方法，因为103有参考入库不具有父子结点的结构
+     * @param node
+     * @param position
+     */
+    @Override
+    public void deleteNode(final RefDetailEntity node, int position) {
+        String state = (String) SPrefUtil.getData(mBizType + mRefType, "0");
+        if (!"0".equals(state)) {
+            showMessage("已经过账,不允许删除");
+            return;
+        }
+        if (TextUtils.isEmpty(node.transLineId)) {
+            showMessage("该行还未进行数据采集");
+            return;
+        }
+        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
+                mRefData.refType, mRefData.bizType,node.refLineId, Global.USER_ID, position, mCompanyCode);
+    }
+
+
+    /**
+     * 删除明细节点成功。如果不具有父子节点结构的明细界面，那么子类需要重写
+     *
+     * @param position：节点在明细列表的位置
+     */
+    @Override
+    public void deleteNodeSuccess(int position) {
+        showMessage("删除成功");
+        if (mAdapter != null) {
+            mAdapter.removeNodeByPosition(position);
+        }
+        startAutoRefresh();
+    }
 
     /**
      * 第一步过账成功，重写该方法直接跳转到抬头页面。

@@ -92,35 +92,6 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
     }
 
     @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-    }
-
-    @Override
     public void getTransferInfoSingle(String bizType, String materialNum, String userId, String workId, String invId, String recWorkId,
                                       String recInvId, String batchFlag, String refDoc, int refDocIem) {
         mView = getView();
@@ -207,12 +178,13 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                                  String invCode, String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum,
-                        materialNum, materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                        materialNum, materialId, "", "",
+                        batchFlag, location, specialInvFlag, specialInvNum, invType,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext) {
                             @Override
@@ -258,12 +230,13 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
                                               String invCode, String storageNum, String materialNum,
                                               String materialId, String location, String batchFlag,
                                               String specialInvFlag, String specialInvNum, String invType,
-                                              String deviceId,Map<String,Object> extraMap) {
+                                              Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<String>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum, materialNum,
-                        materialId, "", "", batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                        materialId, "", "",
+                        batchFlag, location, specialInvFlag, specialInvNum, invType,extraMap)
                         .filter(list -> list != null && list.size() > 0)
                         .map(list -> convert2Strings(list))
                         .compose(TransformerHelper.io2main())

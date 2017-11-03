@@ -51,7 +51,7 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
         ResourceSubscriber<List<RefDetailEntity>> subscriber =
                 Flowable.zip(mRepository.getReference(refNum, refType, bizType, moveType, refLineId, userId)
                         .flatMap(refData->Flowable.just(addBatchManagerStatus(refData))),
-                        mRepository.getTransferInfo(refNum, refCodeId, bizType, refType, userId, "", "", "", "")
+                        mRepository.getTransferInfo(refNum, refCodeId, bizType, refType, userId, "", "", "", "",null)
                                 .onErrorReturnItem(new ReferenceEntity()),
                         (refData, cache) -> createNodesByCache(refData, cache))
                         .compose(TransformerHelper.io2main())
@@ -83,9 +83,9 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
 
     @Override
     public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, final int position, String companyCode) {
+                           String refType, String bizType,String refLineId,String userId, final int position, String companyCode) {
         RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, "", "", position, companyCode)
+                locationId, refType, bizType, refLineId, userId, position, companyCode)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext) {
                     @Override
@@ -171,12 +171,12 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
      * @param cache：缓存单据数据
      * @return
      */
-    protected List<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
+    protected ArrayList<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
         ArrayList<RefDetailEntity> nodes = new ArrayList<>();
         //第一步，将原始单据中的行明细赋值新的父节点中
         List<RefDetailEntity> list = refData.billDetailList;
         if (cache == null || cache.billDetailList == null || cache.billDetailList.size() == 0) {
-            return list;
+            return (ArrayList<RefDetailEntity>) list;
         }
         for (RefDetailEntity node : list) {
             //获取缓存中的明细，如果该行明细没有缓存，那么该行明细仅仅赋值原始单据信息

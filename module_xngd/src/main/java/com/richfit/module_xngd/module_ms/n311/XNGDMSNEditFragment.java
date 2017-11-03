@@ -22,11 +22,6 @@ public class XNGDMSNEditFragment extends BaseMSNEditFragment<MSNEditPresenterImp
     }
 
     @Override
-    protected void initView() {
-
-    }
-
-    @Override
     public void initDataLazily() {
 
     }

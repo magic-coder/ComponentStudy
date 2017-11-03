@@ -108,6 +108,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@id/ll_batch_flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -153,7 +154,7 @@
             <TextView
                 android:id="@id/tv_location_type_name"
                 style="@style/LeftTextViewItemStyle"
-                android:text="@string/location_type" />
+                android:text="@string/send_location_type" />
 
             <Spinner
                 android:id="@id/sp_location_type"
@@ -293,7 +294,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/ll_rec_batch"
+            android:id="@id/ll_rec_batch_flag"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

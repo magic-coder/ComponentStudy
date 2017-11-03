@@ -29,22 +29,17 @@ public class InvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetail
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new IInvYQueryDetailPresenterImp(mActivity);
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initEvent() {
-
-    }
-
-    @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
@@ -68,7 +63,7 @@ public class InvYQueryDetailFragment extends BaseDetailFragment<IInvYQueryDetail
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", param.invType, "", param.extraMap);
+                mRefData.batchFlag, "", "", param.invType, param.extraMap);
     }
 
 

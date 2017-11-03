@@ -31,15 +31,15 @@ public class XNGDASNCollectFragment extends BaseASNCollectFragment<ASNCollectPre
     }
 
     @Override
-    protected void initView() {
+    public void initView() {
+        super.initView();
         etMoney = (EditText) mView.findViewById(R.id.xngd_et_money);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
-
 
     @Override
     public void initDataLazily() {

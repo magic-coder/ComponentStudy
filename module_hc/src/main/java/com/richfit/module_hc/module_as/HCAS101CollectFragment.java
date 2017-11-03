@@ -17,8 +17,8 @@ public class HCAS101CollectFragment extends BaseASCollectFragment<ASCollectPrese
     }
 
     @Override
-    protected void initView() {
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
+    protected void initData() {
+
     }
+
 }

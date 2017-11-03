@@ -22,5 +22,5 @@ public interface IInvNQueryDetailPresenter extends IBaseDetailPresenter<IInvNQue
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
+                          String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap);
 }

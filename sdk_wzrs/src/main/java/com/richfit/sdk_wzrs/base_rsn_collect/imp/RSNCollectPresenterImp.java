@@ -63,43 +63,77 @@ public class RSNCollectPresenterImp extends BaseCollectPresenterImp<IRSNCollectV
     }
 
     @Override
-    public void getLocationList(String workId, String workCode, String invId, String invCode,
-                                String keyWord, int defaultItemNum, int flag,
-                                boolean isDropDown) {
+    public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
+                                 String materialNum, String materialId, String location, String batchFlag,
+                                 String specialInvFlag, String specialInvNum, String invType,
+                                 Map<String, Object> extraMap) {
         mView = getView();
-
-        if (TextUtils.isEmpty(workCode) && TextUtils.isEmpty(workId)) {
-            mView.loadInventoryFail("获取到工厂信息");
+        if (isLocal())
             return;
+        ResourceSubscriber<List<String>> subscriber;
+        if ("04".equals(queryType)) {
+            subscriber = mRepository.getStorageNum(workId, workCode, invId, invCode)
+                    .filter(num -> !TextUtils.isEmpty(num))
+                    .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
+                            workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
+                            specialInvFlag, specialInvNum, invType, extraMap))
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new InventorySubscriber());
+
+        } else {
+            subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
+                    workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
+                    specialInvFlag, specialInvNum, invType, extraMap)
+                    .filter(list -> list != null && list.size() > 0)
+                    .map(list -> changeInv2Locations(list))
+                    .compose(TransformerHelper.io2main())
+                    .subscribeWith(new InventorySubscriber());
+        }
+        addSubscriber(subscriber);
+    }
+
+
+    private List<String> changeInv2Locations(List<InventoryEntity> invs) {
+        List<String> locations = new ArrayList<>();
+        HashSet<String> set = new HashSet<>();
+        for (InventoryEntity data : invs) {
+            if (!set.contains(data.location)) {
+                set.add(data.location);
+                locations.add(data.location);
+            }
+        }
+        return locations;
+    }
+
+    protected class InventorySubscriber extends ResourceSubscriber<List<String>> {
+
+        public InventorySubscriber() {
         }
 
-        ResourceSubscriber<List<String>> subscriber =
-                mRepository.getLocationList(workId, workCode, invId, invCode, keyWord, defaultItemNum, flag)
-                        .filter(list -> list != null && list.size() > 0)
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<List<String>>() {
-                            @Override
-                            public void onNext(List<String> list) {
-                                if (mView != null) {
-                                    mView.showInventory(list);
-                                }
-                            }
+        @Override
+        public void onNext(List<String> list) {
+            if (mView != null) {
+                mView.showInventory(list);
+            }
+        }
 
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.loadInventoryFail(t.getMessage());
-                                }
-                            }
 
-                            @Override
-                            public void onComplete() {
-                                if(mView != null) {
-                                    mView.loadInventoryComplete(isDropDown);
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
+        @Override
+        public void onError(Throwable e) {
+            if (mView != null) {
+                mView.loadInventoryFail(e.getMessage());
+            }
+        }
+
+
+        @Override
+        public void onComplete() {
+            if (mView != null) {
+                mView.loadInventoryComplete();
+            }
+        }
     }
 
     @Override
@@ -148,34 +182,6 @@ public class RSNCollectPresenterImp extends BaseCollectPresenterImp<IRSNCollectV
                             }
                         });
         addSubscriber(subscriber);
-    }
-
-    @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
     @Override

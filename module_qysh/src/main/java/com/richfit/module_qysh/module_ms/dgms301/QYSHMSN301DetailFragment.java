@@ -1,4 +1,4 @@
-package com.richfit.module_qysh.module_ms;
+package com.richfit.module_qysh.module_ms.dgms301;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.domain.bean.BottomMenuEntity;
-import com.richfit.module_qysh.module_ms.imp.QYSHMSN301DetailPresenterImp;
+import com.richfit.module_qysh.module_ms.dgms301.imp.QYSHMSN301DetailPresenterImp;
 import com.richfit.sdk_wzyk.base_msn_detail.BaseMSNDetailFragment;
 
 import java.util.List;
@@ -19,15 +19,17 @@ import java.util.List;
 public class QYSHMSN301DetailFragment extends BaseMSNDetailFragment<QYSHMSN301DetailPresenterImp> {
 
     @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
+        isOpenLocationType = false;
+        isOpenRecLocationType = false;
+    }
+
+    @Override
     public void initPresenter() {
         mPresenter = new QYSHMSN301DetailPresenterImp(mActivity);
     }
 
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initEvent() {
@@ -56,7 +58,6 @@ public class QYSHMSN301DetailFragment extends BaseMSNDetailFragment<QYSHMSN301De
             setRefreshing(false, "获取明细失败,请先选择接收库位");
             return;
         }
-
         startAutoRefresh();
     }
 
@@ -81,14 +82,13 @@ public class QYSHMSN301DetailFragment extends BaseMSNDetailFragment<QYSHMSN301De
 
 
     @Override
+    protected String getSubFunName() {
+        return "期初物资移库";
+    }
+
+    @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         return menus.subList(3, 4);
-    }
-
-
-    @Override
-    protected String getSubFunName() {
-        return "期初物资移库";
     }
 }

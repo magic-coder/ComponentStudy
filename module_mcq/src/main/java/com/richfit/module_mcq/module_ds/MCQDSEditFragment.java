@@ -67,6 +67,7 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     @Override
     protected void initView() {
+        super.initView();
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvActQuantityCustom = mView.findViewById(R.id.mcq_tv_act_quantity_custom);
         etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
@@ -99,9 +100,6 @@ public class MCQDSEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
         //主计量单位累计数量
         TextView tvTotalQuantityName = mView.findViewById(R.id.mcq_total_quantity_name);
         tvTotalQuantityName.setText("主计量单位累计数量");
-
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
 

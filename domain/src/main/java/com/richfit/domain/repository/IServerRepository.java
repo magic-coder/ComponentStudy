@@ -125,7 +125,7 @@ public interface IServerRepository extends IRepository {
                                                      String materialNum, String materialId,
                                                      String materialGroup, String materialDesc, String batchFlag,
                                                      String location, String specialInvFlag, String specialInvNum,
-                                                     String invType, String deviceId, Map<String, Object> extraMap);
+                                                     String invType, Map<String, Object> extraMap);
 
     /**
      * 数据上传

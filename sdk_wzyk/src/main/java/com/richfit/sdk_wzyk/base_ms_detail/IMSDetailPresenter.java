@@ -10,8 +10,6 @@ import java.util.Map;
  */
 
 public interface IMSDetailPresenter extends IBaseDetailPresenter<IMSDetailView> {
- /*增加一个寄售转自有的业务，该业务仅仅针对出库移库相关的业务才有*/
-
     /**
      * 寄售转自有业务。
      *

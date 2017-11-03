@@ -67,17 +67,11 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
         return R.layout.wzyk_fragment_base_msy_header;
     }
 
-    @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
-
     /**
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         /*点击单号加载单据数据*/
         etRefNum.setOnRichEditTouchListener((view, refNum) -> {
             hideKeyboard(view);
@@ -229,6 +223,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
+        super.clearAllUIAfterSubmitSuccess();
         clearCommonUI(etRefNum, tvRefNum, tvSendWork, tvRecWork, tvInv);
         mRefData = null;
     }

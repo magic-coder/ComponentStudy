@@ -215,4 +215,28 @@ public class QHYTASWWCEditFragment extends BaseEditFragment<QHYTASWWCEditPresent
     public void initEvent() {
 
     }
+
+    /**
+     * 通过单据行的行号得到该行在单据明细列表中的位置
+     *
+     * @param lineNum:单据行号
+     * @return 返回该行号对应的行明细在明细列表的索引
+     */
+    protected int getIndexByLineNum(String lineNum) {
+        int index = -1;
+        if (TextUtils.isEmpty(lineNum))
+            return index;
+
+        if (mRefData == null || mRefData.billDetailList == null
+                || mRefData.billDetailList.size() == 0)
+            return index;
+
+        for (RefDetailEntity detailEntity : mRefData.billDetailList) {
+            index++;
+            if (lineNum.equalsIgnoreCase(detailEntity.lineNum))
+                break;
+
+        }
+        return index;
+    }
 }

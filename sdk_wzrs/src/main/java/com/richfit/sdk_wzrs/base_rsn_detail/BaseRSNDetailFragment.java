@@ -30,7 +30,7 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             setRefreshing(false, "获取明细失败,请现在抬头界面选择相应的参数");
             return;
@@ -71,11 +71,6 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
         }
     }
 
-    @Override
-    public void refreshComplete() {
-
-    }
-
 
     @Override
     public void deleteNode(final RefDetailEntity node, int position) {
@@ -84,8 +79,8 @@ public abstract class BaseRSNDetailFragment<P extends IRSNDetailPresenter> exten
             showMessage("已经过账,不允许删除");
             return;
         }
-        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId, mRefData.refType,
-                mRefData.bizType, position, mCompanyCode);
+        mPresenter.deleteNode("N", node.transId, node.transLineId, node.locationId,
+                mRefData.refType, mRefData.bizType,node.refLineId,Global.USER_ID, position, mCompanyCode);
     }
 
     /**

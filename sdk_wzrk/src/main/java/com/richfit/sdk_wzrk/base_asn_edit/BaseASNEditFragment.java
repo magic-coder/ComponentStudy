@@ -71,8 +71,6 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     String mLocationId;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
     /*是否上架*/
     protected boolean isLocation = true;
 
@@ -82,7 +80,14 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         //监听上架仓位输入，时时匹配缓存的仓位数量
         RxTextView.textChanges(etLocation)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -93,8 +98,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initData() {
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -311,11 +315,5 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
                 break;
         }
         super.retry(retryAction);
-    }
-
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 }

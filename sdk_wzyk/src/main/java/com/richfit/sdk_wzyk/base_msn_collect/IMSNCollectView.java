@@ -50,8 +50,6 @@ public interface IMSNCollectView extends IBaseCollectView {
     void checkLocationFail(String message);
     void checkLocationSuccess(String batchFlag, String location);
 
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
     /**
      * 检查ERP仓库号是否一致
      */

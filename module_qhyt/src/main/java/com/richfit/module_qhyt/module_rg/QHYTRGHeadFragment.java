@@ -26,7 +26,6 @@ public class QHYTRGHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
     protected void initView() {
         llSuppier.setVisibility(View.VISIBLE);
         llCreator.setVisibility(View.GONE);
-        super.initView();
     }
 
     @Override

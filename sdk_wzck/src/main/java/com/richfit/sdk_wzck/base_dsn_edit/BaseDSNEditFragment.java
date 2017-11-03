@@ -64,14 +64,12 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     protected EditText etQuantity;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    protected boolean isOpenLocationType = false;
     protected String mLocationId;
     String mQuantity;
     /*修改前的发出仓位*/
@@ -95,12 +93,20 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInventoryDatas = new ArrayList<>();
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         //选择下架仓位，刷新库存并且请求缓存
         RxAdapterView
                 .itemSelections(spLocation)
@@ -121,8 +127,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initData() {
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -196,7 +201,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                 CommonUtil.Obj2String(tvInv.getTag()), mRefData.workCode, getString(tvInv),
                 "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                "", getString(tvBatchFlag), "", "", param.invType, "", param.extraMap);
+                "", getString(tvBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     @Override
@@ -420,11 +425,6 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
             queryParam.extraMap.put("locationType", locationType);
         }
         return queryParam;
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override

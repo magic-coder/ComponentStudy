@@ -36,12 +36,8 @@ public class QHYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         //退货交货数量
         etReturnQuantity = (EditText) mActivity.findViewById(R.id.et_return_quantity);
         etReturnQuantity.setEnabled(false);
@@ -72,13 +68,13 @@ public class QHYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         }
         if (spMoveReason != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, R.layout.item_simple_sp,
-                    getStringArray(R.array.qhyt_move_reasons));
+                    getStringArray(R.array.qhyt_move_causes));
             spMoveReason.setAdapter(adapter);
         }
         spStrategyCode.setEnabled(false);
         spMoveReason.setEnabled(false);
         UiUtil.setSelectionForSp(getStringArray(R.array.qhyt_strategy_codes), decisionCode, spStrategyCode);
-        UiUtil.setSelectionForSp(getStringArray(R.array.qhyt_move_reasons), moveCause, spMoveReason);
+        UiUtil.setSelectionForSp(getStringArray(R.array.qhyt_move_causes), moveCause, spMoveReason);
 
         super.initData();
     }

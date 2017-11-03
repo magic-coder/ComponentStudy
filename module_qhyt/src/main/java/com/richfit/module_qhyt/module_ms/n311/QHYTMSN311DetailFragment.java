@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.utils.SPrefUtil;
@@ -25,8 +26,10 @@ public class QHYTMSN311DetailFragment extends BaseMSNDetailFragment<MSNDetailPre
 
     @Override
     protected void initView() {
-        setVisibility(View.GONE, recBatchFlag);
         super.initView();
+        TextView recBatchFlag = mView.findViewById(R.id.recBatchFlag);
+        if (recBatchFlag != null)
+            recBatchFlag.setVisibility(View.GONE);
     }
 
     @Override
@@ -81,7 +84,7 @@ public class QHYTMSN311DetailFragment extends BaseMSNDetailFragment<MSNDetailPre
             showMessage("本次采集已经过账,请先进行其他转储操作");
             return;
         }
-        mPresenter.submitData2BarcodeSystem("",mTransId, mRefData.bizType, mRefType, Global.USER_ID,
+        mPresenter.submitData2BarcodeSystem("", mTransId, mRefData.bizType, mRefType, Global.USER_ID,
                 mRefData.voucherDate, transToSapFlag, null);
     }
 

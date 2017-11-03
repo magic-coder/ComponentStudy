@@ -24,21 +24,6 @@ public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<XNGDMSN311Detai
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    //隐藏仓储类型
-    @Override
-    public void initView() {
-        super.initView();
-        View tvLocationType = mView.findViewById(R.id.tv_location_type);
-        if(tvLocationType != null) {
-            tvLocationType.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
     public void initEvent() {
 
     }
@@ -58,13 +43,6 @@ public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<XNGDMSN311Detai
         return true;
     }
 
-    @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
-        return tmp.subList(0,1);
-    }
-
-
     /**
      * 第一步过账成功后直接跳转
      */
@@ -78,5 +56,11 @@ public class XNGDMSNDetailFragment extends BaseMSNDetailFragment<XNGDMSN311Detai
         mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0,1);
     }
 }

@@ -173,10 +173,11 @@ public class MSNHeadPresenterImp extends BaseHeadPresenterImp<IMSNHeadView>
     }
 
     @Override
-    public void getAutoComList(String workCode,Map<String,Object> extraMap,String keyWord, int defaultItemNum, int flag, String key) {
+    public void getAutoComList(String workCode, Map<String, Object> extraMap, String keyWord,
+                               int defaultItemNum, int flag, String... keys) {
         mView = getView();
         ResourceSubscriber<Map<String, List<SimpleEntity>>> subscriber =
-                mRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag, key)
+                mRepository.getAutoComList(workCode, extraMap, keyWord, defaultItemNum, flag, keys)
                         .filter(map -> map != null && map.size() > 0)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<Map<String, List<SimpleEntity>>>() {

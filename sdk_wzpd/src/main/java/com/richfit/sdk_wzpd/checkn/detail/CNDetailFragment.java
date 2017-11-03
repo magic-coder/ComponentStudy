@@ -51,11 +51,13 @@ public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends Bas
     @BindView(R2.id.base_detail_horizontal_scroll)
     HorizontalScrollView mHScrollView;
     @BindView(R2.id.base_detail_recycler_view)
-    RecyclerView mRecycleView;
+    protected RecyclerView mRecycleView;
     @BindView(R2.id.base_detail_swipe_refresh_layout)
     AutoSwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R2.id.root_id)
     LinearLayout mExtraContainer;
+    @BindView(R2.id.pd_search_condition)
+    LinearLayout llPdSearchCondition;
     @BindView(R2.id.id_material_condition)
     AdvancedEditText mMaterialCondition;
     @BindView(R2.id.id_location_condition)
@@ -66,7 +68,7 @@ public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends Bas
     List<String> mTitles;
     SparseArray<TextView> mTextViews;
     SparseArray<View> mDividers;
-    CNDetailAdapter mAdapter;
+    protected CNDetailAdapter mAdapter;
     int mCurrentPageNum = 0;
     String mTransNum;
 
@@ -74,8 +76,6 @@ public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends Bas
     public void handleBarCodeScanResult(String type, String[] list) {
         if (list != null && list.length >= 12) {
             final String materialNum = list[Global.MATERIAL_POS];
-            L.e("物料条件 = " + materialNum);
-//            if (mMaterialCondition.isFocused()) {
             if (!TextUtils.isEmpty(materialNum) && materialNum.equals(getString(mMaterialCondition))) {
                 //如果两次输入的条件一致那么直接返回
                 return;
@@ -97,9 +97,6 @@ public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends Bas
     protected int getContentId() {
         return R.layout.wzpd_fragment_cn_detail;
     }
-
-
-
 
     @Override
     public void initVariable(@Nullable Bundle savedInstanceState) {
@@ -336,12 +333,20 @@ public abstract class CNDetailFragment<P extends ICNDetailPresenter> extends Bas
         }
         setupBottomBar(tempTotalPage);
         setRefreshing(true);
+        showNodes(refData.checkList);
+    }
+
+    @Override
+    public void showNodes(List<InventoryEntity> allNodes) {
+        if (allNodes == null || allNodes.size() <= 0)
+            return;
+
         if (mAdapter == null) {
-            mAdapter = new CNDetailAdapter(mActivity, R.layout.wzpd_item_cn_detail, refData.checkList);
+            mAdapter = new CNDetailAdapter(mActivity, R.layout.wzpd_item_cn_detail, allNodes);
             mRecycleView.setAdapter(mAdapter);
             mAdapter.setOnItemEditAndDeleteListener(this);
         } else {
-            mAdapter.addAll(refData.checkList);
+            mAdapter.addAll(allNodes);
         }
     }
 

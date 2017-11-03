@@ -38,81 +38,6 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
     }
 
     @Override
-    public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType, String userId, String workId,
-                                String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
-        mView = getView();
-        ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
-                mRepository.getTransferInfo("", refCodeId, bizType, refType, userId, workId, invId,
-                        recWorkId, recInvId,extraMap)
-                        .map(data -> trans2Detail(data))
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
-                            @Override
-                            public void onNext(ArrayList<RefDetailEntity> list) {
-                                if (mView != null) {
-                                    mView.showNodes(list);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.setRefreshing(false, t.getMessage());
-                                }
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                if (mView != null) {
-                                    mView.refreshComplete();
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType,String refLineId,String userId, int position, String companyCode) {
-        RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, refLineId, userId, position, companyCode)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext) {
-                    @Override
-                    public void _onNext(String s) {
-
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.deleteNodeSuccess(position);
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-    @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,
                          ReferenceEntity refData, RefDetailEntity node,
                          String companyCode, String bizType, String refType, String subFunName, int position) {
@@ -169,102 +94,6 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
     }
 
     @Override
-    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
-                                         String transToSapFlag, Map<String, Object> extraHeaderMap) {
-        mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData("", transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
-                mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSapFlag, extraHeaderMap))
-                .doOnError(str -> SPrefUtil.saveData(bizType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType, "1"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemSuccess();
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void submitData2SAP(String transId, String bizType, String refType, String userId,
-                               String voucherDate, String transToSapFlag, Map<String, Object> extraHeaderMap) {
-        mView = getView();
-        RxSubscriber<String> subscriber = mRepository.transferCollectionData(transId, bizType, refType, userId,
-                voucherDate, transToSapFlag, extraHeaderMap)
-                .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType, "0"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_UPLOAD_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.submitSAPFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.submitSAPFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitSAPSuccess();
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-    @Override
     public void turnOwnSupplies(String transId, String bizType, String refType, String userId,
                                 String voucherDate, String transToSapFlag,
                                 Map<String, Object> extraHeaderMap, int submitFlag) {
@@ -317,9 +146,10 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
      *
      * @return
      */
-    private ArrayList<RefDetailEntity> trans2Detail(ReferenceEntity refData) {
+    @Override
+    protected ArrayList<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
         ArrayList<RefDetailEntity> datas = new ArrayList<>();
-        List<RefDetailEntity> billDetailList = refData.billDetailList;
+        List<RefDetailEntity> billDetailList = cache.billDetailList;
         for (RefDetailEntity target : billDetailList) {
             List<LocationInfoEntity> locationList = target.locationList;
             if (locationList != null && locationList.size() > 0) {

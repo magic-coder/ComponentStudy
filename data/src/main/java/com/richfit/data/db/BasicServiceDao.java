@@ -639,6 +639,9 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
             sb.append("select org_id,org_name,org_code from ")
                     .append(tableName)
                     .append(" where parent_id = ? order by org_code ");
+            Log.e("yff","sql = " + sb.toString());
+            Log.e("yff","workId = " + workId);
+            Log.e("yff","flag = " + flag);
             cursor = db.rawQuery(sb.toString(), new String[]{workId});
             while (cursor.moveToNext()) {
                 InvEntity entity = new InvEntity();
@@ -979,6 +982,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
             }
             db.close();
         }
+        Log.e("yff","搜索到的size = " + list.size());
         return list;
     }
 
@@ -1145,6 +1149,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 cursor.close();
             db.close();
         }
+        Log.e("yff","bizType = " + bizType);
         Log.e("yff", "Fragment配置大小 = " + bizFragmentConfigs.size());
         return bizFragmentConfigs;
     }

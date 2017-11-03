@@ -58,6 +58,8 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
     AutoSwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R2.id.root_id)
     LinearLayout mExtraContainer;
+    @BindView(R2.id.pd_search_condition)
+    LinearLayout llPdSearchCondition;
     @BindView(R2.id.id_material_condition)
     AdvancedEditText mMaterialCondition;
     @BindView(R2.id.id_location_condition)
@@ -336,6 +338,8 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
 
     @Override
     public void showNodes(List<InventoryEntity> allNodes) {
+        if (allNodes == null || allNodes.size() <= 0)
+            return;
         if (mAdapter == null) {
             mAdapter = new BlindDetailAdapter(mActivity, R.layout.wzpd_item_blind_detail, allNodes);
             mRecycleView.setAdapter(mAdapter);
@@ -404,7 +408,7 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
                     .setMessage("您是否要结束本次操作?")
                     .setPositiveButton("结束本次操作", (dialog, which) -> {
                         dialog.dismiss();
-                        mPresenter.setTransFlag(mBizType,mRefData.checkId, "2");
+                        mPresenter.setTransFlag(mBizType, mRefData.checkId, "2");
                     }).setNegativeButton("取消", (dialog, which) -> dialog.dismiss()).show();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -429,7 +433,6 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
         showMessage("结束本次操作!");
         startAutoRefresh();
     }
-
 
 
     /**

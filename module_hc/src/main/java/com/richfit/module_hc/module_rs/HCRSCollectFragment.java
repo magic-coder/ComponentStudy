@@ -18,8 +18,13 @@ public class HCRSCollectFragment extends BaseASCollectFragment<ASCollectPresente
 
     @Override
     protected void initView() {
+        super.initView();
         tvActQuantityName.setText("应退数量");
         tvQuantityName.setText("实退数量");
-        llLocationType.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 }

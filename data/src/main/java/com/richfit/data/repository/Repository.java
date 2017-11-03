@@ -252,9 +252,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
                                                             String materialNum, String materialId, String materialGroup,
                                                             String materialDesc, String batchFlag,
                                                             String location, String specialInvFlag, String specialInvNum,
-                                                            String invType, String deviceId, Map<String, Object> extraMap) {
+                                                            String invType, Map<String, Object> extraMap) {
         return mServerRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum, materialNum, materialId, materialGroup,
-                materialDesc, CommonUtil.toUpperCase(batchFlag), CommonUtil.toUpperCase(location), specialInvFlag, specialInvNum, invType, deviceId, extraMap);
+                materialDesc, CommonUtil.toUpperCase(batchFlag), CommonUtil.toUpperCase(location), specialInvFlag, specialInvNum, invType, extraMap);
     }
 
     @Override

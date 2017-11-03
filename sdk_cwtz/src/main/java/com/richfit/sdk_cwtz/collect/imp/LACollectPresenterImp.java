@@ -75,7 +75,9 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
 
                     @Override
                     public void _onComplete() {
-
+                        if(mView != null) {
+                            mView.getMaterialInfoComplete();
+                        }
                     }
                 });
         addSubscriber(subscriber);
@@ -85,21 +87,20 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                                  String invCode, String storageNum, String materialNum, String materialId,
                                  String materialGroup, String materialDesc,
-                                 String batchFlag, String location,
-                                 String specialInvFlag, String specialInvNum, String invType,
-                                 String deviceId,Map<String,Object> extraMap) {
+                                 String batchFlag, String location, String specialInvFlag,
+                                 String specialInvNum, String invType, Map<String,Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum,
                         materialNum, materialId, materialGroup,
-                        materialDesc, batchFlag, location, specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                        materialDesc, batchFlag, location, specialInvFlag, specialInvNum, invType,extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext, "正在获取库存信息...") {
                             @Override
                             public void _onNext(List<InventoryEntity> inventoryEntities) {
                                 if (mView != null) {
-                                    mView.getInventorySuccess(inventoryEntities);
+                                    mView.showInventory(inventoryEntities);
                                 }
                             }
 
@@ -113,14 +114,14 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
                             @Override
                             public void _onCommonError(String message) {
                                 if (mView != null) {
-                                    mView.getInventoryFail(message);
+                                    mView.loadInventoryFail(message);
                                 }
                             }
 
                             @Override
                             public void _onServerError(String code, String message) {
                                 if (mView != null) {
-                                    mView.getInventoryFail(message);
+                                    mView.loadInventoryFail(message);
                                 }
                             }
 
@@ -130,35 +131,6 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
                             }
                         });
         addSubscriber(subscriber);
-    }
-
-    @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
     }
 
     /**
@@ -216,5 +188,35 @@ public class LACollectPresenterImp extends BaseCollectPresenterImp<ILACollectVie
                             }
                         });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getDeviceInfo(String deviceId) {
+        mView = getView();
+
+        mRepository.getDeviceInfo(deviceId)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<ResultEntity>() {
+                    @Override
+                    public void onNext(ResultEntity result) {
+                        if (mView != null) {
+                            mView.getDeviceInfoSuccess(result);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.getDeviceInfoFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.getDeviceInfoComplete();
+                        }
+                    }
+                });
     }
 }

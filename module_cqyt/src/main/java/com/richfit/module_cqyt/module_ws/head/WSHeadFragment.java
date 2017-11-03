@@ -48,11 +48,6 @@ public class WSHeadFragment extends BaseHeadFragment<WSHeadPresenterImp>
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
-    @Override
     protected void initView() {
         spWork = mView.findViewById(R.id.sp_work);
         etTransferDate = mView.findViewById(R.id.et_transfer_date);

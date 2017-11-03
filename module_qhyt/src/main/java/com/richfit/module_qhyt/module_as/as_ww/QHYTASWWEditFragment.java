@@ -20,16 +20,6 @@ public class QHYTASWWEditFragment extends BaseASEditFragment<ASEditPresenterImp>
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    protected void initView() {
-
-    }
-
-    @Override
     public void initDataLazily() {
 
     }

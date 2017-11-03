@@ -1,11 +1,16 @@
-package com.richfit.module_qysh.module_ms;
+package com.richfit.module_qysh.module_ms.dgms301;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.module_qysh.R;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.sdk_wzyk.base_msn_edit.BaseMSNEditFragment;
 import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
+
+import java.util.HashMap;
 
 /**
  * Created by monday on 2017/2/8.
@@ -13,6 +18,14 @@ import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
 
 public class QYSHMSN301EditFragment extends BaseMSNEditFragment<MSNEditPresenterImp> {
 
+    String mDeviceId;
+
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
+        isOpenLocationType = false;
+        isOpenRecLocationType = false;
+    }
 
     @Override
     public void initPresenter() {
@@ -20,8 +33,10 @@ public class QYSHMSN301EditFragment extends BaseMSNEditFragment<MSNEditPresenter
     }
 
     @Override
-    protected void initView() {
-
+    public void initData() {
+        super.initData();
+        Bundle bundle = getArguments();
+        mDeviceId = bundle.getString(Global.EXTRA_DEVICE_ID_KEY);
     }
 
     @Override
@@ -44,10 +59,20 @@ public class QYSHMSN301EditFragment extends BaseMSNEditFragment<MSNEditPresenter
     }
 
     @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.deviceId = mDeviceId;
+        return result;
+    }
+
+    @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
         queryParam.invType = "0";
         queryParam.queryType = "03";
+        if(queryParam.extraMap == null)
+            queryParam.extraMap = new HashMap<>();
+        queryParam.extraMap.put("deviceId",mDeviceId);
         return queryParam;
     }
 

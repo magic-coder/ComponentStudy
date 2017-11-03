@@ -12,7 +12,4 @@ import java.util.Map;
  */
 
 public interface IASEditView extends IBaseEditView {
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

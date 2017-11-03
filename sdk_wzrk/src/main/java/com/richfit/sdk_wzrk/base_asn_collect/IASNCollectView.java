@@ -25,10 +25,10 @@ public interface IASNCollectView extends IBaseCollectView {
     /**
      * 加载上架仓位
      */
-    void loadLocationList(boolean isDropDown);
+    void loadLocationList(int position);
 
     void loadInventoryFail(String message);
-    void loadInventoryComplete(boolean isDropDown);
+    void loadInventoryComplete();
     void showInventory(List<String> list);
 
     //检查上架仓位
@@ -42,7 +42,4 @@ public interface IASNCollectView extends IBaseCollectView {
      */
     void bindCommonCollectUI(ReferenceEntity refData, String batchFlag);
     void loadTransferSingleInfoFail(String message);
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

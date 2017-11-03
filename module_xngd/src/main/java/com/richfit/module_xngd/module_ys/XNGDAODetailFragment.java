@@ -33,11 +33,6 @@ public class XNGDAODetailFragment extends BaseASDetailFragment<XNGDAODetailPrese
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }
@@ -46,7 +41,6 @@ public class XNGDAODetailFragment extends BaseASDetailFragment<XNGDAODetailPrese
     public void initData() {
 
     }
-
 
     @Override
     public void initDataLazily() {

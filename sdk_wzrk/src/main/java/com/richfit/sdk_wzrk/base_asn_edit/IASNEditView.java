@@ -24,7 +24,4 @@ public interface IASNEditView extends IBaseEditView {
     void loadTransferSingleInfoFail(String message);
 
     void loadTransferSingeInfoComplete();
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

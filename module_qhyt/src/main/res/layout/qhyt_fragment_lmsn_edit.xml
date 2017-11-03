@@ -56,7 +56,6 @@
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,6 +71,7 @@
                 style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,6 +85,26 @@
             <TextView
                 android:id="@id/tv_send_batch_flag"
                 style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_location_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@id/tv_location_type_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/location_type" />
+
+            <Spinner
+                android:id="@id/sp_location_type"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
         </LinearLayout>
 
         <LinearLayout
@@ -108,10 +128,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:padding="5dp">
 
             <TextView
-                android:id="@+id/tv_send_location_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/send_loc" />
+
+
+            <Spinner
+                android:id="@id/sp_send_location"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/inv_quantity" />
+
+            <TextView
+                android:id="@id/tv_inv_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/send_loc" />
 
@@ -151,44 +206,8 @@
 
 
             <EditText
-                android:id="@+id/et_special_inv_num"
+                android:id="@id/et_special_inv_num"
                 style="@style/RightEditTextItemStyle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/send_loc" />
-
-
-            <Spinner
-                android:id="@id/sp_send_location"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spinner_min_height"
-                android:layout_weight="2" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <TextView
-                style="@style/LeftTextViewItemStyle"
-                android:text="@string/inv_quantity" />
-
-            <TextView
-                android:id="@id/tv_inv_quantity"
-                style="@style/RightTextViewItemStyle" />
         </LinearLayout>
 
         <LinearLayout
@@ -225,7 +244,27 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@id/ll_rec_location"
+            android:id="@id/ll_rec_location_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@id/tv_rec_location_type_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_location_type" />
+
+            <Spinner
+                android:id="@id/sp_rec_location_type"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -235,10 +274,12 @@
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/rec_loc" />
 
+
             <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@id/auto_rec_location"
                 android:clickable="true"
                 style="@style/RightEditTextItemStyle" />
+
         </LinearLayout>
 
         <LinearLayout

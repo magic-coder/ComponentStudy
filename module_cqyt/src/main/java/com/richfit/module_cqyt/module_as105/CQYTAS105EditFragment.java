@@ -45,12 +45,8 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         //退货交货数量
         etReturnQuantity = (EditText) mActivity.findViewById(R.id.et_return_quantity);
         etReturnQuantity.setEnabled(false);
@@ -58,8 +54,6 @@ public class CQYTAS105EditFragment extends BaseASEditFragment<ASEditPresenterImp
         //如果输入的退货交货数量，那么移动原因必输，如果退货交货数量没有输入那么移动原因可输可不输
         etMoveCauseDesc = (EditText) mActivity.findViewById(R.id.et_move_cause_desc);
         spMoveCause = (Spinner) mActivity.findViewById(R.id.sp_move_cause);
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

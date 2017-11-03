@@ -30,12 +30,6 @@ public class XNGDMSYDetailFragment extends BaseMSDetailFragment<XNGDMSDetailPres
 
     }
 
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int viewType) {
-        if(viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
-            holder.setVisible(R.id.tv_location_type, false);
-        }
-    }
 
     @Override
     public void initEvent() {
@@ -52,14 +46,6 @@ public class XNGDMSYDetailFragment extends BaseMSDetailFragment<XNGDMSDetailPres
         return "ubsto转储";
     }
 
-
-    @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
-        return tmp.subList(0,1);
-    }
-
-
     /**
      * 第一步过账成功后直接跳转
      */
@@ -73,5 +59,11 @@ public class XNGDMSYDetailFragment extends BaseMSDetailFragment<XNGDMSDetailPres
         mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0,1);
     }
 }

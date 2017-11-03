@@ -76,7 +76,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @BindView(R2.id.tv_material_desc)
     protected TextView tvMaterialDesc;
     @BindView(R2.id.tv_material_unit)
-    TextView tvMaterialUnit;
+    protected TextView tvMaterialUnit;
     @BindView(R2.id.tv_special_inv_flag)
     protected TextView tvSpecialInvFlag;
     @BindView(R2.id.tv_batch_flag_name)
@@ -119,7 +119,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     protected TextView tvInsLotQuantity;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     Spinner spLocationType;
 
@@ -147,8 +147,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     protected List<String> mLocationList;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
 
     @Override
     protected int getContentId() {
@@ -205,18 +203,25 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mRefLines = new ArrayList<>();
         mInvDatas = new ArrayList<>();
         mLocationList = new ArrayList<>();
     }
 
+    @Override
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
 
     /**
      * 绑定公共事件，子类自己根据是否上架，是否需要检查上架是否存在
      * 重写上架仓位监听
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             hideKeyboard(etMaterialNum);
@@ -266,7 +271,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                             //如果打开
                             mPresenter.getDictionaryData("locationType");
                         } else {
-                            loadLocationList(false);
+                            loadLocationList(pos);
                         }
                     }
                 });
@@ -276,7 +281,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         RxAdapterView.itemSelections(spLocationType)
                 .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
                         && mLocationTypes.size() > 0)
-                .subscribe(position -> loadLocationList(false));
+                .subscribe(position -> loadLocationList(spInv.getSelectedItemPosition()));
 
         //监听上架仓位时时变化
         RxTextView.textChanges(etLocation)
@@ -302,17 +307,12 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                 .subscribe(a -> showAutoCompleteConfig(etLocation));
     }
 
-    @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-    }
 
     /**
      * 检查抬头界面的必要的字段是否已经赋值
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面获取单据数据");
@@ -479,17 +479,17 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     }
 
     @Override
-    public void loadLocationList(boolean isDropDown) {
+    public void loadLocationList(int position) {
         if (mLocationList != null && mLocationAdapter != null) {
             mLocationList.clear();
             mLocationAdapter.notifyDataSetChanged();
         }
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        InvEntity invEntity = mInvDatas.get(spInv.getSelectedItemPosition());
+        InvEntity invEntity = mInvDatas.get(position);
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 invEntity.invId, lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, "", param.extraMap, isDropDown);
+                lineData.materialId, "", getString(etBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     @Override
@@ -515,10 +515,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     }
 
     @Override
-    public void loadInventoryComplete(boolean isDropDown) {
-        if (isDropDown) {
-            showAutoCompleteConfig(etLocation);
-        }
+    public void loadInventoryComplete() {
+
     }
 
     /**
@@ -778,8 +776,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             showMessage("请先选择单据行");
             return false;
         }
+
         //库存地点
-        if (spInv.getSelectedItemPosition() <= 0) {
+        if (mInvDatas != null && mInvDatas.size() > 0 && spInv.getSelectedItemPosition() <= 0) {
             showMessage("请先选择库存地点");
             return false;
         }
@@ -868,7 +867,9 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         result.workId = lineData.workId;
         result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-        result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
+        if(mInvDatas != null && mInvDatas.size() > 0 && spInv.getSelectedItemPosition() > 0) {
+            result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
+        }
         result.materialId = lineData.materialId;
         result.location = isNLocation ? Global.DEFAULT_LOCATION : getString(etLocation);
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(etBatchFlag);
@@ -948,11 +949,6 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     /**

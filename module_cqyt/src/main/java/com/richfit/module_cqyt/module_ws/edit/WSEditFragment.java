@@ -63,11 +63,6 @@ public class WSEditFragment extends BaseEditFragment<WSEditPresenterImp>
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
         tvMaterialNum = mView.findViewById(R.id.tv_material_num);
         tvMaterialDesc = mView.findViewById(R.id.tv_material_desc);

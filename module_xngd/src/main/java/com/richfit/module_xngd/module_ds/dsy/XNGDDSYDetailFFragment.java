@@ -20,29 +20,9 @@ import java.util.List;
 
 public class XNGDDSYDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPresenterImp> {
 
-
     @Override
     public void initPresenter() {
         mPresenter = new XNGDSLLDetailPresenterImp(mActivity);
-    }
-
-    @Override
-    protected String getSubFunName() {
-        return "领料申请出库";
-    }
-
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-    }
-
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int viewType) {
-        if(viewType == Global.CHILD_NODE_HEADER_TYPE||
-                viewType == Global.CHILD_NODE_ITEM_TYPE) {
-            holder.setVisible(R.id.tv_location_type, false);
-        }
     }
 
     @Override
@@ -53,12 +33,6 @@ public class XNGDDSYDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPr
     @Override
     public void initData() {
 
-    }
-
-    @Override
-    public List<BottomMenuEntity> provideDefaultBottomMenu() {
-        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
-        return tmp.subList(0,1);
     }
 
 
@@ -75,5 +49,16 @@ public class XNGDDSYDetailFFragment extends BaseDSDetailFragment<XNGDSLLDetailPr
         mShowMsg.setLength(0);
         mTransId = "";
         mPresenter.showHeadFragmentByPosition(BaseFragment.HEADER_FRAGMENT_INDEX);
+    }
+
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        return tmp.subList(0,1);
+    }
+
+    @Override
+    protected String getSubFunName() {
+        return "物资出库";
     }
 }

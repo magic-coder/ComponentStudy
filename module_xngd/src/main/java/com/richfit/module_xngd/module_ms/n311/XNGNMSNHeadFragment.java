@@ -23,6 +23,7 @@ import com.richfit.sdk_wzyk.base_msn_head.BaseMSNHeadFragment;
 import com.richfit.sdk_wzyk.base_msn_head.imp.MSNHeadPresenterImp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +47,7 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
     //项目编号
     RichAutoEditText etProjectNum;
     List<String> mAutoDatas;
-    ArrayAdapter mAutoAdapter;
+    Map<Integer, Boolean> mDropDown;
 
     @Override
     public int getContentId() {
@@ -76,7 +77,6 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
     @Override
     public void initEvent() {
         super.initEvent();
-
         //点击自动提示控件，显示默认列表
         RxView.clicks(etProjectNum)
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
@@ -90,15 +90,16 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         //修改自动提示控件，说明用户需要用关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etProjectNum)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null && mAutoDatas.size() > 0
-                        && !filterKeyWord(str))
-                .subscribe(a -> mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,null,
-                        getString(etProjectNum), 100, 0, mBizType));
+                .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str, mAutoDatas))
+                .doOnNext(a -> mDropDown.put(etProjectNum.getId(), true))
+                .subscribe(a -> mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode, null,
+                        getString(etProjectNum), 100, 0, Global.PROJECT_NUM_DATA));
     }
 
     @Override
     public void initData() {
         super.initData();
+        mDropDown = new HashMap<>();
         mAutoDatas = new ArrayList<>();
         //初始化库存类型，注意当用户选择项目物资的时候，项目编号必输
         ArrayList<String> items = new ArrayList<>();
@@ -181,13 +182,22 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
                     .subscribe(pos -> spRecInv.setSelection(pos.intValue()), e -> Log.d("yff", e.getMessage()), () -> lockUIUnderEditState(spRecInv));
         }
         //加载项目编号
-        mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode,null,
+        mDropDown.put(etProjectNum.getId(), false);
+        mPresenter.getAutoComList(mSendWorks.get(spSendWork.getSelectedItemPosition()).workCode, null,
                 getString(etProjectNum), 100, 0, Global.PROJECT_NUM_DATA);
     }
 
-    private boolean filterKeyWord(CharSequence keyWord) {
+    /**
+     * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
+     *
+     * @param keyWord
+     * @return
+     */
+    protected boolean filterKeyWord(CharSequence keyWord, List<String> data) {
+        if (data == null || data.size() <= 0)
+            return false;
         Pattern pattern = Pattern.compile("^" + keyWord.toString().toUpperCase());
-        for (String item : mAutoDatas) {
+        for (String item : data) {
             Matcher matcher = pattern.matcher(item);
             while (matcher.find()) {
                 return true;
@@ -250,16 +260,18 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         if (simpleEntities == null || simpleEntities.size() == 0) {
             return;
         }
-        List<String> projectNums = CommonUtil.toStringArray(simpleEntities,true);
+        List<String> projectNums = CommonUtil.toStringArray(simpleEntities, true);
         mAutoDatas.clear();
         mAutoDatas.addAll(projectNums);
-        if (mAutoAdapter == null) {
-            mAutoAdapter = new ArrayAdapter<>(mActivity,
-                    android.R.layout.simple_dropdown_item_1line, mAutoDatas);
-            etProjectNum.setAdapter(mAutoAdapter);
-            setAutoCompleteConfig(etProjectNum);
-        } else {
-            mAutoAdapter.notifyDataSetChanged();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity,
+                android.R.layout.simple_dropdown_item_1line, mAutoDatas);
+        etProjectNum.setAdapter(adapter);
+        setAutoCompleteConfig(etProjectNum);
+
+        boolean isDropDown = CommonUtil.convertToBoolean(mDropDown.get(etProjectNum.getId()), false);
+        if (isDropDown) {
+            showAutoCompleteConfig(etProjectNum);
         }
     }
 
@@ -280,6 +292,6 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-
+        super.clearAllUIAfterSubmitSuccess();
     }
 }

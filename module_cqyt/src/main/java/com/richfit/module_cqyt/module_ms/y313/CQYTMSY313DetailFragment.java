@@ -3,6 +3,7 @@ package com.richfit.module_cqyt.module_ms.y313;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.data.constant.Global;
@@ -32,17 +33,23 @@ public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<CQYTMYS313Det
         mPresenter = new CQYTMYS313DetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initView() {
         super.initView();
         //父节点没有接收工厂和接收库存，发出工厂改为工厂
-        setVisibility(View.GONE, tvRecWork, tvRecInv);
-        tvSendWork.setText("工厂");
+        TextView recWork = mView.findViewById(R.id.recWork);
+        if (recWork != null) {
+            recWork.setVisibility(View.GONE);
+        }
+        TextView recInv = mView.findViewById(R.id.recInv);
+        if (recInv != null) {
+            recInv.setVisibility(View.GONE);
+        }
+        TextView sendWork = mView.findViewById(R.id.sendWork);
+        if (sendWork != null) {
+            sendWork.setText("工厂");
+        }
     }
 
     @Override
@@ -57,6 +64,7 @@ public class CQYTMSY313DetailFragment extends BaseMSDetailFragment<CQYTMYS313Det
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int viewType) {
+        super.onBindViewHolder(viewHolder,viewType);
         switch (viewType) {
             //隐藏父节点的接收工厂和接收库位
             case Global.PARENT_NODE_HEADER_TYPE:

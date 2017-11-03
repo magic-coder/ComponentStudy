@@ -46,6 +46,7 @@ import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
+ * 有参考物资移库，默认接收信息是关闭的
  * Created by monday on 2017/2/10.
  */
 
@@ -88,29 +89,23 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected EditText etRecBatchFlag;
     @BindView(R2.id.ll_rec_location)
     protected LinearLayout llRecLocation;
-    @BindView(R2.id.ll_rec_batch)
+    @BindView(R2.id.ll_rec_batch_flag)
     protected LinearLayout llRecBatch;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
     @BindView(R2.id.tv_location_type_name)
     protected TextView tvLocationTypeName;
     @BindView(R2.id.ll_rec_location_type)
-    protected LinearLayout llRecLocationType;
+    LinearLayout llRecLocationType;
     @BindView(R2.id.sp_rec_location_type)
     protected Spinner spRecLocationType;
-    @BindView(R2.id.tv_rec_location_type_name)
-    protected TextView tvRecLocationTypeName;
-
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     protected List<SimpleEntity> mRecLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
-    private boolean isOpenRecLocationType = false;
     /*单据行选项*/
     protected List<String> mRefLines;
     ArrayAdapter<String> mRefLineAdapter;
@@ -196,14 +191,20 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initView() {
+        if (isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+        if (isOpenRecLocationType) {
+            llRecLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
      * 注册所有UI事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
        /*扫描后者手动输入物资条码*/
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             hideKeyboard(etMaterialNum);
@@ -219,9 +220,9 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
 
         /*监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息.
          这里需要注意的是，如果库存地点没有初始化完毕，修改批次不刷新UI。*/
-        RxTextView.textChanges(etSendBatchFlag)
+       /* RxTextView.textChanges(etSendBatchFlag)
                 .filter(str -> !TextUtils.isEmpty(str) && spSendInv.getAdapter() != null)
-                .subscribe(batch -> resetCommonUIPartly());
+                .subscribe(batch -> resetCommonUIPartly());*/
 
         /*监听单据行*/
         RxAdapterView.itemSelections(spRefLine)
@@ -265,19 +266,11 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         });
     }
 
-    @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
-    }
-
-
     /**
      * 检查抬头界面的必要的字段是否已经赋值
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面获取单据数据");
@@ -448,7 +441,7 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
         mPresenter.getInventoryInfo(param.queryType, lineData.workId, invEntity.invId,
                 lineData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 lineData.materialId, "", getString(etSendBatchFlag), lineData.specialInvFlag,
-                lineData.specialInvNum, param.invType, "", param.extraMap);
+                lineData.specialInvNum, param.invType, param.extraMap);
     }
 
     /**
@@ -895,31 +888,30 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
+            if(isOpenLocationType) {
+                if (mLocationTypes == null) {
+                    mLocationTypes = new ArrayList<>();
+                }
+                mLocationTypes.clear();
+                mLocationTypes.addAll(locationTypes);
             }
-            if (mRecLocationTypes == null) {
-                mRecLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mRecLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            mRecLocationTypes.addAll(locationTypes);
             //发出仓储类型
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
 
-            //接收仓储类型
-            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mRecLocationTypes, false);
-            spRecLocationType.setAdapter(recAdapter);
+            if(isOpenRecLocationType) {
+                if (mRecLocationTypes == null) {
+                    mRecLocationTypes = new ArrayList<>();
+                }
+                mRecLocationTypes.clear();
+                mRecLocationTypes.addAll(locationTypes);
+                //接收仓储类型
+                SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mRecLocationTypes, false);
+                spRecLocationType.setAdapter(recAdapter);
+            }
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override

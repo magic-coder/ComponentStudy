@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">module_qysh</string>
+    <string name="qysh_biz_scope">业务范围</string>
+    <string name="qysh_profit_center">利润中心</string>
+    <string name="qysh_order_num">订单</string>
+    <string name="qysh_net_work">网络</string>
+    <string name="qysh_deliveryTor">接收方</string>
+    <string name="qysh_reserve_num">预留单号</string>
+    <string name="qysh_reserve_line_num">预留行项目</string>
 </resources>

@@ -30,6 +30,7 @@ public class XNGDASNDetailPresenterImp extends ASNDetailPresenterImp {
     }
 
 
+    //重写该方法，去除数据上传到sap
     @Override
     public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
@@ -121,6 +122,4 @@ public class XNGDASNDetailPresenterImp extends ASNDetailPresenterImp {
         Activity activity = (Activity) mContext;
         activity.startActivity(intent);
     }
-
-
 }

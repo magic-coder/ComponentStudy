@@ -66,10 +66,6 @@ public class QYSHAOEditFragment extends BaseEditFragment<QYSHAOEditPresenterImp>
         mPresenter = new QYSHAOEditPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {

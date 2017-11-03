@@ -17,8 +17,8 @@ public class HCMSCollectFragment  extends BaseMSCollectFragment<MSCollectPresent
     }
 
     @Override
-    protected void initView() {
-        llLocationType.setVisibility(View.VISIBLE);
+    protected void initData() {
+
     }
 
     @Override

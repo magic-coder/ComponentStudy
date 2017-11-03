@@ -29,27 +29,22 @@ public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailP
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new InvNQueryDetailPresenterImp(mActivity);
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initEvent() {
+    protected void initData() {
 
     }
 
     @Override
-    public void initData() {
-
-    }
-
-    @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             showMessage("请现在抬头界面选择必要的信息");
             return;
@@ -79,7 +74,7 @@ public class InvNQueryDetailFragment extends BaseDetailFragment<InvNQueryDetailP
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId,mRefData.invId,
                 mRefData.workCode, mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", param.invType, "", param.extraMap);
+                mRefData.batchFlag, "", "", param.invType,param.extraMap);
     }
 
     @Override

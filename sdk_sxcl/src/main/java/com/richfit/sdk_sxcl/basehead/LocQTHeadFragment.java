@@ -47,12 +47,6 @@ public class LocQTHeadFragment extends BaseHeadFragment<LocQTHeadPresenterImp>
         mPresenter = new LocQTHeadPresenterImp(mActivity);
     }
 
-
-    @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
     @Override
     protected void initView() {
 
@@ -186,6 +180,7 @@ public class LocQTHeadFragment extends BaseHeadFragment<LocQTHeadPresenterImp>
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
+        super.clearAllUIAfterSubmitSuccess();
         clearCommonUI(etRefNum, tvRefNum, tvCreator);
     }
 

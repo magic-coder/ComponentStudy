@@ -57,11 +57,6 @@ public class CQYTXJCollectFragment extends BaseCollectFragment<CQYTXJCollectPres
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
         etInsLocation = (EditText) mView.findViewById(R.id.cqyt_et_ins_location);
         rvLocations = (RecyclerView) mView.findViewById(R.id.base_detail_recycler_view);

@@ -54,19 +54,14 @@ public class CQYTAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         mPresenter = new ASEditPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {
+        super.initView();
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
         tvUnqualifiedQuantity = (TextView) mView.findViewById(R.id.cqyt_tv_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         etArrivalQuantity = (EditText) mView.findViewById(R.id.arrival_quantity);
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

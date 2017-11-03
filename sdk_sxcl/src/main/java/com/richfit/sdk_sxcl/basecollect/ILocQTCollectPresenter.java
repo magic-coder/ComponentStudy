@@ -17,11 +17,10 @@ public interface ILocQTCollectPresenter extends IBaseCollectPresenter<ILocQTColl
      * @param workCode
      * @param invId
      * @param invCode
-     * @param isDropDown
      */
     void getLocationList(String queryType, String workId, String invId, String workCode, String invCode,
                          String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                         String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap,boolean isDropDown);
+                         String specialInvFlag, String specialInvNum, String invType, Map<String,Object> extraMap);
     /**
      * 获取库存信息
      *
@@ -34,7 +33,7 @@ public interface ILocQTCollectPresenter extends IBaseCollectPresenter<ILocQTColl
      */
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                          String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
+                          String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap);
 
     /**
      * 获取单条缓存
@@ -51,6 +50,4 @@ public interface ILocQTCollectPresenter extends IBaseCollectPresenter<ILocQTColl
 
     void checkLocation(String queryType, String workId, String invId, String batchFlag, String location,
                        Map<String,Object> extraMap);
-
-    void getDictionaryData(String... codes);
 }

@@ -35,7 +35,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
     @Override
     public void getLocationList(String queryType, String workId, String invId, String workCode, String invCode,
                                 String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                                String specialInvFlag, String specialInvNum, String invType, String deviceId, Map<String,Object> extraMap, boolean isDropDown) {
+                                String specialInvFlag, String specialInvNum, String invType, Map<String,Object> extraMap) {
         mView = getView();
         if (isLocal())
             return;
@@ -45,20 +45,20 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
+                            specialInvFlag, specialInvNum, invType,extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
-                    .subscribeWith(new LocationListSubscriber(isDropDown));
+                    .subscribeWith(new LocationListSubscriber());
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                    specialInvFlag, specialInvNum, invType,extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
-                    .subscribeWith(new LocationListSubscriber(isDropDown));
+                    .subscribeWith(new LocationListSubscriber());
         }
         addSubscriber(subscriber);
     }
@@ -66,7 +66,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber;
         if ("04".equals(queryType)) {
@@ -74,14 +74,14 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId,extraMap))
+                            specialInvFlag, specialInvNum, invType,extraMap))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId,extraMap)
+                    specialInvFlag, specialInvNum, invType,extraMap)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
         }
@@ -103,10 +103,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
 
     protected class LocationListSubscriber extends ResourceSubscriber<List<String>> {
 
-        private boolean isDropDown;
-
-        public LocationListSubscriber(boolean isDropDown) {
-            this.isDropDown = isDropDown;
+        public LocationListSubscriber() {
         }
 
         @Override
@@ -128,7 +125,7 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
         @Override
         public void onComplete() {
             if (mView != null) {
-                mView.loadLocationListComplete(isDropDown);
+                mView.loadLocationListComplete();
             }
         }
     }
@@ -264,34 +261,4 @@ public class LocQTCollectPresenterImp extends BaseCollectPresenterImp<ILocQTColl
                         });
         addSubscriber(subscriber);
     }
-
-    @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-
 }

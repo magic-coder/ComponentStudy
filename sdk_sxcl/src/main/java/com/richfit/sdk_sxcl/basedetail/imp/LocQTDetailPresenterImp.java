@@ -36,134 +36,6 @@ public class LocQTDetailPresenterImp extends BaseDetailPresenterImp<ILocQTDetail
         super(context);
     }
 
-    @Override
-    public void getTransferInfo(final ReferenceEntity refData, String refCodeId, String bizType, String refType,
-                                String userId, String workId, String invId, String recWorkId, String recInvId,
-                                Map<String,Object> extraMap) {
-        mView = getView();
-        ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
-                mRepository.getTransferInfo("", refCodeId, bizType, refType,
-                        "", "", "", "", "",extraMap)
-                        .zipWith(Flowable.just(refData), (cache, data) -> createNodesByCache(data, cache))
-                        .flatMap(nodes -> sortNodes(nodes))
-                        .compose(TransformerHelper.io2main())
-                        .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
-                            @Override
-                            public void onNext(ArrayList<RefDetailEntity> nodes) {
-                                if (mView != null) {
-                                    mView.showNodes(nodes);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable t) {
-                                if (mView != null) {
-                                    mView.setRefreshing(true, t.getMessage());
-                                    //展示抬头获取的数据，没有缓存
-                                    mView.showNodes(refData.billDetailList);
-                                }
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                if (mView != null) {
-                                    mView.setRefreshing(true, "获取明细缓存成功");
-                                }
-                            }
-                        });
-        addSubscriber(subscriber);
-    }
-
-    @Override
-    public void submitData2BarcodeSystem(String refCodeId, String transId, String bizType, String refType, String userId, String voucherDate,
-                                         String transToSap, Map<String, Object> extraHeaderMap) {
-        mView = getView();
-        RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
-                mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSap, extraHeaderMap))
-                .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
-                    @Override
-                    public void _onNext(String message) {
-                        if (mView != null) {
-                            mView.saveMsgFowShow(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-                        if (mView != null) {
-                            mView.networkConnectError(Global.RETRY_TRANSFER_DATA_ACTION);
-                        }
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.submitBarcodeSystemSuccess();
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
-
-    @Override
-    public void deleteNode(String lineDeleteFlag, String transId, String transLineId, String locationId,
-                           String refType, String bizType, String refLineId,String userId,int position, String companyCode) {
-        RxSubscriber<String> subscriber = mRepository.deleteCollectionDataSingle(lineDeleteFlag, transId, transLineId,
-                locationId, refType, bizType, refLineId, userId, position, companyCode)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new RxSubscriber<String>(mContext) {
-                    @Override
-                    public void _onNext(String s) {
-
-                    }
-
-                    @Override
-                    public void _onNetWorkConnectError(String message) {
-
-                    }
-
-                    @Override
-                    public void _onCommonError(String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onServerError(String code, String message) {
-                        if (mView != null) {
-                            mView.deleteNodeFail(message);
-                        }
-                    }
-
-                    @Override
-                    public void _onComplete() {
-                        if (mView != null) {
-                            mView.deleteNodeSuccess(position);
-                        }
-                    }
-                });
-        addSubscriber(subscriber);
-    }
-
     /**
      * 注意这里需要根据是上架还是下架处理标识进行仓位的处理
      *
@@ -263,7 +135,7 @@ public class LocQTDetailPresenterImp extends BaseDetailPresenterImp<ILocQTDetail
      * @param cache：缓存单据数据
      * @return
      */
-    private ArrayList<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
+    protected ArrayList<RefDetailEntity> createNodesByCache(ReferenceEntity refData, ReferenceEntity cache) {
         ArrayList<RefDetailEntity> nodes = new ArrayList<>();
         List<RefDetailEntity> list = refData.billDetailList;
         //1.形成父节点数据集合

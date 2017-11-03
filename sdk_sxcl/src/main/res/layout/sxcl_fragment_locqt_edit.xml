@@ -74,6 +74,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@id/ll_batch_flag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -161,6 +162,7 @@
 
 
         <LinearLayout
+            android:id="@id/ll_x_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -179,6 +181,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@id/ll_inv_quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -235,6 +238,7 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@id/tv_quantity_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/loc_quantity" />
 
@@ -253,6 +257,7 @@
             android:padding="5dp">
 
             <TextView
+                android:id="@id/tv_total_quantity_name"
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/total_loc_quantity" />
 

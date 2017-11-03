@@ -39,12 +39,6 @@ public class ASCXDetailFragment extends BaseDetailFragment<ASCXDetailPresenterIm
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-
-    @Override
     public void initEvent() {
 
     }

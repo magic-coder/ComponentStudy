@@ -4,7 +4,7 @@
     "tabTitle": "抬头",
     "fragmentTag": "xngd_cwtz_header_fragment_tag",
     "bizType": "100",
-    "refType": "4",
+    "refType": "",
     "mode": 0,
     "fragmentType": 0,
     "className": "com.richfit.module_xngd.module_cwtz.XNGDLAHeadFragment"
@@ -14,8 +14,8 @@
     "tabTitle": "数据采集",
     "fragmentTag": "xngd_cwtz_collect_fragment_tag",
     "bizType": "100",
+    "refType": "",
     "mode": 0,
-    "refType": "4",
     "fragmentType": 2,
     "className": "com.richfit.module_xngd.module_cwtz.XNGDLACollectFragment"
   },
@@ -207,7 +207,7 @@
     "mode": 0,
     "refType": "0",
     "fragmentType": 2,
-    "className": "com.richfit.sdk_wzpd.checkn.collect.CNCollectFragment"
+    "className": "com.richfit.module_xngd.module_pd.XNGDCNCollectFragment"
   },
   {
     "id": "22",
@@ -217,7 +217,7 @@
     "refType": "0",
     "mode": 0,
     "fragmentType": -1,
-    "className": "com.richfit.sdk_wzpd.checkn.edit.CNEditFragment"
+    "className": "com.richfit.module_xngd.module_pd.XNGDCNEditFragment"
   },
   {
     "id": "23",

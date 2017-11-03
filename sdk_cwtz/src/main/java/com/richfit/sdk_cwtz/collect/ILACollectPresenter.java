@@ -17,6 +17,7 @@ public interface ILACollectPresenter extends IBaseCollectPresenter<ILACollectVie
                           String materialNum, String materialId, String materialGroup,
                           String materialDesc, String batchFlag,
                           String location, String specialInvFlag, String specialInvNum,
-                          String invType, String deviceId,Map<String,Object> extraMap);
-    void getDictionaryData(String... codes);
+                          String invType,Map<String,Object> extraMap);
+
+    void getDeviceInfo(String deviceId);
 }

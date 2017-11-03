@@ -49,5 +49,12 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
+    <TextView
+        android:id="@id/tv_location_type"
+        style="@style/TableHeaderStyle"
+        android:layout_width="140dp"
+        android:text="@string/location_type" />
+
+    <View style="@style/ItemSeperatorLayout" />
 
 </LinearLayout>

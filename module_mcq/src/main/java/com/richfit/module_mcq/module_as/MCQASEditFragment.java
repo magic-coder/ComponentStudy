@@ -54,12 +54,8 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         tvMaterialUnitCustom = mView.findViewById(R.id.mcq_tv_material_unit_custom);
         tvActQuantityCustom = mView.findViewById(R.id.mcq_tv_act_quantity_custom);
         etQuantityCustom = mView.findViewById(R.id.mcq_et_quantity_custom);
@@ -86,9 +82,6 @@ public class MCQASEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
 
         //隐藏批次
         mView.findViewById(R.id.ll_batch_flag).setVisibility(View.GONE);
-
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

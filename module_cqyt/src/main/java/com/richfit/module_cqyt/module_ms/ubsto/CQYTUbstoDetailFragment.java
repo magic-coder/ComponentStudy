@@ -41,11 +41,6 @@ public class CQYTUbstoDetailFragment extends BaseDSDetailFragment<CQYTUbstoDetai
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

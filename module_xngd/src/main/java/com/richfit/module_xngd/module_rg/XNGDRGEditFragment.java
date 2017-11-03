@@ -40,6 +40,7 @@ public class XNGDRGEditFragment extends BaseDSEditFragment<DSEditPresenterImp> {
 
     @Override
     protected void initView() {
+        super.initView();
         spMoveCauses = mView.findViewById(R.id.xngd_sp_move_causes);
     }
 

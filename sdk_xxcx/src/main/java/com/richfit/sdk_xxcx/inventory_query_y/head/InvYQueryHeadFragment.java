@@ -44,13 +44,13 @@ public class InvYQueryHeadFragment extends BaseFragment<InvYQueryHeadPresenterIm
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new InvYQueryHeadPresenterImp(mActivity);
     }
 
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
         mRefData = null;
     }
 
@@ -60,17 +60,17 @@ public class InvYQueryHeadFragment extends BaseFragment<InvYQueryHeadPresenterIm
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
     }
 

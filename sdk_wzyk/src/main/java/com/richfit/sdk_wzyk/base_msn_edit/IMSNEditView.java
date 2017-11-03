@@ -25,8 +25,6 @@ public interface IMSNEditView extends IBaseEditView {
 
     void loadTransferSingleInfoComplete();
 
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
     /**
      * 显示库存
      *

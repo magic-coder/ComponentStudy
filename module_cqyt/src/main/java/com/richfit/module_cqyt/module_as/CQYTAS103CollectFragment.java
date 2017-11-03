@@ -83,19 +83,17 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     @Override
     protected void initView() {
+        super.initView();
         spInspectionResult = (Spinner) mView.findViewById(R.id.sp_inspection_result);
         tvUnqualifiedQuantity = (TextView) mView.findViewById(R.id.cqyt_tv_unqualified_quantity);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
         etArrivalQuantity = (EditText) mView.findViewById(R.id.et_arrival_quantity);
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
 
     @Override
     public void initData() {
-        super.initData();
         mPresenter.getDictionaryData("inspectionResult");
     }
 
@@ -405,7 +403,4 @@ public class CQYTAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
             spInspectionResult.setSelection(0);
         }
     }
-
-
-
 }

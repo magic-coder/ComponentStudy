@@ -26,8 +26,6 @@ public class CQYTCNHeadFragment extends CNHeadFragment {
         super.initView();
         LinearLayout llCheckGuide = mView.findViewById(R.id.ll_check_guide);
         llCheckGuide.setVisibility(View.GONE);
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
 

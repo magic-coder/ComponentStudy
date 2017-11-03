@@ -1,13 +1,14 @@
 package com.richfit.sdk_xxcx.inventory_query_n.header;
 
 
+import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadPresenter;
 import com.richfit.common_lib.lib_mvp.IPresenter;
 
 /**
  * Created by monday on 2017/5/25.
  */
 
-public interface IInvNQueryHeaderPresenter extends IPresenter<IInvNQueryHeaderView> {
+public interface IInvNQueryHeaderPresenter extends IBaseHeadPresenter<IInvNQueryHeaderView> {
 
     /**
      * 获取发出工厂列表

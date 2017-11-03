@@ -36,8 +36,6 @@ public class XNGDRSDetailPresenterImp extends ASDetailPresenterImp {
                                          String transToSapFlag, Map<String, Object> extraHeaderMap) {
         mView = getView();
         RxSubscriber<String> subscriber = mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap)
-                .doOnError(str -> SPrefUtil.saveData(bizType + refType, "0"))
-                .doOnComplete(() -> SPrefUtil.saveData(bizType + refType, "1"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
                     @Override

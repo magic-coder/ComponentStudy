@@ -19,10 +19,6 @@ public class HCMSDetailFragment extends BaseMSDetailFragment<MSDetailPresenterIm
         mPresenter = new MSDetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initEvent() {

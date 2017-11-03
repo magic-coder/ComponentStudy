@@ -6,9 +6,12 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/pd_search_condition"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
         <com.richfit.common_lib.widget.AdvancedEditText
             android:id="@+id/id_material_condition"
             android:layout_width="0dp"
@@ -18,9 +21,9 @@
             android:drawableLeft="@mipmap/icon_search"
             android:drawableRight="@drawable/vector_close"
             android:gravity="center_horizontal"
-            android:textSize="13sp"
+            android:hint="@string/material_condition"
             android:padding="10dp"
-            android:hint="@string/material_condition" />
+            android:textSize="13sp" />
 
         <com.richfit.common_lib.widget.AdvancedEditText
             android:id="@+id/id_location_condition"
@@ -31,9 +34,9 @@
             android:drawableLeft="@mipmap/icon_search"
             android:drawableRight="@drawable/vector_close"
             android:gravity="center_horizontal"
+            android:hint="@string/location_condition"
             android:padding="10dp"
-            android:textSize="13sp"
-            android:hint="@string/location_condition" />
+            android:textSize="13sp" />
     </LinearLayout>
 
 

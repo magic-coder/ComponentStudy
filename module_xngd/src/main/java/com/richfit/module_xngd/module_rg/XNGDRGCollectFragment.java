@@ -38,6 +38,7 @@ public class XNGDRGCollectFragment extends BaseDSCollectFragment<DSCollectPresen
 
     @Override
     protected void initView() {
+        super.initView();
         tvQuantityName.setText("实退数量");
         tvActQuantityName.setText("应退数量");
         spMoveCause = mView.findViewById(R.id.xngd_sp_move_causes);

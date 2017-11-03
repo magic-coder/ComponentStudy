@@ -72,15 +72,12 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     CheckBox cbSingle;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    protected boolean isOpenLocationType = false;
-
     /*库存地点*/
     InvAdapter mInvAdapter;
     protected List<InvEntity> mInvs;
@@ -151,12 +148,20 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInvs = new ArrayList<>();
         mInventoryDatas = new ArrayList<>();
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         /*扫描后者手动输入物资条码*/
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             //请求接口获取获取物料
@@ -178,13 +183,14 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
          * throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
          * 但是这是使用debonce，resetCommonUIPartly将延迟执行到发出库位显示默认位置之后，导致抬头界面的默认发出库位选择失效
          */
-        RxTextView.textChanges(etBatchFlag)
+      /*  RxTextView.textChanges(etBatchFlag)
                 .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .filter(str -> !TextUtils.isEmpty(str))
                 .subscribe(batch -> resetCommonUIPartly());
-
+*/
        /*库存地点。选择库存地点获取库存*/
         RxAdapterView.itemSelections(spInv)
+                .filter(pos -> pos > 0)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(position -> {
                     if (isOpenLocationType) {
@@ -216,16 +222,8 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         });
     }
 
-
     @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-    }
-
-
-    @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         //检查抬头界面的数据
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
@@ -319,6 +317,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
 
     /**
      * 获取库存信息。注意无参考使用的抬头的工厂信息
+     * @param position:库存地点的下拉位置
      */
     private void loadInventory(int position) {
         if (position <= 0) {
@@ -347,7 +346,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
                 mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
                 CommonUtil.Obj2String(etMaterialNum.getTag()), "",
-                getString(etBatchFlag), "", "", param.invType, "", param.extraMap);
+                getString(etBatchFlag), "", "", param.invType, param.extraMap);
     }
 
     /**
@@ -378,7 +377,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
      */
     @Override
     public void loadInventoryComplete() {
-        if (TextUtils.isEmpty(mAutoLocation)) {
+        if (isOpenLocationType && TextUtils.isEmpty(mAutoLocation)) {
             return;
         }
         //自动匹配下架仓位，并获取缓存
@@ -635,11 +634,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp, mLocationTypes, false);
             spLocationType.setAdapter(adapter);
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override

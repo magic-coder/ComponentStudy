@@ -31,11 +31,6 @@ public class MCQDSDetailFragment extends BaseDSDetailFragment<DSDetailPresenterI
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

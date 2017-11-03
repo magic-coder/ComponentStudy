@@ -53,8 +53,7 @@
 
         <TextView
             android:id="@id/tv_send_work"
-            style="@style/RightTextViewItemStyle"
-            android:hint="@string/send_work" />
+            style="@style/RightTextViewItemStyle" />
 
     </LinearLayout>
 

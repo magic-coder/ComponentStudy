@@ -38,7 +38,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             showMessage("请先在抬头界面选择工厂");
             return;
@@ -72,7 +72,7 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
      */
     @Override
     public void refreshComplete() {
-        setRefreshing(true, "获取明细缓存成功");
+        super.refreshComplete();
         if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);
@@ -120,13 +120,12 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
             showMessage("已经过账,不允许修改");
             return;
         }
-        String subFunName = "26".equals(mBizType) ? "201无参考出库" : "221无参考出库";
         //获取与该子节点的物料编码和发出库位一致的发出仓位和接收仓位列表
         if (mAdapter != null && DSNDetailAdapter.class.isInstance(mAdapter)) {
             DSNDetailAdapter adapter = (DSNDetailAdapter) mAdapter;
             ArrayList<String> sendLocations = adapter.getLocations(position, 0);
             mPresenter.editNode(sendLocations, null, null, node, mCompanyCode,
-                    mBizType, mRefType, subFunName, position);
+                    mBizType, mRefType, getSubFunName(), position);
         }
     }
 
@@ -311,4 +310,6 @@ public abstract class BaseDSNDetailFragment<P extends IDSNDetailPresenter> exten
         return true;
     }
 
+    /*子类返回修改模块的名称*/
+    protected abstract String getSubFunName();
 }

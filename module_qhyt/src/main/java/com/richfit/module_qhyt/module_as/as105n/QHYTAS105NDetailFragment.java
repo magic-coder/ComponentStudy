@@ -28,17 +28,11 @@ public class QHYTAS105NDetailFragment extends BaseASDetailFragment<QHYTAS105NDet
         mPresenter = new QHYTAS105NDetailPresenterImp(mActivity);
     }
 
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
     @Override
     protected void initView() {
         super.initView();
         tvLineNum105 = (TextView) mView.findViewById(R.id.lineNum105);
-        setVisibility(View.VISIBLE,tvLineNum105);
+        tvLineNum105.setVisibility(View.GONE);
     }
 
     /**
@@ -48,6 +42,7 @@ public class QHYTAS105NDetailFragment extends BaseASDetailFragment<QHYTAS105NDet
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int viewType) {
+        super.onBindViewHolder(holder,viewType);
         if(Global.PARENT_NODE_HEADER_TYPE == viewType) {
             holder.setVisible(R.id.lineNum105,true);
         }

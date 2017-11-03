@@ -55,6 +55,7 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
 
     @Override
     protected void initView() {
+        super.initView();
         TextView tvRefLineNumName = (TextView) mView.findViewById(R.id.tv_ref_line_num_name);
         etReturnQuantity = mView.findViewById(R.id.et_return_quantity);
         spMoveCause = mView.findViewById(R.id.sp_move_cause);
@@ -62,8 +63,6 @@ public class CQYTAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
         llInsLostQuantity.setVisibility(View.VISIBLE);
         tvActQuantityName.setText("允许过账数量");
         tvQuantityName.setText("过账数量");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

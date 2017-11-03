@@ -66,9 +66,9 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mWorks = new ArrayList<>();
         mMoveTypes = new ArrayList<>();
-        mRefData = null;
     }
 
     @Override
@@ -77,7 +77,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //选择日期
         etTransferDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
@@ -85,8 +85,8 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         //选择工厂获取供应商
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0 && llSupplier.getVisibility() != View.GONE)
-                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position.intValue()).workCode,null,
-                        getString(etSupplier), 20,0, Global.SUPPLIER_DATA));
+                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position.intValue()).workCode, null,
+                        getString(etSupplier), 20, 0, Global.SUPPLIER_DATA));
 
         //供应商
         RxView.clicks(etSupplier)
@@ -102,7 +102,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
         //初始化工厂
         mPresenter.getWorks(0);
@@ -157,7 +157,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         if (mSuppliers == null) {
             mSuppliers = new ArrayList<>();
         }
-        List<String> suppliers = CommonUtil.toStringArray(simpleEntities,true);
+        List<String> suppliers = CommonUtil.toStringArray(simpleEntities, true);
         //注意后续需要供应商的id
         mSuppliers.clear();
         mSuppliers.addAll(simpleEntities);
@@ -235,6 +235,6 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-
+        super.clearAllUIAfterSubmitSuccess();
     }
 }

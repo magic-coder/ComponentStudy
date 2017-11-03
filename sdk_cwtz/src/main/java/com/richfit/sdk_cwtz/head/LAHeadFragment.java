@@ -7,6 +7,7 @@ import android.widget.Spinner;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
+import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InvEntity;
@@ -28,7 +29,7 @@ import butterknife.BindView;
  * Created by monday on 2017/2/7.
  */
 
-public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
+public class LAHeadFragment extends BaseHeadFragment<LAHeadPresenterImp>
         implements ILAHeadView {
 
     @BindView(R2.id.sp_work)
@@ -48,14 +49,14 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new LAHeadPresenterImp(mActivity);
     }
 
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
-        mRefData = null;
+        super.initVariable(savedInstanceState);
         mWorks = new ArrayList<>();
         mInvs = new ArrayList<>();
     }
@@ -66,10 +67,10 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
-                .subscribe(position -> mPresenter.getInvsByWorkId(mWorks.get(position.intValue()).workId,0));
+                .subscribe(position -> mPresenter.getInvsByWorkId(mWorks.get(position.intValue()).workId,getOrgFlag()));
 
         /*2017年06月14日，增加WMFlag字段控制是否打开WM仓位。如果打开了采取获取StorageNum*/
         RxAdapterView.itemSelections(spInv)
@@ -82,13 +83,13 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         //获取发出工厂列表
-        mPresenter.getWorks(0);
+        mPresenter.getWorks(getOrgFlag());
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
     }
 
@@ -197,5 +198,9 @@ public class LAHeadFragment extends BaseFragment<LAHeadPresenterImp>
     @Override
     public boolean isNeedShowFloatingButton() {
         return false;
+    }
+
+    protected int getOrgFlag() {
+        return 0;
     }
 }

@@ -18,16 +18,6 @@ public class HCAS101EditFragment extends BaseASEditFragment<ASEditPresenterImp>{
         mPresenter = new ASEditPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    protected void initView() {
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void initDataLazily() {

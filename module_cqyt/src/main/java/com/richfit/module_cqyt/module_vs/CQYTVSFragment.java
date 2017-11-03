@@ -34,10 +34,6 @@ public class CQYTVSFragment extends BaseHeadFragment<CQYTPresenterImp>
         }
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-        mRefData = null;
-    }
 
     @Override
     protected int getContentId() {

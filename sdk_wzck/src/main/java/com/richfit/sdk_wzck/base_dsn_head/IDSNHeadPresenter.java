@@ -17,7 +17,8 @@ public interface IDSNHeadPresenter extends IBaseHeadPresenter<IDSNHeadView> {
      */
     void getWorks(int flag);
 
-    void getAutoComList(String workCode, Map<String,Object> extraMap, String keyWord, int defaultItemNum, int flag, String bizType, String...keys);
+    void getAutoComList(String workCode, Map<String,Object> extraMap, String keyWord,
+                        int defaultItemNum, int flag, String...keys);
     /**
      * 删除整单缓存
      * @param bizType：业务类型

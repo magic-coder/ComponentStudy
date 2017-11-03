@@ -9,4 +9,8 @@ import com.richfit.sdk_sxcl.basecollect.LocQTCollectFragment;
 public class QHYTLocQTCollectFragment  extends LocQTCollectFragment {
 
 
+    @Override
+    protected void initData() {
+
+    }
 }

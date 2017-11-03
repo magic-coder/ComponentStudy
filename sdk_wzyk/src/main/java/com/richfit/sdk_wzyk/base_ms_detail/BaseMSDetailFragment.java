@@ -24,23 +24,8 @@ import static com.richfit.common_lib.utils.SPrefUtil.getData;
  * Created by monday on 2017/2/10.
  */
 
-public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
-        extends BaseDetailFragment<P, RefDetailEntity>
+public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter> extends BaseDetailFragment<P, RefDetailEntity>
         implements IMSDetailView<RefDetailEntity> {
-
-    /*移库有参考的公共组件*/
-    /*接收工厂*/
-    @BindView(R2.id.recWork)
-    protected TextView tvRecWork;
-    /*发出工厂*/
-    @BindView(R2.id.sendWork)
-    protected TextView tvSendWork;
-    /*发出库位*/
-    @BindView(R2.id.sendInv)
-    protected TextView tvSendInv;
-    /*接收库位*/
-    @BindView(R2.id.recInv)
-    protected TextView tvRecInv;
 
     /*处理寄售转自有业务。主要的逻辑是用户点击过账按钮之后系统自动检查该缓存(子节点)中是否有特殊库存标识是否
     * 等于K而且特殊库存编号不为空。如果满足以上的条件，那么系统自动调用转自有的接口。如果转自有成功修改成员变量
@@ -56,7 +41,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
         if (mRefData == null) {
             showMessage("请现在抬头界面获取单据数据");
@@ -104,7 +89,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter>
 
     @Override
     public void refreshComplete() {
-        setRefreshing(true, "获取明细成功");
+        super.refreshComplete();
         if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);

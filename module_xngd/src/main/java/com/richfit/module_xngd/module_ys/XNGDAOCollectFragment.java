@@ -71,6 +71,7 @@ public class XNGDAOCollectFragment extends BaseASCollectFragment<ASCollectPresen
 
     @Override
     protected void initView() {
+        super.initView();
         etAllQuantity = (EditText) mView.findViewById(R.id.xngd_et_all_quantity);
         etPartQuantity = (EditText) mView.findViewById(R.id.xngd_et_part_quantity);
         spInspectionType = (Spinner) mView.findViewById(R.id.xngd_sp_inspection_type);

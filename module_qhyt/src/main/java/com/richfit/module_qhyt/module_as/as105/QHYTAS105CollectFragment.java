@@ -40,7 +40,6 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
         return R.layout.qhyt_fragment_as105_collect;
     }
 
-
     @Override
     public void initPresenter() {
         mPresenter = new ASCollectPresenterImp(mActivity);
@@ -48,6 +47,7 @@ public class QHYTAS105CollectFragment extends BaseASCollectFragment<ASCollectPre
 
     @Override
     protected void initView() {
+        super.initView();
         //退货交货数量
         etReturnQuantity = (EditText) mActivity.findViewById(R.id.et_return_quantity);
         //如果输入的退货交货数量，那么移动原因必输，如果退货交货数量没有输入那么移动原因可输可不输

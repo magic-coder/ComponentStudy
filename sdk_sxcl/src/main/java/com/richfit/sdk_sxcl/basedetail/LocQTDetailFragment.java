@@ -32,24 +32,18 @@ public abstract class LocQTDetailFragment<P extends ILocQTDetailPresenter> exten
         return R.layout.sxcl_fragment_locqt_detail;
     }
 
-
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initEvent() {
+    protected void initData() {
 
     }
 
     @Override
-    public void initData() {
-
-    }
-
-    @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             showMessage("请现在抬头界面获取单据数据");
             return;
@@ -84,11 +78,6 @@ public abstract class LocQTDetailFragment<P extends ILocQTDetailPresenter> exten
         } else {
             mAdapter.addAll(allNodes);
         }
-    }
-
-    @Override
-    public void refreshComplete() {
-        setRefreshing(true, "获取明细缓存成功");
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.jakewharton.rxbinding2.widget.RxAdapterView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_adapter.WorkAdapter;
+import com.richfit.common_lib.lib_base_sdk.base_head.BaseHeadFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
@@ -32,7 +33,7 @@ import butterknife.BindView;
  * Created by monday on 2017/5/25.
  */
 
-public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresenterImp>
+public class InvNQueryHeaderFragment extends BaseHeadFragment<InvNQueryHeaderPresenterImp>
         implements IInvNQueryHeaderView {
 
     @BindView(R2.id.sp_work)
@@ -50,9 +51,9 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
     @BindView(R2.id.ll_material_desc)
     protected LinearLayout llMaterialDesc;
     @BindView(com.richfit.common_lib.R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(com.richfit.common_lib.R2.id.sp_location_type)
-    Spinner spLocationType;
+    protected Spinner spLocationType;
 
 
     /*工厂*/
@@ -84,37 +85,39 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new InvNQueryHeaderPresenterImp(mActivity);
     }
 
 
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mWorks = new ArrayList<>();
         mInvs = new ArrayList<>();
-        mRefData = null;
     }
 
     @Override
     protected void initView() {
-
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
                 .subscribe(position -> mPresenter.getInvsByWorkId(mWorks.get(position.intValue()).workId, 0));
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         isOpenLocationType = llLocationType.getVisibility() != View.GONE;
         mPresenter.getWorks(0);
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
     }
 
@@ -177,7 +180,6 @@ public class InvNQueryHeaderFragment extends BaseFragment<InvNQueryHeaderPresent
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
             if (mLocationTypes == null) {

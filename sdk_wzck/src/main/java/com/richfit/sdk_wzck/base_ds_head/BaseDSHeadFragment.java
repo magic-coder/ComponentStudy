@@ -58,12 +58,6 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
-    }
-
-
-    @Override
     protected int getContentId() {
         return R.layout.wzck_fragment_base_dsy_header;
     }
@@ -72,7 +66,7 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         /*点击单号加载单据数据*/
         etRefNum.setOnRichEditTouchListener((view, refNum) -> {
             hideKeyboard(view);
@@ -84,10 +78,10 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
     }
 
-    @Override
-    protected void initView() {
-        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
-    }
+   @Override
+   protected void initData() {
+       etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
+   }
 
     protected void getRefData(String refNum) {
         mRefData = null;
@@ -152,7 +146,6 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
         //过账标识，如果已经过账，那么不允许在明细刷新数据，也不运行在采集界面采集数据
         SPrefUtil.saveData(mBizType + mRefType, "0");
         refData.bizType = mBizType;
-        refData.moveType = getMoveType();
         refData.refType = mRefType;
         mRefData = refData;
         cacheProcessor(mRefData.transId, mRefData.transId, mRefData.recordNum,
@@ -219,6 +212,7 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
+        super.clearAllUIAfterSubmitSuccess();
         clearCommonUI(etRefNum, tvRefNum, tvSupplier, tvCreator);
         mRefData = null;
     }
@@ -231,6 +225,7 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
         //切换了页面
         if (mRefData != null) {
             mRefData.voucherDate = getString(etTransferDate);
+            mRefData.moveType = getMoveType();
         }
     }
 

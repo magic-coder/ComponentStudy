@@ -38,7 +38,12 @@ import butterknife.BindView;
 
 /**
  * 注意在获取库存的时候，如果启用了WM那么使用04从SAP获取有效库存，
- * 如果没有启用WM，那么使用03获取有效库存
+ * 如果没有启用WM，那么使用03获取有效库存。
+ * 仓位调整的整体步骤：
+ * 1.获取物料信息，该接口与无参考获取物料信息一致；
+ * 2.输入源仓位，获取该仓位的库存信息(注意这里与出库移库不同的是，仓位调整获取的是该仓位下的库存)；
+ * 3.选择某一条源仓位库存，带出该库存；
+ * 4.输入目标仓位
  * Created by monday on 2017/2/7.
  */
 
@@ -68,10 +73,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     protected Spinner spSpecialInv;
     //增加源仓位仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     //增加目标仓位仓储类型
     @BindView(R2.id.ll_rec_location_type)
-    protected LinearLayout llRecLocationType;
+    LinearLayout llRecLocationType;
     @BindView(R2.id.sp_location_type)
     Spinner spLocationType;
     @BindView(R2.id.sp_rec_location_type)
@@ -80,8 +85,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     protected List<SimpleEntity> mRecLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
     protected SpecialInvAdapter mAdapter;
     protected List<InventoryEntity> mInventoryDatas;
     MaterialEntity mHistoryData;
@@ -126,22 +129,17 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected int getContentId() {
         return R.layout.cwtz_fragment_la_collect;
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new LACollectPresenterImp(mActivity);
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("在先在抬头界面选择相关的信息");
@@ -166,9 +164,8 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         etBatchFlag.setEnabled(true);
     }
 
-
     @Override
-    public void initEvent() {
+    protected void initEvent() {
 
         //获取物料
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> loadMaterialInfo(materialNum, getString(etBatchFlag)));
@@ -184,16 +181,16 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         //获取仓位的库存
         etSendLocation.setOnRichEditTouchListener((view, location) -> loadInventoryInfo(location));
 
-        //选择下拉
+        //选择下拉，带出该库存
         RxAdapterView.itemSelections(spSpecialInv)
                 .filter(pos -> pos > 0)
                 .subscribe(pos -> tvSendInvQuantity.setText(mInventoryDatas.get(pos).invQuantity));
 
-        //增加仓储类型的选择获取提示库粗
+        //增加仓储类型的选择获取提示库存
         RxAdapterView.itemSelections(spLocationType)
-                .filter(a -> mInventoryDatas != null && mInventoryDatas.size() > 0 && mAdapter != null)
+                .filter(a -> isOpenLocationType && mInventoryDatas != null && mAdapter != null)
                 .subscribe(position -> {
-                    //清除缓存
+                    //清空库存，使得用户必须获取新仓储类型下的库存
                     mInventoryDatas.clear();
                     mAdapter.notifyDataSetChanged();
                     tvSendInvQuantity.setText("");
@@ -202,14 +199,17 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     protected void initView() {
-
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+        if(isOpenRecLocationType) {
+            llRecLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-        if (isOpenLocationType)
-            mPresenter.getDictionaryData("locationType");
+    protected void initData() {
+
     }
 
     /**
@@ -218,7 +218,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
      * @param materialNum
      * @param batchFlag
      */
-    private void loadMaterialInfo(String materialNum, String batchFlag) {
+    protected void loadMaterialInfo(String materialNum, String batchFlag) {
         if (TextUtils.isEmpty(materialNum)) {
             showMessage("物料编码为空,请重新输入");
             return;
@@ -246,6 +246,12 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     }
 
     @Override
+    public void getMaterialInfoComplete() {
+        if (isOpenLocationType)
+            mPresenter.getDictionaryData("locationType");
+    }
+
+    @Override
     public void getMaterialInfoFail(String message) {
         showMessage(message);
     }
@@ -256,7 +262,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
      * @param location
      */
     protected void loadInventoryInfo(String location) {
-        //清除
         if (mAdapter != null) {
             mInventoryDatas.clear();
             mAdapter.notifyDataSetChanged();
@@ -276,11 +281,11 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
                 mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
-                "", "", getString(etBatchFlag), location, "", "", param.invType, "", param.extraMap);
+                "", "", getString(etBatchFlag), location, "", "", param.invType, param.extraMap);
     }
 
     @Override
-    public void getInventorySuccess(List<InventoryEntity> invs) {
+    public void showInventory(List<InventoryEntity> invs) {
         if (mInventoryDatas == null) {
             mInventoryDatas = new ArrayList<>();
         }
@@ -299,8 +304,23 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     }
 
     @Override
-    public void getInventoryFail(String message) {
+    public void loadInventoryFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    public void getDeviceInfoSuccess(ResultEntity result) {
+
+    }
+
+    @Override
+    public void getDeviceInfoFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void getDeviceInfoComplete() {
+
     }
 
     @Override
@@ -421,6 +441,8 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         result.specialInvNum = mInventoryDatas.get(position).specialInvNum;
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
+        if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -462,7 +484,6 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
-
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
             if (mLocationTypes == null) {
@@ -502,6 +523,12 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
             queryParam.extraMap = new HashMap<>();
             String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             queryParam.extraMap.put("locationType", locationType);
+        }
+        if (mRecLocationTypes != null && isOpenRecLocationType) {
+            if (queryParam.extraMap == null)
+                queryParam.extraMap = new HashMap<>();
+            String recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
+            queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
     }

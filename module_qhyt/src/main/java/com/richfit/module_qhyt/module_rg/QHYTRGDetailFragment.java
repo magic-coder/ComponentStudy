@@ -2,6 +2,7 @@ package com.richfit.module_qhyt.module_rg;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.TextView;
 
 import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.data.constant.Global;
@@ -22,8 +23,11 @@ public class QHYTRGDetailFragment extends BaseDSDetailFragment<DSDetailPresenter
 
     @Override
     protected void initView() {
-        actQuantityName.setText("应退数量");
         super.initView();
+        TextView actQuantity = mView.findViewById(R.id.actQuantity);
+        if (actQuantity != null) {
+            actQuantity.setText("应退数量");
+        }
     }
 
     @Override
@@ -39,8 +43,8 @@ public class QHYTRGDetailFragment extends BaseDSDetailFragment<DSDetailPresenter
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        if(holder.getItemViewType() == Global.CHILD_NODE_HEADER_TYPE) {
-            holder.setText(R.id.quantity,"实退数量");
+        if (holder.getItemViewType() == Global.CHILD_NODE_HEADER_TYPE) {
+            holder.setText(R.id.quantity, "实退数量");
         }
     }
 

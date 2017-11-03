@@ -135,7 +135,7 @@ public class LocQTHeadPresenterImp extends BaseHeadPresenterImp<ILocQTHeadView>
     public void getTransferInfo(final ReferenceEntity refData, String refCodeId, String bizType, String refType) {
         mView = getView();
         ResourceSubscriber<ReferenceEntity> subscriber =
-                mRepository.getTransferInfo("", refCodeId, bizType, refType, "", "", "", "", "")
+                mRepository.getTransferInfo("", refCodeId, bizType, refType, "", "", "", "", "",null)
                         .zipWith(Flowable.just(refData), (cache, data) -> createHeaderByCache(cache, data))
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<ReferenceEntity>() {

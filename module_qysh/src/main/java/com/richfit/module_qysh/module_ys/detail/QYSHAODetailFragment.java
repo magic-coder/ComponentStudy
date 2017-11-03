@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.module_qysh.adapter.QYSHAOAdapter;
@@ -31,10 +32,6 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
         mPresenter = new AODetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initEvent() {
@@ -105,7 +102,7 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
     @Override
     public void showNodes(List<RefDetailEntity> allNodes) {
         if (mAdapter == null) {
-            mAdapter = new QYSHAOAdapter(mActivity, R.layout.qhsy_item_ao_item, allNodes);
+            mAdapter = new QYSHAOAdapter(mActivity, R.layout.qysh_item_ao_item, allNodes);
             mAdapter.setOnItemEditAndDeleteListener(this);
             mRecyclerView.setAdapter(mAdapter);
         } else {
@@ -131,11 +128,6 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
                 moveType, "", Global.USER_ID);
     }
 
-
-    @Override
-    public void refreshComplete() {
-
-    }
 
     @Override
     public boolean checkDataBeforeOperationOnDetail() {
@@ -165,25 +157,6 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
         return true;
     }
 
-    /**
-     * 显示过账，数据上传等菜单对话框。
-     *
-     * @param companyCode
-     */
-    @Override
-    public void showOperationMenuOnDetail(final String companyCode) {
-        android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(mActivity);
-        dialog.setTitle("提示");
-        dialog.setMessage("您真的需要过账该张验收单据吗?");
-        dialog.setPositiveButton("确定", (dialogInterface, i) -> {
-            submit2BarcodeSystem("");
-            dialogInterface.dismiss();
-        });
-        dialog.setNegativeButton("取消", (dialogInterface, i) -> {
-            dialogInterface.dismiss();
-        });
-        dialog.show();
-    }
 
     /**
      * 第一步将数据上传到条码系统
@@ -199,6 +172,7 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
                 mBizType, mRefType, Global.USER_ID, mRefData.voucherDate, tranToSapFlag, mExtraTansMap);
     }
 
+    @Override
     public void submitBarcodeSystemSuccess() {
         setRefreshing(false, "数据上传成功");
         showSuccessDialog(mShowMsg);
@@ -234,6 +208,11 @@ public class QYSHAODetailFragment extends BaseDetailFragment<AODetailPresenterIm
 
     }
 
+    @Override
+    public List<BottomMenuEntity> provideDefaultBottomMenu() {
+        List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
+        return menus.subList(0,1);
+    }
 
     @Override
     protected boolean checkTransStateBeforeRefresh() {

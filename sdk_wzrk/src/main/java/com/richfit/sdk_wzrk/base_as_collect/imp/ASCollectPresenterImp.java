@@ -67,8 +67,8 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, String deviceId,
-                                 Map<String, Object> extraMap, boolean isDropDown) {
+                                 String specialInvFlag, String specialInvNum, String invType,
+                                 Map<String, Object> extraMap) {
         mView = getView();
         if (isLocal())
             return;
@@ -78,51 +78,24 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType, deviceId, extraMap))
+                            specialInvFlag, specialInvNum, invType, extraMap))
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
-                    .subscribeWith(new InventorySubscriber(isDropDown));
+                    .subscribeWith(new InventorySubscriber());
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType, deviceId, extraMap)
+                    specialInvFlag, specialInvNum, invType, extraMap)
                     .filter(list -> list != null && list.size() > 0)
                     .map(list -> changeInv2Locations(list))
                     .compose(TransformerHelper.io2main())
-                    .subscribeWith(new InventorySubscriber(isDropDown));
+                    .subscribeWith(new InventorySubscriber());
         }
         addSubscriber(subscriber);
     }
 
-    @Override
-    public void getDictionaryData(String... codes) {
-        mView = getView();
-        mRepository.getDictionaryData(codes)
-                .filter(data -> data != null && data.size() > 0)
-                .compose(TransformerHelper.io2main())
-                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
-                    @Override
-                    public void onNext(Map<String,List<SimpleEntity>> data) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataSuccess(data);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
-                        if (mView != null) {
-                            mView.loadDictionaryDataFail(t.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
 
     private List<String> changeInv2Locations(List<InventoryEntity> invs) {
         List<String> locations = new ArrayList<>();
@@ -138,10 +111,7 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
 
     protected class InventorySubscriber extends ResourceSubscriber<List<String>> {
 
-        private boolean isDropDown;
-
-        public InventorySubscriber(boolean isDropDown) {
-            this.isDropDown = isDropDown;
+        public InventorySubscriber() {
         }
 
         @Override
@@ -163,7 +133,7 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
         @Override
         public void onComplete() {
             if (mView != null) {
-                mView.loadInventoryComplete(isDropDown);
+                mView.loadInventoryComplete();
             }
         }
     }

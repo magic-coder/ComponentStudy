@@ -61,8 +61,8 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mWorks = new ArrayList<>();
         mAutoDatas = new ArrayList<>();
     }
@@ -71,7 +71,7 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //过账日期
         etTransferDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
@@ -105,7 +105,7 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
 
 
     @Override
-    public void initData() {
+    protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //获取发出工厂列表
@@ -204,6 +204,6 @@ public abstract class BaseRSNHeadFragment<P extends IRSNHeadPresenter> extends B
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-
+        super.clearAllUIAfterSubmitSuccess();
     }
 }

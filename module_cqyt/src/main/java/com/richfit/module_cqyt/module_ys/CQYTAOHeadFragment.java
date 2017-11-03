@@ -20,8 +20,8 @@ public class CQYTAOHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp> {
 
     @Override
     public void initView() {
-        llSupplier.setVisibility(View.VISIBLE);
         super.initView();
+        llSupplier.setVisibility(View.VISIBLE);
     }
 
     @Override

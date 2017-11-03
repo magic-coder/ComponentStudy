@@ -21,11 +21,6 @@ public class HCDSDetailFragment extends BaseDSDetailFragment<DSDetailPresenterIm
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

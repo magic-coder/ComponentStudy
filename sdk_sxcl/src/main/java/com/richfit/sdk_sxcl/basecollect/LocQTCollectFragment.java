@@ -122,8 +122,6 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     private String mSHFlag;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -163,6 +161,28 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
                     UiUtil.setSelectionForLocation(mInventoryDatas, location, spXLocation);
                 }
             }
+        } else if (list != null && list.length == 2 && !cbSingle.isChecked()) {
+            //处理仓位
+            if (TextUtils.isEmpty(mSHFlag)) {
+                showMessage("未获取到上下架标识");
+                return;
+            }
+            final String location = list[0];
+            final String locationType = list[1];
+            //选中仓储类型
+            if (mLocationTypes != null && spLocationType.getAdapter() != null)
+                UiUtil.setSelectionForSimpleSp(mLocationTypes, locationType, spLocationType);
+            if ("S".equalsIgnoreCase(mSHFlag)) {
+                //上架
+                clearCommonUI(etSLocation);
+                etSLocation.setText(location);
+                getTransferSingle(getString(tvBatchFlag), location);
+            } else {
+                //下架
+                if (mInventoryDatas != null && spXLocation.getAdapter() != null) {
+                    UiUtil.setSelectionForLocation(mInventoryDatas, location, spXLocation);
+                }
+            }
         }
     }
 
@@ -172,13 +192,14 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new LocQTCollectPresenterImp(mActivity);
     }
 
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mRefLines = new ArrayList<>();
         mInventoryDatas = new ArrayList<>();
         mSLocationList = new ArrayList<>();
@@ -186,7 +207,10 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
 
     @Override
     protected void initView() {
-
+        //打开仓储类型
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -194,7 +218,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
      * 重写上架仓位监听
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             hideKeyboard(etMaterialNum);
@@ -267,7 +291,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
                         //如果打开了仓储类型
                         if ("S".equalsIgnoreCase(mSHFlag)) {
                             //上架
-                            loadLocationList(false);
+                            loadLocationList();
                         } else if ("H".equalsIgnoreCase(mSHFlag)) {
                             //下架
                             loadInventory();
@@ -277,18 +301,11 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
 
     }
 
-    @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-    }
-
-
     /**
      * 检查抬头界面的必要的字段是否已经赋值
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面获取单据数据");
@@ -408,7 +425,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
             if (isOpenLocationType) {
                 mPresenter.getDictionaryData("locationType");
             } else {
-                loadLocationList(false);
+                loadLocationList();
             }
         } else {
             //如果是下架
@@ -423,17 +440,16 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     /**
      * 获取上架仓位参考列表
      *
-     * @param isDropDown
      */
     @Override
-    public void loadLocationList(boolean isDropDown) {
+    public void loadLocationList() {
         tvLocQuantity.setText("");
         tvTotalQuantity.setText("");
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getLocationList(param.queryType, lineData.workId,
                 lineData.invId, lineData.workCode, lineData.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", "", "", "", param.invType, "", param.extraMap, isDropDown);
+                lineData.materialId, "", "", "", "", param.invType, param.extraMap);
     }
 
 
@@ -458,14 +474,11 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
         } else {
             mSLocationAdapter.notifyDataSetChanged();
         }
-
     }
 
     @Override
-    public void loadLocationListComplete(boolean isDropDown) {
-        if (isDropDown) {
-            showAutoCompleteConfig(etSLocation);
-        }
+    public void loadLocationListComplete() {
+
     }
 
     /**
@@ -486,7 +499,8 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, lineData.workId,
                 lineData.invId, lineData.workCode, lineData.invCode, "", getString(etMaterialNum),
-                lineData.materialId, "", getString(tvBatchFlag), "", "", lineData.invType, "", param.extraMap);
+                lineData.materialId, "", getString(tvBatchFlag), "", "",
+                lineData.invType, param.extraMap);
     }
 
     /**
@@ -914,12 +928,6 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
             spLocationType.setAdapter(adapter);
         }
     }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
-    }
-
 
     /**
      * 默认增加仓储类型的维度

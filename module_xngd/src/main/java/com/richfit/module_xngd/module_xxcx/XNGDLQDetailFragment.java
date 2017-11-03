@@ -29,13 +29,11 @@ public class XNGDLQDetailFragment extends LQDetailFragment {
         }
     }
 
-
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
         param.queryType = "03";
         param.invType = "1";
-
         return param;
     }
 }

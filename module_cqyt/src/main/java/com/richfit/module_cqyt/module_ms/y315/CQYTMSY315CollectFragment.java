@@ -54,6 +54,7 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
 
     @Override
     protected void initView() {
+        super.initView();
         TextView tvInvName = (TextView) mView.findViewById(R.id.tv_inv_name);
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
@@ -62,8 +63,11 @@ public class CQYTMSY315CollectFragment extends BaseASCollectFragment<ASCollectPr
         tvInvName.setText("接收库位");
         tvLocationName.setText("接收仓位");
         tvBatchFlagName.setText("接收批次");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
 

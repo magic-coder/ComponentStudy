@@ -1,19 +1,17 @@
-package com.richfit.module_qysh.module_ms;
+package com.richfit.module_qysh.module_ms.dgms301;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
-import com.richfit.module_qysh.R2;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
 
-import butterknife.BindView;
+import java.util.HashMap;
 
 /**
  * 增加设备位号和设备名称。注意设备位号和设备名称只能通过设备id通过接口获取。
@@ -27,16 +25,10 @@ import butterknife.BindView;
 public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollectPresenterImp> {
 
     /*设备位号*/
-    @BindView(R2.id.ll_device_location)
-    LinearLayout llDeviceLocation;
-    @BindView(R2.id.tv_device_location)
     TextView tvDeviceLocation;
     /*设备名称*/
-    @BindView(R2.id.ll_device_name)
-    LinearLayout llDeviceName;
-    @BindView(R2.id.tv_device_name)
     TextView tvDeviceName;
-
+    String mDeviceId;
 
     /**
      * 处理扫描。重写该方法的目的是增加设备Id的处理逻辑
@@ -47,63 +39,47 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
         if (list != null && list.length >= 12) {
-            if (!etMaterialNum.isEnabled()) {
-                showMessage("请先在抬头界面获取相关数据");
-                return;
-            }
-            final String materialNum = list[Global.MATERIAL_POS];
             mDeviceId = list[list.length - 2];
-            //如果设备Id为空那么不允许在操作.isContinue为true表示设备Id不为空可以继续该业务
-            final boolean isContinue = !isEmpty(mDeviceId);
-            //这里通过设备Id禁用掉获取物料信息
-            etMaterialNum.setEnabled(isContinue);
-            if (!isContinue) {
-                showMessage("未获取到设备Id,请检查您的条码内容是否正确");
-                return;
-            }
-            if (cbSingle.isChecked() && materialNum.equalsIgnoreCase(getString(etMaterialNum))) {
-                //如果已经选中单品，那么说明已经扫描过一次。必须保证每一次的物料都一样
-                saveCollectedData();
-            } else {
-                etMaterialNum.setText(materialNum);
-                loadMaterialInfo(materialNum, "");
-            }
-        } else if (list != null && list.length == 1 & !cbSingle.isChecked()) {
-            final String location = list[0];
-            if (autoRecLoc.isFocused()) {
-                autoRecLoc.setText(location);
-                return;
-            }
-            //扫描发出仓位
-            if (spSendLoc.getAdapter() != null) {
-                final int size = mInventoryDatas.size();
-                for (int i = 0; i < size; i++) {
-                    if (mInventoryDatas.get(i).location.equalsIgnoreCase(location)) {
-                        spSendLoc.setSelection(i);
-                        break;
-                    }
-                }
-            }
         }
+        super.handleBarCodeScanResult(type, list);
     }
 
+    @Override
+    protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
+        isOpenLocationType = false;
+        isOpenRecLocationType = false;
+    }
 
+    @Override
+    public int getContentId() {
+        return R.layout.qysh_fragment_msn301_collect;
+    }
+
+    @Override
+    public void initPresenter() {
+        mPresenter = new MSNCollectPresenterImp(mActivity);
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        tvDeviceLocation = mView.findViewById(R.id.qysh_tv_device_location);
+        tvDeviceName = mView.findViewById(R.id.qysh_tv_device_name);
+    }
+
+    @Override
+    protected void initData() {
+
+    }
 
     @Override
     protected void loadMaterialInfo(String materialNum, String batchFlag) {
-        if (TextUtils.isEmpty(materialNum)) {
-            showMessage("物料编码为空,请重新输入");
-            return;
-        }
         if (isEmpty(mDeviceId)) {
             showMessage("设备位Id为空");
             return;
         }
-        clearAllUI();
-        mHistoryDetailList = null;
-        mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
-                Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
-                mRefData.recInvId, batchFlag, "", -1);
+        super.loadMaterialInfo(materialNum, batchFlag);
     }
 
     /**
@@ -234,22 +210,6 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
 
 
     @Override
-    public void initPresenter() {
-
-    }
-
-    @Override
-    protected void initView() {
-        //打开设备相关的控件
-        setVisibility(View.VISIBLE, llDeviceLocation, llDeviceName);
-    }
-
-    @Override
-    public void initData() {
-
-    }
-
-    @Override
     public void _onPause() {
         clearCommonUI(tvDeviceLocation, tvDeviceName);
         super._onPause();
@@ -266,10 +226,20 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
     }
 
     @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.deviceId = mDeviceId;
+        return result;
+    }
+
+    @Override
     protected InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam queryParam = super.provideInventoryQueryParam();
         queryParam.invType = "0";
         queryParam.queryType = "03";
+        if (queryParam.extraMap == null)
+            queryParam.extraMap = new HashMap<>();
+        queryParam.extraMap.put("deviceId", mDeviceId);
         return queryParam;
     }
 }

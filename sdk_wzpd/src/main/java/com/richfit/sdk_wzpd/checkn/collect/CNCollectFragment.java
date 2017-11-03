@@ -21,12 +21,14 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.sdk_wzpd.R;
 import com.richfit.sdk_wzpd.R2;
 import com.richfit.sdk_wzpd.checkn.collect.imp.CNCollectPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -405,10 +407,6 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
         }
     }
 
-    @Override
-    public void saveCollectedDataFail(String message) {
-        showMessage(message);
-    }
 
     private void clearAllUI() {
         clearCommonUI(etSpecialInvFlag, etSpecialInvNum, tvMaterialDesc, tvInvQuantity,

@@ -242,7 +242,7 @@ public class LocalRepositoryImp implements ILocalRepository {
             Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode,extraMap,
                     key, defaultItemNum, flag, keys);
             if (map == null || map.size() == 0) {
-                return Flowable.error(new Throwable("未获取到基础数据,请检查是否您选择的工厂是否正确或者是否在设置界面同步过基础数据"));
+                return Flowable.error(new Throwable("未搜索到该基础数据!!!"));
             }
             return Flowable.just(map);
         });

@@ -24,15 +24,15 @@ public class XNGDMSNCollectFragment extends BaseMSNCollectFragment<MSNCollectPre
 
     @Override
     protected void initView() {
+        super.initView();
         //接收批次为空
         etRecBatchFlag.setEnabled(false);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
-
 
     @Override
     protected boolean checkHeaderData() {

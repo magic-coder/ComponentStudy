@@ -18,13 +18,10 @@ public class QHYTAS103EditFragment extends BaseASEditFragment<QHYTAS103EditPrese
         mPresenter = new QHYTAS103EditPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {
+        super.initView();
         etLocation.setEnabled(false);
         llLocation.setVisibility(View.GONE);
         llLocationQuantity.setVisibility(View.GONE);

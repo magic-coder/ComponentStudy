@@ -82,7 +82,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
      * 进入条码系统的入口
      */
     private void startBarcodeSystem() {
-        if (judgeProperty()) {
+       /* if (judgeProperty()) {
             new AlertDialog.Builder(this)
                     .setTitle("扫描设置")
                     .setMessage("您未打开\"使能上报扫描键值\",请先打开它")
@@ -93,7 +93,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
                         finish();
                     }).setNegativeButton("下次再说", (dialog, which) -> finish()).show();
             return;
-        }
+        }*/
         //1. 检查是否有网络；2.检查是否是第一次登陆
         if (!NetworkStateUtil.isNetConnected(this.getApplicationContext()) && mPresenter != null) {
             mPresenter.setLocal(true);

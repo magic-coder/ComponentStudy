@@ -25,7 +25,7 @@ public interface IMSEditPresenter extends IBaseEditPresenter<IMSEditView> {
                           String workCode, String invCode, String storageNum,
                           String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFlag,
-                          String specialInvNum, String invType, String deviceId,Map<String,Object> extraMap);
+                          String specialInvNum, String invType,Map<String,Object> extraMap);
 
     /**
      * 获取单条缓存
@@ -39,6 +39,4 @@ public interface IMSEditPresenter extends IBaseEditPresenter<IMSEditView> {
      */
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
-
-    void getDictionaryData(String... codes);
 }

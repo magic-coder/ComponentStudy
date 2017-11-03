@@ -31,11 +31,6 @@ public class CQYTMSY315DetailFragment extends BaseASDetailFragment<CQYTMSY315Det
         mPresenter = new CQYTMSY315DetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
     /**
      * 显示物资移库明细界面，注意这里显示的标准界面
      *

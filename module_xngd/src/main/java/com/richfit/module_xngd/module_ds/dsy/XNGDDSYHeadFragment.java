@@ -50,7 +50,6 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
 
     @Override
     public void initView() {
-        super.initView();
         llCreator.setVisibility(View.GONE);
         cbInvFlag = (CheckBox) mView.findViewById(R.id.xngd_cb_inv_flag);
         tvCostCenter = (TextView) mView.findViewById(R.id.xngd_tv_cost_center);
@@ -59,10 +58,6 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
         tvInvType = (TextView) mView.findViewById(R.id.tv_inv_type);
     }
 
-    @Override
-    public void initData() {
-
-    }
 
     @Override
     public void initDataLazily() {
@@ -70,8 +65,8 @@ public class XNGDDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
     }
 
     protected void getRefData(String refNum) {
-        cbInvFlag.setEnabled(true);
         super.getRefData(refNum);
+        cbInvFlag.setEnabled(true);
     }
 
 

@@ -68,7 +68,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
         mRefData = null;
     }
 
@@ -81,7 +81,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //点击单号加载单据数据
         etRefNum.setOnRichEditTouchListener((view, refNum) -> {
             hideKeyboard(view);
@@ -94,7 +94,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal() &&
                 !TextUtils.isEmpty(mUploadMsgEntity.transId) && !TextUtils.isEmpty(mUploadMsgEntity.refNum)) {
             etRefNum.setText(mUploadMsgEntity.refNum);
@@ -236,6 +236,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
+        super.clearAllUIAfterSubmitSuccess();
         clearCommonUI(tvRefNum, tvSendWork, tvSupplier);
         mRefData = null;
     }
@@ -300,7 +301,6 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
         }
         super.retry(action);
     }
-
 
     /*返回移动类型*/
     @CheckResult

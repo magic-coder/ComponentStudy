@@ -4,6 +4,7 @@ package com.richfit.sdk_sxcl.baseedit;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -77,9 +78,6 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    protected boolean isOpenLocationType = false;
-
     protected String mRefLineId;
     protected String mLocationId;
     protected int mPosition;
@@ -100,22 +98,25 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new LocQTEditPresenterImp(mActivity);
     }
 
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInventoryDatas = new ArrayList<>();
     }
 
     @Override
     protected void initView() {
-
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //选择下架仓位，刷新库存数量并且请求缓存，注意缓存是用来刷新仓位数量和累计数量
         RxAdapterView
                 .itemSelections(spXLoc)
@@ -139,12 +140,12 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
 
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         Bundle bundle = getArguments();
         mSelectedLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
@@ -275,7 +276,8 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
             return;
         }
         mPresenter.getInventoryInfo("04", workId, invId, workCode, invCode, "",
-                getString(tvMaterialNum), materialId, "", batchFlag, "", "", "", "", null);
+                getString(tvMaterialNum), materialId, "", batchFlag, "",
+                "", "",  null);
     }
 
     @Override
@@ -477,11 +479,6 @@ public class LocQTEditFragment extends BaseEditFragment<LocQTEditPresenterImp>
             queryParam.extraMap.put("locationType", locationType);
         }
         return queryParam;
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override

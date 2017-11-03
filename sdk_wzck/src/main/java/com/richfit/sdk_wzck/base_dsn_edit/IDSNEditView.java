@@ -24,8 +24,6 @@ public interface IDSNEditView extends IBaseEditView {
     void loadTransferSingleInfoFail(String message);
 
     void loadTransferSingleInfoComplete();
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
     /**
      * 显示库存
      *

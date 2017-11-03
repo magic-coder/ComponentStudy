@@ -30,10 +30,6 @@ public class CQYTAODetailFragment extends BaseASDetailFragment<ASDetailPresenter
         mPresenter = new ASDetailPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     public void initEvent() {

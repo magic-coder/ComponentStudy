@@ -20,7 +20,13 @@ public class Global {
     public static String AUTH_ORG;
     public static String DBSOURCE;
     public static String BATCHMANAGERSTATUS;
+    /**
+     * 1.表示barcode
+     * 2.IM，
+     * 3.WM
+     */
     public static String WMFLAG;
+    public final static String OPEN_LOCATION_TYPE = "Y";
 
     /*主模块编码*/
     public static final String WZYS = "100";

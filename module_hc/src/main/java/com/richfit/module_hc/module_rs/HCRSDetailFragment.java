@@ -21,11 +21,6 @@ public class HCRSDetailFragment extends BaseASDetailFragment<ASDetailPresenterIm
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

@@ -37,10 +37,6 @@ public class CQYTLACollectFragment extends LACollectFragment {
     public void initView() {
         super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
-        //源仓位仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
-        //目标仓位仓储类型
-        llRecLocationType.setVisibility(View.VISIBLE);
     }
 
 

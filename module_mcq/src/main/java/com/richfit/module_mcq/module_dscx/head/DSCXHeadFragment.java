@@ -44,11 +44,6 @@ public class DSCXHeadFragment extends BaseHeadFragment<DSCXHeadPresenterImp>
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
         etCreateDate = mView.findViewById(R.id.et_create_date);
         etCreator = mView.findViewById(R.id.et_creator);

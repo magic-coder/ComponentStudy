@@ -86,12 +86,12 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
         return R.layout.wzyk_fragment_base_msn_header;
     }
 
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mSendWorks = new ArrayList<>();
         mSendInvs = new ArrayList<>();
         mRecWorks = new ArrayList<>();
         mRecInvs = new ArrayList<>();
-        mRefData = null;
     }
 
 
@@ -99,7 +99,7 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //过账日期
         etTransferDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
@@ -116,6 +116,7 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
                         mPresenter.getSendInvsByWorkId(mSendWorks.get(position.intValue()).workId, getOrgFlag());
                     }
                 });
+
         //接收工厂
         RxAdapterView.itemSelections(spRecWork)
                 .filter(aInteger -> {
@@ -132,14 +133,11 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
                     return true;
                 })
                 .filter(position -> position.intValue() > 0)
-                .map(aInteger -> mRecWorks.get(aInteger.intValue()).workId)
-                .filter(workId -> !TextUtils.isEmpty(workId))
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(workId -> mPresenter.getRecInvsByWorkId(workId, getOrgFlag()));
+                .subscribe(position -> mPresenter.getRecInvsByWorkId( mRecWorks.get(position.intValue()).workId, getOrgFlag()));
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //如果是离线直接获取缓存，不能让用户删除缓存
@@ -195,10 +193,11 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     }
 
     /**
-     * 發出工廠和接收工廠初始化完畢
+     * 发出工厂和接收工厂初始化完毕
      */
     @Override
     public void loadWorksComplete() {
+        //处理离线情况
         if (mUploadMsgEntity != null && !TextUtils.isEmpty(mUploadMsgEntity.workId)) {
             selectedWork(mSendWorks, mUploadMsgEntity.workId, spSendWork);
             selectedWork(mRecWorks, mUploadMsgEntity.workId, spRecWork);
@@ -279,6 +278,11 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     @Override
     public void loadProjectNumsFail(String message) {
 
+    }
+
+    @Override
+    public void clearAllUIAfterSubmitSuccess() {
+        super.clearAllUIAfterSubmitSuccess();
     }
 
     protected abstract String getMoveType();

@@ -23,13 +23,8 @@ public class QHYTDSWWHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp>
     @Override
     protected void initView() {
         llSuppier.setVisibility(View.VISIBLE);
-        super.initView();
     }
 
-    @Override
-    public void initData() {
-
-    }
 
     @Override
     public void initDataLazily() {

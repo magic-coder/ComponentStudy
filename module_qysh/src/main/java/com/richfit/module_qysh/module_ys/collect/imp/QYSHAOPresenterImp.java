@@ -124,7 +124,9 @@ public class QYSHAOPresenterImp extends BaseCollectPresenterImp<IQYSHAOView>
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在保存数据...") {
                     @Override
                     public void _onNext(String s) {
-
+                        if (mView != null) {
+                            mView.saveCollectedDataSuccess(s);
+                        }
                     }
 
                     @Override
@@ -150,9 +152,7 @@ public class QYSHAOPresenterImp extends BaseCollectPresenterImp<IQYSHAOView>
 
                     @Override
                     public void _onComplete() {
-                        if (mView != null) {
-                            mView.saveCollectedDataSuccess();
-                        }
+
                     }
                 });
         addSubscriber(subscriber);

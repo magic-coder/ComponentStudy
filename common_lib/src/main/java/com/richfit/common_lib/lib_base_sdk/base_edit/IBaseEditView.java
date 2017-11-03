@@ -3,6 +3,10 @@ package com.richfit.common_lib.lib_base_sdk.base_edit;
 
 import com.richfit.common_lib.lib_mvp.BaseView;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.domain.bean.SimpleEntity;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by monday on 2017/4/6.
@@ -26,4 +30,11 @@ public interface IBaseEditView extends BaseView {
      * @param message
      */
     void saveEditedDataFail(String message);
+
+    /**
+     * 获取字典成功
+     * @param data
+     */
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

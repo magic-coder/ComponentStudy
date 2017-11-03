@@ -75,10 +75,6 @@ public class CQYTWHXJHeadFragment extends BaseHeadFragment<CQYTWHXJHeadPresenter
         mPresenter = new CQYTWHXJHeadPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {

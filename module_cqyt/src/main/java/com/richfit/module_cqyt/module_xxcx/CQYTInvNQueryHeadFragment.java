@@ -62,8 +62,6 @@ public class CQYTInvNQueryHeadFragment extends InvNQueryHeaderFragment {
         llMaterialDesc.setVisibility(View.GONE);
         etLocation = mView.findViewById(R.id.et_location);
         etMaterialNum = mView.findViewById(R.id.et_material_num);
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

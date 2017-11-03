@@ -2,7 +2,10 @@ package com.richfit.sdk_wzpd.checkn.detail;
 
 
 import com.richfit.common_lib.lib_mvp.BaseView;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.ReferenceEntity;
+
+import java.util.List;
 
 /**
  * Created by monday on 2016/12/6.
@@ -38,5 +41,11 @@ public interface ICNDetailView extends BaseView {
     void transferCheckDataSuccess();
     void showTransferedNum(String transNum);
     void transferCheckDataFail(String message);
+
+    /**
+     * 显示库存明细
+     * @param allNodes
+     */
+    void showNodes(List<InventoryEntity> allNodes);
 
 }

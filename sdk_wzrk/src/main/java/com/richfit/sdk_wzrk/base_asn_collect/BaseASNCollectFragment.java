@@ -87,7 +87,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     /*单条缓存数据列表*/
     private List<RefDetailEntity> mHistoryDetailList;
     /*上架仓位列表适配器*/
-    ArrayAdapter<String> mLocationAdapter;
+    ArrayAdapter<String> mLocAdapter;
     List<String> mLocationList;
     /*是否发不上架*/
     protected boolean isNLocation = false;
@@ -95,8 +95,6 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     protected boolean isLocationChecked = false;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
 
     /**
      * 处理扫描
@@ -143,13 +141,21 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInvs = new ArrayList<>();
         mLocationList = new ArrayList<>();
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         //扫描后者手动输入物资条码
         etMaterialNum.setOnRichEditTouchListener((view, materialNum) -> {
             //请求接口获取获取物料
@@ -182,7 +188,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
                         //如果打开
                         mPresenter.getDictionaryData("locationType");
                     } else {
-                        loadLocationList(false);
+                        loadLocationList(pos);
                     }
                 });
 
@@ -190,20 +196,13 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         RxAdapterView.itemSelections(spLocationType)
                 .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
                         && mLocationTypes.size() > 0)
-                .subscribe(position -> loadLocationList(false));
+                .subscribe(position -> loadLocationList(spInv.getSelectedItemPosition()));
 
 
         //监听上架仓位输入，及时清空仓位数量
         RxTextView.textChanges(etLocation)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(a -> tvLocQuantity.setText(""));
-
-        //监听输入的关键字
-        RxTextView.textChanges(etLocation)
-                .debounce(100, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mLocationList != null &&
-                        mLocationList.size() > 0 && !filterKeyWord(str.toString()))
-                .subscribe(a -> loadLocationList(true));
 
         //选中上架仓位列表的item，关闭输入法,并且直接匹配出仓位数量
         RxAutoCompleteTextView.itemClickEvents(etLocation)
@@ -220,13 +219,7 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     }
 
     @Override
-    public void initData() {
-        //检测是否打开仓储类型,false表示不打开
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-    }
-
-    @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         etMaterialNum.setEnabled(false);
         if (mRefData == null) {
             showMessage("请先在抬头界面输入必要的数据");
@@ -267,22 +260,6 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
                 mRefData.recInvId, batchFlag, "", -1);
     }
 
-    @Override
-    public void showInvs(List<InvEntity> invs) {
-        mInvs.clear();
-        mInvs.addAll(invs);
-        if (mInvAdapter == null) {
-            mInvAdapter = new InvAdapter(mActivity, R.layout.item_simple_sp, mInvs);
-            spInv.setAdapter(mInvAdapter);
-        } else {
-            mInvAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void loadInvsFail(String message) {
-        showMessage(message);
-    }
 
     @Override
     public void bindCommonCollectUI(ReferenceEntity refData, String batchFlag) {
@@ -306,28 +283,52 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     }
 
     @Override
-    public void loadLocationList( boolean isDropDown) {
-        InvEntity invEntity = mInvs.get(spInv.getSelectedItemPosition());
-        mPresenter.getLocationList(mRefData.workId, mRefData.workCode, invEntity.invId,
-                invEntity.invCode, getString(etLocation), 100, getInteger(R.integer.orgNorm), isDropDown);
+    public void showInvs(List<InvEntity> invs) {
+        mInvs.clear();
+        mInvs.addAll(invs);
+        if (mInvAdapter == null) {
+            mInvAdapter = new InvAdapter(mActivity, R.layout.item_simple_sp, mInvs);
+            spInv.setAdapter(mInvAdapter);
+        } else {
+            mInvAdapter.notifyDataSetChanged();
+        }
     }
 
-    /**
-     * 如果用户输入的关键字在mLocationList存在，那么不在进行数据查询.
-     *
-     * @param keyWord
-     * @return
-     */
-    private boolean filterKeyWord(String keyWord) {
-        Pattern pattern = Pattern.compile("^" + keyWord);
-        for (String item : mLocationList) {
-            Matcher matcher = pattern.matcher(item);
-            while (matcher.find()) {
-                return true;
-            }
-        }
-        return false;
+    @Override
+    public void loadInvsFail(String message) {
+        showMessage(message);
     }
+
+    @Override
+    public void loadLocationList(int position) {
+        if (position <= 0) {
+            return;
+        }
+        tvLocQuantity.setText("");
+        if (mLocAdapter != null) {
+            mLocationList.clear();
+            mLocAdapter.notifyDataSetChanged();
+        }
+        if (TextUtils.isEmpty(mRefData.workId)) {
+            showMessage("请先输入工厂");
+            spInv.setSelection(0);
+            return;
+        }
+
+        if (etMaterialNum.getTag() == null) {
+            showMessage("请先获取物料信息");
+            spInv.setSelection(0);
+            return;
+        }
+
+        final InvEntity invEntity = mInvs.get(position);
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getInventoryInfo(param.queryType, mRefData.workId, invEntity.invId,
+                mRefData.workCode, invEntity.invCode, "", getString(etMaterialNum),
+                CommonUtil.Obj2String(etMaterialNum.getTag()), "",
+                getString(etBatchFlag), "", "", param.invType, param.extraMap);
+    }
+
 
     @Override
     public void loadInventoryFail(String message) {
@@ -338,21 +339,18 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
     public void showInventory(List<String> list) {
         mLocationList.clear();
         mLocationList.addAll(list);
-        if (mLocationAdapter == null) {
-            mLocationAdapter = new ArrayAdapter<>(mActivity,
+        if (mLocAdapter == null) {
+            mLocAdapter = new ArrayAdapter<>(mActivity,
                     android.R.layout.simple_dropdown_item_1line, mLocationList);
-            etLocation.setAdapter(mLocationAdapter);
+            etLocation.setAdapter(mLocAdapter);
             setAutoCompleteConfig(etLocation);
         } else {
-            mLocationAdapter.notifyDataSetChanged();
+            mLocAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
-    public void loadInventoryComplete(boolean isDropDown) {
-        if (isDropDown) {
-            showAutoCompleteConfig(etLocation);
-        }
+    public void loadInventoryComplete() {
     }
 
     /**
@@ -444,9 +442,9 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
         }
 
         //上架仓位
-        if (mLocationAdapter != null) {
+        if (mLocAdapter != null) {
             mLocationList.clear();
-            mLocationAdapter.notifyDataSetChanged();
+            mLocAdapter.notifyDataSetChanged();
         }
     }
 
@@ -575,11 +573,6 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     /**

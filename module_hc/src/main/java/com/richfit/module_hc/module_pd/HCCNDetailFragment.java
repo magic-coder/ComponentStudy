@@ -15,5 +15,4 @@ public class HCCNDetailFragment extends CNDetailFragment<CNDetailPresenterImp> {
         mPresenter = new CNDetailPresenterImp(mActivity);
     }
 
-
 }

@@ -74,8 +74,4 @@ public interface IMSCollectView extends IBaseCollectView {
     void loadCacheSuccess();
 
     void loadCacheFail(String message);
-
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

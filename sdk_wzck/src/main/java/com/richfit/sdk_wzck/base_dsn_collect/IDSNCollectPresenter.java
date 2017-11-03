@@ -47,8 +47,5 @@ public interface IDSNCollectPresenter extends IBaseCollectPresenter<IDSNCollectV
     void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                           String invCode, String storageNum, String materialNum, String materialId,
                           String location, String batchFlag, String specialInvFag, String specialInvNum,
-                          String invType, String deviceId,Map<String,Object> extraMap);
-
-    void getDictionaryData(String... codes);
-
+                          String invType,Map<String,Object> extraMap);
 }

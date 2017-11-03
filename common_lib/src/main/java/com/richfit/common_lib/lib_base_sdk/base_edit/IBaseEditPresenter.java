@@ -13,4 +13,10 @@ public interface IBaseEditPresenter  <V extends IBaseEditView> extends IPresente
      * @param result:用户采集的数据(json格式)
      */
     void uploadCollectionDataSingle(ResultEntity result);
+
+    /**
+     * 获取字典数据
+     * @param codes
+     */
+    void getDictionaryData(String... codes);
 }

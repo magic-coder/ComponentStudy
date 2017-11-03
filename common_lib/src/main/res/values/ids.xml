@@ -19,8 +19,13 @@
 
     <!--抬头业务id-->
     <item name="et_ref_num" type="id"></item>
+    <item name="pd_search_condition" type="id"></item>
     <item name="tv_rec_work" type="id"></item>
+    <item name="ll_inv_quantity" type="id"></item>
+    <item name="tv_quantity_name" type="id"></item>
+    <item name="tv_total_quantity_name" type="id"></item>
     <item name="tv_ref_num" type="id"></item>
+    <item name="ll_x_location" type="id"></item>
     <item name="ll_supplier" type="id"></item>
     <item name="tv_supplier" type="id"></item>
     <item name="ll_send_work" type="id"></item>
@@ -117,6 +122,7 @@
     <item name="tv_act_quantity" type="id"></item>
     <item name="ll_batch_flag" type="id"></item>
     <item name="tv_batch_flag_name" type="id"></item>
+    <item name="tv_rec_location_type" type="id"></item>
     <item name="et_batch_flag" type="id"></item>
     <item name="sp_inv" type="id"></item>
     <item name="et_location" type="id"></item>
@@ -144,12 +150,8 @@
     <item name="et_rec_location" type="id"></item>
     <item name="et_rec_batch_flag" type="id"></item>
     <item name="ll_rec_location" type="id"></item>
-    <item name="ll_rec_batch" type="id"></item>
+    <item name="ll_rec_batch_flag" type="id"></item>
     <item name="send_work_name" type="id"></item>
-    <item name="ll_device_location" type="id"></item>
-    <item name="tv_device_location" type="id"></item>
-    <item name="ll_device_name" type="id"></item>
-    <item name="tv_device_name" type="id"></item>
     <item name="tv_send_location_name" type="id"></item>
     <item name="auto_rec_location" type="id"></item>
     <item name="tv_send_batch_flag" type="id"></item>

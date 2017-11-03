@@ -35,7 +35,6 @@ public class XNGDRGHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
     protected void initView() {
         llSuppier.setVisibility(View.VISIBLE);
         llCreator.setVisibility(View.GONE);
-        super.initView();
         spRgGoodsTypes = (Spinner) mView.findViewById(R.id.xngd_sp_goods_type);
     }
 

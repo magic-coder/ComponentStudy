@@ -32,7 +32,4 @@ public interface IMSEditView extends IBaseEditView {
     void onBindCache(RefDetailEntity cache, String batchFlag, String location);
 
     void loadCacheFail(String message);
-
-    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
-    void loadDictionaryDataFail(String message);
 }

@@ -21,16 +21,9 @@ import io.reactivex.Flowable;
 
 public class  QHYTAS105NCollectFragment extends BaseASCollectFragment<ASCollectPresenterImp> {
 
-
-
     @Override
     public void initPresenter() {
         mPresenter = new ASCollectPresenterImp(mActivity);
-    }
-
-    @Override
-    protected void initView() {
-
     }
 
     @Override

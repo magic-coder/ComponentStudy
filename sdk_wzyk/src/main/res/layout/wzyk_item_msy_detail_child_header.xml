@@ -51,7 +51,6 @@
 
     <View style="@style/ItemSeperatorLayout" />
 
-    <!--增加寄售转自有的功能-->
     <TextView
         android:id="@id/specialInvFlag"
         style="@style/TableChildHeaderStyle"
@@ -69,10 +68,19 @@
     <View style="@style/ItemSeperatorLayout" />
 
     <TextView
-        android:id="@id/tv_location_type"
+    android:id="@id/tv_location_type"
+    style="@style/TableChildHeaderStyle"
+    android:layout_width="120dp"
+    android:text="@string/send_location_type" />
+
+    <View style="@style/ItemSeperatorLayout" />
+
+
+    <TextView
+        android:id="@id/tv_rec_location_type"
         style="@style/TableChildHeaderStyle"
         android:layout_width="120dp"
-        android:text="@string/location_type" />
+        android:text="@string/rec_location_type" />
 
     <View style="@style/ItemSeperatorLayout" />
 

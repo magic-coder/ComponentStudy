@@ -37,11 +37,6 @@ public class XNGDASNDetailFragment extends BaseASNDetailFragment<XNGDASNDetailPr
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }
@@ -50,15 +45,6 @@ public class XNGDASNDetailFragment extends BaseASNDetailFragment<XNGDASNDetailPr
     public void initData() {
 
     }
-
-    @Override
-    public void initView() {
-        super.initView();
-        TextView tvBatchFlag = (TextView) mView.findViewById(R.id.batchFlag);
-        TextView tvLocationType = mView.findViewById(R.id.tv_location_type);
-        setVisibility(View.GONE,tvBatchFlag,tvLocationType);
-    }
-
 
     @Override
     public void showNodes(List<RefDetailEntity> nodes) {

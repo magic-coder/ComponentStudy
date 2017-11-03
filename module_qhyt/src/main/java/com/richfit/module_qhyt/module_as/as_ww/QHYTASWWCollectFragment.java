@@ -49,12 +49,6 @@ public class QHYTASWWCollectFragment extends BaseASCollectFragment<ASCollectPres
 
     }
 
-
-    @Override
-    protected void initView() {
-
-    }
-
     @Override
     public void initDataLazily() {
         super.initDataLazily();

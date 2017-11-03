@@ -136,6 +136,12 @@ public class CommonUtil {
         }
     }
 
+    public final static boolean convertToBoolean(Object value,boolean defaultValue) {
+        if(value == null)
+            return defaultValue;
+        return (boolean) value;
+    }
+
 
     private static String bytesToHexString(byte[] bytes) {
         StringBuilder sb = new StringBuilder();

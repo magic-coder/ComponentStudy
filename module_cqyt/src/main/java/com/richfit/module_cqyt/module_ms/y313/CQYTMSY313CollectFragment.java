@@ -57,6 +57,7 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
 
     @Override
     protected void initView() {
+        super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
         //打开接收批次，默认与发出批次一致，不允许修改
@@ -64,8 +65,11 @@ public class CQYTMSY313CollectFragment extends BaseMSCollectFragment<MSCollectPr
         etRecBatchFlag.setEnabled(false);
         //发出工厂改为工厂
         sendWorkName.setText("工厂");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void initData() {
+
     }
 
     @Override

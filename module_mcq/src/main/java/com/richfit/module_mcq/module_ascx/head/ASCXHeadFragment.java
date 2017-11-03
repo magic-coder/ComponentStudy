@@ -42,10 +42,6 @@ public class ASCXHeadFragment extends BaseHeadFragment<ASCXHeadPresenterImp> imp
         mPresenter = new ASCXHeadPresenterImp(mActivity);
     }
 
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
 
     @Override
     protected void initView() {

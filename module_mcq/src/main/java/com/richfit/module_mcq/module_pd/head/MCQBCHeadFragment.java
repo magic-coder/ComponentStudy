@@ -32,8 +32,6 @@ public class MCQBCHeadFragment extends BCHeadFragment {
         rbWarehouseLevel.setChecked(true);
         llWarehouseLevel.setVisibility(View.VISIBLE);
         llCheckGuide.setVisibility(View.GONE);
-        //打开仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import butterknife.Optional;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
@@ -72,9 +73,6 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
     String mLocationId;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
-
     /*是否上架*/
     protected boolean isLocation = true;
 
@@ -84,7 +82,14 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
     }
 
     @Override
-    public void initEvent() {
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initEvent() {
         //监听上架仓位输入，时时匹配缓存的仓位数量
         RxTextView.textChanges(etLocation)
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -95,8 +100,7 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initData() {
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -109,13 +113,10 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         //仓位
         mLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
-
         //仓位id
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
-
         //入库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
-
         //绑定数据
         tvMaterialNum.setText(materialNum);
         tvMaterialNum.setTag(materialId);
@@ -124,15 +125,11 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         etQuantity.setText(mQuantity);
         tvLocQuantity.setText(mQuantity);
         tvBatchFlag.setText(batchFlag);
-
         etLocation.setEnabled(false);
-
         //获取缓存信息
         mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                 mRefData.recInvId, batchFlag, "", -1);
-
-
     }
 
     @Override
@@ -316,11 +313,5 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
                 break;
         }
         super.retry(retryAction);
-    }
-
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 }

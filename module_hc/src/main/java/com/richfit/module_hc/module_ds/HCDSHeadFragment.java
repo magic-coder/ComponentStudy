@@ -29,15 +29,9 @@ public class HCDSHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
     @Override
     public void initView() {
-        super.initView();
         llCreator.setVisibility(View.GONE);
         tvCostCenter = mView.findViewById(R.id.hc_tv_cost_center);
         tvProjectNum = mView.findViewById(R.id.hc_tv_project_num);
-    }
-
-    @Override
-    public void initData() {
-
     }
 
     @Override

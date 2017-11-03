@@ -37,11 +37,6 @@ public class CQYTAS105DetailFragment extends BaseASDetailFragment<CQYTAS105Detai
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

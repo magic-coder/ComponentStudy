@@ -29,23 +29,6 @@ import static com.richfit.common_lib.utils.SPrefUtil.getData;
 public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> extends BaseDetailFragment<P, RefDetailEntity>
         implements IMSNDetailView<RefDetailEntity> {
 
-    /*移库无参考的公共组件*/
-
-    /*发出库位*/
-    @BindView(R2.id.sendInv)
-    protected TextView sendInv;
-    /*发出仓位*/
-    @BindView(R2.id.sendLoc)
-    protected TextView sendLoc;
-    /*发出批次*/
-    @BindView(R2.id.sendBatchFlag)
-    protected TextView sendBatchFlag;
-    /*接收仓位*/
-    @BindView(R2.id.recLoc)
-    protected TextView recLoc;
-    /*接收批次*/
-    @BindView(R2.id.recBatchFlag)
-    protected TextView recBatchFlag;
 
     /*处理寄售转自有业务。主要的逻辑是用户点击过账按钮之后系统自动检查该缓存(子节点)中是否有特殊库存标识是否
     * 等于K而且特殊库存编号不为空。如果满足以上的条件，那么系统自动调用转自有的接口。如果转自有成功修改成员变量
@@ -61,7 +44,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
     }
 
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         isNeedTurn = false;
         isTurnSuccess = false;
         startAutoRefresh();
@@ -91,7 +74,7 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
      */
     @Override
     final public void refreshComplete() {
-        setRefreshing(true, "获取明细成功");
+        super.refreshComplete();
         if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);

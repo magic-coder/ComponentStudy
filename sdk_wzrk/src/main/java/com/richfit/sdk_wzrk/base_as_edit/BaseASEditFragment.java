@@ -67,14 +67,12 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     protected LinearLayout llLocationQuantity;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
     //已经上架的所有仓位
     protected List<String> mLocations;
     ///要修改子节点的id
@@ -94,22 +92,26 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initView() {
+        if(isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void initData() {
         Bundle bundle = getArguments();
         final String location = bundle.getString(Global.EXTRA_LOCATION_KEY);
         final String totalQuantity = bundle.getString(Global.EXTRA_TOTAL_QUANTITY_KEY);
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
-
         isNLocation = "BARCODE".equalsIgnoreCase(location);
-
         mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
         mLocations = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
@@ -272,10 +274,5 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
                 break;
         }
         super.retry(retryAction);
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 }

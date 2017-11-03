@@ -37,12 +37,8 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
+        super.initView();
         TextView tvRefLineNumName = (TextView) mView.findViewById(R.id.tv_ref_line_num_name);
         tvRefLineNumName.setText("检验批");
         LinearLayout llInsLotQuantity = (LinearLayout) mView.findViewById(R.id.ll_inslot_quantity);
@@ -50,8 +46,6 @@ public class CQYTAOEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         llInsLotQuantity.setVisibility(View.VISIBLE);
         tvActQuantityName.setText("允许过账数量");
         tvQuantityName.setText("过账数量");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override

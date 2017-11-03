@@ -37,4 +37,10 @@ public interface IBaseCollectPresenter<V extends IBaseCollectView> extends IPres
      * @return
      */
     ReferenceEntity addBatchManagerStatus(ReferenceEntity refData, String workId);
+
+    /**
+     * 获取字典数据，最常用的是获取仓储类型
+     * @param codes:对应数据的类型，由Global里面定义的字符常量确定
+     */
+    void getDictionaryData(String... codes);
 }

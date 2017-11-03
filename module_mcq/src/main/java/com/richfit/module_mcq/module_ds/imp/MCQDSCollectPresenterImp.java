@@ -44,9 +44,9 @@ public class MCQDSCollectPresenterImp extends DSCollectPresenterImp
                                      String lineWorkCode, String lineInvCode, String storageNum,
                                      String materialNum, String materialId, String location,
                                      String batchFlag, String specialInvFlag, String specialInvNum,
-                                     String invType, String deviceId, Map<String, Object> extraMap) {
+                                     String invType, Map<String, Object> extraMap) {
 
-        mView =  getView();
+        mView = getView();
 
         //先获取库存，如果没有库存，那么直接走onError
         //获取库存由于是04需要先获取storageNum
@@ -54,17 +54,18 @@ public class MCQDSCollectPresenterImp extends DSCollectPresenterImp
                 .filter(SNum -> !TextUtils.isEmpty(SNum))
                 .flatMap(SNum -> mRepository.getInventoryInfo(queryType, workId, invId,
                         lineWorkCode, lineInvCode, SNum, materialNum, materialId, "", "", batchFlag, location,
-                        specialInvFlag, specialInvNum, invType, deviceId, extraMap))
+                        specialInvFlag, specialInvNum, invType, extraMap))
                 .onErrorResumeNext(throwable -> {
                     return Flowable.just(new ArrayList<>());
                 });
 
-        Flowable<ReferenceEntity> transferInfoFlowable = mRepository.getTransferInfo("", refCodeId, bizType, refType,
-                "", "", "", "", "").onErrorResumeNext(throwable -> {
-            //这里过滤掉未获取到缓存的错误
-            ReferenceEntity cache = new ReferenceEntity();
-            return Flowable.just(cache);
-        });
+        Flowable<ReferenceEntity> transferInfoFlowable =
+                mRepository.getTransferInfo("", refCodeId, bizType, refType,
+                        "", "", "", "", "", extraMap).onErrorResumeNext(throwable -> {
+                    //这里过滤掉未获取到缓存的错误
+                    ReferenceEntity cache = new ReferenceEntity();
+                    return Flowable.just(cache);
+                });
 
         //计算建议仓位
         Flowable.zip(inventoryFlowable, transferInfoFlowable,
@@ -132,7 +133,7 @@ public class MCQDSCollectPresenterImp extends DSCollectPresenterImp
                     return suggestedLocation;
                 })
                 .flatMap(data -> {
-                    if(data == null || TextUtils.isEmpty(data.locationCombine)) {
+                    if (data == null || TextUtils.isEmpty(data.locationCombine)) {
                         return Flowable.error(new Throwable("未获取到建议下架仓位"));
                     }
                     return Flowable.just(data);
@@ -141,35 +142,35 @@ public class MCQDSCollectPresenterImp extends DSCollectPresenterImp
                 .subscribeWith(new RxSubscriber<InventoryEntity>(mContext, "正在获取建议仓位...") {
                     @Override
                     public void _onNext(InventoryEntity data) {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.getSuggestedLocationSuccess(data);
                         }
                     }
 
                     @Override
                     public void _onNetWorkConnectError(String message) {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.getSuggestedLocationFail(message);
                         }
                     }
 
                     @Override
                     public void _onCommonError(String message) {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.getSuggestedLocationFail(message);
                         }
                     }
 
                     @Override
                     public void _onServerError(String code, String message) {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.getSuggestedLocationFail(message);
                         }
                     }
 
                     @Override
                     public void _onComplete() {
-                        if(mView != null) {
+                        if (mView != null) {
                             mView.getSuggestedLocationComplete();
                         }
                     }

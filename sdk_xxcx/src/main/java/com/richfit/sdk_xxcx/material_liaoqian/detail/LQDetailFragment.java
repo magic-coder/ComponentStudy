@@ -29,22 +29,17 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
     }
 
     @Override
-    public void initPresenter() {
+    protected void initPresenter() {
         mPresenter = new LQDetailPresenterImp(mActivity);
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
+    protected void initEvent() {
 
     }
 
     @Override
-    public void initEvent() {
-
-    }
-
-    @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
@@ -53,7 +48,7 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
      * 检查抬头界面的必要的字段是否已经赋值
      */
     @Override
-    public void initDataLazily() {
+    protected void initDataLazily() {
         if (mRefData == null) {
             showMessage("请先在抬头界面扫描料签");
             return;
@@ -77,7 +72,7 @@ public class LQDetailFragment extends BaseDetailFragment<LQDetailPresenterImp, I
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, "", "", mRefData.workCode,
                 mRefData.invCode, "", mRefData.materialNum, "", mRefData.location,
-                mRefData.batchFlag, "", "", param.invType, "",param.extraMap);
+                mRefData.batchFlag, "", "", param.invType,param.extraMap);
     }
 
     @Override

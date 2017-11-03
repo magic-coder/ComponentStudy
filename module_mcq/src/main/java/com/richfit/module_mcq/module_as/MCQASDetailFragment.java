@@ -30,11 +30,6 @@ public class MCQASDetailFragment extends BaseASDetailFragment<ASDetailPresenterI
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     public void initEvent() {
 
     }

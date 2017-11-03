@@ -76,11 +76,6 @@ public class CQYTXJHeadFragment extends BaseHeadFragment<CQYTXJHeadPresenterImp>
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
         etXJDate = (RichEditText) mView.findViewById(R.id.cqyt_et_xj_date);
         tvXJPerson = (TextView) mView.findViewById(R.id.cqyt_tv_xj_person);

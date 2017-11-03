@@ -60,7 +60,7 @@ public class BarcodeSystemApplication extends BaseApplication {
             switch (BuildConfig.APP_NAME) {
                 case Global.QYSH:
                     //庆阳测试地址
-                    baseUrl = "http://11.11.177.100:8092/lhbk_middleware/MobileProcess/";
+                    baseUrl = "http://11.11.177.100:9087/lhbk_middleware/MobileProcess/";
                     break;
                 case Global.QHYT:
                     //青海油田培训系统
@@ -69,7 +69,6 @@ public class BarcodeSystemApplication extends BaseApplication {
                 case Global.XNGD:
                     //西南管道
                     baseUrl = "http://11.11.47.29:8085/gdbk_middleware/MobileProcess/";
-//                    baseUrl = "http://10.88.53.10:8080/gdbk_middleware/MobileProcess/";
                     break;
                 case Global.CQYT:
                     //长庆油田

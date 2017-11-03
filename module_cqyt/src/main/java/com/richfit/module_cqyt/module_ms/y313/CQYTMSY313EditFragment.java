@@ -46,10 +46,9 @@ public class CQYTMSY313EditFragment extends BaseMSEditFragment<MSEditPresenterIm
 
     @Override
     protected void initView() {
+        super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         llRecBatch.setVisibility(View.VISIBLE);
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
 

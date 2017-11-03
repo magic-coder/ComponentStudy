@@ -33,5 +33,7 @@
     <item name="xngd_et_gl_account" type="id"></item>
     <item name="xngd_et_io_account" type="id"></item>
     <item name="xngd_tv_total_money" type="id" />
+    <item name="xngd_sp_material_state" type="id" />
+    <item name="xngd_tv_material_state" type="id" />
 
 </resources>

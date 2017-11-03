@@ -66,17 +66,15 @@ public class CQYTUbstoCollectFragment extends BaseDSCollectFragment<DSCollectPre
 
     @Override
     protected void initView() {
+        super.initView();
         etQuantityCustom = (EditText) mView.findViewById(R.id.cqyt_et_quantity_custom);
         tvTotalQuantityCustom = (TextView) mView.findViewById(R.id.cqyt_tv_total_quantity_custom);
         TextView tvBatchFlagName = (TextView) mView.findViewById(R.id.tv_batch_flag_name);
         tvBatchFlagName.setText("发出批次");
-        //显示仓储类型
-        llLocationType.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void initData() {
-        super.initData();
         isSplitBatchFlag = true;
     }
 

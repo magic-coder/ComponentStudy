@@ -18,8 +18,8 @@ public class HCDSCollectFragment extends BaseDSCollectFragment<DSCollectPresente
     }
 
     @Override
-    protected void initView() {
-        llLocationType.setVisibility(View.VISIBLE);
+    protected void initData() {
+
     }
 
     @Override

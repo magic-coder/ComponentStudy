@@ -66,15 +66,12 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     protected TextView tvInvQuantity;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
-    /*是否启用仓储类型*/
-    protected boolean isOpenLocationType = false;
-
     protected String mRefLineId;
     protected String mLocationId;
     protected int mPosition;
@@ -92,13 +89,16 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         return R.layout.wzck_fragment_base_dsy_edit;
     }
 
-    @Override
-    public void initVariable(Bundle savedInstanceState) {
 
+    @Override
+    protected void initView() {
+        if (isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //选择下架仓位，刷新库存数量并且请求缓存，注意缓存是用来刷新仓位数量和累计数量
         RxAdapterView.itemSelections(spLocation)
                 .filter(position -> mInventoryDatas != null && isValidatedLocation())
@@ -113,27 +113,9 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
                 .subscribe(position -> loadInventoryInfo());
     }
 
-    /**
-     * 用户修改的仓位不允许与其他子节点的仓位一致
-     *
-     * @return
-     */
-    protected boolean isValidatedLocation() {
-        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
-            return false;
-        }
-        for (String locationCombine : mLocationCombines) {
-            if (mSelectedLocationCombine.equalsIgnoreCase(locationCombine)) {
-                showMessage("该仓位已经存在");
-                return false;
-            }
-        }
-        return true;
-    }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
+    protected void initData() {
         Bundle bundle = getArguments();
         mSelectedLocationCombine = bundle.getString(Global.EXTRA_LOCATION_KEY);
         mSpecialInvFlag = bundle.getString(Global.EXTRA_SPECIAL_INV_FLAG_KEY);
@@ -227,7 +209,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
         InventoryQueryParam param = provideInventoryQueryParam();
         mPresenter.getInventoryInfo(param.queryType, workId, invId, workCode, invCode, "",
                 getString(tvMaterialNum), materialId, "", batchFlag,
-                lineData.specialInvFlag, lineData.specialInvNum, param.invType, "", param.extraMap);
+                lineData.specialInvFlag, lineData.specialInvNum, param.invType, param.extraMap);
     }
 
     @Override
@@ -311,7 +293,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             //匹配每一个缓存
             boolean isMatch = false;
             String locationType = "";
-            if(isOpenLocationType) {
+            if (isOpenLocationType) {
                 locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
             }
             for (LocationInfoEntity info : locationInfos) {
@@ -433,22 +415,6 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
     }
 
     @Override
-    protected InventoryQueryParam provideInventoryQueryParam() {
-        InventoryQueryParam queryParam = super.provideInventoryQueryParam();
-        if (mLocationTypes != null && isOpenLocationType) {
-            queryParam.extraMap = new HashMap<>();
-            String locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
-            queryParam.extraMap.put("locationType", locationType);
-        }
-        return queryParam;
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
-    }
-
-    @Override
     public void retry(String retryAction) {
         switch (retryAction) {
             case Global.RETRY_LOAD_INVENTORY_ACTION:
@@ -456,5 +422,23 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
                 break;
         }
         super.retry(retryAction);
+    }
+
+    /**
+     * 用户修改的仓位不允许与其他子节点的仓位一致
+     *
+     * @return
+     */
+    protected boolean isValidatedLocation() {
+        if (TextUtils.isEmpty(mSelectedLocationCombine)) {
+            return false;
+        }
+        for (String locationCombine : mLocationCombines) {
+            if (mSelectedLocationCombine.equalsIgnoreCase(locationCombine)) {
+                showMessage("该仓位已经存在");
+                return false;
+            }
+        }
+        return true;
     }
 }

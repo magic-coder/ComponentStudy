@@ -2,6 +2,7 @@ package com.richfit.module_xngd.module_ds.dsy;
 
 
 import android.text.TextUtils;
+import android.widget.EditText;
 
 import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -21,6 +22,13 @@ import java.util.Map;
 
 public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPresenterImp> {
 
+    EditText etRemark;
+
+    @Override
+    public int getContentId() {
+        return R.layout.xngd_fragment_ds_collect;
+    }
+
     @Override
     public void initPresenter() {
         mPresenter = new DSCollectPresenterImp(mActivity);
@@ -28,11 +36,12 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
 
     @Override
     protected void initView() {
-
+        super.initView();
+        etRemark = mView.findViewById(R.id.et_remark);
     }
 
     @Override
-    public void initData() {
+    protected void initData() {
 
     }
 
@@ -41,12 +50,12 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
         return getInteger(R.integer.orgNorm);
     }
 
-
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.invFlag = mRefData.invFlag;
         result.projectNum = mRefData.projectNum;
+        result.remark = getString(etRemark);
         return result;
     }
 

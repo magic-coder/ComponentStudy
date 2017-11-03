@@ -39,7 +39,8 @@ import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
- * 注意从明细界面过来的发出仓位是LocationCombine集合，接收仓位是location集合
+ * 注意从明细界面过来的发出仓位是LocationCombine集合，接收仓位是location集合。
+ * 物资无参考移库，默认接收信息是开启的
  * Created by monday on 2016/11/22.
  */
 
@@ -70,27 +71,26 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     protected AppCompatAutoCompleteTextView autoRecLoc;
     @BindView(R2.id.tv_rec_batch_flag)
     protected TextView tvRecBatchFlag;
+    @BindView(R2.id.ll_rec_location)
+    protected LinearLayout llRecLocation;
+    @BindView(R2.id.ll_rec_batch_flag)
+    protected LinearLayout llRecBatchFlag;
+
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
-    protected LinearLayout llLocationType;
+    LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
     protected Spinner spLocationType;
     @BindView(R2.id.tv_location_type_name)
     protected TextView tvLocationTypeName;
     @BindView(R2.id.ll_rec_location_type)
-    protected LinearLayout llRecLocationType;
+    LinearLayout llRecLocationType;
     @BindView(R2.id.sp_rec_location_type)
     protected Spinner spRecLocationType;
-    @BindView(R2.id.tv_rec_location_type_name)
-    protected TextView tvRecLocationTypeName;
-
 
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
     protected List<SimpleEntity> mRecLocationTypes;
-    /*是否启用仓储类型*/
-    private boolean isOpenLocationType = false;
-    private boolean isOpenRecLocationType = false;
     protected String mLocationId;
     String mQuantity;
     /*修改前的发出仓位*/
@@ -106,8 +106,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     /*缓存的历史仓位数量*/
     protected List<RefDetailEntity> mHistoryDetailList;
     protected boolean isWareHouseSame;
-    /*接收仓位*/
-    protected String mDeviceId;
+
 
     @Override
     protected int getContentId() {
@@ -115,13 +114,23 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mInventoryDatas = new ArrayList<>();
     }
 
+    @Override
+    protected void initView() {
+        if (isOpenLocationType) {
+            llLocationType.setVisibility(View.VISIBLE);
+        }
+        if (isOpenRecLocationType) {
+            llRecLocationType.setVisibility(View.VISIBLE);
+        }
+    }
 
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //选择下架仓位，刷新库存并且请求缓存
         RxAdapterView
                 .itemSelections(spSendLoc)
@@ -163,9 +172,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     }
 
     @Override
-    public void initData() {
-        isOpenLocationType = llLocationType.getVisibility() != View.GONE;
-        isOpenRecLocationType = llRecLocationType.getVisibility() != View.GONE;
+    protected void initData() {
         Bundle bundle = getArguments();
         //物料编码
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
@@ -183,7 +190,6 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         final String recLocation = bundle.getString(Global.EXTRA_REC_LOCATION_KEY);
         //接收批次
         final String recBatchFlag = bundle.getString(Global.EXTRA_REC_BATCH_FLAG_KEY);
-        mDeviceId = bundle.getString(Global.EXTRA_DEVICE_ID_KEY);
         //移库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
         //其他子节点的发出仓位列表
@@ -258,7 +264,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                 CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
                 "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
+                "", getString(tvSendBatchFlag), "", "", param.invType, null);
     }
 
     @Override
@@ -299,7 +305,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
      */
     @Override
     public void loadInventoryComplete() {
-        if(isOpenRecLocationType)
+        if (isOpenRecLocationType)
             return;
         loadRecInventoryInfo();
     }
@@ -325,7 +331,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                 mRefData.recWorkCode, mRefData.recInvCode, "", getString(tvMaterialNum),
                 CommonUtil.Obj2String(tvMaterialNum.getTag()), "",
-                getString(tvSendBatchFlag), "", "", param.invType, mDeviceId, null);
+                getString(tvSendBatchFlag), "", "", param.invType, null);
     }
 
     @Override
@@ -417,7 +423,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         String recBatchFlag = getString(tvRecBatchFlag);
         boolean isMatched = false;
         String locationType = "";
-        if(isOpenLocationType) {
+        if (isOpenLocationType) {
             locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
 
@@ -425,11 +431,11 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    if(isOpenLocationType) {
+                    if (isOpenLocationType) {
                         isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
-                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType):
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType) :
                                 locationCombine.equalsIgnoreCase(locationInfo.locationCombine) && locationType.equals(locationInfo.locationType);
-                    }else {
+                    } else {
                         isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
                                 && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
                                 locationCombine.equalsIgnoreCase(locationInfo.locationCombine);
@@ -536,7 +542,6 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         result.recInvId = mRefData.recInvId;
         result.materialId = CommonUtil.Obj2String(tvMaterialNum.getTag());
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvSendBatchFlag);
-        result.deviceId = mDeviceId;
         int locationPos = spSendLoc.getSelectedItemPosition();
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
@@ -552,7 +557,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
-        if(isOpenRecLocationType) {
+        if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
         return result;
@@ -572,31 +577,30 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
-            if (mLocationTypes == null) {
-                mLocationTypes = new ArrayList<>();
+            if(isOpenLocationType) {
+                if (mLocationTypes == null) {
+                    mLocationTypes = new ArrayList<>();
+                }
+                mLocationTypes.clear();
+                mLocationTypes.addAll(locationTypes);
             }
-            if (mRecLocationTypes == null) {
-                mRecLocationTypes = new ArrayList<>();
-            }
-            mLocationTypes.clear();
-            mRecLocationTypes.clear();
-            mLocationTypes.addAll(locationTypes);
-            mRecLocationTypes.addAll(locationTypes);
             //发出仓储类型
             SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
                     mLocationTypes, false);
             spLocationType.setAdapter(adapter);
 
-            //接收仓储类型
-            SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mRecLocationTypes, false);
-            spRecLocationType.setAdapter(recAdapter);
+            if(isOpenRecLocationType) {
+                if (mRecLocationTypes == null) {
+                    mRecLocationTypes = new ArrayList<>();
+                }
+                mRecLocationTypes.clear();
+                mRecLocationTypes.addAll(locationTypes);
+                //接收仓储类型
+                SimpleAdapter recAdapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mRecLocationTypes, false);
+                spRecLocationType.setAdapter(recAdapter);
+            }
         }
-    }
-
-    @Override
-    public void loadDictionaryDataFail(String message) {
-        showMessage(message);
     }
 
     @Override
@@ -635,13 +639,13 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
                 mPresenter.getInventoryInfo(param.queryType, mRefData.workId,
                         CommonUtil.Obj2String(tvSendInv.getTag()), mRefData.workCode, getString(tvSendInv),
                         "", getString(tvMaterialNum), tvMaterialNum.getTag().toString(),
-                        "", getString(tvSendBatchFlag), "", "", param.invType, "", null);
+                        "", getString(tvSendBatchFlag), "", "", param.invType, null);
                 break;
             case Global.RETRY_LOAD_REC_INVENTORY_ACTION:
                 mPresenter.getInventoryInfoOnRecLocation(param.queryType, mRefData.recWorkId, mRefData.recInvId,
                         mRefData.recWorkCode, mRefData.recInvCode, "", getString(tvMaterialNum),
                         CommonUtil.Obj2String(tvMaterialNum.getTag()), "",
-                        getString(tvSendBatchFlag), "", "", param.invType, mDeviceId, null);
+                        getString(tvSendBatchFlag), "", "", param.invType, null);
                 break;
         }
         super.retry(retryAction);

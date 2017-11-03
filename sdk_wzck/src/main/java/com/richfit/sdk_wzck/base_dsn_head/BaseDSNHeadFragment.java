@@ -2,6 +2,7 @@ package com.richfit.sdk_wzck.base_dsn_head;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
@@ -55,13 +56,13 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @BindView(R2.id.tv_auto_comp_name)
     protected TextView tvAutoCompName;
     @BindView(R2.id.et_transfer_date)
-    protected   RichEditText etTransferDate;
+    protected RichEditText etTransferDate;
 
     WorkAdapter mWorkAdapter;
     protected List<WorkEntity> mWorks;
 
     protected List<String> mAutoDatas;
-    protected ArrayAdapter mAutoAdapter;
+    protected Map<Integer, Boolean> mDropDown;
 
 
     @Override
@@ -70,8 +71,8 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     }
 
     @Override
-    public void initVariable(Bundle savedInstanceState) {
-        mRefData = null;
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
         mWorks = new ArrayList<>();
     }
 
@@ -79,7 +80,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
      * 注册点击事件
      */
     @Override
-    public void initEvent() {
+    protected void initEvent() {
         //过账日期
         etTransferDate.setOnRichEditTouchListener((view, text) ->
                 DateChooseHelper.chooseDateForEditText(mActivity, etTransferDate, Global.GLOBAL_DATE_PATTERN_TYPE1));
@@ -87,8 +88,9 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         //选择工厂，初始化供应商或者项目编号
         RxAdapterView.itemSelections(spWork)
                 .filter(position -> position.intValue() > 0)
-                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position).workCode,null,
-                        getString(etAutoComp), 100, getOrgFlag(), mBizType,getAutoComDataType()));
+                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), false))
+                .subscribe(position -> mPresenter.getAutoComList(mWorks.get(position).workCode, null,
+                        getString(etAutoComp), 100, getOrgFlag(), mBizType, getAutoComDataType()));
 
         //点击自动提示控件，显示默认列表
         RxView.clicks(etAutoComp)
@@ -103,10 +105,10 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         //修改自动提示控件，说明用户需要用关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etAutoComp)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .filter(str -> !TextUtils.isEmpty(str) && mAutoDatas != null &&
-                        mAutoDatas.size() > 0 && !filterKeyWord(str,mAutoDatas) && spWork.getSelectedItemPosition() > 0)
-                .subscribe(a -> mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
-                        getString(etAutoComp), 100, getOrgFlag(), mBizType,getAutoComDataType()));
+                .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str, mAutoDatas))
+                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), true))
+                .subscribe(a -> mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode, null,
+                        getString(etAutoComp), 100, getOrgFlag(), mBizType, getAutoComDataType()));
 
         //如果是离线直接获取缓存，不能让用户删除缓存
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal())
@@ -118,7 +120,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
 
     @Override
-    public void initData() {
+    protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //获取发出工厂列表
@@ -144,23 +146,24 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     }
 
     @Override
-    public void showAutoCompleteList(Map<String,List<SimpleEntity>> map) {
+    public void showAutoCompleteList(Map<String, List<SimpleEntity>> map) {
         List<SimpleEntity> simpleEntities = map.get(getAutoComDataType());
-        if(simpleEntities == null || simpleEntities.size() == 0)
-            return;
-        if(mAutoDatas == null) {
-            mAutoDatas = new ArrayList<>();
-        }
-        List<String> list = CommonUtil.toStringArray(simpleEntities,true);
-        mAutoDatas.clear();
-        mAutoDatas.addAll(list);
-        if (mAutoAdapter == null) {
-            mAutoAdapter = new ArrayAdapter<>(mActivity,
+        if (simpleEntities != null && simpleEntities.size() > 0) {
+            if (mAutoDatas == null) {
+                mAutoDatas = new ArrayList<>();
+            }
+            List<String> list = CommonUtil.toStringArray(simpleEntities, true);
+            mAutoDatas.clear();
+            mAutoDatas.addAll(list);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity,
                     android.R.layout.simple_dropdown_item_1line, mAutoDatas);
-            etAutoComp.setAdapter(mAutoAdapter);
+            etAutoComp.setAdapter(adapter);
             setAutoCompleteConfig(etAutoComp);
-        } else {
-            mAutoAdapter.notifyDataSetChanged();
+            boolean isDropDown = CommonUtil.convertToBoolean(mDropDown.get(etAutoComp.getId()), false);
+            if (isDropDown) {
+                showAutoCompleteConfig(etAutoComp);
+            }
         }
     }
 
@@ -186,8 +189,10 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
      * @param keyWord
      * @return
      */
-    protected boolean filterKeyWord(CharSequence keyWord,List<String> data) {
-        Pattern pattern = Pattern.compile("^" + keyWord.toString().toUpperCase());
+    protected boolean filterKeyWord(CharSequence keyWord, List<String> data) {
+        if (data == null || data.size() <= 0)
+            return false;
+         Pattern pattern = Pattern.compile(keyWord.toString().toUpperCase());
         for (String item : data) {
             Matcher matcher = pattern.matcher(item);
             while (matcher.find()) {
@@ -220,7 +225,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
     @Override
     public void clearAllUIAfterSubmitSuccess() {
-
+        super.clearAllUIAfterSubmitSuccess();
     }
 
     /**
@@ -232,6 +237,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
 
     /**
      * 返回autoCom控件需要加载的数据类型
+     *
      * @return
      */
     protected abstract String getAutoComDataType();

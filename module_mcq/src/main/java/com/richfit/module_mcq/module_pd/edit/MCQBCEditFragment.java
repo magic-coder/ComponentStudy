@@ -36,11 +36,6 @@ public class MCQBCEditFragment extends BaseEditFragment<MCQEditPresenterImp> imp
     }
 
     @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
     protected void initView() {
         etLocation = mView.findViewById(R.id.et_location);
         etMainQuantity = mView.findViewById(R.id.quantity);

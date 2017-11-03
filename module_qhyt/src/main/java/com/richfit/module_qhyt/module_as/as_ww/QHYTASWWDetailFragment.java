@@ -24,13 +24,6 @@ public class QHYTASWWDetailFragment extends BaseASDetailFragment<ASDetailPresent
         mPresenter = new ASDetailPresenterImp(mActivity);
     }
 
-
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
     @Override
     public void initEvent() {
 

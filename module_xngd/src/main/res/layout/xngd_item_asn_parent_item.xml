@@ -10,7 +10,7 @@
     <LinearLayout
 
         android:layout_width="120dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal">
 
         <View style="@style/ItemSeperatorLayout" />
@@ -46,13 +46,8 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@id/root_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/detail_child_node_bg">
 
-        <include
-            layout="@layout/xngd_item_asn_parent_header"/>
-    </LinearLayout>
-</com.richfit.common_lib.widget.SwipeLayout >
+    <include
+        android:id="@id/root_id"
+        layout="@layout/xngd_item_asn_parent_header" />
+</com.richfit.common_lib.widget.SwipeLayout>

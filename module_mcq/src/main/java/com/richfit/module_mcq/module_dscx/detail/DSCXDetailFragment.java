@@ -38,12 +38,6 @@ public class DSCXDetailFragment extends BaseDetailFragment<DSCXDetailPresenterIm
         mPresenter = new DSCXDetailPresenterImp(mActivity);
     }
 
-
-    @Override
-    protected void initVariable(@Nullable Bundle savedInstanceState) {
-
-    }
-
     @Override
     public void initEvent() {
 
