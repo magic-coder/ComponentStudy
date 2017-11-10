@@ -114,8 +114,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal())
             return;
 
-        //删除历史数据
-        mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
+
     }
 
 
@@ -125,6 +124,13 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //获取发出工厂列表
         mPresenter.getWorks(getOrgFlag());
+        //如果是离线直接获取缓存，不能让用户删除缓存
+        if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal()) {
+            return;
+        }
+        //删除历史数据
+        mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
+
     }
 
     @Override

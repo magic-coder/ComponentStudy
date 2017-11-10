@@ -376,6 +376,7 @@ public class BCDetailFragment extends BaseFragment<BlindDetailPresenterImp>
         mPresenter.editNode(node, mCompanyCode, mBizType, mRefType, "盲盘-无参考");
     }
 
+
     /**
      * 删除成功后将该行移除。
      *

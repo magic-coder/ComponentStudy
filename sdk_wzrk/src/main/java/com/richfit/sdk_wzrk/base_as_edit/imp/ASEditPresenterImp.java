@@ -44,7 +44,7 @@ public class ASEditPresenterImp extends BaseEditPresenterImp<IASEditView>
            //如果仓位有值，并且不为默认值，那么说明已经填写了仓位，需要检查
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("locationType", result.locationType);
-            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.workId, result.invId, "",
+            flowable = Flowable.zip(mRepository.getLocationInfo(result.queryType, result.workId, result.invId, "",
                     result.location, extraMap),
                     mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
         } else {

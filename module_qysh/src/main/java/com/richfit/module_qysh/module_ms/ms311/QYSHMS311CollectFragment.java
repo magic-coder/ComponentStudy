@@ -3,6 +3,7 @@ package com.richfit.module_qysh.module_ms.ms311;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzyk.base_msn_collect.BaseMSNCollectFragment;
 import com.richfit.sdk_wzyk.base_msn_collect.imp.MSNCollectPresenterImp;
@@ -32,7 +33,7 @@ public class QYSHMS311CollectFragment extends BaseMSNCollectFragment<MSNCollectP
             batchFlag.setVisibility(View.GONE);
         }
         //隐藏接收批次
-        llRecBatch.setVisibility(View.GONE);
+        llRecBatchFlag.setVisibility(View.GONE);
     }
 
     @Override
@@ -57,5 +58,23 @@ public class QYSHMS311CollectFragment extends BaseMSNCollectFragment<MSNCollectP
     @Override
     protected int getOrgFlag() {
         return 0;
+    }
+
+    @Override
+    public boolean checkCollectedDataBeforeSave() {
+        if(TextUtils.isEmpty(getString(autoRecLoc))) {
+            showMessage("请输入接收仓位");
+            return false;
+        }
+        return super.checkCollectedDataBeforeSave();
+    }
+
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        result.recBatchFlag = null;
+        return result;
     }
 }

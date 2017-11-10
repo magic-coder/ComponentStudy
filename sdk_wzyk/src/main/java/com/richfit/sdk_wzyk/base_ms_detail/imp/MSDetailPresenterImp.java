@@ -127,6 +127,7 @@ public class MSDetailPresenterImp extends BaseDetailPresenterImp<IMSDetailView>
                                 String voucherDate, String transToSapFlag,
                                 Map<String, Object> extraHeaderMap, int submitFlag) {
         mView = getView();
+
         RxSubscriber<String> subscriber =
                 Flowable.concat(mRepository.transferCollectionData(transId, bizType, refType,
                         userId, voucherDate, transToSapFlag, extraHeaderMap),

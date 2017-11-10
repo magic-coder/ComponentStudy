@@ -199,8 +199,9 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             showMessage("本次采集已经过账,请先进行其他转储操作");
             return;
         }
+        mExtraTansMap.clear();
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mRefData.bizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
 
@@ -221,8 +222,9 @@ public abstract class BaseMSNDetailFragment<P extends IMSNDetailPresenter> exten
             showMessage("请先过账");
             return;
         }
+        mExtraTansMap.clear();
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
 

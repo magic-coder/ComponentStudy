@@ -1,20 +1,24 @@
 package com.richfit.sdk_cwtz.collect;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
+import com.jakewharton.rxbinding2.widget.RxAutoCompleteTextView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
 import com.richfit.common_lib.utils.UiUtil;
+import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -32,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 
@@ -61,11 +66,11 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     @BindView(R2.id.et_batch_flag)
     protected EditText etBatchFlag;
     @BindView(R2.id.et_send_location)
-    protected RichEditText etSendLocation;
+    protected RichAutoEditText etSendLocation;
     @BindView(R2.id.tv_send_inv_quantity)
     protected TextView tvSendInvQuantity;
     @BindView(R2.id.et_rec_location)
-    protected EditText etRecLocation;
+    protected AppCompatAutoCompleteTextView etRecLocation;
     @BindView(R2.id.et_adjust_quantity)
     protected EditText etRecQuantity;
     //增加特殊库存
@@ -87,7 +92,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     protected List<SimpleEntity> mRecLocationTypes;
     protected SpecialInvAdapter mAdapter;
     protected List<InventoryEntity> mInventoryDatas;
-    MaterialEntity mHistoryData;
+    private MaterialEntity mHistoryData;
+    /*发出仓位列表适配器*/
+    protected List<String> mSendLocationList;
+    protected List<String> mRecLocationList;
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -126,6 +134,13 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                 loadInventoryInfo(location);
             }
         }
+    }
+
+    @Override
+    protected void initVariable(Bundle savedInstanceState) {
+        super.initVariable(savedInstanceState);
+        mSendLocationList = new ArrayList<>();
+        mRecLocationList = new ArrayList<>();
     }
 
     @Override
@@ -179,7 +194,10 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
                 });
 
         //获取仓位的库存
-        etSendLocation.setOnRichEditTouchListener((view, location) -> loadInventoryInfo(location));
+        etSendLocation.setOnRichAutoEditTouchListener((view, location) -> {
+            hideKeyboard(view);
+            loadInventoryInfo(location);
+        });
 
         //选择下拉，带出该库存
         RxAdapterView.itemSelections(spSpecialInv)
@@ -188,23 +206,37 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
         //增加仓储类型的选择获取提示库存
         RxAdapterView.itemSelections(spLocationType)
-                .filter(a -> isOpenLocationType && mInventoryDatas != null && mAdapter != null)
-                .subscribe(position -> {
-                    //清空库存，使得用户必须获取新仓储类型下的库存
-                    mInventoryDatas.clear();
-                    mAdapter.notifyDataSetChanged();
-                    tvSendInvQuantity.setText("");
+                .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
+                        && mLocationTypes.size() > 0)
+                .subscribe(position -> loadTipInventory());
+
+        //提示库存处理
+        //点击自动提示控件，显示默认列表
+        RxView.clicks(etSendLocation)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> mSendLocationList != null && mSendLocationList.size() > 0)
+                .subscribe(a -> showAutoCompleteConfig(etSendLocation));
+
+        RxView.clicks(etRecLocation)
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .filter(a -> mRecLocationList != null && mRecLocationList.size() > 0)
+                .subscribe(a -> showAutoCompleteConfig(etRecLocation));
+
+        //选择发出仓位获取该仓位上的库存
+        RxAutoCompleteTextView.itemClickEvents(etSendLocation)
+                .subscribe(a -> {
+                    hideKeyboard(etSendLocation);
+                    loadInventoryInfo(getString(etSendLocation));
                 });
+
+        RxAutoCompleteTextView.itemClickEvents(etRecLocation)
+                .subscribe(a -> hideKeyboard(etRecLocation));
     }
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
-        if(isOpenRecLocationType) {
-            llRecLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
+        llRecLocationType.setVisibility(isOpenRecLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -247,13 +279,56 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
 
     @Override
     public void getMaterialInfoComplete() {
-        if (isOpenLocationType)
+        if (isOpenLocationType) {
             mPresenter.getDictionaryData("locationType");
+        } else {
+            //获取提示库存
+            loadTipInventory();
+        }
     }
 
     @Override
     public void getMaterialInfoFail(String message) {
         showMessage(message);
+    }
+
+    //获取提示库存
+    protected void loadTipInventory() {
+        if (mSendLocationList != null) {
+            mSendLocationList.clear();
+        }
+
+        if (mRecLocationList != null) {
+            mRecLocationList.clear();
+        }
+
+
+        if (TextUtils.isEmpty(mRefData.workId)) {
+            showMessage("请先在抬头界面选择工厂");
+            return;
+        }
+
+        if (TextUtils.isEmpty(mRefData.invId)) {
+            showMessage("请现在抬头界面选择库存地点");
+        }
+
+        Object tag = etMaterialNum.getTag();
+        if (tag == null || TextUtils.isEmpty(tag.toString())) {
+            showMessage("请先获取物料信息");
+            return;
+        }
+
+        //清空库存，使得用户必须获取新仓储类型下的库存
+        if (mInventoryDatas != null && mAdapter != null) {
+            mInventoryDatas.clear();
+            mAdapter.notifyDataSetChanged();
+            tvSendInvQuantity.setText("");
+        }
+
+        InventoryQueryParam param = provideInventoryQueryParam();
+        mPresenter.getTipInventoryInfo(param.queryType, mRefData.workId, mRefData.invId, mRefData.workCode,
+                mRefData.invCode, mRefData.storageNum, getString(etMaterialNum), tag.toString(),
+                "", "", getString(etBatchFlag), "", "", "", param.invType, param.extraMap);
     }
 
     /**
@@ -321,6 +396,36 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
     @Override
     public void getDeviceInfoComplete() {
 
+    }
+
+    //加载提示库存成功
+    @Override
+    public void showTipInventory(List<String> list) {
+        mSendLocationList.addAll(list);
+        ArrayAdapter<String> sendLocationAdapter = new ArrayAdapter<>(mActivity,
+                android.R.layout.simple_dropdown_item_1line, mSendLocationList);
+        etSendLocation.setAdapter(sendLocationAdapter);
+        setAutoCompleteConfig(etSendLocation);
+
+        //目标仓位
+        mRecLocationList.addAll(list);
+        ArrayAdapter<String> recLocationAdapter = new ArrayAdapter<>(mActivity,
+                android.R.layout.simple_dropdown_item_1line, mRecLocationList);
+        etRecLocation.setAdapter(recLocationAdapter);
+        setAutoCompleteConfig(etRecLocation);
+
+    }
+
+    @Override
+    public void loadITipInventoryComplete() {
+
+    }
+
+    @Override
+    public void loadTipInventoryFail(String message) {
+        showMessage(message);
+        etSendLocation.setAdapter(null);
+        etRecLocation.setAdapter(null);
     }
 
     @Override
@@ -445,6 +550,8 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
+        InventoryQueryParam queryParam = provideInventoryQueryParam();
+        result.queryType = queryParam.queryType;
         return result;
     }
 
@@ -460,7 +567,7 @@ public class LACollectFragment extends BaseCollectFragment<LACollectPresenterImp
         showErrorDialog(message);
     }
 
-    private void clearAllUI() {
+    protected void clearAllUI() {
         clearCommonUI(tvMaterialDesc, tvMaterialGroup, tvMaterialUnit, etSendLocation,
                 tvSendInvQuantity, etRecLocation, etRecQuantity);
         if (mAdapter != null) {

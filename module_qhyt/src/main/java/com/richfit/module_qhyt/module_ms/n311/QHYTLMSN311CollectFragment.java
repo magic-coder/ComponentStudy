@@ -62,7 +62,7 @@ public class QHYTLMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollec
             spSendLoc.setEnabled(false);
         }
         //工厂内移库不需要接收批次
-        llRecBatch.setVisibility(View.GONE);
+        llRecBatchFlag.setVisibility(View.GONE);
     }
 
     @Override

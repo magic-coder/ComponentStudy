@@ -140,26 +140,24 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
     protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
+        //获取发出工厂列表
+        mPresenter.getWorks(getOrgFlag());
         //如果是离线直接获取缓存，不能让用户删除缓存
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal()) {
-            mPresenter.getWorks(getOrgFlag());
             return;
         }
+        //删除历史数据
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
     }
 
     @Override
     public void deleteCacheSuccess(String message) {
         showMessage(message);
-        //获取发出工厂列表
-        mPresenter.getWorks(getOrgFlag());
     }
 
     @Override
     public void deleteCacheFail(String message) {
         showMessage(message);
-        //获取发出工厂列表
-        mPresenter.getWorks(getOrgFlag());
     }
 
     @Override
@@ -221,6 +219,7 @@ public abstract class BaseMSNHeadFragment<P extends IMSNHeadPresenter> extends B
 
     @Override
     public void _onPause() {
+        super._onPause();
         if (mRefData == null)
             mRefData = new ReferenceEntity();
 

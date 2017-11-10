@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_as_collect.BaseASCollectFragment;
 import com.richfit.sdk_wzrk.base_as_collect.imp.ASCollectPresenterImp;
@@ -71,4 +72,11 @@ public class QYSHAS103CollectFragment extends BaseASCollectFragment<ASCollectPre
         tvActQuantity.setText(lineData.actQuantity);
     }
 
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        return result;
+    }
 }

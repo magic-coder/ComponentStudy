@@ -2,11 +2,13 @@ package com.richfit.common_lib.lib_tree_rv;
 
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import com.richfit.common_lib.R;
 import com.richfit.common_lib.lib_adapter_rv.base.ItemViewDelegate;
@@ -15,6 +17,8 @@ import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.common_lib.lib_interface.IAdapterState;
 import com.richfit.common_lib.lib_interface.IOnItemMove;
 import com.richfit.data.constant.Global;
+import com.richfit.domain.bean.InventoryEntity;
+import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.TreeNode;
 
 import java.util.List;
@@ -88,6 +92,21 @@ public abstract class MultiItemTypeTreeAdapter<T extends TreeNode> extends Recyc
             }
             return false;
         });
+
+        if (viewType == Global.PARENT_NODE_HEADER_TYPE || viewType == Global.PARENT_NODE_ITEM_TYPE) {
+            //仅仅针对父节点
+            viewHolder.setOnCheckedChangeListener(R.id.cb_choose, (buttonView, isChecked) -> {
+                if (mOnItemMove != null) {
+                    int position = viewHolder.getAdapterPosition();
+                    T item = mVisibleNodes.get(position);
+                    if(item instanceof RefDetailEntity) {
+                        RefDetailEntity node = (RefDetailEntity) item;
+                        node.isPatchTransfer = isChecked;
+                    }
+                }
+            });
+        }
+
         //注意这里不需要判断viewType类型，因为这里是先通过findViewById针对某一个view设置setOnClickListener
         setItemNodeEditAndDeleteListener(viewHolder);
     }
@@ -280,7 +299,6 @@ public abstract class MultiItemTypeTreeAdapter<T extends TreeNode> extends Recyc
         final TreeNode node = mVisibleNodes.get(position);
         final TreeNode parentNode = node.getParent();
         if (parentNode != null) {
-//            int parentPos = mVisibleNodes.indexOf(parentNode);
             if (parentNode.getChildren().size() == 2 && parentNode.getChildren().get(0).getViewType() == Global.CHILD_NODE_HEADER_TYPE) {
                 TreeNode childNode = parentNode.getChildren().get(0);
                 int indexOf = mVisibleNodes.indexOf(childNode);
@@ -297,22 +315,18 @@ public abstract class MultiItemTypeTreeAdapter<T extends TreeNode> extends Recyc
         }
     }
 
-//    /**
-//     * 子类需要根据具体的业务修改父节点的字段数据。比如常见的就是
-//     * 修改累计数量。
-//     *
-//     * @param childNodePosition:子节点在明细列表的位置
-//     * @param parentNodePosition:父节点在明细列表的位置
-//     */
-//    public abstract void notifyParentNodeChanged(int childNodePosition, int parentNodePosition);
-//
-//
-//
-//    /**
-//     * 对于无参考或者验收等没有父子节点结构明细界面，直接删除该节点
-//     *
-//     * @param position
-//     */
-//    public abstract void notifyNodeChanged(int position);
+    public void checkAllNodes(boolean isChecked) {
+        for (T item : mVisibleNodes) {
+            if (item.getViewType() == Global.PARENT_NODE_HEADER_TYPE ||
+                    item.getViewType() == Global.PARENT_NODE_ITEM_TYPE) {
+                //父节点
+                if (item instanceof RefDetailEntity) {
+                    RefDetailEntity node = (RefDetailEntity) item;
+                    node.isPatchTransfer = isChecked;
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
 }

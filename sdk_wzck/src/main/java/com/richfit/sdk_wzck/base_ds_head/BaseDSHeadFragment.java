@@ -81,6 +81,13 @@ public abstract class BaseDSHeadFragment<P extends IDSHeadPresenter> extends Bas
    @Override
    protected void initData() {
        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
+       if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal() &&
+               !TextUtils.isEmpty(mUploadMsgEntity.transId) && !TextUtils.isEmpty(mUploadMsgEntity.refNum)) {
+           etRefNum.setText(mUploadMsgEntity.refNum);
+           getRefData(mUploadMsgEntity.refNum);
+           //如果是離線那麼鎖定控件
+           lockUIUnderEditState(etRefNum);
+       }
    }
 
     protected void getRefData(String refNum) {

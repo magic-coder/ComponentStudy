@@ -72,4 +72,12 @@ public class XNGDCNCollectFragment extends CNCollectFragment {
         return result;
     }
 
+    @Override
+    public void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etRemark);
+        if (mMaterialStates != null && mMaterialStates.size() > 0) {
+            spMaterialState.setSelection(0);
+        }
+    }
 }

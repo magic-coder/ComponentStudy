@@ -113,6 +113,8 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
                     //本位金额(注意行明细的是本位金额的总和)
                     data.money = loc.money;
                     data.locationId = loc.id;
+                    data.locationCombine = loc.locationCombine;
+                    data.locationType = loc.locationType;
                     datas.add(data);
                 }
             }

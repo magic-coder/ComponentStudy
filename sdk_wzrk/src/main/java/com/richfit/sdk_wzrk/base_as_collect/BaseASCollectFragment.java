@@ -211,9 +211,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -277,7 +275,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
                 });
 
 
-        //增加仓储类型的选择获取提示库粗
+        //增加仓储类型的选择获取提示库存
         RxAdapterView.itemSelections(spLocationType)
                 .filter(a -> isOpenLocationType && spLocationType.getAdapter() != null && mLocationTypes != null
                         && mLocationTypes.size() > 0)
@@ -459,21 +457,13 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         } else {
             mInvAdapter.notifyDataSetChanged();
         }
-        //如果上架，那么带出单据中的库存地点
-        if (!isNLocation) {
-            ArrayList<String> datas = new ArrayList<>();
-            for (InvEntity item : list) {
-                datas.add(item.invCode);
-            }
-            RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-            UiUtil.setSelectionForSp(datas, lineData.invCode, spInv);
-        }
     }
 
     @Override
     public void loadInvComplete() {
+        //如果上架，那么带出单据中的库存地点
         RefDetailEntity lineData = getLineData(mSelectedRefLineNum);
-        if (mInvDatas != null && mInvAdapter != null && !TextUtils.isEmpty(lineData.invCode)) {
+        if (!isNLocation) {
             UiUtil.setSelectionForInv(mInvDatas, lineData.invCode, spInv);
         }
     }
@@ -555,8 +545,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             final String invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
             //使用库存参数
             InventoryQueryParam queryParam = provideInventoryQueryParam();
-            Log.e("yff", "==" + queryParam.extraMap);
-            mPresenter.checkLocation("04", lineData.workId, invId, batchFlag, location, queryParam.extraMap);
+            mPresenter.checkLocation(queryParam.queryType, lineData.workId, invId, batchFlag, location, queryParam.extraMap);
         } else {
             //如果不上架，那么直接默认仓位检查通过
             checkLocationSuccess(batchFlag, location);
@@ -741,7 +730,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
             return false;
         }
         if (Float.compare(quantityV + totalQuantityV, actQuantityV) > 0.0f) {
-            showMessage("输入数量有误，请出现输入");
+            showMessage("输入数量有误，请重新输入");
             if (!cbSingle.isChecked())
                 etQuantity.setText("");
             return false;
@@ -867,7 +856,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         result.workId = lineData.workId;
         result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
-        if(mInvDatas != null && mInvDatas.size() > 0 && spInv.getSelectedItemPosition() > 0) {
+        if (mInvDatas != null && mInvDatas.size() > 0 && spInv.getSelectedItemPosition() > 0) {
             result.invId = mInvDatas.get(spInv.getSelectedItemPosition()).invId;
         }
         result.materialId = lineData.materialId;

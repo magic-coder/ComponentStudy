@@ -7,6 +7,7 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.sdk_wzyk.base_ms_detail.BaseMSDetailFragment;
 import com.richfit.sdk_wzyk.base_ms_detail.imp.MSDetailPresenterImp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
  */
 
 public class HCMSDetailFragment extends BaseMSDetailFragment<MSDetailPresenterImp> {
+
     @Override
     public void initPresenter() {
         mPresenter = new MSDetailPresenterImp(mActivity);
@@ -39,7 +41,10 @@ public class HCMSDetailFragment extends BaseMSDetailFragment<MSDetailPresenterIm
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         menus.get(0).transToSapFlag = "01";
-        menus.get(1).transToSapFlag = "05";
-        return menus.subList(0, 2);
+        menus.get(3).transToSapFlag = "05";
+        List<BottomMenuEntity> tmp = new ArrayList<>();
+        tmp.add(menus.get(0));
+        tmp.add(menus.get(3));
+        return tmp;
     }
 }

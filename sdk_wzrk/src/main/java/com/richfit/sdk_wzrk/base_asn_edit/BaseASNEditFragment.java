@@ -81,9 +81,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -104,20 +102,16 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         final String materialNum = bundle.getString(Global.EXTRA_MATERIAL_NUM_KEY);
         final String materialId = bundle.getString(Global.EXTRA_MATERIAL_ID_KEY);
         //库位
-
         final String invId = bundle.getString(Global.EXTRA_INV_ID_KEY);
         final String invCode = bundle.getString(Global.EXTRA_INV_CODE_KEY);
         //批次
         final String batchFlag = bundle.getString(Global.EXTRA_BATCH_FLAG_KEY);
         //仓位
         mLocation = bundle.getString(Global.EXTRA_LOCATION_KEY);
-
         //仓位id
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
-
         //入库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
-
         //绑定数据
         tvMaterialNum.setText(materialNum);
         tvMaterialNum.setTag(materialId);
@@ -126,15 +120,11 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         etQuantity.setText(mQuantity);
         tvLocQuantity.setText(mQuantity);
         tvBatchFlag.setText(batchFlag);
-
         etLocation.setEnabled(false);
-
         //获取缓存信息
         mPresenter.getTransferInfoSingle(mRefData.bizType, materialNum,
                 Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                 mRefData.recInvId, batchFlag, "", -1);
-
-
     }
 
     @Override
@@ -159,7 +149,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         //设置上架仓位，系统自动匹配最新的缓存
         etLocation.setText(mLocation);
         //如果打开了仓储类型需要获取仓储类型数据源
-        if (isOpenBatchManager)
+        if (isOpenLocationType)
             mPresenter.getDictionaryData("locationType");
     }
 
@@ -191,11 +181,6 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
      */
     private void loadLocationQuantity(String location, String batchFlag) {
 
-        if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
-            showMessage("批次为空");
-            return;
-        }
-
         if (isLocation && TextUtils.isEmpty(location)) {
             showMessage("仓位为空");
             return;
@@ -207,22 +192,28 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         }
 
         String locQuantity = "0";
+        String locationType = "";
+        boolean isMatched = false;
+        if (isOpenLocationType) {
+            locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
 
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    if (!TextUtils.isEmpty(batchFlag)) {
-                        if (location.equalsIgnoreCase(locationInfo.location)
-                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag)) {
-                            locQuantity = locationInfo.quantity;
-                            break;
-                        }
+                    if (isOpenLocationType) {
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType) :
+                                location.equalsIgnoreCase(locationInfo.location) && locationType.equals(locationInfo.locationType);
                     } else {
-                        if (location.equalsIgnoreCase(locationInfo.location)) {
-                            locQuantity = locationInfo.quantity;
-                            break;
-                        }
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
+                                location.equalsIgnoreCase(locationInfo.location);
+                    }
+                    if (isMatched) {
+                        locQuantity = locationInfo.quantity;
+                        break;
                     }
                 }
             }
@@ -274,6 +265,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         ResultEntity result = new ResultEntity();
         InventoryQueryParam param = provideInventoryQueryParam();
         result.invType = param.invType;
+        result.queryType = param.queryType;
         result.businessType = mRefData.bizType;
         result.voucherDate = mRefData.voucherDate;
         result.moveType = mRefData.moveType;
@@ -289,6 +281,7 @@ public abstract class BaseASNEditFragment<P extends IASNEditPresenter> extends B
         result.quantity = getString(etQuantity);
         result.projectNum = mRefData.projectNum;
         result.supplierId = mRefData.supplierId;
+        result.specialInvFlag = mRefData.specialInvFlag;
         //仓储类型
         if (isOpenLocationType)
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;

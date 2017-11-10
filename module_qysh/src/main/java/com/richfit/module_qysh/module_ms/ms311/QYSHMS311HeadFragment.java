@@ -83,6 +83,7 @@ public class QYSHMS311HeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterI
         return 0;
     }
 
+
     @Override
     public void _onPause() {
         super._onPause();
@@ -91,7 +92,6 @@ public class QYSHMS311HeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterI
             mRefData.recWorkName = mRefData.workName;
             mRefData.recWorkCode = mRefData.workCode;
             mRefData.recWorkId = mRefData.workId;
-
         }
     }
 }

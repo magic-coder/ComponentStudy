@@ -180,6 +180,8 @@ public class MSNDetailPresenterImp extends BaseDetailPresenterImp<IMSNDetailView
                     data.specialConvert = loc.specialConvert;
                     data.deviceId = loc.deviceId;
                     data.locationCombine = loc.locationCombine;
+                    data.locationType = loc.locationType;
+                    data.recLocationType = loc.recLocationType;
                     datas.add(data);
                 }
             }

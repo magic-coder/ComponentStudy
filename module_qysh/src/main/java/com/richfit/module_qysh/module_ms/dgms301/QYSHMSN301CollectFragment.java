@@ -3,6 +3,7 @@ package com.richfit.module_qysh.module_ms.dgms301;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import com.richfit.domain.bean.InventoryQueryParam;
@@ -66,6 +67,13 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
         super.initView();
         tvDeviceLocation = mView.findViewById(R.id.qysh_tv_device_location);
         tvDeviceName = mView.findViewById(R.id.qysh_tv_device_name);
+
+        //隐藏发出和接收批次
+        View batchFlag = mView.findViewById(R.id.ll_batch_flag);
+        if (batchFlag != null) {
+            batchFlag.setVisibility(View.GONE);
+        }
+        llRecBatchFlag.setVisibility(View.GONE);
     }
 
     @Override
@@ -229,6 +237,8 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.deviceId = mDeviceId;
+        result.batchFlag = null;
+        result.recBatchFlag = null;
         return result;
     }
 

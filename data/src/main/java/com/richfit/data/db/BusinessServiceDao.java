@@ -28,7 +28,10 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
 
     /**
      * 保存单条数据
-     *
+     *1.使用SQLiteDatabase的beginTransaction()方法可以开启一个事务，
+     * 程序执行到endTransaction() 方法时会检查事务的标志是否为成功，
+     * 如果程序执行到endTransaction()之前调用了setTransactionSuccessful()
+     * 方法设置事务的标志为成功则提交事务，如果没有调用setTransactionSuccessful() 方法则回滚事务。
      * @param result
      * @return
      */
@@ -74,6 +77,8 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         SQLiteDatabase db = null;
         try {
             db = getWritableDB();
+            //开启事务
+            db.beginTransaction();
             //1.抬头
             final String transId = saveBusinessHeader(db, result);
             if (TextUtils.isEmpty(transId)) {
@@ -105,10 +110,13 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
 
             // 6.更新拆分行的累计数量
             updateLineSplitTotalQuantity(db, result);
+            //设置事务处理成功，不设置会自动回滚不提交
+            db.setTransactionSuccessful();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         } finally {
+            db.endTransaction();
             if (db != null) {
                 db.close();
             }
@@ -563,7 +571,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             }
 
             //如果是修改则累加数量
-            db.execSQL("update mtl_transaction_lines_location set quantity = quantity + ?,quantity_custom = quantity_custom+ ? where id = ?",
+            db.execSQL("update mtl_transaction_lines_location set quantity = quantity + ?,quantity_custom = quantity_custom + ? where id = ?",
                     new Object[]{param.quantity, locationId});
             //如果是移库，那么还需要修改接收累计数量
             if (yk) {

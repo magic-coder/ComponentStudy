@@ -109,13 +109,8 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
 
     @Override
     protected void initView() {
-        if (isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
-
-        if (isOpenRecLocationType) {
-            llRecLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType?View.VISIBLE:View.GONE);
+        llRecLocationType.setVisibility(isOpenRecLocationType?View.VISIBLE:View.GONE);
     }
 
 
@@ -402,6 +397,7 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         result.unitRate = Float.compare(lineData.unitRate, 0.0f) == 0 ? 1.f : lineData.unitRate;
         result.modifyFlag = "Y";
         result.invType = param.invType;
+        result.queryType = param.queryType;
         if (isOpenLocationType) {
             //仓储类型
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
@@ -433,11 +429,12 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
                 }
                 mLocationTypes.clear();
                 mLocationTypes.addAll(locationTypes);
+                //发出仓储类型
+                SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mLocationTypes, false);
+                spLocationType.setAdapter(adapter);
             }
-            //发出仓储类型
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
+
 
             if(isOpenRecLocationType) {
                 if (mRecLocationTypes == null) {

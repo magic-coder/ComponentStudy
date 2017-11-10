@@ -1,6 +1,8 @@
 package com.richfit.sdk_wzrk.base_as_detail;
 
 import android.text.TextUtils;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -29,6 +31,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         BaseDetailFragment<P, RefDetailEntity> implements IASDetailView<RefDetailEntity> {
 
 
+
     @Override
     protected int getContentId() {
         return R.layout.wzrk_fragment_base_asy_detail;
@@ -40,6 +43,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
      */
     @Override
     protected void initDataLazily() {
+
         if (mRefData == null) {
             showMessage("请现在抬头界面获取单据数据");
             return;

@@ -100,13 +100,14 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         //隐藏只有父节点的仓储类型
         if(!isOpenLocationType) {
             View tvLocationType = mView.findViewById(R.id.tv_location_type);
-            if(tvLocationType != null) {
+            if (tvLocationType != null) {
                 tvLocationType.setVisibility(View.GONE);
             }
         }
+
         if(!isOpenRecLocationType) {
             View tvRecLocationType = mView.findViewById(R.id.tv_rec_location_type);
-            if(tvRecLocationType != null) {
+            if (tvRecLocationType != null) {
                 tvRecLocationType.setVisibility(View.GONE);
             }
         }
@@ -144,13 +145,14 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         //开始获取整单缓存，注意由于在获取缓存之前进行了必要的检查，而这里不管是否有参考
         //都调用的是同一个接口，所以在具体的业务时，子类必须检验响应的参数。
         mPresenter.getTransferInfo(mRefData, refCodeId, bizType, refType,
-                Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId, mRefData.recInvId,null);
+                Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId, mRefData.recInvId, null);
     }
 
     @Override
     public void refreshComplete() {
         setRefreshing(true, "获取明细缓存成功");
     }
+
     /**
      * 保存明细节点的TransId
      */
@@ -359,13 +361,13 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
     public void onBindViewHolder(ViewHolder holder, int viewType) {
         //如果打开了wm仓位管理，那么说明需要显示仓储类型；
         //如果没有打开wm仓位管理，那么需要隐藏仓储类型
-        if(!isOpenLocationType) {
+        if (!isOpenLocationType) {
             //这里仅仅针对的是具有父子结构的隐藏
             if (viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
                 holder.setVisible(R.id.tv_location_type, false);
             }
         }
-        if(!isOpenRecLocationType) {
+        if (!isOpenRecLocationType) {
             //这里仅仅针对的是具有父子结构的隐藏
             if (viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
                 holder.setVisible(R.id.tv_rec_location_type, false);
@@ -400,6 +402,5 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
      * @param transToSapFlag
      */
     protected abstract void sapUpAndDownLocation(String transToSapFlag);
-
 
 }

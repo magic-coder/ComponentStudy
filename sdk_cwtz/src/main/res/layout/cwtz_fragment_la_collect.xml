@@ -119,9 +119,10 @@
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/send_location" />
 
-            <com.richfit.common_lib.widget.RichEditText
+            <com.richfit.common_lib.widget.RichAutoEditText
                 android:id="@id/et_send_location"
-                style="@style/RightRichEditTextItemStyle" />
+                style="@style/RightRichAutoItemStyle" />
+
         </LinearLayout>
 
 
@@ -191,9 +192,11 @@
                 style="@style/LeftTextViewItemStyle"
                 android:text="@string/rec_location" />
 
-            <EditText
+
+            <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@id/et_rec_location"
-                style="@style/RightTextViewItemStyle" />
+                android:clickable="true"
+                style="@style/RightEditTextItemStyle" />
         </LinearLayout>
 
 

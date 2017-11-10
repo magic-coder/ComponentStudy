@@ -19,5 +19,12 @@ public interface ILACollectPresenter extends IBaseCollectPresenter<ILACollectVie
                           String location, String specialInvFlag, String specialInvNum,
                           String invType,Map<String,Object> extraMap);
 
+    void getTipInventoryInfo(String queryType, String workId, String invId,
+                          String workCode, String invCode, String storageNum,
+                          String materialNum, String materialId, String materialGroup,
+                          String materialDesc, String batchFlag,
+                          String location, String specialInvFlag, String specialInvNum,
+                          String invType,Map<String,Object> extraMap);
+
     void getDeviceInfo(String deviceId);
 }

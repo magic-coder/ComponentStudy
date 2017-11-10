@@ -125,9 +125,9 @@ public abstract class BaseHeadFragment<P extends IBaseHeadPresenter> extends
     public void clearAllUIAfterSubmitSuccess() {
         //复位标志位
         if (TextUtils.isEmpty(mRefType)) {
-            SPrefUtil.saveData(mBizType, 0);
+            SPrefUtil.saveData(mBizType, "0");
         } else {
-            SPrefUtil.saveData(mBizType + mRefType, 0);
+            SPrefUtil.saveData(mBizType + mRefType, "0");
         }
     }
 

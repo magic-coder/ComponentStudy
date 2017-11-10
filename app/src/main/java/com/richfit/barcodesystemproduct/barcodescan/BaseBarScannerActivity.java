@@ -9,6 +9,8 @@ import com.richfit.common_lib.lib_mvp.IPresenter;
 import com.richfit.common_lib.utils.L;
 import com.richfit.data.constant.Global;
 
+import org.w3c.dom.Text;
+
 public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseActivity<T>
         implements ScanUtil.OnScanListener {
 
@@ -58,11 +60,12 @@ public abstract class BaseBarScannerActivity<T extends IPresenter> extends BaseA
                     }
                     String tmp[] = info.split("\\|", -1);
                     String materialNum = tmp[Global.MATERIAL_POS];
+                    String contentForSecondPos = tmp[1];
                     if (TextUtils.isEmpty(materialNum)) {
                         showMessage("获取物料条码为空");
                         return;
                     }
-                    if (materialNum.length() <= 10) {
+                    if (materialNum.length() <= 10 || !TextUtils.isEmpty(contentForSecondPos)) {
                         //说明此时扫描到的是加密的
                         barcodeInfo = ScanUtil.CharTrans(info);
                     } else {

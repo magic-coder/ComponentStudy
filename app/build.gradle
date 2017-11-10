@@ -121,8 +121,8 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"QYSH_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qysh"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
-            versionCode 2
-            versionName "1.1"
+            versionCode 1
+            versionName "1.3"
             signingConfig signingConfigs.sign_qysh
         }
 
@@ -131,7 +131,7 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"QHYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qhyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
-            versionCode 3
+            versionCode 1
             versionName "1.11"
             signingConfig signingConfigs.sign_qhyt
         }
@@ -151,7 +151,7 @@ android {
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQYT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
-            versionCode 4
+            versionCode 1
             versionName "1.51"
             signingConfig signingConfigs.sign_cqyt
         }
@@ -217,12 +217,12 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile project(':module_qysh')
+    //compile project(':module_qysh')
    // compile project(':module_qhyt')
    // compile project(':module_xngd')
-   // compile project(':module_cqyt')
+    //compile project(':module_cqyt')
     //compile project(':module_mcq')
-    //compile project(':module_hc')
+     compile project(':module_hc')
 
 }
 tasks.whenTaskAdded { task ->

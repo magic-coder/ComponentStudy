@@ -61,6 +61,7 @@ public abstract class BaseEditFragment<P extends IBaseEditPresenter> extends Bas
     @Override
     public void saveEditedDataSuccess(String message) {
         showMessage(message);
+        mActivity.finish();
     }
 
     @Override

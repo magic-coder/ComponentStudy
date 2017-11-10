@@ -36,40 +36,10 @@
 
         <TextView
             style="@style/LeftTextViewItemStyle"
-            android:text="@string/qysh_biz_scope" />
-
-        <TextView
-            android:id="@id/qysh_tv_biz_scope"
-            style="@style/RightTextViewItemStyle" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/collect_row_padding">
-
-        <TextView
-            style="@style/LeftTextViewItemStyle"
             android:text="@string/cost_center" />
 
         <TextView
             android:id="@id/qysh_tv_cost_center"
-            style="@style/RightTextViewItemStyle" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="@dimen/collect_row_padding">
-
-        <TextView
-            style="@style/LeftTextViewItemStyle"
-            android:text="@string/qysh_profit_center" />
-
-        <TextView
-            android:id="@id/qysh_tv_profit_center"
             style="@style/RightTextViewItemStyle" />
     </LinearLayout>
 
@@ -116,7 +86,7 @@
             android:text="@string/qysh_deliveryTor" />
 
         <EditText
-            android:id="@id/qysh_et_qysh_deliveryTor"
+            android:id="@id/qysh_et_qysh_delivery_to"
             style="@style/RightEditTextItemStyle" />
     </LinearLayout>
 

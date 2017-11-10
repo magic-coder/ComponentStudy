@@ -3,6 +3,7 @@ package com.richfit.module_qysh.module_as.as103;
 import android.os.Bundle;
 import android.view.View;
 
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
@@ -49,5 +50,12 @@ public class QYSHAS103EditFragment extends BaseASEditFragment<ASEditPresenterImp
         llLocation.setVisibility(View.GONE);
         //没有仓位数量
         llLocationQuantity.setVisibility(View.GONE);
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        return result;
     }
 }

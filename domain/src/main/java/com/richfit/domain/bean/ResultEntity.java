@@ -190,4 +190,5 @@ public class ResultEntity extends TreeNode{
     public String workName;
     public String orderNum;
     public String materialState;
+    public String queryType;
 }

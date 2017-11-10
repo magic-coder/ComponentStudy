@@ -21,6 +21,15 @@ public class QYSHMSY301HeadFragment extends BaseMSHeadFragment<MSHeadPresenterIm
 
     }
 
+    @Override
+    public void bindCommonHeaderUI() {
+        super.bindCommonHeaderUI();
+        if (mRefData != null) {
+            //接收库位
+            tvInv.setText(mRefData.recInvCode);
+        }
+    }
+
     @NonNull
     @Override
     protected String getMoveType() {

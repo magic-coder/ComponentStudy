@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.richfit.domain.bean.RefDetailEntity;
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
@@ -31,5 +32,13 @@ public class QYSHRSEditFragment extends BaseASEditFragment<ASEditPresenterImp> {
         if (batchFlag != null) {
             batchFlag.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        result.recBatchFlag = null;
+        return result;
     }
 }

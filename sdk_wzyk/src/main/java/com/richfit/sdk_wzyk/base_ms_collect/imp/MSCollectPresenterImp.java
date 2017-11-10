@@ -42,13 +42,12 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
-        Log.e("yff","recLocation = " + result.recLocation);
         Flowable<String> flowable;
         if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
             //检查接收仓位
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("locationType", result.locationType);
-            flowable = Flowable.zip(mRepository.getLocationInfo("04", result.recWorkId, result.recInvId, "",
+            flowable = Flowable.zip(mRepository.getLocationInfo(result.queryType, result.recWorkId, result.recInvId, "",
                     result.recLocation, extraMap),
                     mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";"+ s2);
         } else {

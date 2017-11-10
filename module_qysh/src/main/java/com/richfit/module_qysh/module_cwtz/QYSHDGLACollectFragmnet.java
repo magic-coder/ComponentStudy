@@ -40,6 +40,7 @@ public class QYSHDGLACollectFragmnet extends LACollectFragment {
         super.handleBarCodeScanResult(type, list);
     }
 
+    //由于代管料单独记账所以强制由bizType级控制是否打开了仓储类型
     @Override
     protected void initVariable(@Nullable Bundle savedInstanceState) {
         super.initVariable(savedInstanceState);
@@ -116,6 +117,12 @@ public class QYSHDGLACollectFragmnet extends LACollectFragment {
     public void getDeviceInfoSuccess(ResultEntity result) {
         tvDeviceLocation.setText(result.deviceLocation);
         tvDeviceName.setText(result.deviceName);
+        if (isOpenLocationType) {
+            mPresenter.getDictionaryData("locationType");
+        } else {
+            //获取提示库存
+            loadTipInventory();
+        }
     }
 
 
@@ -174,10 +181,16 @@ public class QYSHDGLACollectFragmnet extends LACollectFragment {
         return true;
     }
 
+    protected void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(tvDeviceLocation,tvDeviceName);
+    }
+
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.deviceId = mDeviceId;
+        result.batchFlag = null;
         return result;
     }
 

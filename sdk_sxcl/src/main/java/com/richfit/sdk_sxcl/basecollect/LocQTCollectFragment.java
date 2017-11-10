@@ -208,9 +208,7 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
     @Override
     protected void initView() {
         //打开仓储类型
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -557,7 +555,8 @@ public abstract class LocQTCollectFragment extends BaseCollectFragment<LocQTColl
             return;
         }
         //这里不考虑是否上架
-        mPresenter.checkLocation("04", lineData.workId, lineData.invId, batchFlag, location, null);
+        InventoryQueryParam queryParam = provideInventoryQueryParam();
+        mPresenter.checkLocation(queryParam.queryType, lineData.workId, lineData.invId, batchFlag, location, null);
     }
 
     @Override

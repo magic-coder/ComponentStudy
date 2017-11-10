@@ -2,6 +2,7 @@ package com.richfit.module_qysh.module_as.asn;
 
 import android.view.View;
 
+import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_asn_detail.BaseASNDetailFragment;
@@ -41,11 +42,18 @@ public class QYSHASNDetailFragment extends BaseASNDetailFragment<ASNDetailPresen
     }
 
     @Override
+    public void onBindViewHolder(ViewHolder holder, int viewType) {
+        super.onBindViewHolder(holder,viewType);
+        //隐藏批次
+        holder.setVisible(R.id.batchFlag,false);
+    }
+
+    @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         menus.get(0).transToSapFlag = "01";
         menus.get(1).transToSapFlag = "03";
-        return menus;
+        return menus.subList(0,2);
     }
 
 }

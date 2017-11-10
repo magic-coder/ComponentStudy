@@ -2,6 +2,7 @@ package com.richfit.module_qysh.module_ms.ms301;
 
 import android.view.View;
 
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzyk.base_ms_edit.BaseMSEditFragment;
 import com.richfit.sdk_wzyk.base_ms_edit.imp.MSEditPresenterImp;
@@ -32,5 +33,13 @@ public class QYSHMSY301EditFragment extends BaseMSEditFragment<MSEditPresenterIm
     @Override
     protected void initDataLazily() {
 
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        result.recBatchFlag = null;
+        return result;
     }
 }

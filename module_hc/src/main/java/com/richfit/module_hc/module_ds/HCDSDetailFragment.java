@@ -7,6 +7,7 @@ import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.sdk_wzck.base_ds_detail.BaseDSDetailFragment;
 import com.richfit.sdk_wzck.base_ds_detail.imp.DSDetailPresenterImp;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,7 +40,10 @@ public class HCDSDetailFragment extends BaseDSDetailFragment<DSDetailPresenterIm
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         menus.get(0).transToSapFlag = "01";
-        menus.get(1).transToSapFlag = "05";
-        return menus.subList(0, 2);
+        menus.get(2).transToSapFlag = "05";
+		List<BottomMenuEntity> tmp = new ArrayList<>();
+		tmp.add(menus.get(0));
+		tmp.add(menus.get(2));
+        return tmp;
     }
 }

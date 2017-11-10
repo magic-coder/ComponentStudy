@@ -169,6 +169,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         return R.layout.wzck_fragment_base_dsy_collect;
     }
 
+    @Override
+    protected void initView() {
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
+    }
+
     /**
      * 注册所有UI事件
      */
@@ -236,12 +241,7 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
         });
     }
 
-    @Override
-    protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
-    }
+
 
     /**
      * 检查抬头界面的必要的字段是否已经赋值

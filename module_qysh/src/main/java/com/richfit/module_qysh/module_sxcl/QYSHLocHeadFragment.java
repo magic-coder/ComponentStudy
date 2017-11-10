@@ -9,4 +9,11 @@ import com.richfit.sdk_sxcl.basehead.LocQTHeadFragment;
 public class QYSHLocHeadFragment extends LocQTHeadFragment {
 
 
+    @Override
+    public void _onPause() {
+        super._onPause();
+        if(mRefData != null) {
+            mRefData.specialInvFlag = "K";
+        }
+    }
 }

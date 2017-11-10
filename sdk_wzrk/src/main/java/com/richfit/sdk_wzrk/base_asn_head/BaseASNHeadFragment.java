@@ -48,7 +48,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
     @BindView(R2.id.ll_supplier)
     protected LinearLayout llSupplier;
     @BindView(R2.id.et_supplier)
-    AutoCompleteTextView etSupplier;
+    protected  AutoCompleteTextView etSupplier;
     @BindView(R2.id.et_transfer_date)
     protected RichEditText etTransferDate;
 
@@ -184,6 +184,7 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
 
     @Override
     public void _onPause() {
+        super._onPause();
         if (checkData()) {
             if (mRefData == null)
                 mRefData = new ReferenceEntity();

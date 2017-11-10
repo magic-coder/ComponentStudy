@@ -137,8 +137,8 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
         mView = getView();
         RxSubscriber<String> subscriber = Flowable.concat(mRepository.uploadCollectionData(refCodeId, transId, bizType, refType, -1, voucherDate, "", userId, extraHeaderMap),
                 mRepository.transferCollectionData(transId, bizType, refType, userId, voucherDate, transToSap, extraHeaderMap))
-                .doOnError(str -> saveData2Spre(bizType,refType,0))
-                .doOnComplete(() -> saveData2Spre(bizType,refType,1))
+                .doOnError(str -> saveData2Spre(bizType,refType,"0"))
+                .doOnComplete(() -> saveData2Spre(bizType,refType,"1"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在过账...") {
                     @Override
@@ -185,8 +185,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
         mView = getView();
         RxSubscriber<String> subscriber = mRepository.transferCollectionData(transId, bizType, refType,
                 userId, voucherDate, transToSap, extraHeaderMap)
-//                .retryWhen(new RetryWhenNetworkException(3, 3000))
-                .doOnComplete(() ->  saveData2Spre(bizType,refType,0))
+                .doOnComplete(() ->  saveData2Spre(bizType,refType,"0"))
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在上传数据...") {
                     @Override
@@ -372,7 +371,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
         return result;
     }
 
-    private void saveData2Spre(String bizType,String refType,int value) {
+    private void saveData2Spre(String bizType,String refType,String value) {
         String key = TextUtils.isEmpty(refType) ? bizType : bizType + refType;
         SPrefUtil.saveData(key, value);
     }

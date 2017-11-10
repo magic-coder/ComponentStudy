@@ -268,6 +268,26 @@
     "mode": 0,
     "fragmentType": 0,
     "className": "com.richfit.sdk_xxcx.material_liaoqian.detail.LQDetailFragment"
+  },
+  {
+    "id": "38",
+    "tabTitle": "抬头",
+    "fragmentTag": "hc_cwtz_header_fragment_tag",
+    "bizType": "100",
+    "refType": "",
+    "mode": 0,
+    "fragmentType": 0,
+    "className": "com.richfit.sdk_cwtz.head.LAHeadFragment"
+  },
+  {
+    "id": "39",
+    "tabTitle": "数据采集",
+    "fragmentTag": "hc_cwtz_collect_fragment_tag",
+    "bizType": "100",
+    "refType": "",
+    "mode": 0,
+    "fragmentType": 2,
+    "className": "com.richfit.sdk_cwtz.collect.LACollectFragment"
   }
 
 ]

@@ -274,7 +274,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter> extends
         }
         mShowMsg.setLength(0);
         mPresenter.turnOwnSupplies(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null, -1);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap, -1);
     }
 
     /**

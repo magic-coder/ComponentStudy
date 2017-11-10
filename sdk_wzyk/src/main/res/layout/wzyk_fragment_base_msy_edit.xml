@@ -249,11 +249,11 @@
 
         <LinearLayout
             android:id="@id/ll_rec_location"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <TextView
                 style="@style/LeftTextViewItemStyle"
@@ -266,11 +266,11 @@
 
         <LinearLayout
             android:id="@id/ll_rec_batch_flag"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:visibility="gone">
 
             <TextView
                 style="@style/LeftTextViewItemStyle"

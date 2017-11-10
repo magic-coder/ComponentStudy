@@ -214,7 +214,7 @@
     "tabTitle" : "数据明细",
     "fragmentTag": "qysh_asn_detail_fragment_tag",
     "bizType": "115",
-    "refType": "0",
+    "refType": "",
     "mode" : 0,
     "fragmentType" : 1,
     "className": "com.richfit.module_qysh.module_as.asn.QYSHASNDetailFragment"

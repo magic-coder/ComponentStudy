@@ -3,13 +3,11 @@
     <item name="qysh_tv_balance_quantity" type="id"></item>
     <item name="qysh_tv_device_location" type="id" />
     <item name="qysh_tv_device_name" type="id" />
-    <item name="qysh_tv_biz_scope" type="id" />
     <item name="qysh_tv_move_type" type="id" />
     <item name="qysh_tv_cost_center" type="id" />
-    <item name="qysh_tv_profit_center" type="id" />
     <item name="qysh_tv_order_num" type="id" />
     <item name="qysh_tv_net_work" type="id" />
-    <item name="qysh_et_qysh_deliveryTor" type="id" />
+    <item name="qysh_et_qysh_delivery_to" type="id" />
     <item name="qysh_tv_reserve_num" type="id" />
     <item name="qysh_tv_reserve_line_num" type="id" />
 

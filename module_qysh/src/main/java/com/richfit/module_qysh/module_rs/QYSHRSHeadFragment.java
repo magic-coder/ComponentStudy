@@ -16,9 +16,7 @@ import com.richfit.sdk_wzrk.base_as_head.imp.ASHeadPresenterImp;
 public class QYSHRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp>{
 
     TextView tvMoveType;
-    TextView tvBizScope;
     TextView tvCostCenter;
-    TextView tvProfitCenter;
     TextView tvOrderNum;
     TextView tvNetWork;
     EditText etDeliveryTo;
@@ -41,21 +39,17 @@ public class QYSHRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp>{
     @Override
     protected void initView() {
         tvMoveType = mView.findViewById(R.id.qysh_tv_move_type);
-        tvBizScope = mView.findViewById(R.id.qysh_tv_biz_scope);
         tvCostCenter = mView.findViewById(R.id.qysh_tv_cost_center);
-        tvProfitCenter = mView.findViewById(R.id.qysh_tv_profit_center);
         tvOrderNum = mView.findViewById(R.id.qysh_tv_order_num);
         tvNetWork = mView.findViewById(R.id.qysh_tv_net_work);
-        tvNetWork = mView.findViewById(R.id.qysh_et_qysh_deliveryTor);
+        etDeliveryTo = mView.findViewById(R.id.qysh_et_qysh_delivery_to);
     }
 
     @Override
     public void bindCommonHeaderUI() {
         super.bindCommonHeaderUI();
         tvMoveType.setText(mRefData.moveType);
-        tvBizScope.setText(mRefData.businessScope);
         tvCostCenter.setText(mRefData.costCenter);
-        tvProfitCenter.setText(mRefData.profitCenter);
         tvOrderNum.setText(mRefData.orderNum);
         tvNetWork.setText(mRefData.network);
     }

@@ -83,9 +83,7 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -189,11 +187,6 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
      */
     private void loadLocationQuantity(String location, String batchFlag) {
 
-        if (isOpenBatchManager && TextUtils.isEmpty(batchFlag)) {
-            showMessage("批次为空");
-            return;
-        }
-
         if (isLocation && TextUtils.isEmpty(location)) {
             showMessage("仓位为空");
             return;
@@ -205,22 +198,28 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         }
 
         String locQuantity = "0";
+        String locationType = "";
+        boolean isMatched = false;
+        if (isOpenLocationType) {
+            locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
+        }
 
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    if (!TextUtils.isEmpty(batchFlag)) {
-                        if (location.equalsIgnoreCase(locationInfo.location)
-                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag)) {
-                            locQuantity = locationInfo.quantity;
-                            break;
-                        }
+                    if (isOpenLocationType) {
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType) :
+                                location.equalsIgnoreCase(locationInfo.location) && locationType.equals(locationInfo.locationType);
                     } else {
-                        if (location.equalsIgnoreCase(locationInfo.location)) {
-                            locQuantity = locationInfo.quantity;
-                            break;
-                        }
+                        isMatched = isOpenBatchManager ? location.equalsIgnoreCase(locationInfo.location)
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
+                                location.equalsIgnoreCase(locationInfo.location);
+                    }
+                    if (isMatched) {
+                        locQuantity = locationInfo.quantity;
+                        break;
                     }
                 }
             }
@@ -272,6 +271,7 @@ public abstract class BaseRSNEditFragment<P extends IRSNEditPresenter> extends B
         ResultEntity result = new ResultEntity();
         InventoryQueryParam param = provideInventoryQueryParam();
         result.invType = param.invType;
+        result.queryType = param.queryType;
         result.businessType = mRefData.bizType;
         result.voucherDate = mRefData.voucherDate;
         result.moveType = mRefData.moveType;

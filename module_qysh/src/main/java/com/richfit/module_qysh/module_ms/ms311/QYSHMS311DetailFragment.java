@@ -2,6 +2,7 @@ package com.richfit.module_qysh.module_ms.ms311;
 
 import android.view.View;
 
+import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzyk.base_msn_detail.BaseMSNDetailFragment;
@@ -25,7 +26,7 @@ public class QYSHMS311DetailFragment extends BaseMSNDetailFragment<MSNDetailPres
     public void initView() {
         super.initView();
         //隐藏发出批次
-        View batchFlag = mView.findViewById(R.id.batchFlag);
+        View batchFlag = mView.findViewById(R.id.sendBatchFlag);
         if (batchFlag != null) {
             batchFlag.setVisibility(View.GONE);
         }
@@ -57,13 +58,21 @@ public class QYSHMS311DetailFragment extends BaseMSNDetailFragment<MSNDetailPres
     }
 
     @Override
+    public void onBindViewHolder(ViewHolder holder, int viewType) {
+        super.onBindViewHolder(holder,viewType);
+        //隐藏接收和发出批次
+        holder.setVisible(R.id.sendBatchFlag,false)
+                .setVisible(R.id.recBatchFlag,false);
+    }
+
+    @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         menus.get(0).transToSapFlag = "01";
-        menus.get(2).transToSapFlag = "04";
+        menus.get(3).transToSapFlag = "04";
         ArrayList<BottomMenuEntity> tmp = new ArrayList<>();
         tmp.add(menus.get(0));
-        tmp.add(menus.get(2));
+        tmp.add(menus.get(3));
         return tmp;
     }
 }

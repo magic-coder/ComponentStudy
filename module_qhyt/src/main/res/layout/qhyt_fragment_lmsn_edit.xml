@@ -276,7 +276,7 @@
 
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
-                android:id="@id/auto_rec_location"
+                android:id="@id/et_rec_location"
                 android:clickable="true"
                 style="@style/RightEditTextItemStyle" />
 

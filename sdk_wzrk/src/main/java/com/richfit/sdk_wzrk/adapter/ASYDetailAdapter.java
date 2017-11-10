@@ -26,4 +26,6 @@ public class ASYDetailAdapter extends MultiItemTypeTreeAdapter<RefDetailEntity> 
         addItemViewDelegate(Global.CHILD_NODE_ITEM_TYPE,new ASYChildItemDelegate());
     }
 
+
+
 }

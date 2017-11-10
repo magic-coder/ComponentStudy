@@ -3,10 +3,12 @@ package com.richfit.module_qysh.module_ms.dgms301;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
+import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzyk.base_msn_edit.BaseMSNEditFragment;
 import com.richfit.sdk_wzyk.base_msn_edit.imp.MSNEditPresenterImp;
 
@@ -30,6 +32,16 @@ public class QYSHMSN301EditFragment extends BaseMSNEditFragment<MSNEditPresenter
     @Override
     public void initPresenter() {
         mPresenter = new MSNEditPresenterImp(mActivity);
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+        View batchFlag = mView.findViewById(R.id.ll_batch_flag);
+        if(batchFlag != null) {
+            batchFlag.setVisibility(View.GONE);
+        }
+        llRecBatchFlag.setVisibility(View.GONE);
     }
 
     @Override
@@ -62,8 +74,11 @@ public class QYSHMSN301EditFragment extends BaseMSNEditFragment<MSNEditPresenter
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
         result.deviceId = mDeviceId;
+        result.batchFlag = null;
+        result.recBatchFlag = null;
         return result;
     }
+
 
     @Override
     protected InventoryQueryParam provideInventoryQueryParam() {

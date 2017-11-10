@@ -87,14 +87,14 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     protected EditText etQuantity;
     @BindView(R2.id.cb_single)
     protected CheckBox cbSingle;
-    @BindView(R2.id.auto_rec_location)
+    @BindView(R2.id.et_rec_location)
     protected AppCompatAutoCompleteTextView autoRecLoc;
     @BindView(R2.id.et_rec_batch_flag)
     protected EditText etRecBatchFlag;
     @BindView(R2.id.ll_rec_location)
     protected LinearLayout llRecLocation;
     @BindView(R2.id.ll_rec_batch_flag)
-    protected LinearLayout llRecBatch;
+    protected LinearLayout llRecBatchFlag;
     //增加仓储类型
     @BindView(R2.id.ll_location_type)
     LinearLayout llLocationType;
@@ -196,13 +196,8 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
 
     @Override
     protected void initView() {
-        if (isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
-
-        if (isOpenRecLocationType) {
-            llRecLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
+        llRecLocationType.setVisibility(isOpenRecLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -499,13 +494,13 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
      */
     @Override
     public void loadInventoryComplete() {
-        if(isOpenLocationType && !TextUtils.isEmpty(mAutoLocation)) {
+        if (isOpenLocationType && !TextUtils.isEmpty(mAutoLocation)) {
             //如果打开发出仓储类型，并且扫描到了不同仓储类型，那么需要自动匹配发出仓位
             UiUtil.setSelectionForLocation(mInventoryDatas, mAutoLocation, spSendLoc);
         }
 
         //如果没有打开接收仓储类型，那么接收仓位的库存由此处触发
-        if(!isOpenRecLocationType) {
+        if (!isOpenRecLocationType) {
             loadRecInventoryInfo();
         }
     }
@@ -833,20 +828,23 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         result.recLocation = CommonUtil.toUpperCase(getString(autoRecLoc));
         result.quantity = getString(etQuantity);
         result.invType = param.invType;
-        result.modifyFlag = "N";
+        result.queryType = param.queryType;
         int locationPos = spSendLoc.getSelectedItemPosition();
-        result.location = mInventoryDatas.get(locationPos).location;
-        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
-                && !TextUtils.isEmpty(result.specialInvNum)) ?
-                "Y" : "N";
+        if (locationPos >= 0 && mInventoryDatas != null && mInventoryDatas.size() > 0) {
+            result.location = mInventoryDatas.get(locationPos).location;
+            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+            result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                    && !TextUtils.isEmpty(result.specialInvNum)) ?
+                    "Y" : "N";
+        }
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
         if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
+        result.modifyFlag = "N";
         return result;
     }
 
@@ -919,19 +917,20 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
-            if(isOpenLocationType) {
+            if (isOpenLocationType) {
                 if (mLocationTypes == null) {
                     mLocationTypes = new ArrayList<>();
                 }
                 mLocationTypes.clear();
                 mLocationTypes.addAll(locationTypes);
-            }
-            //发出仓储类型
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
+                //发出仓储类型
+                SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mLocationTypes, false);
+                spLocationType.setAdapter(adapter);
 
-            if(isOpenRecLocationType) {
+            }
+
+            if (isOpenRecLocationType) {
                 if (mRecLocationTypes == null) {
                     mRecLocationTypes = new ArrayList<>();
                 }

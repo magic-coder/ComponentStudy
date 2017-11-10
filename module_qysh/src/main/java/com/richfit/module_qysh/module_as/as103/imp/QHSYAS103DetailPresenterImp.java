@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
 import com.richfit.data.constant.Global;
+import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
@@ -14,6 +15,10 @@ import com.richfit.sdk_wzrk.base_as_detail.imp.ASDetailPresenterImp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Flowable;
+import io.reactivex.subscribers.ResourceSubscriber;
 
 /**
  * Created by monday on 2017/11/2.
@@ -24,6 +29,48 @@ public class QHSYAS103DetailPresenterImp extends ASDetailPresenterImp {
     public QHSYAS103DetailPresenterImp(Context context) {
         super(context);
     }
+
+
+    @Override
+    public void getTransferInfo(ReferenceEntity refData, String refCodeId, String bizType, String refType,
+                                String userId, String workId, String invId, String recWorkId, String recInvId,
+                                Map<String, Object> extraMap) {
+
+        mView = getView();
+        ResourceSubscriber<ArrayList<RefDetailEntity>> subscriber =
+                mRepository.getTransferInfo("", refCodeId, bizType, refType,
+                        "", "", "", "", "", extraMap)
+                        .zipWith(Flowable.just(refData), (cache, data) -> createNodesByCache(data, cache))
+                        .compose(TransformerHelper.io2main())
+                        .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
+                            @Override
+                            public void onNext(ArrayList<RefDetailEntity> nodes) {
+                                if (mView != null) {
+                                    mView.showNodes(nodes);
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable t) {
+                                if (mView != null) {
+                                    mView.setRefreshing(true, t.getMessage());
+                                    //展示抬头获取的数据，没有缓存
+                                    //注意获取无参考的整单缓存时，单据数据refData为null
+                                    if (refData != null && refData.billDetailList != null)
+                                        mView.showNodes(refData.billDetailList);
+                                }
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                if (mView != null) {
+                                    mView.refreshComplete();
+                                }
+                            }
+                        });
+        addSubscriber(subscriber);
+    }
+
 
     @Override
     public void editNode(ArrayList<String> sendLocations, ArrayList<String> recLocations,

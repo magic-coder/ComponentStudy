@@ -2,6 +2,7 @@ package com.richfit.module_qysh.module_as.asn;
 
 import android.view.View;
 
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_asn_collect.BaseASNCollectFragment;
 import com.richfit.sdk_wzrk.base_asn_collect.imp.ASNCollectPresenterImp;
@@ -28,5 +29,12 @@ public class QYSHASNCollectFragment extends BaseASNCollectFragment<ASNCollectPre
         if(batchFlag != null) {
             batchFlag.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        return result;
     }
 }

@@ -25,4 +25,9 @@ public interface ILACollectView extends IBaseCollectView {
     void getDeviceInfoSuccess(ResultEntity result);
     void getDeviceInfoFail(String message);
     void getDeviceInfoComplete();
+
+    //获取发出仓位的提示库存
+    void showTipInventory(List<String> list);
+    void loadITipInventoryComplete();
+    void loadTipInventoryFail(String message);
 }

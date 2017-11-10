@@ -60,6 +60,8 @@ public class QYSHLocCollectFragment extends LocQTCollectFragment {
         result.invFlag = mRefData.invFlag;
         result.specialInvFlag = mRefData.specialInvFlag;
         result.projectNum = mRefData.projectNum;
+        result.batchFlag = null;
+        result.specialInvFlag = mRefData.specialInvFlag;
         return result;
     }
     /**

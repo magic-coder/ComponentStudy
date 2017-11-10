@@ -98,9 +98,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -137,7 +135,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
             tvTotalQuantity.setText(totalQuantity);
         }
         //如果打开了仓储类型需要获取仓储类型数据源
-        if (isOpenBatchManager)
+        if (isOpenLocationType)
             mPresenter.getDictionaryData("locationType");
     }
 
@@ -227,6 +225,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         ResultEntity result = new ResultEntity();
         InventoryQueryParam param = provideInventoryQueryParam();
         result.invType = param.invType;
+        result.queryType = param.queryType;
         result.businessType = mRefData.bizType;
         result.refCodeId = mRefData.refCodeId;
         result.voucherDate = mRefData.voucherDate;
@@ -255,6 +254,7 @@ public abstract class BaseASEditFragment<P extends IASEditPresenter> extends Bas
         if (isOpenLocationType)
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         result.modifyFlag = "Y";
+
         return result;
     }
 

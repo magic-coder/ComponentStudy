@@ -92,9 +92,7 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
 
     @Override
     protected void initView() {
-        if (isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override

@@ -67,7 +67,7 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     TextView tvInvQuantity;
     @BindView(R2.id.tv_location_quantity)
     protected TextView tvLocQuantity;
-    @BindView(R2.id.auto_rec_location)
+    @BindView(R2.id.et_rec_location)
     protected AppCompatAutoCompleteTextView autoRecLoc;
     @BindView(R2.id.tv_rec_batch_flag)
     protected TextView tvRecBatchFlag;
@@ -121,12 +121,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
 
     @Override
     protected void initView() {
-        if (isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
-        if (isOpenRecLocationType) {
-            llRecLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
+        llRecLocationType.setVisibility(isOpenRecLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -552,14 +548,15 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         result.recLocation = getString(autoRecLoc);
         result.recBatchFlag = getString(tvRecBatchFlag);
         result.quantity = getString(etQuantity);
-        result.modifyFlag = "Y";
         result.invType = param.invType;
+        result.queryType = param.queryType;
         if (isOpenLocationType) {
             result.locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
         if (isOpenRecLocationType) {
             result.recLocationType = mRecLocationTypes.get(spRecLocationType.getSelectedItemPosition()).code;
         }
+        result.modifyFlag = "Y";
         return result;
     }
 
@@ -577,19 +574,19 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
     public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
         List<SimpleEntity> locationTypes = data.get("locationType");
         if (locationTypes != null) {
-            if(isOpenLocationType) {
+            if (isOpenLocationType) {
                 if (mLocationTypes == null) {
                     mLocationTypes = new ArrayList<>();
                 }
                 mLocationTypes.clear();
                 mLocationTypes.addAll(locationTypes);
+                //发出仓储类型
+                SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
+                        mLocationTypes, false);
+                spLocationType.setAdapter(adapter);
             }
-            //发出仓储类型
-            SimpleAdapter adapter = new SimpleAdapter(mActivity, R.layout.item_simple_sp,
-                    mLocationTypes, false);
-            spLocationType.setAdapter(adapter);
 
-            if(isOpenRecLocationType) {
+            if (isOpenRecLocationType) {
                 if (mRecLocationTypes == null) {
                     mRecLocationTypes = new ArrayList<>();
                 }

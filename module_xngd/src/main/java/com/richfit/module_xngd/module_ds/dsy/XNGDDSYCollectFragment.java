@@ -75,4 +75,10 @@ public class XNGDDSYCollectFragment extends BaseDSCollectFragment<DSCollectPrese
         param.extraMap = extraMap;
         return param;
     }
+
+    @Override
+    public void clearAllUI() {
+        super.clearAllUI();
+        clearCommonUI(etRemark);
+    }
 }

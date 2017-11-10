@@ -51,7 +51,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
     @BindView(R2.id.tv_inv_name)
     protected TextView tvInvName;
     @BindView(R2.id.tv_inv)
-    TextView tvInv;
+    protected TextView tvInv;
     @BindView(R2.id.et_transfer_date)
     RichEditText etTransferDate;
 
@@ -144,7 +144,7 @@ public abstract class BaseMSHeadFragment<P extends IMSHeadPresenter> extends Bas
             tvSendWork.setText(mRefData.workCode);
             //接收工厂
             tvRecWork.setText(mRefData.recWorkCode);
-            //库存地点
+            //发出库位
             tvInv.setText(mRefData.invCode);
         }
     }

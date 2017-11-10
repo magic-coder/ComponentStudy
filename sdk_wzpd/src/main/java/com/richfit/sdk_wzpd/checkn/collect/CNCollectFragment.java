@@ -408,7 +408,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
     }
 
 
-    private void clearAllUI() {
+    protected void clearAllUI() {
         clearCommonUI(etSpecialInvFlag, etSpecialInvNum, tvMaterialDesc, tvInvQuantity,
                 etQuantity, tvTotalQuantity,cbSingle);
         //单据行

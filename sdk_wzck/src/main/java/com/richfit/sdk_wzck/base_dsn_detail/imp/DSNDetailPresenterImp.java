@@ -173,6 +173,7 @@ public class DSNDetailPresenterImp extends BaseDetailPresenterImp<IDSNDetailView
                     data.specialConvert = loc.specialConvert;
                     data.locationId = loc.id;
                     data.locationCombine = loc.locationCombine;
+                    data.locationType = loc.locationType;
                     datas.add(data);
                 }
             }

@@ -22,4 +22,11 @@ public class QYSHLACollectFragmnet extends LACollectFragment {
             batchFlag.setVisibility(View.GONE);
         }
     }
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.batchFlag = null;
+        return result;
+    }
+
 }

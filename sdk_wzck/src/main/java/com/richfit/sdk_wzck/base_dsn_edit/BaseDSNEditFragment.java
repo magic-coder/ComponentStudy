@@ -100,9 +100,7 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
 
     @Override
     protected void initView() {
-        if(isOpenLocationType) {
-            llLocationType.setVisibility(View.VISIBLE);
-        }
+        llLocationType.setVisibility(isOpenLocationType ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -147,7 +145,6 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         final String recBatchFlag = bundle.getString(Global.EXTRA_REC_BATCH_FLAG_KEY);
         //移库数量
         mQuantity = bundle.getString(Global.EXTRA_QUANTITY_KEY);
-        Log.e("yff", "quantity" + mQuantity);
         //其他子节点的发出仓位列表
         mLocationCombines = bundle.getStringArrayList(Global.EXTRA_LOCATION_LIST_KEY);
         mLocationId = bundle.getString(Global.EXTRA_LOCATION_ID_KEY);
@@ -263,18 +260,18 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         String locQuantity = "0";
         String locationType = "";
         boolean isMatched = false;
-        if(isOpenLocationType) {
+        if (isOpenLocationType) {
             locationType = mLocationTypes.get(spLocationType.getSelectedItemPosition()).code;
         }
         for (RefDetailEntity detail : mHistoryDetailList) {
             List<LocationInfoEntity> locationList = detail.locationList;
             if (locationList != null && locationList.size() > 0) {
                 for (LocationInfoEntity locationInfo : locationList) {
-                    if(isOpenLocationType) {
+                    if (isOpenLocationType) {
                         isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
-                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType):
+                                && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) && locationType.equals(locationInfo.locationType) :
                                 locationCombine.equalsIgnoreCase(locationInfo.locationCombine) && locationType.equals(locationInfo.locationType);
-                    }else {
+                    } else {
                         isMatched = isOpenBatchManager ? locationCombine.equalsIgnoreCase(locationInfo.locationCombine)
                                 && batchFlag.equalsIgnoreCase(locationInfo.batchFlag) :
                                 locationCombine.equalsIgnoreCase(locationInfo.locationCombine);

@@ -20,4 +20,12 @@ public class HCMSEditFragment extends BaseMSEditFragment<MSEditPresenterImp> {
     public void initDataLazily() {
 
     }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        //打开接收批次和接收仓位
+        llRecLocation.setVisibility(View.VISIBLE);
+        llRecBatch.setVisibility(View.VISIBLE);
+    }
 }

@@ -2,6 +2,7 @@ package com.richfit.module_qysh.module_as.asn;
 
 import android.view.View;
 
+import com.richfit.domain.bean.ResultEntity;
 import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzrk.base_asn_edit.BaseASNEditFragment;
 import com.richfit.sdk_wzrk.base_asn_edit.imp.ASNEditPresenterImp;
@@ -28,5 +29,13 @@ public class QYSHASNEditFragment extends BaseASNEditFragment<ASNEditPresenterImp
         if(batchFlag != null) {
             batchFlag.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public ResultEntity provideResult() {
+        ResultEntity result = super.provideResult();
+        result.supplierNum = mRefData.supplierNum;
+        result.batchFlag = null;
+        return result;
     }
 }

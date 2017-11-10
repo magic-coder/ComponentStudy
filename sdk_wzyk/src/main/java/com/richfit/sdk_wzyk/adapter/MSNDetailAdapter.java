@@ -43,7 +43,8 @@ public class MSNDetailAdapter extends CommonTreeAdapter<RefDetailEntity> {
         //特殊库存
         holder.setText(R.id.specialInvFlag, item.specialInvFlag)
                 .setText(R.id.specialInvNum, item.specialInvNum)
-                .setText(R.id.tv_location_type, item.locationType);
+                .setText(R.id.tv_location_type, item.locationType)
+                .setText(R.id.tv_rec_location_type,item.recLocationType);
     }
 
     /**

@@ -383,7 +383,7 @@ public abstract class BaseRSNCollectFragment<P extends IRSNCollectPresenter> ext
             String invId = mInvs.get(spInv.getSelectedItemPosition()).invId;
             //使用库存参数
             InventoryQueryParam queryParam = provideInventoryQueryParam();
-            mPresenter.checkLocation("04", mRefData.workId, invId, batchFlag, location, queryParam.extraMap);
+            mPresenter.checkLocation(queryParam.queryType, mRefData.workId, invId, batchFlag, location, queryParam.extraMap);
         } else {
             //如果不上架，那么直接默认仓位检查通过
             checkLocationSuccess(batchFlag, location);

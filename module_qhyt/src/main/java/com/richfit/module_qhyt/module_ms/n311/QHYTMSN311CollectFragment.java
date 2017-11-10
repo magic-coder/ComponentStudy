@@ -29,7 +29,7 @@ public class QHYTMSN311CollectFragment extends BaseMSNCollectFragment<MSNCollect
     @Override
     protected void initView() {
         //工厂内移库不需要接收批次
-        llRecBatch.setVisibility(View.GONE);
+        llRecBatchFlag.setVisibility(View.GONE);
     }
 
     @Override

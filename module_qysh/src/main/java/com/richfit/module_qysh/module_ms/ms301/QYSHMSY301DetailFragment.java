@@ -38,7 +38,7 @@ public class QYSHMSY301DetailFragment extends BaseMSDetailFragment<MSDetailPrese
         super.onBindViewHolder(holder,viewType);
         //隐藏发出批次和接收批次
         if (viewType == Global.CHILD_NODE_HEADER_TYPE || viewType == Global.CHILD_NODE_ITEM_TYPE) {
-            holder.setVisible(R.id.batchFlag, false);
+            holder.setVisible(R.id.sendBatchFlag, false);
             holder.setVisible(R.id.recBatchFlag,false);
         }
     }
@@ -52,10 +52,10 @@ public class QYSHMSY301DetailFragment extends BaseMSDetailFragment<MSDetailPrese
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> menus = super.provideDefaultBottomMenu();
         menus.get(0).transToSapFlag = "01";
-        menus.get(2).transToSapFlag = "04";
+        menus.get(3).transToSapFlag = "04";
         ArrayList<BottomMenuEntity> tmp = new ArrayList<>();
         tmp.add(menus.get(0));
-        tmp.add(menus.get(2));
+        tmp.add(menus.get(3));
         return tmp;
     }
 }

@@ -17,9 +17,7 @@ import com.richfit.sdk_wzck.base_ds_head.imp.DSHeadPresenterImp;
 public class QYSHDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> {
 
     TextView tvMoveType;
-    TextView tvBizScope;
     TextView tvCostCenter;
-    TextView tvProfitCenter;
     TextView tvOrderNum;
     TextView tvNetWork;
     EditText etDeliveryTo;
@@ -37,12 +35,10 @@ public class QYSHDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
     @Override
     protected void initView() {
         tvMoveType = mView.findViewById(R.id.qysh_tv_move_type);
-        tvBizScope = mView.findViewById(R.id.qysh_tv_biz_scope);
         tvCostCenter = mView.findViewById(R.id.qysh_tv_cost_center);
-        tvProfitCenter = mView.findViewById(R.id.qysh_tv_profit_center);
         tvOrderNum = mView.findViewById(R.id.qysh_tv_order_num);
         tvNetWork = mView.findViewById(R.id.qysh_tv_net_work);
-        tvNetWork = mView.findViewById(R.id.qysh_et_qysh_deliveryTor);
+        etDeliveryTo = mView.findViewById(R.id.qysh_et_qysh_delivery_to);
         //隐藏创建人
         llCreator.setVisibility(View.GONE);
     }
@@ -56,18 +52,14 @@ public class QYSHDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
     public void bindCommonHeaderUI() {
         super.bindCommonHeaderUI();
         tvMoveType.setText(mRefData.moveType);
-        tvBizScope.setText(mRefData.businessScope);
         tvCostCenter.setText(mRefData.costCenter);
-        tvProfitCenter.setText(mRefData.profitCenter);
         tvOrderNum.setText(mRefData.orderNum);
         tvNetWork.setText(mRefData.network);
+        tvMoveType.setText(mRefData.sapMoveType);
     }
 
     @Override
     public void _onPause() {
-        if(mRefData != null) {
-            mRefData.sapMoveType = mRefData.moveType;
-        }
         super._onPause();
         if(mRefData != null) {
             mRefData.deliveryTo = getString(etDeliveryTo);
