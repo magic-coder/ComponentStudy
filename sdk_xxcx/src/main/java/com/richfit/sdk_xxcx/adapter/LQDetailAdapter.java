@@ -25,6 +25,9 @@ public class LQDetailAdapter extends CommonAdapter<InventoryEntity> {
                 .setText(R.id.inv, item.invCode)
                 .setText(R.id.location, item.location)
                 .setText(R.id.batchFlag, item.batchFlag)
-                .setText(R.id.invQuantity, item.invQuantity);
+                .setText(R.id.invQuantity, item.invQuantity)
+                .setText(R.id.specialInvFlag,item.specialInvFlag)
+                .setText(R.id.specialInvNum,item.specialInvNum)
+                .setText(R.id.tv_location_type, item.locationType);
     }
 }

@@ -44,6 +44,7 @@ public class QYSHRSCollectFragment extends BaseASCollectFragment<ASCollectPresen
         if (batchFlag != null) {
             batchFlag.setVisibility(View.GONE);
         }
+        tvQuantityName.setText("退库数量");
     }
 
 

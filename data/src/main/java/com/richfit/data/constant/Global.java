@@ -77,6 +77,9 @@ public class Global {
     //煤层气
     public static final String MCQ = "mcq";
     public static final String HANC = "hanc";
+    //川庆
+    public static final String CQZT = "cqzt";
+
 
 
     /*全局日期格式*/

@@ -32,6 +32,6 @@ public class LocQTChildItemDelegate implements ItemViewDelegate<RefDetailEntity>
         }
         holder.setText(R.id.batchFlag, Global.DEFAULT_BATCHFLAG.equalsIgnoreCase(item.batchFlag) ? "" : item.batchFlag)
                 .setText(R.id.quantity, item.quantity)
-                .setTag(R.id.tv_location_type,item.locationType);
+                .setText(R.id.tv_location_type,item.locationType);
     }
 }

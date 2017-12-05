@@ -1,6 +1,7 @@
 package com.richfit.sdk_wzyk.base_ms_detail;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -90,6 +91,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter> extends
     @Override
     public void refreshComplete() {
         super.refreshComplete();
+        Log.d("yff","refreshComplete ; isNeedTurn = " + isNeedTurn+";isTurnSuccess = " + isTurnSuccess);
         if (!isNeedTurn && isTurnSuccess) {
             //如果寄售转自有成功后，系统自动去过账。
             submit2BarcodeSystem(mBottomMenus.get(0).transToSapFlag);
@@ -238,6 +240,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter> extends
     public void submitSAPSuccess() {
         setRefreshing(false, "转储成功");
         showSuccessDialog(mShowMsg);
+        //清除所有数据
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }
@@ -282,6 +285,7 @@ public abstract class BaseMSDetailFragment<P extends IMSDetailPresenter> extends
      */
     @Override
     public void turnOwnSuppliesSuccess() {
+        Log.d("yff","turnOwnSuppliesSuccess");
         isTurnSuccess = true;
         isNeedTurn = false;
         startAutoRefresh();

@@ -47,7 +47,12 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
                 mRepository.getTransferInfo("", refCodeId, bizType, refType,
                         "", "", "", "", "", extraMap)
                         .zipWith(Flowable.just(refData), (cache, data) -> createNodesByCache(data, cache))
-                        .flatMap(nodes -> sortNodes(nodes))
+                        .flatMap(nodes -> {
+                            //对于无参考，不在进行排序
+                            if(refData != null && refData.billDetailList != null && refData.billDetailList.size() > 0)
+                               return sortNodes(nodes);
+                            return Flowable.just(nodes);
+                        })
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<ArrayList<RefDetailEntity>>() {
                             @Override
@@ -60,7 +65,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
                             @Override
                             public void onError(Throwable t) {
                                 if (mView != null) {
-                                    mView.setRefreshing(true, t.getMessage());
+                                    mView.setRefreshing(false, t.getMessage());
                                     //展示抬头获取的数据，没有缓存
                                     //注意获取无参考的整单缓存时，单据数据refData为null
                                     if (refData != null && refData.billDetailList != null)

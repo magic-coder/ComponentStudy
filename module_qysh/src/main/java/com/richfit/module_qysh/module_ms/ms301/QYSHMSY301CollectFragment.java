@@ -9,6 +9,8 @@ import com.richfit.module_qysh.R;
 import com.richfit.sdk_wzyk.base_ms_collect.BaseMSCollectFragment;
 import com.richfit.sdk_wzyk.base_ms_collect.imp.MSCollectPresenterImp;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by monday on 2017/11/2.
  */
@@ -38,8 +40,25 @@ public class QYSHMSY301CollectFragment extends BaseMSCollectFragment<MSCollectPr
     }
 
     @Override
+    protected void initDataLazily() {
+		etMaterialNum.setEnabled(false);
+        if (mRefData == null) {
+            showMessage("请先在抬头界面获取单据数据");
+            return;
+        }
+
+        if ("8230".equals(mRefData.workCode) && "8250".equals(mRefData.recWorkCode)
+                && TextUtils.isEmpty(mRefData.deliveryTo)) {
+            showMessage("请现在抬头界面输入接收方");
+            return;
+        }
+        super.initDataLazily();
+    }
+
+    @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
+        result.deliveryTo = mRefData.deliveryTo;
         result.batchFlag = null;
         result.recBatchFlag = null;
         return result;

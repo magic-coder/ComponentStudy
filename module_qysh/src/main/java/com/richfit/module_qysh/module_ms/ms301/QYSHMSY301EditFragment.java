@@ -38,6 +38,7 @@ public class QYSHMSY301EditFragment extends BaseMSEditFragment<MSEditPresenterIm
     @Override
     public ResultEntity provideResult() {
         ResultEntity result = super.provideResult();
+        result.deliveryTo = mRefData.deliveryTo;
         result.batchFlag = null;
         result.recBatchFlag = null;
         return result;

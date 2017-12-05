@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$/common_lib" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
+            <option value="$PROJECT_DIR$/module_cq" />
             <option value="$PROJECT_DIR$/module_cqyt" />
             <option value="$PROJECT_DIR$/module_hc" />
             <option value="$PROJECT_DIR$/module_klmy" />

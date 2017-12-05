@@ -385,7 +385,7 @@ public class CNHeadFragment extends BaseHeadFragment<CNHeadPresenterImp>
                 return;
             }
             if (mInvDatas == null || mInvDatas.size() == 0) {
-                showMessage("困地点未初始化");
+                showMessage("库存地点未初始化");
             }
             mPresenter.getCheckInfo(Global.USER_ID, mBizType, "02",
                     mSpecialFlag, "",

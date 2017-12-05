@@ -113,8 +113,6 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         //如果是离线直接获取缓存，不能让用户删除缓存
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal())
             return;
-
-
     }
 
 
@@ -130,7 +128,6 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
         }
         //删除历史数据
         mPresenter.deleteCollectionData("", mBizType, Global.USER_ID, mCompanyCode);
-
     }
 
     @Override

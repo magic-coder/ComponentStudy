@@ -87,6 +87,10 @@ public class BarcodeSystemApplication extends BaseApplication {
                 case Global.HANC:
                     baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
                     break;
+                    //川庆
+                case Global.CQZT:
+                    baseUrl = "http://11.11.136.206:9087/gcjs_middleware/MobileProcess/";
+                    break;
             }
         } else {
             //正式地址
@@ -106,79 +110,4 @@ public class BarcodeSystemApplication extends BaseApplication {
     }
 
 
-    /**
-     * 当前版本是否进行过DexOpt操作。
-     *
-     * @param context
-     * @return
-     */
-    private boolean dexOptDone(Context context) {
-        SharedPreferences sp = context.getSharedPreferences("dexOpt", MODE_MULTI_PROCESS);
-        boolean dex_opt = sp.getBoolean("dex_opt", false);
-        return dex_opt;
-    }
-
-    /**
-     * 在单独进程中提前进行DexOpt的优化操作；主进程进入等待状态。
-     *
-     * @param base
-     */
-    private void preLoadDex(Context base) {
-        Intent intent = new Intent(BarcodeSystemApplication.this, PreLoadDexActivity.class);
-        //注意这里使用context启动Activity,需要给出Activity的栈标识
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        base.startActivity(intent);
-        while (!dexOptDone(base)) {
-            try {
-                //主线程开始等待；直到优化进程完成了DexOpt操作。
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * 获取当前应用所在的进程名称
-     *
-     * @param context
-     * @return
-     */
-    private String getCurProcessName(Context context) {
-        String strRet = null;
-
-        try {
-            Class pid = Class.forName("android.ddm.DdmHandleAppName");
-            Method activityManager = pid.getDeclaredMethod("getAppName", new Class[0]);
-            strRet = (String) activityManager.invoke(pid, new Object[0]);
-        } catch (Exception var7) {
-        }
-
-        if (TextUtils.isEmpty(strRet)) {
-            int pid1 = android.os.Process.myPid();
-            ActivityManager activityManager1 = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-            List runningAppProcesses = activityManager1.getRunningAppProcesses();
-            Iterator var5 = runningAppProcesses.iterator();
-            while (var5.hasNext()) {
-                ActivityManager.RunningAppProcessInfo appProcess = (ActivityManager.RunningAppProcessInfo) var5.next();
-                if (appProcess.pid == pid1) {
-                    strRet = appProcess.processName;
-                    break;
-                }
-            }
-        }
-        return strRet;
-    }
-
-    /**
-     * 判断当前应用运行的进程是否在主进程
-     *
-     * @param context
-     * @return
-     */
-    private boolean isMainProcess(Context context) {
-        String packageName = context.getPackageName();
-        String processName = getCurProcessName(context);
-        return packageName.equalsIgnoreCase(processName);
-    }
 }

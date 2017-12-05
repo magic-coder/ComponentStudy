@@ -4,8 +4,8 @@ import com.richfit.common_lib.lib_adapter_rv.base.ViewHolder;
 import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.BottomMenuEntity;
 import com.richfit.module_qysh.R;
-import com.richfit.module_qysh.module_sxcl.imp.QYSHLocDetailPresenterImp;
 import com.richfit.sdk_sxcl.basedetail.LocQTDetailFragment;
+import com.richfit.sdk_sxcl.basedetail.imp.LocQTDetailPresenterImp;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
  * Created by monday on 2017/10/18.
  */
 
-public class QYSHLocDetailFragment extends LocQTDetailFragment<QYSHLocDetailPresenterImp>{
+public class QYSHLocDetailFragment extends LocQTDetailFragment<LocQTDetailPresenterImp>{
 
     @Override
     public void initPresenter() {
-        mPresenter = new QYSHLocDetailPresenterImp(mActivity);
+        mPresenter = new LocQTDetailPresenterImp(mActivity);
     }
 
     @Override
@@ -41,6 +41,8 @@ public class QYSHLocDetailFragment extends LocQTDetailFragment<QYSHLocDetailPres
     @Override
     public List<BottomMenuEntity> provideDefaultBottomMenu() {
         List<BottomMenuEntity> tmp = super.provideDefaultBottomMenu();
+        tmp.get(0).menuName = "上架处理";
+		tmp.get(0).transToSapFlag = "03";
         return tmp.subList(0, 1);
     }
 }

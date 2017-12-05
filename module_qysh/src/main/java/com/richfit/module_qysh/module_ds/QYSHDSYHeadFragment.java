@@ -27,6 +27,12 @@ public class QYSHDSYHeadFragment extends BaseDSHeadFragment<DSHeadPresenterImp> 
         return R.layout.qysh_fragment_dsy_head;
     }
 
+	@Override
+    public void clearAllUI() {
+		 super.clearAllUI();
+        clearCommonUI(tvMoveType, tvCostCenter, tvOrderNum, tvNetWork,etDeliveryTo);
+    }
+
     @Override
     protected void initPresenter() {
         mPresenter = new DSHeadPresenterImp(mActivity);

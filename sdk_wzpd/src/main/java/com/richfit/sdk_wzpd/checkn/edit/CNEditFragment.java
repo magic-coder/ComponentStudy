@@ -122,13 +122,13 @@ public class CNEditFragment extends BaseEditFragment<CNEditPresenterImp>
 
         //如果是库存级需要检查工厂和库存地点
         if ("02".equals(checkLevel) && TextUtils.isEmpty(mWorkId)) {
-            showMessage("盘点工厂Id为空");
+            showMessage("盘点工厂为空");
             return false;
         }
 
 
         if ("02".equals(checkLevel) && TextUtils.isEmpty(mInvId)) {
-            showMessage("盘点库存地点Id为空");
+            showMessage("盘点库存地点为空");
             return false;
         }
         if (TextUtils.isEmpty(getString(etCheckQuantity))) {

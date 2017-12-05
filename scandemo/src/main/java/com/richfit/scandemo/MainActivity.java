@@ -6,24 +6,39 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
+import com.richfit.scandemo.scancore.IScanService;
+import com.richfit.scandemo.scancore.ScanServiceFactory;
+
 public class MainActivity extends AppCompatActivity {
 
-    ScanUtil mScanUtil;
     TextView textView;
+    IScanService scanService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         textView = (TextView) findViewById(R.id.show_barcode);
-        mScanUtil = new ScanUtil(this);
+        scanService = ScanServiceFactory.getScanService();
+        scanService.initScanService(this);
     }
 
+    @Override
+    protected void onPostResume() {
+        scanService.openScanService();
+        super.onPostResume();
+    }
+
+    @Override
+    protected void onPause() {
+        scanService.closeScanService();
+        super.onPause();
+    }
 
     @Override
     public void onDestroy() {
-        mScanUtil.stopRecData();
-        mScanUtil = null;
+        scanService.destroyScanService();
+        scanService = null;
         super.onDestroy();
     }
 
@@ -31,19 +46,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_F5:
-                mScanUtil.startScan();
+                scanService.startScan();
                 break;
             case KeyEvent.KEYCODE_F4:
-                mScanUtil.startScan();
+                scanService.startScan();
                 break;
             case KeyEvent.KEYCODE_1:
-                mScanUtil.startScan();
+                scanService.startScan();
                 break;
             case KeyEvent.KEYCODE_FUNCTION:
-                mScanUtil.startScan();
+                scanService.startScan();
                 break;
             case KeyEvent.KEYCODE_STEM_2:
-                mScanUtil.startScan();
+                scanService.startScan();
                 break;
         }
         return super.onKeyDown(keyCode, event);
@@ -60,19 +75,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_F5:
-                mScanUtil.stopScan();
+                scanService.stopScan();
                 break;
             case KeyEvent.KEYCODE_F4:
-                mScanUtil.stopScan();
+                scanService.stopScan();
                 break;
             case KeyEvent.KEYCODE_1:
-                mScanUtil.stopScan();
+                scanService.stopScan();
                 break;
             case KeyEvent.KEYCODE_FUNCTION:
-                mScanUtil.stopScan();
+                scanService.stopScan();
                 break;
             case KeyEvent.KEYCODE_STEM_2:
-                mScanUtil.stopScan();
+                scanService.stopScan();
                 break;
         }
         return super.onKeyUp(keyCode, event);

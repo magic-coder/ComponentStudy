@@ -384,6 +384,8 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         result.recInvId = lineData.recInvId;
         result.locationId = mLocationId;
         result.materialId = lineData.materialId;
+        result.recBatchFlag = CommonUtil.toUpperCase(getString(tvRecBatchFlag));
+        result.recLocation = CommonUtil.toUpperCase(getString(tvRecLoc));
         int locationPos = spLocation.getSelectedItemPosition();
         result.location = mInventoryDatas.get(locationPos).location;
         result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;

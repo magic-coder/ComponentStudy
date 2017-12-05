@@ -72,7 +72,7 @@ public class QYSHLocCollectFragment extends LocQTCollectFragment {
     @Override
     public InventoryQueryParam provideInventoryQueryParam() {
         InventoryQueryParam param = super.provideInventoryQueryParam();
-        param.queryType = "03";
+        param.queryType = "04";
         param.invType = TextUtils.isEmpty(mRefData.invType) ? "1" : mRefData.invType;
         Map<String, Object> extraMap = new HashMap<>();
         extraMap.put("invFlag", mRefData.invFlag);

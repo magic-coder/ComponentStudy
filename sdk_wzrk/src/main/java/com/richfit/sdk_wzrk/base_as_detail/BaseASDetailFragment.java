@@ -30,8 +30,6 @@ import butterknife.BindView;
 public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         BaseDetailFragment<P, RefDetailEntity> implements IASDetailView<RefDetailEntity> {
 
-
-
     @Override
     protected int getContentId() {
         return R.layout.wzrk_fragment_base_asy_detail;

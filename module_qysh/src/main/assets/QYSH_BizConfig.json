@@ -437,7 +437,7 @@
     "refType": "",
     "mode": 0,
     "fragmentType": -1,
-    "className": "com.richfit.sdk_wzpd.checkn.edit.CNEditFragment"
+    "className": "com.richfit.module_qysh.module_pd.QYSHCNEditFragment"
   },
   {
     "id": "45",
@@ -473,9 +473,9 @@
     "id": "48",
     "tabTitle": "抬头",
     "fragmentTag": "qysh_sxcl_header_fragment_tag",
-    "bizType": "311",
+    "bizType": "B1",
     "mode": 0,
-    "refType": "13",
+    "refType": "9",
     "fragmentType": 0,
     "className": "com.richfit.module_qysh.module_sxcl.QYSHLocHeadFragment"
   },
@@ -483,9 +483,9 @@
     "id": "49",
     "tabTitle": "数据明细",
     "fragmentTag": "qysh_sxcl_detail_fragment_tag",
-    "bizType": "311",
+    "bizType": "B1",
     "mode": 0,
-    "refType": "13",
+    "refType": "9",
     "fragmentType": 1,
     "className": "com.richfit.module_qysh.module_sxcl.QYSHLocDetailFragment"
   },
@@ -493,9 +493,9 @@
     "id": "50",
     "tabTitle": "数据采集",
     "fragmentTag": "qysh_sxcl_collect_fragment_tag",
-    "bizType": "311",
+   "bizType": "B1",
     "mode": 0,
-    "refType": "13",
+    "refType": "9",
     "fragmentType": 2,
     "className": "com.richfit.module_qysh.module_sxcl.QYSHLocCollectFragment"
   },
@@ -503,9 +503,9 @@
     "id": "51",
     "tabTitle": "明细修改",
     "fragmentTag": "qysh_sxcl_edit_fragment_tag",
-    "bizType": "311",
+    "bizType": "B1",
     "mode": 0,
-    "refType": "13",
+    "refType": "9",
     "fragmentType": -1,
     "className": "com.richfit.module_qysh.module_sxcl.QYSHLocEditFragment"
   }

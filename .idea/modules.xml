@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/common_lib/common_lib.iml" filepath="$PROJECT_DIR$/common_lib/common_lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/module_cq/module_cq.iml" filepath="$PROJECT_DIR$/module_cq/module_cq.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_cqyt/module_cqyt.iml" filepath="$PROJECT_DIR$/module_cqyt/module_cqyt.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_hc/module_hc.iml" filepath="$PROJECT_DIR$/module_hc/module_hc.iml" />
       <module fileurl="file://$PROJECT_DIR$/module_klmy/module_klmy.iml" filepath="$PROJECT_DIR$/module_klmy/module_klmy.iml" />

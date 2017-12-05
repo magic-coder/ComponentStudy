@@ -187,6 +187,7 @@ public class LocQTDetailPresenterImp extends BaseDetailPresenterImp<ILocQTDetail
                 childNode.locationId = location.id;
                 //这里将父节点的上下架标识赋值给子节点
                 childNode.shkzg = parentNode.shkzg;
+                childNode.locationType = location.locationType;
                 addTreeInfo(parentNode, childNode, result);
             }
         }

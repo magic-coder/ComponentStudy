@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_base_sdk.edit.EditActivity;
@@ -119,6 +120,7 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
                 }
             }
         }
+        Log.e("yff","datas size = " + datas.size());
         return datas;
     }
 }

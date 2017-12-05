@@ -1,6 +1,7 @@
 package com.richfit.sdk_wzrk.base_asn_detail;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailFragment;
@@ -50,6 +51,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
                 break;
             }
         }
+        Log.e("yff","nodes size = " + nodes.size());
         if (mAdapter == null) {
             mAdapter = new ASNDetailAdapter(mActivity, R.layout.wzrk_item_asn_parent_item, nodes);
             mRecyclerView.setAdapter(mAdapter);
@@ -177,6 +179,7 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
     @Override
     public void submitSAPSuccess() {
         setRefreshing(false, "数据上传成功");
+        showSuccessDialog(mShowMsg);
         if (mAdapter != null) {
             mAdapter.removeAllVisibleNodes();
         }

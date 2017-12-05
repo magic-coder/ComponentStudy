@@ -132,6 +132,10 @@ public abstract class BaseDetailFragment<P extends IBaseDetailPresenter, T exten
         if (!checkTransStateBeforeRefresh()) {
             return;
         }
+       /* //如果已经展示过数据，那么清除之前的数据
+        if(mAdapter != null) {
+            mAdapter.removeAllVisibleNodes();
+        }*/
         //单据抬头id
         final String refCodeId = mRefData.refCodeId;
         //业务类型

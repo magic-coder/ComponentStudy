@@ -54,7 +54,7 @@ public class QYSHMSN301CollectFragment extends BaseMSNCollectFragment<MSNCollect
 
     @Override
     public int getContentId() {
-        return R.layout.qysh_fragment_msn301_collect;
+        return R.layout.qysh_fragment_msy301_collect;
     }
 
     @Override

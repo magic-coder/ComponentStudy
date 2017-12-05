@@ -271,7 +271,10 @@ public class BCHeadFragment extends BaseHeadFragment<BlindHeadPresenterImp>
 
     @Override
     public void loadStorageNumComplete() {
-
+        if(isOpenLocationType) {
+            //库存地点加载完毕
+            mPresenter.getDictionaryData("locationType");
+        }
     }
 
     /**

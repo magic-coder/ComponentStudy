@@ -75,6 +75,14 @@ android {
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_hanc_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
+
+        //川庆
+        sign_cqzt {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_cqzt_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
     }
 
 
@@ -117,12 +125,12 @@ android {
 
     productFlavors {
         qysh {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8092/lhbk_middleware/MobileProcess/"'
+            buildConfigField "String", "SERVER_URL", '"http://11.11.177.94:9087/lhbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"QYSH_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"qysh"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
             versionCode 1
-            versionName "1.3"
+            versionName "1.6"
             signingConfig signingConfigs.sign_qysh
         }
 
@@ -137,7 +145,7 @@ android {
         }
 
         xngd {
-            buildConfigField "String", "SERVER_URL", '"http://11.11.47.29:8085/gdbk_middleware/MobileProcess/"'
+            buildConfigField "String", "SERVER_URL", '"http://11.11.117.96:8085/gdbk_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"XNGD_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"xngd"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
@@ -176,6 +184,15 @@ android {
             signingConfig signingConfigs.sign_hanc
         }
 
+        cqzt {
+            buildConfigField "String", "SERVER_URL", '"http://11.11.136.206:9087/gcjs_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"CQZT_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"cqzt"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 1
+            versionName "1.0"
+            signingConfig signingConfigs.sign_cqzt
+        }
     }
 
     productFlavors.all { flavor ->
@@ -217,12 +234,12 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    //compile project(':module_qysh')
+    compile project(':module_qysh')
    // compile project(':module_qhyt')
-   // compile project(':module_xngd')
+    //compile project(':module_xngd')
     //compile project(':module_cqyt')
     //compile project(':module_mcq')
-     compile project(':module_hc')
+     //compile project(':module_hc')
 
 }
 tasks.whenTaskAdded { task ->

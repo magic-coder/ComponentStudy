@@ -26,6 +26,12 @@ public class QYSHRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp>{
         return R.layout.qysh_fragment_rs_head;
     }
 
+	@Override
+    public void clearAllUI() {
+		 super.clearAllUI();
+        clearCommonUI(tvMoveType, tvCostCenter, tvOrderNum, tvNetWork,etDeliveryTo);
+    }
+
     @Override
     protected void initPresenter() {
         mPresenter = new ASHeadPresenterImp(mActivity);
@@ -48,7 +54,7 @@ public class QYSHRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp>{
     @Override
     public void bindCommonHeaderUI() {
         super.bindCommonHeaderUI();
-        tvMoveType.setText(mRefData.moveType);
+        tvMoveType.setText(mRefData.sapMoveType);
         tvCostCenter.setText(mRefData.costCenter);
         tvOrderNum.setText(mRefData.orderNum);
         tvNetWork.setText(mRefData.network);
@@ -56,9 +62,8 @@ public class QYSHRSHeadFragment extends BaseASHeadFragment<ASHeadPresenterImp>{
 
     @Override
     public void _onPause() {
-        mRefData.sapMoveType = mRefData.moveType;
         super._onPause();
-        if(mRefData == null) {
+        if(mRefData != null) {
             mRefData.deliveryTo = getString(etDeliveryTo);
         }
     }

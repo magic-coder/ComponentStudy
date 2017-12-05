@@ -74,7 +74,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
 
     @Override
     protected void initView() {
-        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
+
     }
 
     /**
@@ -95,6 +95,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
 
     @Override
     protected void initData() {
+        etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal() &&
                 !TextUtils.isEmpty(mUploadMsgEntity.transId) && !TextUtils.isEmpty(mUploadMsgEntity.refNum)) {
             etRefNum.setText(mUploadMsgEntity.refNum);
