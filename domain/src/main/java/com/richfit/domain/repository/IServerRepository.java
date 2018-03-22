@@ -227,4 +227,6 @@ public interface IServerRepository extends IRepository {
      * @param extraMap
      */
     Flowable<List<InventoryEntity>> getInspectionInfo(String bizType,String materialNum,String userId,String workCode,Map<String,Object> extraMap);
+
+
 }

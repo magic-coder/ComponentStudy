@@ -219,4 +219,19 @@ public interface IRepository {
      * 获取用户操作的菜单列表
      */
     Flowable<ArrayList<MenuNode>> getMenuInfo(String loginId, int mode);
+
+    /**
+     * 获取建议仓位和建议批次
+     * @param workCode
+     * @param invCode
+     * @param materialNum
+     * @param queryType
+     * @param extraMap
+     * @return
+     */
+    Flowable<List<InventoryEntity>> getSuggestInventoryInfo(String workCode,String invCode,String materialNum,
+                                                            String queryType,Map<String,Object> extraMap);
+
+
+
 }

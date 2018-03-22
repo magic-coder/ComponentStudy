@@ -37,22 +37,25 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
     /**
      * 单条数据上传，增加接收仓位的检查
+     *
      * @param result:用户采集的数据(json格式)
      */
     @Override
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
         Flowable<String> flowable;
-        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+        if (mRepository.isLocal()) {
+            flowable = mRepository.uploadCollectionDataSingle(result);
+        } else if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
             //检查接收仓位
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("locationType", result.locationType);
             flowable = Flowable.zip(mRepository.getLocationInfo(result.queryType, result.recWorkId, result.recInvId, "",
                     result.recLocation, extraMap),
-                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";"+ s2);
+                    mRepository.uploadCollectionDataSingle(result), (s, s2) -> s + ";" + s2);
         } else {
             //意味着不上架
-            flowable =    mRepository.uploadCollectionDataSingle(result);
+            flowable = mRepository.uploadCollectionDataSingle(result);
         }
 
         ResourceSubscriber<String> subscriber =
@@ -117,7 +120,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
                             @Override
                             public void onComplete() {
-                                if(mView != null) {
+                                if (mView != null) {
                                     mView.loadInvComplete();
                                 }
                             }
@@ -127,7 +130,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
     @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                              String location,Map<String,Object> extraMap) {
+                              String location, Map<String, Object> extraMap) {
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.checkLocationFail("工厂为空");
@@ -140,7 +143,7 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location, extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override
@@ -226,7 +229,9 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
 
         @Override
         public void _onComplete() {
-
+            if (mView != null) {
+                mView.loadInventoryComplete();
+            }
         }
     }
 
@@ -278,6 +283,63 @@ public class MSCollectPresenterImp extends BaseCollectPresenterImp<IMSCollectVie
                             }
                         });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getSuggestInventoryInfo(String queryTyp, String workCode, String invCode, String materialNum,
+                                        Map<String, Object> extraMap) {
+        mView = getView();
+        mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryTyp, extraMap)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<List<InventoryEntity>>() {
+                    @Override
+                    public void onNext(List<InventoryEntity> list) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationSuccess(list.get(0));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.getSuggestedLocationComplete();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void checkRecLocation(String queryTyp, String workCode, String invCode, String materialNum, Map<String, Object> extraMap) {
+        mView = getView();
+        mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryTyp, extraMap)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<List<InventoryEntity>>() {
+                    @Override
+                    public void onNext(List<InventoryEntity> list) {
+                        if (mView != null) {
+                            mView.getActLocationSuccess(list.get(0));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.getActLocationFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 }
 

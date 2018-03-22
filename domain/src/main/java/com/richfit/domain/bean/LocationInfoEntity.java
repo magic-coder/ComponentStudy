@@ -39,6 +39,8 @@ public class LocationInfoEntity implements Cloneable{
     public String arrivalQuantity;
     public String locationType;
     public String recLocationType;
+    public String suggestBatch;
+    public String suggestLocation;
 
     @Override
     public LocationInfoEntity clone() {

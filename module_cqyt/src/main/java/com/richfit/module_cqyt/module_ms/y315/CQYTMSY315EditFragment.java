@@ -1,28 +1,15 @@
 package com.richfit.module_cqyt.module_ms.y315;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.richfit.common_lib.lib_adapter.SimpleAdapter;
-import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
-import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by monday on 2017/6/30.

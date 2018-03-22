@@ -192,9 +192,10 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         SQLiteDatabase db = getWritableDB();
         db.delete("T_FRAGMENT_CONFIGS", null, null);
         ContentValues cv = new ContentValues();
+        int id = 0 ;
         for (BizFragmentConfig bizFragmentConfig : bizFragmentConfigs) {
             cv.clear();
-            cv.put("id", bizFragmentConfig.id);
+            cv.put("id", String.valueOf((id++)));
             cv.put("fragment_tag", bizFragmentConfig.fragmentTag);
             cv.put("fragment_type", bizFragmentConfig.fragmentType);
             cv.put("biz_type", bizFragmentConfig.bizType);
@@ -1157,7 +1158,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
 
     @Override
     public String getStorageNum(String workId, String workCode, String invId, String invCode) {
-        Log.e("yff", "workId = " + workId + "; workCode = " + workCode);
+        Log.e("yff", "====getStorageNum==>>workId = " + workId + "; workCode = " + workCode);
         SQLiteDatabase db = getReadableDB();
         Cursor cursor = null;
         String storageNum = null;
@@ -1166,6 +1167,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 //如果传入的workId不为空那么直接使用
                 cursor = db.rawQuery("select storage_code from p_auth_org where parent_id = ? and org_code = ? and org_level = ?",
                         new String[]{workId, invCode, "3"});
+                Log.e("yff", "sql = " + sb.toString());
             } else if (!TextUtils.isEmpty(workCode)) {
                 StringBuffer sb = new StringBuffer();
                 sb.append("select distinct  storage_code from ").append(" p_auth_org ").append(" where org_level = ? ")
@@ -1219,6 +1221,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 sb.append(" and org_level = '2' ");
             }
             sb.append(")");
+            Log.e("yff","获取仓库号sql = " + sb.toString());
             cursor = db.rawQuery(sb.toString(), new String[]{"3"});
             list.add("请选择");
             while (cursor.moveToNext()) {
@@ -1362,7 +1365,7 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
         clearStringBuffer();
         String[] selections;
         List<String> selectionList = new ArrayList<>();
-        final String locationType = (String) extraMap.get("locationType");
+
         sb.append(" select count(*) from BASE_LOCATION where ");
         if (TextUtils.isEmpty(storageNum)) {
             // 如果仓库号为空 则先查询库存地点是否启用了WM
@@ -1373,6 +1376,10 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 storageCode = cursor.getString(0);
             }
             cursor.close();
+            String locationType = null;
+            if(extraMap != null) {
+                locationType  = (String) extraMap.get("locationType");
+            }
             if (TextUtils.isEmpty(storageCode)) {
                 sb.append(" work_id = ? and inv_id = ? and location = ? ");
                 selectionList.add(workId);
@@ -1393,6 +1400,10 @@ public class BasicServiceDao extends BaseDao implements IBasicServiceDao {
                 }
             }
         } else {
+            String locationType = null;
+            if(extraMap != null) {
+                locationType  = (String) extraMap.get("locationType");
+            }
             // 如果传入的是仓库号 表示启用了WM 直接根据仓库号查询
             sb.append(" storage_num = ? and location = ?");
             selectionList.add(storageNum);

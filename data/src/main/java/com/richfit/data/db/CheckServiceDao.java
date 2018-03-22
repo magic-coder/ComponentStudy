@@ -12,6 +12,8 @@ import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.repository.ICheckServiceDao;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -140,25 +142,25 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
                 .append(" on t.work_id = worg.org_id ")
                 .append(" left join p_auth_org iorg")
                 .append(" on t.inv_id = iorg.org_id, base_material_code m ")
-                .append(" left join MTL_CHECK_LINES H ")
-                .append(" on L.check_id = H.id ")
+                .append(" left join MTL_CHECK_HEADER H ")
+                .append(" on t.check_id = H.id ")
                 .append("   where t.material_id = m.id and H.trans_flag = '0'");
         if (!TextUtils.isEmpty(checkId)) {
-            sb.append(" and T.check_id = ?");
+            sb.append(" and t.check_id = ?");
             selectionList.add(checkId);
         }
         if (!TextUtils.isEmpty(materialId)) {
-            sb.append(" and T.material_id = ?");
+            sb.append(" and t.material_id = ?");
             selectionList.add(materialId);
         }
 
         if (!TextUtils.isEmpty(materialNum)) {
-            sb.append(" and M.material_num = ?");
+            sb.append(" and m.material_num = ?");
             selectionList.add(materialNum);
         }
 
         if (!TextUtils.isEmpty(location)) {
-            sb.append(" and T.location = ?");
+            sb.append(" and t.location = ?");
             selectionList.add(location);
         }
         selections = new String[selectionList.size()];
@@ -228,7 +230,7 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
         sb.append("select t.id,t.check_id,")
                 .append(" t.work_id,t.inv_id,t.special_flag,t.special_num,")
                 .append(" t.line_num,t.material_id,t.location,t.inv_type,t.quantity,")
-                .append(" t.new_flag,t.inv_quantity,m.material_num,")
+                .append(" t.new_flag,t.inv_quantity,t.batch_num,m.material_num,")
                 .append(" m.material_desc,m.material_group,m.unit,")
                 .append(" worg.org_code     as work_code,")
                 .append(" worg.org_name     as work_name,")
@@ -255,6 +257,8 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
             sb.append(" and T.location = ?");
             selectionList.add(location);
         }
+
+
 
         if (pageNum > 0 && pageSize > 0) {
             sb.append(" limit ? offset ? ");
@@ -284,6 +288,7 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
             item.totalQuantity = cursor.getString(++index);
             item.newFlag = cursor.getString(++index);
             item.invQuantity = cursor.getString(++index);
+            item.batchFlag = cursor.getString(++index);
             item.materialNum = cursor.getString(++index);
             item.materialDesc = cursor.getString(++index);
             item.materialGroup = cursor.getString(++index);
@@ -348,6 +353,11 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
             selectionList.add(result.invId);
         }
 
+        if(!TextUtils.isEmpty(result.batchFlag)) {
+            sb.append(" and batch_num = ?");
+            selectionList.add(result.batchFlag);
+        }
+
         if (!TextUtils.isEmpty(result.specialInvFlag) && !TextUtils.isEmpty(result.specialInvNum)) {
             sb.append(" and special_flag = ? and special_num = ?");
             sb.append(result.specialInvFlag);
@@ -390,6 +400,7 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
             cv.put("creation_date", creationDate);
             cv.put("line_num", count);
             cv.put("inv_quantity", "0");
+            cv.put("batch_num",result.batchFlag);
             db.insert("MTL_CHECK_LINES", null, cv);
         } else {
             //更新
@@ -480,7 +491,7 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
 
         sb.append("select L.id,L.work_id,L.inv_id,L.special_flag,L.line_num,L.material_id,")
                 .append("L.location,L.inv_type,L.special_num,L.batch_num,L.quantity,L.new_flag,created_by,L.inv_quantity,")
-                .append("M.material_num,M.material_group,M.material_desc,M.unit ")
+                .append("M.material_num,M.material_group,M.material_desc,M.unit,L.batch_num ")
                 .append("from MTL_CHECK_LINES L left join base_material_code M ")
                 .append(" on L.material_id = M.id where L.check_id = ? ");
 
@@ -510,6 +521,7 @@ public class CheckServiceDao extends BaseDao implements ICheckServiceDao {
                 item.materialGroup = cursor.getString(++index);
                 item.materialDesc = cursor.getString(++index);
                 item.unit = cursor.getString(++index);
+                item.batchFlag = cursor.getString(++index);
                 refData.checkList.add(item);
             }
             cursor.close();

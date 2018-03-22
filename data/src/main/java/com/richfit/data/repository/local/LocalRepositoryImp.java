@@ -23,6 +23,7 @@ import com.richfit.domain.repository.ILocalRepository;
 import com.richfit.domain.repository.IReferenceServiceDao;
 import com.richfit.domain.repository.ITransferServiceDao;
 
+import java.nio.channels.FileLock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,16 @@ public class LocalRepositoryImp implements ILocalRepository {
                     if (list != null && list.size() > 0) {
                         return Flowable.just(list);
                     }
-                    return Flowable.error(new Throwable("未获取到缓存"));
+                    MaterialEntity materialInfo = mBasicServiceDao.getMaterialInfo("01", materialNum);
+                    InventoryEntity item = new InventoryEntity();
+                    item.materialId = materialInfo.id;
+                    item.materialDesc  = materialInfo.materialDesc;
+                    item.materialGroup = materialInfo.materialGroup;
+                    item.materialUnit = materialInfo.unit;
+                    item.materialNum = materialInfo.materialNum;
+
+                    list.add(item);
+                    return Flowable.just(list);
                 });
     }
 
@@ -148,7 +158,7 @@ public class LocalRepositoryImp implements ILocalRepository {
                                             String storageNum, String location, Map<String, Object> extraMap) {
         return Flowable.just(queryType)
                 .flatMap(type -> {
-                    if (mBasicServiceDao.getLocationInfo(type, workId, invId, storageNum, location,extraMap)) {
+                    if (mBasicServiceDao.getLocationInfo(type, workId, invId, storageNum, location, extraMap)) {
                         return Flowable.just("仓位存在");
                     } else {
                         return Flowable.error(new Throwable("您输入的仓位不存在"));
@@ -165,6 +175,11 @@ public class LocalRepositoryImp implements ILocalRepository {
                     return Flowable.just(list);
                 });
 
+    }
+
+    @Override
+    public Flowable<List<InventoryEntity>> getSuggestInventoryInfo(String workCode, String invCode, String materialNum, String queryType, Map<String, Object> extraMap) {
+        return Flowable.error(new Throwable("离线不能获取建议仓位和建议批次信息!"));
     }
 
     @Override
@@ -236,10 +251,10 @@ public class LocalRepositoryImp implements ILocalRepository {
     }
 
     @Override
-    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode,Map<String,Object> extraMap,
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, Map<String, Object> extraMap,
                                                                     String keyWord, int defaultItemNum, int flag, String... keys) {
         return Flowable.just(keyWord).flatMap(key -> {
-            Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode,extraMap,
+            Map<String, List<SimpleEntity>> map = mBasicServiceDao.getAutoComList(workCode, extraMap,
                     key, defaultItemNum, flag, keys);
             if (map == null || map.size() == 0) {
                 return Flowable.error(new Throwable("未搜索到该基础数据!!!"));
@@ -390,6 +405,9 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "17":
                 refData = mReferenceServiceDao.getArrivalInfo(refNum, refType, bizType, moveType, refLineId, userId);
                 break;
+            default:
+                refData = mReferenceServiceDao.getPoInfo(refNum, refType, bizType, moveType, refLineId, userId);
+                break;
         }
         return refData;
     }
@@ -426,6 +444,9 @@ public class LocalRepositoryImp implements ILocalRepository {
                 break;
             case "17"://出库通知单
                 mReferenceServiceDao.saveArrivalInfo(refData, bizType, refType);
+                break;
+            default:
+                mReferenceServiceDao.savePoInfo(refData, bizType, refType);
                 break;
         }
     }
@@ -580,19 +601,19 @@ public class LocalRepositoryImp implements ILocalRepository {
     @Override
     public Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType,
                                                      String refType, String userId, String workId,
-                                                     String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
+                                                     String invId, String recWorkId, String recInvId, Map<String, Object> extraMap) {
         if (TextUtils.isEmpty(bizType)) {
             return Flowable.error(new Throwable("未获取到缓存"));
         }
         return Flowable.just(bizType)
                 .flatMap(type -> Flowable.just(getTransferInfoInner(recordNum, refCodeId, type,
-                        refType, userId, workId, invId, recWorkId, recInvId,extraMap)))
+                        refType, userId, workId, invId, recWorkId, recInvId, extraMap)))
                 .flatMap(refData -> processReferenceError(refData, bizType, "未获取到缓存"));
     }
 
     private ReferenceEntity getTransferInfoInner(String recordNum, String refCodeId, String businessType,
                                                  String refType, String userId, String workId, String invId,
-                                                 String recWorkId, String recInvId,Map<String,Object> extraMap) {
+                                                 String recWorkId, String recInvId, Map<String, Object> extraMap) {
 
         ReferenceEntity refData = null;
         switch (businessType) {
@@ -611,8 +632,14 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "51":// 采购退货
             case "113"://入库通知单
             case "114"://出库通知单
+            case "116":
+            case "212":
+            case "314":
+            case "317":
+            case "310":
+            case "411":
                 refData = mTransferServiceDao.getBusinessTransferInfoRef(recordNum, refCodeId, businessType, refType,
-                        userId, workId, invId, recWorkId, recInvId,extraMap);
+                        userId, workId, invId, recWorkId, recInvId, extraMap);
                 break;
             case "16":// 其他入库-无参考
             case "25":// 其他出库-无参考
@@ -632,7 +659,7 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "93":// 代管料退库-HRM
             case "94":// 代管料调拨-HRM
                 refData = mTransferServiceDao.getBusinessTransferInfo(recordNum, refCodeId, businessType, refType,
-                        userId, workId, invId, recWorkId, recInvId,extraMap);
+                        userId, workId, invId, recWorkId, recInvId, extraMap);
                 break;
         }
         return refData;
@@ -676,6 +703,12 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "51":// 采购退货-161
             case "113"://入库通知单
             case "114"://出库通知单
+            case "116":
+            case "212":
+            case "314":
+            case "317":
+            case "310":
+            case "411":
                 refData = mTransferServiceDao.getBusinessTransferInfoSingleRef(refCodeId, refType, bizType, refLineId, workId, invId, recWorkId, recInvId,
                         materialNum, batchFlag, location, refDoc, refDocItem, userId);
                 break;
@@ -780,6 +813,12 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "311":// UB 101
             case "45":// UB 352
             case "51":// 采购退货-161
+            case "116":
+            case "212":
+            case "314":
+            case "317":
+            case "310":
+            case "411":
                 isDeleteSuccess = mBusinessServiceDao.deleteBusinessData(refNum, transId, refCodeId, refType, bizType, userId, companyCode);
                 break;
             case "16":// 其他入库-无参考
@@ -874,6 +913,11 @@ public class LocalRepositoryImp implements ILocalRepository {
             case "51":// 采购退货-161
             case "113"://入库通知单
             case "114"://出库通知单
+            case "116":
+            case "212":
+            case "314":
+            case "317":
+            case "310":
                 isSuccess = mBusinessServiceDao.uploadBusinessDataSingle(param);
                 break;
             case "16":// 其他入库-无参考

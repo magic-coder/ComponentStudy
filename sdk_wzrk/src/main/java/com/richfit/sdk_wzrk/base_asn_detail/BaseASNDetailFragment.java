@@ -51,7 +51,6 @@ public abstract class BaseASNDetailFragment<P extends IASNDetailPresenter> exten
                 break;
             }
         }
-        Log.e("yff","nodes size = " + nodes.size());
         if (mAdapter == null) {
             mAdapter = new ASNDetailAdapter(mActivity, R.layout.wzrk_item_asn_parent_item, nodes);
             mRecyclerView.setAdapter(mAdapter);

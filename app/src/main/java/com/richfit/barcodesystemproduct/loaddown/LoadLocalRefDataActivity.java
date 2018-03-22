@@ -6,8 +6,10 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.R;
-import com.richfit.barcodesystemproduct.barcodescan.BaseBarScannerActivity;
+import com.richfit.barcodesystemproduct.scanservice.BaseBarScannerActivity;
+import com.richfit.common_lib.lib_mvp.BaseActivity;
 import com.richfit.common_lib.widget.RichEditText;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -16,6 +18,9 @@ import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -39,6 +44,8 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
     ArrayList<MenuNode> mBizTypes;
     /*所有明细行数据*/
     ArrayList<RefDetailEntity> mDatas;
+
+    Map<Integer, Integer> mRefTypeMap;
 
 
     @Override
@@ -65,6 +72,7 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
         super.initVariables();
         mBizTypes = new ArrayList<>();
         mDatas = new ArrayList<>();
+        mRefTypeMap = new HashMap<>();
     }
 
 
@@ -74,12 +82,39 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
         setupToolBar(R.id.toolbar, R.id.toolbar_title, "单据数据下载");
     }
 
+    /**
+     * <!--（0：采购订单，1：验收清单，2：生产订单，3：到货验收单，4：交货单，5：出库单，6：提料单，-->
+     * <!--7：领料申请单，8：批料单，9：SAP出入库单，10：预留单，11 调拨单,12.退库申请单,13.条码出入库单
+     * 14.报废申请单,15.工单,16.入库通知单,17.出库通知单
+     * ）-->
+     *
+     * @param savedInstanceState
+     */
     @Override
     public void initData(Bundle savedInstanceState) {
         //初始化单据类型和业务类型下拉列表
+        List<String> refTypeList = getStringArray(R.array.ref_type_list);
+        List<String> result = new ArrayList<>();
+        if (Global.CQZT.equals(BuildConfig.APP_NAME)) {
+         /*   采购订单    采购订单－采购入库101
+            调拨入库    SAP出入库单－调拨入库物料凭证
+            201出库     领料申请单－其他出库领料申请单
+            311         领料申请单－311领料申请
+            313         领料申请单－313领料申请*/
+            //过滤掉不需要的类型
+            result.add(refTypeList.get(0));
+            result.add(refTypeList.get(7));
+            result.add(refTypeList.get(9));
+
+            mRefTypeMap.put(0,0);
+            mRefTypeMap.put(1,7);
+            mRefTypeMap.put(2,9);
+
+        }
+
         //1.单据类型
         ArrayAdapter<String> refTypeAdapter = new ArrayAdapter<>(this, R.layout.item_simple_sp,
-                getStringArray(R.array.ref_type_list));
+                result);
         spRefType.setAdapter(refTypeAdapter);
         //2.业务类型
         mPresenter.readMenuInfo(Global.LOGIN_ID, Global.OFFLINE_MODE);
@@ -104,7 +139,7 @@ public class LoadLocalRefDataActivity extends BaseBarScannerActivity<LoadLocalRe
             showMessage("请先输入单据号");
             return;
         }
-        mPresenter.getReferenceInfo(refNum, String.valueOf(spRefType.getSelectedItemPosition()),
+        mPresenter.getReferenceInfo(refNum, String.valueOf(mRefTypeMap.get(spRefType.getSelectedItemPosition())),
                 mBizTypes.get(spBizType.getSelectedItemPosition()).getBusinessType(),
                 "", "", Global.USER_ID);
     }

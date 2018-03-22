@@ -50,4 +50,8 @@ public interface IMSCollectPresenter extends IBaseCollectPresenter<IMSCollectVie
      */
     void getTransferInfoSingle(String refCodeId, String refType, String bizType, String refLineId,
                                String batchFlag, String location, String refDoc, int refDocItem, String userId);
+
+    void getSuggestInventoryInfo(String queryTyp,String workCode,String invCode,String materialNum,Map<String,Object> extraMap);
+
+    void checkRecLocation(String queryTyp,String workCode,String invCode,String materialNum,Map<String,Object> extraMap);
 }

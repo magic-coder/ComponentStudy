@@ -126,6 +126,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
     protected boolean isSplitBatchFlag = false;
     //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
     String mAutoLocation;
+    //建议仓位
+    protected String mActLocation;
 
     /**
      * 处理扫描
@@ -376,7 +378,8 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             etSendBatchFlag.setText(lineData.batchFlag);
         }
 
-
+        //接收批次
+        etRecBatchFlag.setText(getString(etSendBatchFlag));
 
         etSendBatchFlag.setEnabled(isOpenBatchManager);
         //先将库存地点选择器打开，获取缓存后在判断是否需要锁定
@@ -927,6 +930,48 @@ public abstract class BaseMSCollectFragment<P extends IMSCollectPresenter> exten
             queryParam.extraMap.put("recLocationType", recLocationType);
         }
         return queryParam;
+    }
+
+    /**
+     * 发出仓位，建议仓位
+     * @param suggestedInventory
+     */
+    @Override
+    public void getSuggestedLocationSuccess(InventoryEntity suggestedInventory) {
+        if (suggestedInventory != null && !TextUtils.isEmpty(suggestedInventory.suggestLocation)
+                && mInventoryDatas != null) {
+            int pos = -1;
+            for (InventoryEntity data : mInventoryDatas) {
+                pos++;
+                if (suggestedInventory.suggestLocation.equalsIgnoreCase(data.locationCombine)) {
+                    break;
+                }
+            }
+            if (pos >= 0) {
+                spSendLoc.setSelection(pos);
+            }
+        }
+    }
+
+    @Override
+    public void getActLocationSuccess(InventoryEntity suggestedInventory) {
+        if(suggestedInventory != null) {
+            mActLocation = suggestedInventory.actLocation;
+        }
+    }
+
+    @Override
+    public void getSuggestedLocationFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void getSuggestedLocationComplete() {
+    }
+
+    @Override
+    public void getActLocationFail(String message) {
+
     }
 
     protected abstract int getOrgFlag();

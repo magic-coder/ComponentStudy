@@ -140,7 +140,7 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
 
     @Override
     public void checkLocation(String queryType, String workId, String invId, String batchFlag,
-                              String location,Map<String,Object> extraMap) {
+                              String location, Map<String, Object> extraMap) {
         mView = getView();
         if (TextUtils.isEmpty(workId) && mView != null) {
             mView.checkLocationFail("工厂为空");
@@ -153,7 +153,7 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location, extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override
@@ -228,6 +228,40 @@ public class ASCollectPresenterImp extends BaseCollectPresenterImp<IASCollectVie
                             }
                         });
         addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getSuggestInventoryInfo(String queryTyp, String workCode, String invCode, String materialNum,
+                                        Map<String,Object> extraMap) {
+        mView = getView();
+        if (mRepository.isLocal() && mView != null) {
+            mView.getSuggestedLocationComplete();
+            return;
+        }
+        mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryTyp, extraMap)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<List<InventoryEntity>>() {
+                    @Override
+                    public void onNext(List<InventoryEntity> list) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationSuccess(list.get(0));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.getSuggestedLocationComplete();
+                        }
+                    }
+                });
     }
 
 

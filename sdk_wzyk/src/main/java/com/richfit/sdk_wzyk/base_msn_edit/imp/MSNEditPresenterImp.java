@@ -139,7 +139,7 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
         addSubscriber(subscriber);
     }
 
-    private ReferenceEntity calcTotalQuantity(ReferenceEntity refData) {
+    protected ReferenceEntity calcTotalQuantity(ReferenceEntity refData) {
         List<RefDetailEntity> billDetailList = refData.billDetailList;
         for (RefDetailEntity target : billDetailList) {
             HashSet<String> sendLocationSet = new HashSet<>();
@@ -174,6 +174,8 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
         }
         return refData;
     }
+
+
 
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
@@ -274,6 +276,35 @@ public class MSNEditPresenterImp extends BaseEditPresenterImp<IMSNEditView>
 
                             }
                         });
+        addSubscriber(subscriber);
+    }
+
+    @Override
+    public void getSuggestLocationAndBatchFlag(String workCode, String invCode, String materialNum, String queryType) {
+        ResourceSubscriber<InventoryEntity> subscriber = mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryType, null)
+                .filter(list -> list != null && list.size() > 0)
+                .map(list -> list.get(0))
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<InventoryEntity>() {
+                    @Override
+                    public void onNext(InventoryEntity result) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoSuccess(result.suggestLocation, result.suggestBatch);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
         addSubscriber(subscriber);
     }
 

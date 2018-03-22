@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.richfit.common_lib.BuildConfig;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
@@ -167,7 +168,6 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
     }
 
 
-
     /**
      * 通过单据行的行号得到该行在单据明细列表中的位置
      *
@@ -199,7 +199,7 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
      * @return
      */
     protected RefDetailEntity getLineData(String lineNum) {
-        if(TextUtils.isEmpty(lineNum))
+        if (TextUtils.isEmpty(lineNum))
             return null;
         int lineIndex = getIndexByLineNum(lineNum);
         if (lineIndex < 0) {
@@ -243,6 +243,7 @@ public abstract class BaseCollectFragment<P extends IBaseCollectPresenter> exten
 
     /**
      * 底部虚拟按键栏的高度
+     *
      * @return
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)

@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -113,8 +114,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
     protected boolean isBatchValidate = true;
     /*批次拆分。默认是不进行批次拆分*/
     protected boolean isSplitBatchFlag = false;
+    protected boolean isLocationChecked = false;
+    protected String mCachedBatchFlag;
     //当扫描下架仓位+仓储类型时必须先通过仓储类型去加载库存，将下架仓位保存
     protected String mAutoLocation;
+
 
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
@@ -855,12 +859,11 @@ public abstract class BaseDSCollectFragment<P extends IDSCollectPresenter> exten
 
     @Override
     public void getSuggestedLocationSuccess(InventoryEntity suggestedInventory) {
-        //主计量单位自动匹配
-        if (suggestedInventory != null && !TextUtils.isEmpty(suggestedInventory.locationCombine) && mInventoryDatas != null) {
+        if (suggestedInventory != null && !TextUtils.isEmpty(suggestedInventory.suggestLocation) && mInventoryDatas != null) {
             int pos = -1;
             for (InventoryEntity data : mInventoryDatas) {
                 pos++;
-                if (data.locationCombine.equalsIgnoreCase(suggestedInventory.locationCombine)) {
+                if (suggestedInventory.suggestLocation.equalsIgnoreCase(data.locationCombine)) {
                     break;
                 }
             }

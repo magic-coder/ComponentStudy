@@ -142,7 +142,9 @@ public abstract class BaseDSEditFragment<P extends IDSEditPresenter> extends Bas
             etQuantity.setText(mQuantity);
             tvTotalQuantity.setText(totalQuantity);
             //下载库存
-            loadInventoryInfo();
+            if(spLocation.isEnabled()) {
+                loadInventoryInfo();
+            }
         }
         if (isOpenLocationType)
             mPresenter.getDictionaryData("locationType");

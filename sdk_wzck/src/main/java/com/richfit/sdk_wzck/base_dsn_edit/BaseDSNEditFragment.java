@@ -443,4 +443,14 @@ public abstract class BaseDSNEditFragment<P extends IDSNEditPresenter> extends B
         }
         super.retry(retryAction);
     }
+
+    @Override
+    public void loadSuggestInfoSuccess(String suggestLocation, String suggestBatchFlag) {
+
+    }
+
+    @Override
+    public void loadSuggestInfoFail(String message) {
+        showMessage(message);
+    }
 }

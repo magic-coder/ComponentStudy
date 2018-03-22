@@ -27,6 +27,7 @@ import com.richfit.sdk_wzck.R;
 import com.richfit.sdk_wzck.R2;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -119,6 +120,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @Override
     protected void initData() {
         SPrefUtil.saveData(mBizType, "0");
+        mDropDown = new HashMap<>();
         etTransferDate.setText(CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1));
         //获取发出工厂列表
         mPresenter.getWorks(getOrgFlag());
@@ -146,6 +148,11 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @Override
     public void loadWorksFail(String message) {
         showMessage(message);
+    }
+
+    @Override
+    public void loadWorkComplete() {
+
     }
 
     @Override
@@ -208,7 +215,7 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @Override
     public void _onPause() {
         super._onPause();
-        if (spWork.getAdapter() != null && spWork.getSelectedItemPosition() > 0) {
+        if (spWork != null && spWork.getAdapter() != null && spWork.getSelectedItemPosition() > 0) {
             if (mRefData == null) {
                 mRefData = new ReferenceEntity();
             }
@@ -229,6 +236,16 @@ public abstract class BaseDSNHeadFragment<P extends IDSNHeadPresenter> extends B
     @Override
     public void clearAllUIAfterSubmitSuccess() {
         super.clearAllUIAfterSubmitSuccess();
+    }
+
+    @Override
+    public void loadDictionaryDataSuccess(Map<String, List<SimpleEntity>> data) {
+
+    }
+
+    @Override
+    public void loadDictionaryDataFail(String message) {
+        showMessage(message);
     }
 
     /**

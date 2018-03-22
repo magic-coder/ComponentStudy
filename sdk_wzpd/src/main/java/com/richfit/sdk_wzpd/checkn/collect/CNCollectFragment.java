@@ -48,13 +48,13 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
     @BindView(R2.id.ll_check_location)
     LinearLayout llCheckLocation;
     @BindView(R2.id.et_material_num)
-    RichEditText etMaterialNum;
+    protected RichEditText etMaterialNum;
     @BindView(R2.id.tv_material_desc)
     TextView tvMaterialDesc;
-    @BindView(R2.id.et_special_inv_flag)
+    protected @BindView(R2.id.et_special_inv_flag)
     EditText etSpecialInvFlag;
     @BindView(R2.id.et_special_inv_num)
-    EditText etSpecialInvNum;
+    protected EditText etSpecialInvNum;
     @BindView(R2.id.tv_inv_quantity)
     TextView tvInvQuantity;
     @BindView(R2.id.et_quantity)
@@ -336,7 +336,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
             return false;
         }
 
-        if (TextUtils.isEmpty(getString(tvInvQuantity))) {
+        if (!mPresenter.isLocal() &&TextUtils.isEmpty(getString(tvInvQuantity))) {
             showMessage("请先获取库存数量");
             return false;
         }
@@ -392,6 +392,7 @@ public class CNCollectFragment extends BaseCollectFragment<CNCollectPresenterImp
         result.materialId = data.materialId;
         result.quantity = getString(etQuantity);
         result.locationType = mRefData.locationType;
+        result.batchFlag = data.batchFlag;
         result.modifyFlag = "N";
         return result;
     }

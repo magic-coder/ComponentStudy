@@ -113,13 +113,13 @@ public class DSNCollectPresenterImp extends BaseCollectPresenterImp<IDSNCollectV
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode,
                                  String invCode, String storageNum, String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType,Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType, Map<String, Object> extraMap) {
         mView = getView();
 
         RxSubscriber<List<InventoryEntity>> subscriber =
                 mRepository.getInventoryInfo(queryType, workId, invId, workCode, invCode, storageNum, materialNum,
                         materialId, "", "", batchFlag, location, specialInvFlag,
-                        specialInvNum, invType,extraMap)
+                        specialInvNum, invType, extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new RxSubscriber<List<InventoryEntity>>(mContext) {
                             @Override
@@ -152,7 +152,7 @@ public class DSNCollectPresenterImp extends BaseCollectPresenterImp<IDSNCollectV
 
                             @Override
                             public void _onComplete() {
-                                if(mView != null) {
+                                if (mView != null) {
                                     mView.loadInventoryComplete();
                                 }
                             }
@@ -160,7 +160,32 @@ public class DSNCollectPresenterImp extends BaseCollectPresenterImp<IDSNCollectV
         addSubscriber(subscriber);
     }
 
+    @Override
+    public void getSuggestLocationAndBatchFlag(String workCode, String invCode, String materialNum, String queryType) {
+        ResourceSubscriber<InventoryEntity> subscriber = mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryType, null)
+                .filter(list -> list != null && list.size() > 0)
+                .map(list -> list.get(0))
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<InventoryEntity>() {
+                    @Override
+                    public void onNext(InventoryEntity result) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoSuccess(result.suggestLocation, result.suggestBatch);
+                        }
+                    }
 
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoFail(t.getMessage());
+                        }
+                    }
 
+                    @Override
+                    public void onComplete() {
 
+                    }
+                });
+        addSubscriber(subscriber);
+    }
 }

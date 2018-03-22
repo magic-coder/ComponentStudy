@@ -70,7 +70,7 @@ public class CNDetailPresenterImp extends BasePresenter<ICNDetailView>
     @Override
     public void deleteNode(String checkId, String checkLineId, String userId, int position, String bizType) {
         mView = getView();
-        mRepository.deleteCheckDataSingle(checkId, checkLineId, userId, bizType)
+        RxSubscriber<String> subscriber = mRepository.deleteCheckDataSingle(checkId, checkLineId, userId, bizType)
                 .compose(TransformerHelper.io2main())
                 .subscribeWith(new RxSubscriber<String>(mContext, "正在删除...") {
                     @Override
@@ -104,6 +104,7 @@ public class CNDetailPresenterImp extends BasePresenter<ICNDetailView>
                         }
                     }
                 });
+        addSubscriber(subscriber);
     }
 
     @Override

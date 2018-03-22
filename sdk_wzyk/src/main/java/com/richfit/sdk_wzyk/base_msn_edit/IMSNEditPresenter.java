@@ -60,5 +60,14 @@ public interface IMSNEditPresenter extends IBaseEditPresenter<IMSNEditView> {
                                        String invCode, String storageNum, String materialNum, String materialId,
                                        String location, String batchFlag, String specialInvFlag, String specialInvNum,
                                        String invType,Map<String,Object> extraMap);
+
+    /**
+     * 获取建议仓位和建议批次
+     * @param workCode
+     * @param invCode
+     * @param materialNum
+     * @param queryType
+     */
+    void getSuggestLocationAndBatchFlag(String workCode,String invCode,String materialNum,String queryType);
 }
 

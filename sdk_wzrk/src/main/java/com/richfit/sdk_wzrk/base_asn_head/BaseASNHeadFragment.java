@@ -234,8 +234,4 @@ public abstract class BaseASNHeadFragment<P extends IASNHeadPresenter> extends B
         return false;
     }
 
-    @Override
-    public void clearAllUIAfterSubmitSuccess() {
-        super.clearAllUIAfterSubmitSuccess();
-    }
 }

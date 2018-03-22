@@ -40,7 +40,6 @@ public class BaseHeadPresenterImp<V extends IBaseHeadView> extends BasePresenter
     public void onClearHeadUI(Event<Boolean> event) {
         if (event.getData() && event.getCode() == EventCode.EVENT_CLEARHEAUI) {
             mView = getView();
-            Log.d("yff", "接收到清除UI信号");
             if (mView != null) {
                 mView.clearAllUIAfterSubmitSuccess();
             }

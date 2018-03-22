@@ -175,17 +175,6 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
                     etBatchFlag.setEnabled(true);
                 });
 
-        /*监测批次修改，如果修改了批次那么需要重新刷新库存信息和用户已经输入的信息*/
-        /**
-         * debounce(400, TimeUnit.MILLISECONDS) 当没有数据传入达到400ms之后,才去发送数据
-         * throttleFirst(400, TimeUnit.MILLISECONDS) 在每一个400ms内,如果有数据传入就发送.且每个400ms内只发送一次或零次数据.
-         * 但是这是使用debonce，resetCommonUIPartly将延迟执行到发出库位显示默认位置之后，导致抬头界面的默认发出库位选择失效
-         */
-      /*  RxTextView.textChanges(etBatchFlag)
-                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .filter(str -> !TextUtils.isEmpty(str))
-                .subscribe(batch -> resetCommonUIPartly());
-*/
        /*库存地点。选择库存地点获取库存*/
         RxAdapterView.itemSelections(spInv)
                 .filter(pos -> pos > 0)
@@ -315,6 +304,7 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
 
     /**
      * 获取库存信息。注意无参考使用的抬头的工厂信息
+     *
      * @param position:库存地点的下拉位置
      */
     private void loadInventory(int position) {
@@ -648,5 +638,15 @@ public abstract class BaseDSNCollectFragment<P extends IDSNCollectPresenter> ext
     @Override
     public void networkConnectError(String retryAction) {
 
+    }
+
+    @Override
+    public void loadSuggestInfoSuccess(String suggestLocation, String suggestBatchFlag) {
+
+    }
+
+    @Override
+    public void loadSuggestInfoFail(String message) {
+        showMessage(message);
     }
 }

@@ -59,4 +59,7 @@ public interface IMSNCollectView extends IBaseCollectView {
     void getDeviceInfoSuccess(ResultEntity result);
     void getDeviceInfoFail(String message);
     void getDeviceInfoComplete();
+
+    void loadSuggestInfoSuccess(String suggestLocation,String suggestBatchFlag);
+    void loadSuggestInfoFail(String message);
 }

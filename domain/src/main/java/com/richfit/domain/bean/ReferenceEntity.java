@@ -172,54 +172,12 @@ public class ReferenceEntity {
     public String profitCenter;
     public String network;
     public String deliveryTo;
-
-    @Override
-    public String toString() {
-        return "ReferenceEntity{" +
-                "checkId='" + checkId + '\'' +
-                ", refCodeId='" + refCodeId + '\'' +
-                ", checkNum='" + checkNum + '\'' +
-                ", recordNum='" + recordNum + '\'' +
-                ", tempFlag='" + tempFlag + '\'' +
-                ", checkFlag='" + checkFlag + '\'' +
-                ", transId='" + transId + '\'' +
-                ", transLineId='" + transLineId + '\'' +
-                ", refType='" + refType + '\'' +
-                ", moveType='" + moveType + '\'' +
-                ", bizType='" + bizType + '\'' +
-                ", workId='" + workId + '\'' +
-                ", workCode='" + workCode + '\'' +
-                ", workName='" + workName + '\'' +
-                ", recWorkId='" + recWorkId + '\'' +
-                ", recWorkCode='" + recWorkCode + '\'' +
-                ", recWorkName='" + recWorkName + '\'' +
-                ", invId='" + invId + '\'' +
-                ", invCode='" + invCode + '\'' +
-                ", invName='" + invName + '\'' +
-                ", invType='" + invType + '\'' +
-                ", recInvId='" + recInvId + '\'' +
-                ", recInvCode='" + recInvCode + '\'' +
-                ", recInvName='" + recInvName + '\'' +
-                ", recordCreator='" + recordCreator + '\'' +
-                ", poNum='" + poNum + '\'' +
-                ", supplierDesc='" + supplierDesc + '\'' +
-                ", supplierNum='" + supplierNum + '\'' +
-                ", supplierId='" + supplierId + '\'' +
-                ", voucherDate='" + voucherDate + '\'' +
-                ", projectNum='" + projectNum + '\'' +
-                ", netNum='" + netNum + '\'' +
-                ", customer='" + customer + '\'' +
-                ", costCenter='" + costCenter + '\'' +
-                ", dsReason='" + dsReason + '\'' +
-                ", asType='" + asType + '\'' +
-                ", status='" + status + '\'' +
-                ", storageNum='" + storageNum + '\'' +
-                ", totalCount='" + totalCount + '\'' +
-                ", inspectionType=" + inspectionType +
-                ", billDetailList=" + billDetailList +
-                ", checkList=" + checkList +
-                ", checkLevel='" + checkLevel + '\'' +
-                ", specialFlag='" + specialFlag + '\'' +
-                '}';
-    }
+    public String reqCompany;
+    public String sapMoveCause;
+    public String glf;
+    public String lyf;
+    public String ckf;
+    public String yfhj;
+    public String moveCause;
+    public String serialNum;
 }

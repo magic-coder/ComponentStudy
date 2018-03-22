@@ -1,29 +1,21 @@
 package com.richfit.module_cqyt.module_as;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.telephony.gsm.GsmCellLocation;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
-import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by monday on 2017/7/4.

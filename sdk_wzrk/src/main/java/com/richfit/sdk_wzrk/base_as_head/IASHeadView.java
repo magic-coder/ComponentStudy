@@ -5,6 +5,7 @@ import com.richfit.common_lib.lib_base_sdk.base_head.IBaseHeadView;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.SimpleEntity;
+import com.richfit.domain.bean.WorkEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -67,6 +68,9 @@ public interface IASHeadView extends IBaseHeadView {
      */
     void getTransferInfoFail(String message);
 
+    void showWorks(List<WorkEntity> works);
+    void loadWorksFail(String message);
+    void loadWorksComplete();
     void loadInvsFail(String message);
     void showInvs(List<InvEntity> list);
     void loadInvsComplete();

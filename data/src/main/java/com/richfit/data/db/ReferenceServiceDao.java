@@ -50,14 +50,25 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
             int index;
             while (cursor.moveToNext()) {
                 index = -1;
+               /* sb.append("select po.id,po.po_num,po.supplier_code,po.supplier_desc,")
+                        .append("po.work_id,po.work_code,po.inv_code,po.rec_work_code,po.rec_inv_code ")
+                        .append("sap_move_type,sap_move_cause,cost_center,project_num,order_num,req_company,record_creator ");*/
                 refData.refCodeId = cursor.getString(++index);
                 refData.recordNum = cursor.getString(++index);
                 refData.supplierNum = cursor.getString(++index);
                 refData.supplierDesc = cursor.getString(++index);
-                refData.recordCreator = cursor.getString(++index);
                 refData.workId = cursor.getString(++index);
                 refData.workCode = cursor.getString(++index);
-                refData.workName = cursor.getString(++index);
+                refData.invCode = cursor.getString(++index);
+                refData.recWorkCode = cursor.getString(++index);
+                refData.recInvCode = cursor.getString(++index);
+                refData.sapMoveType = cursor.getString(++index);
+                refData.sapMoveCause = cursor.getString(++index);
+                refData.costCenter = cursor.getString(++index);
+                refData.projectNum = cursor.getString(++index);
+                refData.orderNum = cursor.getString(++index);
+                refData.reqCompany = cursor.getString(++index);
+                refData.recordCreator = cursor.getString(++index);
             }
             cursor.close();
             //如果未获取到抬头的refCodeId，那么直接返回null
@@ -209,6 +220,12 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
                 case "19_ZJ":// 委外入库-组件
                 case "23":// 委外出库
                 case "45":// UB/STO退库 352
+                case "116":
+                case "212":
+                case "314":
+                case "317":
+                case "310":
+                case "411":
                     addPOHeaderCache(db, refData, refCodeId, bizType, refType, userId);
                     break;
                 case "110":// 青海油田采购入库-105（必检）
@@ -283,18 +300,22 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
             String poId = refData.refCodeId;
             clearStringBuffer();
             sb.append("insert or replace into MTL_PO_HEADERS (")
-                    .append("ID, PO_NUM,PO_DATE,SUPPLIER_CODE,SUPPLIER_DESC,ZD_FLAG,")
-                    .append("TYPE,STATUS,CREATED_BY,CREATION_DATE,LAST_UPDATED_BY,LAST_UPDATE_DATE,WORK_ID,PO_TYPE")
+                    .append("ID,PO_NUM,PO_DATE,SUPPLIER_CODE,SUPPLIER_DESC,ZD_FLAG,")
+                    .append("TYPE,STATUS,CREATED_BY,CREATION_DATE,LAST_UPDATED_BY,LAST_UPDATE_DATE,WORK_ID,PO_TYPE,")
+                    .append("sap_move_type,sap_move_cause,cost_center,project_num,order_num,req_company,record_creator,")
+                    .append("work_code,inv_code,rec_work_code,rec_inv_code ")
                     .append(")")
                     .append("VALUES (")
-                    .append("?,?,?,?,?,?,?,?,?,?,?,?,?,?")
+                    .append("?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?")
                     .append(")");
 
             String currentDate = CommonUtil.getCurrentDate(Global.GLOBAL_DATE_PATTERN_TYPE1);
-            db.execSQL(sb.toString(), new Object[]{poId, refData.recordNum,
+            db.execSQL(sb.toString(), new Object[]{poId, CommonUtil.decreaseZero(refData.recordNum),
                     currentDate, refData.supplierNum, refData.supplierDesc,
                     "ZFD", "1", "Y", refData.recordCreator, currentDate, refData.recordCreator,
-                    currentDate, refData.workId, ""});
+                    currentDate, refData.workId, "", refData.sapMoveType, refData.sapMoveCause, refData.costCenter,
+                    refData.projectNum, refData.orderNum, refData.reqCompany, refData.recordCreator, refData.workCode,
+                    refData.invCode, refData.recWorkCode, refData.recInvCode});
 
             //2. 处理明细
             final List<RefDetailEntity> list = refData.billDetailList;
@@ -410,12 +431,12 @@ public class ReferenceServiceDao extends BaseDao implements IReferenceServiceDao
     private String createSqlForReadPoInfoHeader(String bizType) {
         clearStringBuffer();
         //输出的字段信息
-        sb.append("select po.id,po.po_num,po.supplier_code,po.supplier_desc,")
-                .append("po.doc_people,po.work_id,")
-                .append("worg.org_code as work_code,worg.org_name as work_name ");
+        sb.append("select id,po_num,supplier_code,supplier_desc,")
+                .append("work_id,work_code,inv_code,rec_work_code,rec_inv_code, ")
+                .append("sap_move_type,sap_move_cause,cost_center,project_num,order_num,req_company,record_creator ");
+
         //查询的表
-        sb.append("from mtl_po_headers po left join P_AUTH_ORG worg on ")
-                .append("po.work_id = worg.org_id where po.po_num = ?");
+        sb.append("from mtl_po_headers where po_num = ? ");
         return sb.toString();
     }
 

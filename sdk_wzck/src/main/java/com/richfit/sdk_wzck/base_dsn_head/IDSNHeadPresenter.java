@@ -26,4 +26,6 @@ public interface IDSNHeadPresenter extends IBaseHeadPresenter<IDSNHeadView> {
      */
     void deleteCollectionData(String refType, String bizType, String userId,
                               String companyCode);
+
+    void getDictionaryData(String... codes);
 }

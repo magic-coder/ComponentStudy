@@ -12,6 +12,7 @@ import com.richfit.sdk_wzrk.base_asn_edit.imp.ASNEditPresenterImp;
  */
 
 public class QYSHASNEditFragment extends BaseASNEditFragment<ASNEditPresenterImp> {
+
     @Override
     protected void initPresenter() {
         mPresenter = new ASNEditPresenterImp(mActivity);

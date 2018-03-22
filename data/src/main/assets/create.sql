@@ -363,7 +363,18 @@ create table IF not exists MTL_PO_HEADERS
   last_updated_by  VARCHAR2(32),
   last_update_date TEXT,
   work_id          VARCHAR2(32),
-  po_type          VARCHAR2(32)
+  po_type          VARCHAR2(32),
+  cost_center VARCHAR2(32),
+  sap_move_type VARCHAR2(32),
+  sap_move_cause VARCHAR2(32),
+  project_num VARCHAR2(32),
+  order_num VARCHAR2(32),
+  req_company VARCHAR2(32),
+  record_creator VARCHAR2(32),
+  word_code VARCHAR2(32),
+  inv_code VARCHAR2(32),
+  rec_word_code VARCHAR2(32),
+  rec_inv_code VARCHAR2(32)
 );
 
 create table IF not exists MTL_PO_LINES
@@ -470,7 +481,11 @@ create table IF not exists MTL_TRANSACTION_HEADERS
   last_updated_by  VARCHAR2(32),
   last_update_date INTEGER,
   ref_code         VARCHAR2(20),
-  supplier_code    VARCHAR2(20)
+  supplier_code    VARCHAR2(20),
+  glf VARCHAR2(32),
+  lyf VARCHAR2(32),
+  ckf VARCHAR2(32),
+  yfhj VARCHAR2(32)
 );
 
 
@@ -510,7 +525,11 @@ create table IF not exists  MTL_TRANSACTION_LINES
   created_by          VARCHAR2(32),
   creation_date       INTEGER,
   last_updated_by     VARCHAR2(32),
-  last_update_date    INTEGER
+  last_update_date    INTEGER,
+  act_qualified_custom VARCHAR2(32),
+  manufacturer  VARCHAR2(32),
+  durability_period VARCHAR2(32),
+  production_date VARCHAR2(32)
 );
 
 create table IF not exists MTL_TRANSACTION_LINES_SPLIT

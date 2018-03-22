@@ -48,14 +48,17 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public abstract class BaseFragment<P extends IPresenter> extends Fragment implements BaseView,
         NetConnectErrorDialogFragment.INetworkConnectListener, IFragmentState {
-
+    /*抬头界面索引*/
     public static final int HEADER_FRAGMENT_INDEX = 0x0;
+    /*明细界面索引*/
     public static final int DETAIL_FRAGMENT_INDEX = 0x1;
+    /*数据采集界面索引*/
     public static final int COLLECT_FRAGMENT_INDEX = 0x2;
 
     private boolean isActivityCreated;
     protected View mView;
     protected P mPresenter;
+    /*宿主activity*/
     protected Activity mActivity;
     private Unbinder mUnbinder;
     protected NetConnectErrorDialogFragment mNetConnectErrorDialogFragment;
@@ -76,7 +79,9 @@ public abstract class BaseFragment<P extends IPresenter> extends Fragment implem
     /*仓储类型*/
     protected boolean isOpenLocationType = false;
     protected boolean isOpenRecLocationType = false;
+    /*底部按钮菜单的数据*/
     private static List<BottomMenuEntity> mBottomMenus;
+    /*获取库存的数据*/
     private static InventoryQueryParam mInventoryParam;
 
     @Override

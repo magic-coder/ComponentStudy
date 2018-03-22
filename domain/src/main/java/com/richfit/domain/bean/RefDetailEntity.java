@@ -184,109 +184,25 @@ public class RefDetailEntity extends TreeNode implements Cloneable {
     public String totalMoney;
     //该行是否整单提交
     public boolean isPatchTransfer;
-
-
-    @Override
-    public RefDetailEntity clone() {
-        try {
-            return (RefDetailEntity) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "RefDetailEntity{" +
-                "recordNum='" + recordNum + '\'' +
-                ", lineNum105='" + lineNum105 + '\'' +
-                ", isChecked=" + isChecked +
-                ", refLineId='" + refLineId + '\'' +
-                ", transId='" + transId + '\'' +
-                ", transLineId='" + transLineId + '\'' +
-                ", lineNum='" + lineNum + '\'' +
-                ", materialId='" + materialId + '\'' +
-                ", materialNum='" + materialNum + '\'' +
-                ", materialDesc='" + materialDesc + '\'' +
-                ", materialGroup='" + materialGroup + '\'' +
-                ", poNum='" + poNum + '\'' +
-                ", poLineNum='" + poLineNum + '\'' +
-                ", unit='" + unit + '\'' +
-                ", actQuantity='" + actQuantity + '\'' +
-                ", arrivalQuantity='" + arrivalQuantity + '\'' +
-                ", batchFlag='" + batchFlag + '\'' +
-                ", inspectionDate='" + inspectionDate + '\'' +
-                ", inspectionResult='" + inspectionResult + '\'' +
-                ", inspectionStandard='" + inspectionStandard + '\'' +
-                ", specialInvFlag='" + specialInvFlag + '\'' +
-                ", specialInvNum='" + specialInvNum + '\'' +
-                ", lineInspectFlag='" + lineInspectFlag + '\'' +
-                ", orderQuantity='" + orderQuantity + '\'' +
-                ", remark='" + remark + '\'' +
-                ", workId='" + workId + '\'' +
-                ", workCode='" + workCode + '\'' +
-                ", workName='" + workName + '\'' +
-                ", qmFlag='" + qmFlag + '\'' +
-                ", invId='" + invId + '\'' +
-                ", invCode='" + invCode + '\'' +
-                ", invName='" + invName + '\'' +
-                ", recWorkId='" + recWorkId + '\'' +
-                ", recWorkCode='" + recWorkCode + '\'' +
-                ", recWorkName='" + recWorkName + '\'' +
-                ", recInvId='" + recInvId + '\'' +
-                ", recInvCode='" + recInvCode + '\'' +
-                ", recInvName='" + recInvName + '\'' +
-                ", photoFlag='" + photoFlag + '\'' +
-                ", totalQuantity='" + totalQuantity + '\'' +
-                ", location='" + location + '\'' +
-                ", quantity='" + quantity + '\'' +
-                ", locationId='" + locationId + '\'' +
-                ", supplierCode='" + supplierCode + '\'' +
-                ", supplierName='" + supplierName + '\'' +
-                ", price='" + price + '\'' +
-                ", recLocation='" + recLocation + '\'' +
-                ", recBatchFlag='" + recBatchFlag + '\'' +
-                ", recordUnit='" + recordUnit + '\'' +
-                ", materialUnit='" + materialUnit + '\'' +
-                ", unitRate=" + unitRate +
-                ", inspectionQuantity='" + inspectionQuantity + '\'' +
-                ", manufacturer='" + manufacturer + '\'' +
-                ", randomQuantity='" + randomQuantity + '\'' +
-                ", rustQuantity='" + rustQuantity + '\'' +
-                ", damagedQuantity='" + damagedQuantity + '\'' +
-                ", badQuantity='" + badQuantity + '\'' +
-                ", otherQuantity='" + otherQuantity + '\'' +
-                ", qualifiedQuantity='" + qualifiedQuantity + '\'' +
-                ", sapPackage='" + sapPackage + '\'' +
-                ", qmNum='" + qmNum + '\'' +
-                ", certificate='" + certificate + '\'' +
-                ", instructions='" + instructions + '\'' +
-                ", qmCertificate='" + qmCertificate + '\'' +
-                ", claimNum='" + claimNum + '\'' +
-                ", lineType='" + lineType + '\'' +
-                ", unqualifiedQuantity='" + unqualifiedQuantity + '\'' +
-                ", returnQuantity='" + returnQuantity + '\'' +
-                ", insLotQuantity='" + insLotQuantity + '\'' +
-                ", invType='" + invType + '\'' +
-                ", insLot='" + insLot + '\'' +
-                ", decisionCode='" + decisionCode + '\'' +
-                ", projectText='" + projectText + '\'' +
-                ", moveCause='" + moveCause + '\'' +
-                ", moveCauseDesc='" + moveCauseDesc + '\'' +
-                ", refDoc='" + refDoc + '\'' +
-                ", refDocItem=" + refDocItem +
-                ", locationList=" + locationList +
-                ", refCodeId='" + refCodeId + '\'' +
-                ", lastFlag='" + lastFlag + '\'' +
-                ", recQuantity='" + recQuantity + '\'' +
-                ", transLineSplitId='" + transLineSplitId + '\'' +
-                ", specialConvert='" + specialConvert + '\'' +
-                ", deviceId='" + deviceId + '\'' +
-                ", inspectionPerson='" + inspectionPerson + '\'' +
-                ", userId='" + userId + '\'' +
-                ", batchManagerStatus=" + batchManagerStatus +
-                ", batchManagerStatus=" + shkzg +
-                '}';
-    }
+    public String suggestLocation;
+    public String suggestBatch;
+    public String	durabilityPeriod;
+    public String	productionDate;
+    public String	ysfs;
+    public String	zjdh;
+    public String	skpzh;
+    public String	ysunm;
+    public String	zcch;
+    public String	cjsl;
+    public String	sjsl;
+    public String	hgzs;
+    public String	smzs;
+    public String	zlzs;
+    public String	bzqk;
+    public String	whsl;
+    public String	shsl;
+    public String	xssl;
+    public String	bzsl;
+    public String	qtsl;
+    public String invQuantity;
 }

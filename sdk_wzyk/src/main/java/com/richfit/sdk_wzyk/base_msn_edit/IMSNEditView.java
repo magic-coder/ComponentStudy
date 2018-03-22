@@ -45,4 +45,7 @@ public interface IMSNEditView extends IBaseEditView {
     void showRecLocations(List<String> recLocations);
     void loadRecLocationsFail(String message);
 
+    void loadSuggestInfoSuccess(String suggestLocation,String suggestBatchFlag);
+    void loadSuggestInfoFail(String message);
+
 }

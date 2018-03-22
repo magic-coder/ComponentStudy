@@ -76,6 +76,9 @@ public class InventoryEntity extends TreeNode{
     public String supplierDesc;
     public String arrivalDate;
     public String materialState;
+    public String suggestBatch;
+    public String suggestLocation;
+    public String actLocation;
 
     @Override
     public String toString() {

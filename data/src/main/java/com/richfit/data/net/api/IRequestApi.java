@@ -112,6 +112,9 @@ public interface IRequestApi {
     @GET("getCheckTransferInfoSingle")
     Flowable<Response<List<InventoryEntity>>> getCheckTransferInfoSingle(@Query("requestParam") String requestParam);
 
+    @GET("getSuggestInventoryInfo")
+    Flowable<Response<List<InventoryEntity>>> getSuggestInventoryInfo(@Query("requestParam") String requestParam);
+
     @GET("uploadCheckDataSingle")
     Flowable<Map<String, Object>> uploadCheckDataSingle(@Query("requestParam") String requestParam);
 

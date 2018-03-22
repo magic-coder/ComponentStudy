@@ -120,7 +120,6 @@ public class ASNDetailPresenterImp extends BaseDetailPresenterImp<IASNDetailView
                 }
             }
         }
-        Log.e("yff","datas size = " + datas.size());
         return datas;
     }
 }

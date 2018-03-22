@@ -183,7 +183,8 @@ public class QYHTASWWCDetailPresenterImp extends BaseDetailPresenterImp<QYHTASWW
             RefDetailEntity cachedEntity = getLineDataByRefLineId(node, cache);
             if (cachedEntity == null) {
                 //如果没有缓存那么将原始单据的数据给作为缓存
-                cachedEntity = node.clone();
+                //说明该还没有缓存
+                nodes.add(node);
             }
             //将仓位级别的数据保存到明细行级别中
             List<LocationInfoEntity> locationList = cachedEntity.locationList;

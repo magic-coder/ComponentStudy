@@ -14,10 +14,13 @@ import java.util.Map;
 public interface IDSNHeadView extends IBaseHeadView {
     void showWorks(List<WorkEntity> works);
     void loadWorksFail(String message);
+    void loadWorkComplete();
 
     void showAutoCompleteList(Map<String,List<SimpleEntity>> map);
     void loadAutoCompleteFail(String message);
 
     void deleteCacheSuccess(String message);
     void deleteCacheFail(String message);
+    void loadDictionaryDataSuccess(Map<String,List<SimpleEntity>> data);
+    void loadDictionaryDataFail(String message);
 }

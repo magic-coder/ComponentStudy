@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.richfit.common_lib.lib_base_sdk.base_collect.IBaseCollectView;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.SimpleEntity;
 
@@ -80,4 +81,9 @@ public interface IASCollectView extends IBaseCollectView {
     void showInventory(List<String> list);
     void loadInventoryComplete();
     void loadInventoryFail(String message);
+
+    //增加建议仓位
+    void getSuggestedLocationSuccess(InventoryEntity suggestedInventory);
+    void getSuggestedLocationFail(String message);
+    void getSuggestedLocationComplete();
 }

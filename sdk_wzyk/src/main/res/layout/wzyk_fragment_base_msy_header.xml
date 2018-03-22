@@ -48,6 +48,7 @@
         android:visibility="gone">
 
         <TextView
+            android:id="@id/tv_send_work_name"
             style="@style/LeftTextViewItemStyle"
             android:text="@string/send_work" />
 
@@ -85,10 +86,28 @@
         <TextView
             android:id="@id/tv_inv_name"
             style="@style/LeftTextViewItemStyle"
-            android:text="@string/rec_inv" />
+            android:text="@string/send_inv" />
 
         <TextView
             android:id="@+id/tv_inv"
+            style="@style/RightTextViewItemStyle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/ll_rec_inv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:padding="@dimen/collect_row_padding">
+
+        <TextView
+            style="@style/LeftTextViewItemStyle"
+            android:text="@string/rec_inv" />
+
+        <TextView
+            android:id="@+id/tv_rec_inv"
             style="@style/RightTextViewItemStyle" />
 
     </LinearLayout>

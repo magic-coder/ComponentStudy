@@ -74,4 +74,12 @@ public interface IMSCollectView extends IBaseCollectView {
     void loadCacheSuccess();
 
     void loadCacheFail(String message);
+
+    //增加建议仓位
+    void getSuggestedLocationSuccess(InventoryEntity suggestedInventory);
+    void getSuggestedLocationFail(String message);
+    void getSuggestedLocationComplete();
+
+    void getActLocationSuccess(InventoryEntity suggestedInventory);
+    void getActLocationFail(String message);
 }

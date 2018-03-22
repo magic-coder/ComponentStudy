@@ -176,7 +176,6 @@ public class LoginActivity extends BaseActivity<LoginPresenterImp> implements Lo
         String currentVersionName = CommonUtil.getCurrentVersionName(this.getApplicationContext());
         float versionName = CommonUtil.convertToFloat(currentVersionName,0.0F);
         float appVersion = CommonUtil.convertToFloat(info.appVersion,0.0F);
-        Log.e("yff", "versionName = " + versionName + "; appVersion = " + appVersion);
         if (appVersion > versionName) {
             //提示用户需要更新
             AlertDialog.Builder dialog = new AlertDialog.Builder(this);

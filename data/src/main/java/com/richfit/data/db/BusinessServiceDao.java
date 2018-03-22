@@ -28,10 +28,11 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
 
     /**
      * 保存单条数据
-     *1.使用SQLiteDatabase的beginTransaction()方法可以开启一个事务，
+     * 1.使用SQLiteDatabase的beginTransaction()方法可以开启一个事务，
      * 程序执行到endTransaction() 方法时会检查事务的标志是否为成功，
      * 如果程序执行到endTransaction()之前调用了setTransactionSuccessful()
      * 方法设置事务的标志为成功则提交事务，如果没有调用setTransactionSuccessful() 方法则回滚事务。
+     *
      * @param result
      * @return
      */
@@ -66,6 +67,8 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             case "34":// 311(无参考)
             case "74":// 代管料移库
             case "94":// 代管料调拨-HRM
+            case "314"://311（有参考）
+            case "317"://313（有参考）
                 yk = true;
                 if ("8200".equals(result.companyCode)) {
                     device = true;
@@ -194,6 +197,10 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             cv.put("created_by", param.userId);
             cv.put("inv_type", param.invType);
             cv.put("creation_date", creationDate);
+            cv.put("glf", TextUtils.isEmpty(param.glf)?"":param.glf);
+            cv.put("lyf", TextUtils.isEmpty(param.lyf)?"":param.lyf);
+            cv.put("ckf", TextUtils.isEmpty(param.ckf)?"":param.ckf);
+            cv.put("yfhj", TextUtils.isEmpty(param.yfhj)?"":param.yfhj);
             long iResult = db.insert("mtl_transaction_headers", null, cv);
             if (iResult < 1) {
                 return "";
@@ -304,6 +311,9 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         cv.put("ref_doc_item", param.refDocItem);
         cv.put("unit", param.unit);
         cv.put("unit_rate", param.unitRate);
+        cv.put("manufacturer", param.manufacture);
+        cv.put("durability_period", param.durabilityPeriod);
+        cv.put("production_date", param.productionDate);
         // 移库增加接收工厂、库存地点、接收批次
         if (yk) {
             cv.put("rec_work_id", param.recWorkId);
@@ -572,7 +582,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
 
             //如果是修改则累加数量
             db.execSQL("update mtl_transaction_lines_location set quantity = quantity + ?,quantity_custom = quantity_custom + ? where id = ?",
-                    new Object[]{param.quantity, locationId});
+                    new Object[]{param.quantity,param.quantityCustom, locationId});
             //如果是移库，那么还需要修改接收累计数量
             if (yk) {
                 db.execSQL("update mtl_transaction_lines_location set rec_quantity = rec_quantity + ? where id = ?",
@@ -826,7 +836,7 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             }
             cursor.close();
             db.execSQL("update MTL_TRANSACTION_LINES set quantity = ? where id = ?",
-                    new Object[]{totalQuantity, transId});
+                    new Object[]{totalQuantity, transLineId});
             clearStringBuffer();
 
             // 查询拆分表中是否有子明细 不存在删除
@@ -873,7 +883,8 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
         clearStringBuffer();
         sb.append("select id,voucher_date,ref_code_id,ref_code,biz_type,ref_type,move_type,inv_type,")
                 .append("supplier_id,supplier_code,created_by,creation_date,last_updated_by,last_update_date ")
-                .append("from MTL_TRANSACTION_HEADERS ")
+                .append(",glf,lyf,ckf,yfhj ")
+                .append(" from MTL_TRANSACTION_HEADERS ")
                 .append(" where (trans_flag = '0' or trans_flag = '2') ")
                 .append(" order by creation_date");
         ReferenceEntity header = null;
@@ -897,6 +908,10 @@ public class BusinessServiceDao extends BaseDao implements IBusinessService {
             header.creationDate = CommonUtil.transferLongToDate("yyyyMMddHHmmss", cursor.getLong(++index));
             header.lastUpdatedBy = cursor.getString(++index);
             header.lastUpdateDate = CommonUtil.transferLongToDate("yyyyMMddHHmmss", cursor.getLong(++index));
+            header.glf = cursor.getString(++index);
+            header.lyf = cursor.getString(++index);
+            header.ckf = cursor.getString(++index);
+            header.yfhj = cursor.getString(++index);
             datas.add(header);
         }
         cursor.close();

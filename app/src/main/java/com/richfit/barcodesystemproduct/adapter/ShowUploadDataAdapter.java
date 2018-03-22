@@ -188,6 +188,12 @@ public class ShowUploadDataAdapter extends RecyclerView.Adapter<ShowUploadDataAd
             case "01"://SAP验收结果录入
             case "113":
             case "114":
+		    case "116":
+            case "212":
+            case "314":
+            case "317":
+            case "310":
+            case "411":
                 holder.recordNum.setText(item.refCode);
                 holder.refType.setText(item.refTypeDesc);
                 holder.bizType.setText(item.businessTypeDesc);

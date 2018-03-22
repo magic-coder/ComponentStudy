@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">module_cq</string>
+    <string name="cqzt_order_num">订单编号</string>
+    <string name="cqzt_req_company">领料单位</string>
+    <string name="cqzt_record_creator">创建人</string>
+    <string name="cqzt_suggested_location">建议仓位</string>
+    <string name="cqzt_suggested_batch_flag">建议批次</string>
 </resources>

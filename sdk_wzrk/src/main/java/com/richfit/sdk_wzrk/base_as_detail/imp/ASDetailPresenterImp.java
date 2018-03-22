@@ -126,6 +126,11 @@ public class ASDetailPresenterImp extends BaseDetailPresenterImp<IASDetailView>
                     //副计量单位的实收数量
                     bundle.putString(Global.EXTRA_QUANTITY_CUSTOM_KEY, node.quantityCustom);
 
+                    //建议仓位
+                    bundle.putString(Global.EXTRA_SUGGEST_LOCATION_KEY, node.suggestLocation);
+                    //建议批次
+                    bundle.putString(Global.EXTRA_SUGGEST_BATCH_FLAG_KEY, node.suggestBatch);
+
                     bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
 
                     intent.putExtras(bundle);

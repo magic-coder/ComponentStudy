@@ -28,6 +28,35 @@ public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
     }
 
     @Override
+    public void getDictionaryData(String... codes) {
+        mView = getView();
+        mRepository.getDictionaryData(codes)
+                .filter(data -> data != null && data.size() > 0)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<Map<String,List<SimpleEntity>>>() {
+                    @Override
+                    public void onNext(Map<String,List<SimpleEntity>> data) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataSuccess(data);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadDictionaryDataFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+
+    @Override
     public void deleteCollectionData(String refType, String bizType, String userId,
                                      String companyCode) {
         mView = getView();
@@ -91,7 +120,9 @@ public class DSNHeadPresenterImp extends BaseHeadPresenterImp<IDSNHeadView>
 
                     @Override
                     public void onComplete() {
-
+                        if(mView != null) {
+                            mView.loadWorkComplete();
+                        }
                     }
                 });
         addSubscriber(subscriber);

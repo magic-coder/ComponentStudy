@@ -79,6 +79,8 @@ public class Global {
     public static final String HANC = "hanc";
     //川庆
     public static final String CQZT = "cqzt";
+    //中油测井
+    public static final String ZYCJ = "zycj";
 
 
 
@@ -230,6 +232,8 @@ public class Global {
     public static final String EXTRA_UPLOAD_MSG_KEY = "extra_upload_msg";
     public static final String EXTRA_MODE_KEY = "extra_mode";
     public static final String EXTRA_REMARK_KEY = "extra_remark";
+    public static final String EXTRA_SUGGEST_LOCATION_KEY = "extra_suggest_location";
+    public static final String EXTRA_SUGGEST_BATCH_FLAG_KEY = "extra_sugggest_batch_flag";
 
     /*扫描物料和批次位置*/
     public static final int MATERIAL_POS = 2;

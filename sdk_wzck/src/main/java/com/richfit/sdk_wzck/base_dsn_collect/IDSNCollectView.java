@@ -37,4 +37,7 @@ public interface IDSNCollectView extends IBaseCollectView {
     void bindCommonCollectUI(ReferenceEntity refData, String batchFlag);
     void loadTransferSingleInfoFail(String message);
     void loadTransferSingleInfoComplete();
+
+    void loadSuggestInfoSuccess(String suggestLocation,String suggestBatchFlag);
+    void loadSuggestInfoFail(String message);
 }

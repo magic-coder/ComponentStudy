@@ -24,11 +24,16 @@ import android.widget.TextView;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnItemClickListener;
+import com.honeywell.aidc.AidcManager;
+import com.honeywell.aidc.BarcodeReader;
+import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.BottomSheetDialogAdapter;
 import com.richfit.barcodesystemproduct.adapter.ModularAdapter;
 import com.richfit.barcodesystemproduct.loaddown.LoadLocalRefDataActivity;
 import com.richfit.barcodesystemproduct.main.MainActivity;
+import com.richfit.barcodesystemproduct.scanservice.IScanService;
+import com.richfit.barcodesystemproduct.scanservice.ScanServiceFactory;
 import com.richfit.barcodesystemproduct.setting.SettingActivity;
 import com.richfit.barcodesystemproduct.upload.UploadActivity;
 import com.richfit.common_lib.lib_adapter_rv.MultiItemTypeAdapter;
@@ -48,6 +53,9 @@ import butterknife.BindView;
  * onNewIntent方法)。
  * 注意在跳转到Home页面之前，系统需要确定用户选择的模式，如果用户没有选择那么默认选择的是在线模式。
  * <p>
+ * 对川庆扫描服务的优化(2017年12月6日)：
+ * 在HomeActivity中去初始化AidcManager和BarcodeReader，提高MainActivity的加载速度；
+ * 因为在HomeActivity中用户不会做任何业务，此时去子线程去初始化扫描服务是安全的。
  * Created by monday on 2016/11/7.
  */
 public class HomeActivity extends BaseActivity<HomePresenterImp> implements HomeContract.View,
@@ -80,11 +88,14 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
             R.mipmap.icon_submenu7, R.mipmap.icon_submenu8, R.mipmap.icon_submenu9,
             R.mipmap.icon_submenu10, R.mipmap.icon_submenu11
     };
-
+    IScanService iScanService;
 
     @Override
     protected void initVariables() {
-
+        iScanService = ScanServiceFactory.getScanService();
+        if(iScanService != null) {
+            iScanService.beforeInitService(this);
+        }
     }
 
     @Override
@@ -342,7 +353,7 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
     }
 
     public void onBackPressed() {
-        Log.d("yff","onBackPressed");
+        Log.d("yff", "onBackPressed");
         if (mBackDialog == null) {
             mBackDialog = new AlertView("温馨提示", "您真的退出App吗?", "取消", new String[]{"确定"}, null,
                     this, AlertView.Style.Alert, this);
@@ -397,9 +408,10 @@ public class HomeActivity extends BaseActivity<HomePresenterImp> implements Home
         if (mBackDialog != null && mBackDialog.isShowing()) {
             mBackDialog.dismiss();
         }
+
+        iScanService.releaseScanService();
         super.onDestroy();
     }
-
 
     @Override
     public void retry(String action) {

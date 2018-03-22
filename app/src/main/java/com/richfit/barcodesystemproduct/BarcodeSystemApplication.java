@@ -41,10 +41,6 @@ public class BarcodeSystemApplication extends BaseApplication {
         baseUrl = generateBaseUrl();
         //初始化全局模块
         DataInjection.getRepository(this, baseUrl);
-        //开启日志处理模块
-        if (!BuildConfig.DEBUG) {
-            initCrashManage(this);
-        }
     }
 
     private String generateBaseUrl() {
@@ -81,7 +77,6 @@ public class BarcodeSystemApplication extends BaseApplication {
                    //煤层气
                 case Global.MCQ:
                     baseUrl = "http://11.11.177.98:9087/ktbk_middleware/MobileProcess/";
-//                    baseUrl = "http://10.88.53.5:8080/gdbk_middleware/MobileProcess/";
                     break;
                     //韩城
                 case Global.HANC:
@@ -89,6 +84,10 @@ public class BarcodeSystemApplication extends BaseApplication {
                     break;
                     //川庆
                 case Global.CQZT:
+                    baseUrl = "http://11.11.136.206:9087/gcjs_middleware/MobileProcess/";
+                    break;
+                    //中油测井
+                case Global.ZYCJ:
                     baseUrl = "http://11.11.136.206:9087/gcjs_middleware/MobileProcess/";
                     break;
             }

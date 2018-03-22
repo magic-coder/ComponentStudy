@@ -32,4 +32,7 @@ public interface IDSNEditView extends IBaseEditView {
     void showInventory(List<InventoryEntity> list);
 
     void loadInventoryFail(String message);
+
+    void loadSuggestInfoSuccess(String suggestLocation,String suggestBatchFlag);
+    void loadSuggestInfoFail(String message);
 }

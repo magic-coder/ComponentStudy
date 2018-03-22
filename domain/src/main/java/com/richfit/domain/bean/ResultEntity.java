@@ -192,4 +192,30 @@ public class ResultEntity extends TreeNode{
     public String materialState;
     public String queryType;
     public String deliveryTo;
+    public String glf;
+    public String lyf;
+    public String ckf;
+    public String yfhj;
+
+    public String	ysfs;
+    public String	zjdh;
+    public String	skpzh;
+    public String	ysunm;
+    public String	zcch;
+    public String	cjsl;
+    public String	sjsl;
+    public String	hgzs;
+    public String	smzs;
+    public String	zlzs;
+    public String	bzqk;
+    public String	whsl;
+    public String	shsl;
+    public String	xssl;
+    public String	bzsl;
+    public String	qtsl;
+    public String reqCompany;
+    public String durabilityPeriod;
+    public String productionDate;
+    public String suggestLocation;
+    public String suggestBatch;
 }

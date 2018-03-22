@@ -19,6 +19,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.richfit.common_lib.lib_adapter.InvAdapter;
 import com.richfit.common_lib.lib_adapter.SimpleAdapter;
 import com.richfit.common_lib.lib_base_sdk.base_collect.BaseCollectFragment;
+import com.richfit.common_lib.utils.SPrefUtil;
 import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.common_lib.widget.RichAutoEditText;
 import com.richfit.common_lib.widget.RichEditText;
@@ -233,7 +234,11 @@ public abstract class BaseASNCollectFragment<P extends IASNCollectPresenter> ext
             showMessage("请先选择工厂");
             return;
         }
-
+        String transferKey = (String) SPrefUtil.getData(mBizType, "0");
+        if ("1".equals(transferKey)) {
+            showMessage("本次采集已经过账,请先到数据明细界面进行数据上传操作");
+            return;
+        }
         etMaterialNum.setEnabled(true);
         etLocation.setEnabled(!isNLocation);
         //恢复批次

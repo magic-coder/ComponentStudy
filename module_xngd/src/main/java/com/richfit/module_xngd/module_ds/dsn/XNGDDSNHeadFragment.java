@@ -110,7 +110,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         RxTextView.textChanges(etGLAccount)
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str,mGLAccounts))
-                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), true))
+                .doOnNext(a -> mDropDown.put(etGLAccount.getId(), true))
                 .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
                         getString(etGLAccount), 100, getOrgFlag(), Global.GL_ACCOUNT_DATA));
 
@@ -129,7 +129,7 @@ public class XNGDDSNHeadFragment extends BaseDSNHeadFragment<DSNHeadPresenterImp
         //修改自动提示控件，说明用户需要用关键字进行搜索，如果默认的列表中存在，那么不在向数据库进行查询
         RxTextView.textChanges(etOrderNum)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .doOnNext(a -> mDropDown.put(etAutoComp.getId(), true))
+                .doOnNext(a -> mDropDown.put(etOrderNum.getId(), true))
                 .filter(str -> !TextUtils.isEmpty(str) && !filterKeyWord(str,mOrderNums))
                 .subscribe(a ->  mPresenter.getAutoComList(mWorks.get(spWork.getSelectedItemPosition()).workCode,null,
                         getString(etOrderNum), 100, getOrgFlag(), Global.INTERNAL_ORDER_DATA));

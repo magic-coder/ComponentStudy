@@ -387,12 +387,14 @@ public abstract class BaseMSEditFragment<P extends IMSEditPresenter> extends Bas
         result.recBatchFlag = CommonUtil.toUpperCase(getString(tvRecBatchFlag));
         result.recLocation = CommonUtil.toUpperCase(getString(tvRecLoc));
         int locationPos = spLocation.getSelectedItemPosition();
-        result.location = mInventoryDatas.get(locationPos).location;
-        result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
-        result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
-        result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
-                && !TextUtils.isEmpty(result.specialInvNum)) ?
-                "Y" : "N";
+        if (locationPos >= 0 && mInventoryDatas != null && mInventoryDatas.size() > 0) {
+            result.location = mInventoryDatas.get(locationPos).location;
+            result.specialInvFlag = mInventoryDatas.get(locationPos).specialInvFlag;
+            result.specialInvNum = mInventoryDatas.get(locationPos).specialInvNum;
+            result.specialConvert = (!TextUtils.isEmpty(result.specialInvFlag) && "k".equalsIgnoreCase(result.specialInvFlag)
+                    && !TextUtils.isEmpty(result.specialInvNum)) ?
+                    "Y" : "N";
+        }
         result.batchFlag = !isOpenBatchManager ? Global.DEFAULT_BATCHFLAG : getString(tvBatchFlag);
         result.quantity = getString(etQuantity);
         result.unit = TextUtils.isEmpty(lineData.recordUnit) ? lineData.materialUnit : lineData.recordUnit;

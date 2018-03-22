@@ -87,6 +87,24 @@ public class ShowAndTakePhotoFragment extends BaseFragment<ShowAndTakePhotoPrese
         mImages = new ArrayList<>();
         //在onCreate设置setHasOptionsMenu(true)保证能够onOptionsItemSelected重写有效
         setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void initView() {
+        GridLayoutManager gm = new GridLayoutManager(mActivity, 2);
+        mRecycleView.setLayoutManager(gm);
+        mRecycleView.setItemAnimator(new FadeInDownAnimator());
+        mRecycleView.addItemDecoration(new DividerGridItemDecoration(mActivity));
+    }
+
+    @Override
+    public void initEvent() {
+
+    }
+
+    @Override
+    public void initData() {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mPosition = bundle.getInt(Global.EXTRA_POSITION_KEY);
@@ -116,23 +134,6 @@ public class ShowAndTakePhotoFragment extends BaseFragment<ShowAndTakePhotoPrese
                 return;
             }
         }
-    }
-
-    @Override
-    public void initView() {
-        GridLayoutManager gm = new GridLayoutManager(mActivity, 2);
-        mRecycleView.setLayoutManager(gm);
-        mRecycleView.setItemAnimator(new FadeInDownAnimator());
-        mRecycleView.addItemDecoration(new DividerGridItemDecoration(mActivity));
-    }
-
-    @Override
-    public void initEvent() {
-
-    }
-
-    @Override
-    public void initData() {
         if (TextUtils.isEmpty(mImageDir))
             return;
         mPresenter.readImagesFromLocal(mRefNum, mRefLineNum, mRefLineId, mTakePhotoType,

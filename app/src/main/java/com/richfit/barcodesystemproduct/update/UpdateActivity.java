@@ -132,6 +132,7 @@ public class UpdateActivity extends BaseActivity<UpdateContract.Presenter> imple
         String apkCacheDir = FileUtil.getApkCacheDir(this.getApplicationContext());
         String appName = mUpdateInfo.appName;
         File file = new File(apkCacheDir, appName);
+        Log.e("yff","保存目录 = " + file.getAbsolutePath());
         if (file == null || !file.exists()) {
             showMessage("文件不存在");
             return;

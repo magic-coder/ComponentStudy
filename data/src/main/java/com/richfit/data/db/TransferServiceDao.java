@@ -877,7 +877,7 @@ public class TransferServiceDao extends BaseDao implements ITransferServiceDao {
                 .append("RW.ORG_CODE AS REC_WORK_CODE,RW.ORG_NAME AS REC_WORK_NAME,")
                 .append("RI.ORG_CODE AS REC_INV_CODE,RI.ORG_NAME AS REC_INV_NAME,")
                 .append("T.INS_LOT,T.DECISION_CODE,T.PROJECT_TEXT,T.MOVE_CAUSE,")
-                .append("T.MOVE_CAUSE_DESC,T.RETURN_QUANTITY,T.REF_DOC,T.REF_DOC_ITEM ")
+                .append("T.MOVE_CAUSE_DESC,T.RETURN_QUANTITY,T.REF_DOC,T.REF_DOC_ITEM,T.manufacturer,T.durability_period,T.production_date ")
                 .append("FROM  MTL_TRANSACTION_LINES T ");
 
         sb.append("  LEFT JOIN P_AUTH_ORG RW ON T.REC_WORK_ID = RW.ORG_ID")

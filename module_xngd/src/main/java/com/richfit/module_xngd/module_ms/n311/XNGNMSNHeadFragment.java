@@ -290,8 +290,5 @@ public class XNGNMSNHeadFragment extends BaseMSNHeadFragment<MSNHeadPresenterImp
         return 0;
     }
 
-    @Override
-    public void clearAllUIAfterSubmitSuccess() {
-        super.clearAllUIAfterSubmitSuccess();
-    }
+
 }

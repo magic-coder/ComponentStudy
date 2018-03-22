@@ -5,6 +5,8 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.richfit.barcodesystemproduct.BuildConfig;
+import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.upload.UploadContract;
 import com.richfit.common_lib.lib_base_sdk.base_detail.BaseDetailPresenterImp;
 import com.richfit.common_lib.lib_rx.RxSubscriber;
@@ -25,6 +27,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.microedition.khronos.opengles.GL;
 
 import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
@@ -136,6 +140,7 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                 Flowable.fromIterable(mRefDatas)
                         .filter(refData -> refData != null && refData.billDetailList != null && refData.billDetailList.size() > 0)
                         .map(refData -> wrapper2Results(refData, false))
+                        .map(lines -> insertImgNames(lines))
                         .flatMap(results -> mRepository.uploadCollectionDataOffline(results))
                         .flatMap(message -> submitData2SAPInner(message))
                         .doOnComplete(() -> mRepository.deleteOfflineDataAfterUploadSuccess("", "0", "", ""))
@@ -226,13 +231,49 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
         return list;
     }
 
+    public ArrayList<ResultEntity> insertImgNames(ArrayList<ResultEntity> resultEntities){
+        if (BuildConfig.APP_NAME.equals("cqzt")) {
+            for (int i = 0; i < resultEntities.size(); i++) {
+                ResultEntity data = resultEntities.get(i);
+                if (!TextUtils.isEmpty(data.businessType) && data.businessType.equals("11")) {
+                    ArrayList<ImageEntity> images = mRepository.readImagesByRefNum(data.refCode, true);
+                    String imgNames = "";
+                    if (images != null && images.size() > 0) {
+                        //计算出和当前行匹配的图片数量总和
+                        int imgOfLineCount = 0;
+                        for (int k = 0; k < images.size(); k++) {
+                            if (!TextUtils.isEmpty(images.get(k).refLineId) && images.get(k).refLineId.equals(data.refLineId)) {
+                                imgOfLineCount++;
+                            }
+                        }
+                        int findImgOfLineCount = 0;
+                        for (int j = 0; j < images.size(); j++) {
+                            if (data.refLineId.equals(images.get(j).refLineId)) {
+                                findImgOfLineCount++;
+                                if (findImgOfLineCount == imgOfLineCount) {
+                                    imgNames += images.get(j).imageName;
+                                } else {
+                                    imgNames += images.get(j).imageName + ",";
+                                }
+                            }
+                        }
+                        data.imageName = imgNames;
+                    }
+                }
+            }
+            return resultEntities;
+        } else {
+            return resultEntities;
+        }
+    }
+
     /**
      * 根据不同的业务进行转储
      *
      * @param materialDoc:物料凭证
      * @return
      */
-    protected Flowable<String> submitData2SAPInner(String materialDoc) {
+    protected Flowable<String> submitData2SAPInner(final String materialDoc) {
 
         if (mRefDatas == null && mTaskNum < 0 && mTaskNum >= mRefDatas.size()) {
             return Flowable.just("完成!");
@@ -277,14 +318,36 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                     }).flatMap(s -> transferCollectionData(bizType, transId, refType, userId, voucherDate, transToSapFlag));
         }
 
+        //如果是川庆101入库
+        if (Global.CQZT.equals(BuildConfig.APP_NAME) &&
+                "11".equals(bizType) && !TextUtils.isEmpty(refNum) && !TextUtils.isEmpty(refCodeId)) {
+            return Flowable.just(refNum)
+                    .flatMap(num -> {
+                        ArrayList<ImageEntity> images = mRepository.readImagesByRefNum(num, true);
+                        if(images != null && images.size() > 0) {
+                            return uploadInspectedImages(images, refCodeId, transId, userId, "01")
+                                    .doOnNext(a -> {
+                                        if ("02".equals(a)) {
+                                            mRepository.deleteInspectionImages(refNum, refCodeId, true);
+                                            FileUtil.deleteDir(FileUtil.getImageCacheDir(mContext.getApplicationContext(), refNum, false));
+                                        }
+                                    });
+                        }
+                        return Flowable.just("该单据上传成功!!!");
+                    });
+        }
+
         if (TextUtils.isEmpty(transToSapFlag)) {
             //表示该业务不需要转储
             return mRepository.setTransFlag(bizType, transId, "3").flatMap(a -> Flowable.just("完成!"));
         }
 
+        //如果需要转储（比如05）
         return transferCollectionData(bizType, transId, refType, userId, voucherDate, transToSapFlag);
     }
 
+
+    //数据上传第二步（05）
     private Flowable<String> transferCollectionData(String bizType, String transId, String refType,
                                                     String userId, String voucherDate, String transToSapFlag) {
 
@@ -399,6 +462,10 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
             result.creationDate = refData.creationDate;
             result.lastUpdatedBy = refData.lastUpdatedBy;
             result.lastUpdateDate = refData.lastUpdateDate;
+            result.glf = refData.glf;
+            result.lyf = refData.lyf;
+            result.ckf = refData.ckf;
+            result.yfhj = refData.yfhj;
             //明细
             result.transLineId = item.transLineId;
             result.insLineId = item.transLineId;
@@ -497,6 +564,8 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                 transToSapFlag = "";
                 break;
             case "11":// 采购入库-101
+                businessTypeDesc = "采购入库-101";
+                transToSapFlag = "";
                 break;
             case "12":// 采购入库-103
                 businessTypeDesc = "采购入库-103";
@@ -577,13 +646,39 @@ public class UploadPresenterImp extends BaseDetailPresenterImp<UploadContract.Vi
                 break;
             case "94":// 代管料调拨-HRM
                 break;
+            case "116":
+                businessTypeDesc = "调拨入库";
+                refTypeDesc = "物料凭证";
+                break;
+
+            case "212":
+                businessTypeDesc = "其他有参考出库";
+                refTypeDesc = "领料申请单";
+                break;
+            case "314":
+                businessTypeDesc = "311移库";
+                refTypeDesc = "311-领料申请单";
+                break;
+            case "317":
+                businessTypeDesc = "313移库";
+                refTypeDesc = "313-领料申请单";
+                break;
+            case "310":
+                businessTypeDesc = "315移库";
+                refTypeDesc = "315-领料申请单";
+                break;
+            case "411":
+                businessTypeDesc = "物资退库";
+                break;
         }
+
+       /*   （0：采购订单，1：验收清单，2：生产订单，3：到货验收单，4：交货单，5：出库单，6：提料单，-->
+         7：领料申请单，8：批料单，9：SAP出入库单，10：预留单，11 调拨单,12.退库申请单,13.条码出入库单
+        14.报废申请单,15.工单,16.入库通知单,17.出库通知单*/
+
         if (!TextUtils.isEmpty(refType)) {
-            switch (refType) {
-                case "0":
-                    refTypeDesc = "采购订单";
-                    break;
-            }
+            List<String> refTypeList = getStringArray(R.array.ref_type_list);
+            refTypeDesc = refTypeList.get(Integer.parseInt(refType));
         }
         map.put(BIZTYPE_DESC_KEY, businessTypeDesc);
         map.put(REFTYPE_DESC_KEY, refTypeDesc);

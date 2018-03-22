@@ -234,7 +234,7 @@ public class CQYTAS103HeadFragment extends BaseASHeadFragment<ASHeadPresenterImp
                 etDeliveryOrder.setText(mRefData.deliveryOrder);
             }
             //报检单位
-            mPresenter.getInvsByWorkId(mRefData.billDetailList.get(0).workId, 0);
+            mPresenter.getInvsByWorkId("7A49176ABA82FBE4C5FAE60BA8A14079", 0);
             //班
             etTeam.setText(mRefData.team);
             //岗位

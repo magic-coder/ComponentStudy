@@ -333,6 +333,7 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
                 //注意单据中有lineNum105
                 cachedData.lineNum105 = data.lineNum105;
                 cachedData.insLot = data.insLot;
+
                 nodes.add(cachedData);
             }
         }
@@ -370,13 +371,15 @@ public class BaseDetailPresenterImp<V extends IBaseDetailView> extends BasePrese
                 childNode.specialConvert = location.specialConvert;
                 childNode.quantityCustom = location.quantityCustom;
                 childNode.locationType = location.locationType;
+                childNode.suggestBatch = location.suggestBatch;
+                childNode.suggestLocation = location.suggestLocation;
                 addTreeInfo(parentNode, childNode, result);
             }
         }
         return result;
     }
 
-    private void saveData2Spre(String bizType,String refType,String value) {
+    protected void saveData2Spre(String bizType,String refType,String value) {
         String key = TextUtils.isEmpty(refType) ? bizType : bizType + refType;
         SPrefUtil.saveData(key, value);
     }

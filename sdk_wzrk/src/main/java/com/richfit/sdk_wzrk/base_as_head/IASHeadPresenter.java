@@ -37,6 +37,11 @@ public interface IASHeadPresenter extends IBaseHeadPresenter<IASHeadView> {
     void deleteCollectionData(String refNum, String transId, String refCodeId, String refType, String bizType,
                               String userId, String companyCode);
 
+    /**
+     * 获取工厂列表
+     * @param flag
+     */
+    void getWorks(int flag);
     void getInvsByWorkId(String workId, int flag);
 
 

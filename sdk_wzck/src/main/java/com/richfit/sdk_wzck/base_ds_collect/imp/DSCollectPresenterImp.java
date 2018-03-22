@@ -54,7 +54,7 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
 
                             @Override
                             public void onComplete() {
-                                if(mView != null) {
+                                if (mView != null) {
                                     mView.loadInvComplete();
                                 }
                             }
@@ -65,7 +65,7 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
     @Override
     public void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode, String storageNum,
                                  String materialNum, String materialId, String location, String batchFlag,
-                                 String specialInvFlag, String specialInvNum, String invType, Map<String,Object> extraMap) {
+                                 String specialInvFlag, String specialInvNum, String invType, Map<String, Object> extraMap) {
         mView = getView();
         RxSubscriber<List<InventoryEntity>> subscriber;
         if ("04".equals(queryType)) {
@@ -73,14 +73,14 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
                     .filter(num -> !TextUtils.isEmpty(num))
                     .flatMap(num -> mRepository.getInventoryInfo(queryType, workId, invId,
                             workCode, invCode, num, materialNum, materialId, "", "", batchFlag, location,
-                            specialInvFlag, specialInvNum, invType,extraMap))
+                            specialInvFlag, specialInvNum, invType, extraMap))
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
 
         } else {
             subscriber = mRepository.getInventoryInfo(queryType, workId, invId,
                     workCode, invCode, storageNum, materialNum, materialId, "", "", batchFlag, location,
-                    specialInvFlag, specialInvNum, invType,extraMap)
+                    specialInvFlag, specialInvNum, invType, extraMap)
                     .compose(TransformerHelper.io2main())
                     .subscribeWith(new InventorySubscriber(mContext, "正在获取库存"));
         }
@@ -123,7 +123,7 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
 
         @Override
         public void _onComplete() {
-            if(mView != null) {
+            if (mView != null) {
                 mView.loadInventoryComplete();
             }
         }
@@ -179,7 +179,6 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
         addSubscriber(subscriber);
     }
 
-
     @Override
     public void getSuggestedLocation(String refCodeId, String bizType, String refType, String userId,
                                      String workId, String invId, String recWorkId, String recInvId,
@@ -189,6 +188,36 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
                                      String batchFlag, String specialInvFlag, String specialInvNum,
                                      String invType, Map<String, Object> extraMap) {
 
+
+    }
+
+    @Override
+    public void getSuggestInventoryInfo(String queryTyp, String workCode, String invCode, String materialNum,Map<String,Object> extraMap) {
+        mView = getView();
+        mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryTyp, extraMap)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<List<InventoryEntity>>() {
+                    @Override
+                    public void onNext(List<InventoryEntity> list) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationSuccess(list.get(0));
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.getSuggestedLocationFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.getSuggestedLocationComplete();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -205,7 +234,7 @@ public class DSCollectPresenterImp extends BaseCollectPresenterImp<IDSCollectVie
         }
 
         ResourceSubscriber<String> subscriber =
-                mRepository.getLocationInfo(queryType, workId, invId, "", location,extraMap)
+                mRepository.getLocationInfo(queryType, workId, invId, "", location, extraMap)
                         .compose(TransformerHelper.io2main())
                         .subscribeWith(new ResourceSubscriber<String>() {
                             @Override

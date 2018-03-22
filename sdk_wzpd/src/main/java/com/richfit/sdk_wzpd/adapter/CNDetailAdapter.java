@@ -36,6 +36,7 @@ public class CNDetailAdapter extends CommonTreeAdapter<InventoryEntity> {
                 .setText(R.id.checkQuantity, item.totalQuantity)
                 .setText(R.id.specialInvFlag, item.specialInvFlag)
                 .setText(R.id.specialInvNum, item.specialInvNum)
+                .setText(R.id.batchFlag,item.batchFlag)
                 .setText(R.id.checkState, item.isChecked ? "已盘点" : "未盘点");
         if (item.isChecked) {
             holder.setBackgroundRes(R.id.root_id, R.color.green_color_emerald);

@@ -81,7 +81,7 @@ public class SplashActivity extends BaseActivity<SplashPresenterImp> implements 
     /**
      * 进入条码系统的入口
      */
-    private void startBarcodeSystem() {
+        private void startBarcodeSystem() {
        /* if (judgeProperty()) {
             new AlertDialog.Builder(this)
                     .setTitle("扫描设置")

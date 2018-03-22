@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="zycj_sp_product_type" type="id" />
+    <item name="zycj_et_project_num" type="id" />
+    <item name="zycj_et_serial_num" type="id" />
+</resources>

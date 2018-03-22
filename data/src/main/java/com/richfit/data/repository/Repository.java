@@ -106,7 +106,7 @@ public final class Repository implements ILocalRepository, IServerRepository {
 
     @Override
     public Flowable<List<ReferenceEntity>> getArrivalInfo(String createdBy, String creationDate, Map<String, Object> extraMap) {
-        return mServerRepository.getArrivalInfo(createdBy,creationDate,extraMap);
+        return mServerRepository.getArrivalInfo(createdBy, creationDate, extraMap);
     }
 
     @Override
@@ -259,9 +259,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
 
     @Override
     public Flowable<String> getLocationInfo(String queryType, String workId, String invId,
-                                            String storageNum, String location, Map<String,Object> extraMap) {
-        return isLocal ? mLocalRepository.getLocationInfo(queryType, workId, invId, storageNum, CommonUtil.toUpperCase(location),extraMap) :
-                mServerRepository.getLocationInfo(queryType, workId, invId, storageNum, CommonUtil.toUpperCase(location),extraMap);
+                                            String storageNum, String location, Map<String, Object> extraMap) {
+        return isLocal ? mLocalRepository.getLocationInfo(queryType, workId, invId, storageNum, CommonUtil.toUpperCase(location), extraMap) :
+                mServerRepository.getLocationInfo(queryType, workId, invId, storageNum, CommonUtil.toUpperCase(location), extraMap);
 
     }
 
@@ -317,11 +317,11 @@ public final class Repository implements ILocalRepository, IServerRepository {
      */
     @Override
     public Flowable<ReferenceEntity> getTransferInfo(String recordNum, String refCodeId, String bizType, String refType, String userId,
-                                                     String workId, String invId, String recWorkId, String recInvId,Map<String,Object> extraMap) {
+                                                     String workId, String invId, String recWorkId, String recInvId, Map<String, Object> extraMap) {
         return isLocal ? mLocalRepository.getTransferInfo(recordNum, refCodeId, bizType, refType, userId,
-                workId, invId, recWorkId, recInvId,extraMap) :
+                workId, invId, recWorkId, recInvId, extraMap) :
                 mServerRepository.getTransferInfo(recordNum, refCodeId, bizType, refType, userId,
-                        workId, invId, recWorkId, recInvId,extraMap);
+                        workId, invId, recWorkId, recInvId, extraMap);
     }
 
     @Override
@@ -348,9 +348,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
     @Override
     public Flowable<ReferenceEntity> getCheckInfo(String userId, String bizType, String checkLevel, String checkSpecial,
                                                   String storageNum, String workId, String invId, String checkNum,
-                                                  String checkDate,Map<String,Object> extraMap) {
-        return isLocal ? mLocalRepository.getCheckInfo(userId, bizType, checkLevel, checkSpecial, storageNum, workId, invId, checkNum, checkDate,extraMap) :
-                mServerRepository.getCheckInfo(userId, bizType, checkLevel, checkSpecial, storageNum, workId, invId, checkNum, checkDate,extraMap);
+                                                  String checkDate, Map<String, Object> extraMap) {
+        return isLocal ? mLocalRepository.getCheckInfo(userId, bizType, checkLevel, checkSpecial, storageNum, workId, invId, checkNum, checkDate, extraMap) :
+                mServerRepository.getCheckInfo(userId, bizType, checkLevel, checkSpecial, storageNum, workId, invId, checkNum, checkDate, extraMap);
     }
 
     @Override
@@ -419,9 +419,9 @@ public final class Repository implements ILocalRepository, IServerRepository {
     }
 
     @Override
-    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode,Map<String,Object> extraMap,
+    public Flowable<Map<String, List<SimpleEntity>>> getAutoComList(String workCode, Map<String, Object> extraMap,
                                                                     String keyWord, int defaultItemNum, int flag, String... keys) {
-        return mLocalRepository.getAutoComList(workCode,extraMap, keyWord, defaultItemNum, flag, keys);
+        return mLocalRepository.getAutoComList(workCode, extraMap, keyWord, defaultItemNum, flag, keys);
     }
 
 
@@ -518,7 +518,13 @@ public final class Repository implements ILocalRepository, IServerRepository {
 
     @Override
     public Flowable<List<InventoryEntity>> getInspectionInfo(String bizType, String materialNum, String userId, String workCode, Map<String, Object> extraMap) {
-        return mServerRepository.getInspectionInfo(bizType,materialNum,userId,workCode,extraMap);
+        return mServerRepository.getInspectionInfo(bizType, materialNum, userId, workCode, extraMap);
+    }
+
+    @Override
+    public Flowable<List<InventoryEntity>> getSuggestInventoryInfo(String workCode, String invCode, String materialNum, String queryType, Map<String, Object> extraMap) {
+        return isLocal?mLocalRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryType, extraMap):
+        mServerRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryType, extraMap);
     }
 
     @Override

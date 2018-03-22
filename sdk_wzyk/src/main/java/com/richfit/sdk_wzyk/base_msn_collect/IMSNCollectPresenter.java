@@ -83,4 +83,13 @@ public interface IMSNCollectPresenter extends IBaseCollectPresenter<IMSNCollectV
                            final String recWorkId, final String recInvCode, int flag);
 
     void getDeviceInfo(String deviceId);
+
+    /**
+     * 获取建议仓位和建议批次
+     * @param workCode
+     * @param invCode
+     * @param materialNum
+     * @param queryType
+     */
+    void getSuggestLocationAndBatchFlag(String workCode,String invCode,String materialNum,String queryType);
 }

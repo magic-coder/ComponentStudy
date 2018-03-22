@@ -79,7 +79,6 @@ public class AdvancedHScrollView extends HorizontalScrollView {
                 //不能拦截
                 mLastInterceptedX = x;
                 mLastInterceptedY = y;
-
                 isIntercept = false;
                 if (!mScroller.isFinished()) {
                     //如果动画还没有结束

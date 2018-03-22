@@ -1,10 +1,7 @@
 package com.richfit.module_cqyt.module_as105;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -14,7 +11,6 @@ import com.richfit.data.constant.Global;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
-import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.BaseASEditFragment;
 import com.richfit.sdk_wzrk.base_as_edit.imp.ASEditPresenterImp;
 

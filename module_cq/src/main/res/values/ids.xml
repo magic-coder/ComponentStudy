@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="cqzt_tv_sap_move_type" type="id" />
+    <item name="cqzt_tv_sap_move_cause" type="id" />
+    <item name="cqzt_tv_order_num" type="id" />
+    <item name="cqzt_tv_req_company" type="id" />
+    <item name="cqzt_tv_record_creator" type="id" />
+    <item name="cqzt_tv_suggested_location" type="id" />
+    <item name="cqzt_tv_suggested_batch_flag" type="id" />
+    <item name="cqzt_et_glf" type="id" />
+    <item name="cqzt_et_lyf" type="id" />
+    <item name="cqzt_et_yfhj" type="id" />
+    <item name="cqzt_et_ckf" type="id" />
+    <item name="cqzt_tv_manufacturer" type="id" />
+    <item name="cqzt_tv_durabilityPeriod" type="id" />
+    <item name="cqzt_sp_ysfs" type="id" />
+    <item name="cqzt_et_zjdh" type="id" />
+    <item name="cqzt_et_skpzh" type="id" />
+    <item name="cqzt_et_ysunm" type="id" />
+    <item name="cqzt_et_zcch" type="id" />
+    <item name="cqzt_et_cjsl" type="id" />
+    <item name="cqzt_et_qtsl" type="id" />
+    <item name="cqzt_et_bzsl" type="id" />
+    <item name="cqzt_et_xssl" type="id" />
+    <item name="cqzt_et_shsl" type="id" />
+    <item name="cqzt_et_whsl" type="id" />
+    <item name="cqzt_et_sjsl" type="id" />
+    <item name="cqzt_sp_bzqk" type="id" />
+    <item name="cqzt_tv_productionDate" type="id" />
+    <item name="cqzt_cb_zlzs" type="id" />
+    <item name="cqzt_cb_smze" type="id" />
+    <item name="cqzt_cb_hgzs" type="id" />
+</resources>

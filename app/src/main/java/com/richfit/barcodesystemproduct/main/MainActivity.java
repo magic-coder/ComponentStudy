@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,13 +15,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.richfit.barcodesystemproduct.BuildConfig;
 import com.richfit.barcodesystemproduct.R;
 import com.richfit.barcodesystemproduct.adapter.MainPagerViewAdapter;
-import com.richfit.barcodesystemproduct.barcodescan.BaseBarScannerActivity;
+import com.richfit.barcodesystemproduct.scanservice.BaseBarScannerActivity;
 import com.richfit.common_lib.lib_interface.IBarcodeSystemMain;
+import com.richfit.common_lib.lib_mvp.BaseActivity;
 import com.richfit.common_lib.lib_mvp.BaseFragment;
+import com.richfit.common_lib.lib_mvp.IPresenter;
+import com.richfit.common_lib.utils.L;
 import com.richfit.common_lib.widget.NoScrollViewPager;
 import com.richfit.data.constant.Global;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 
@@ -29,8 +37,8 @@ import butterknife.BindView;
  * Created by monday on 2017/3/10.
  */
 
-public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> implements
-        MainContract.View, ViewPager.OnPageChangeListener, IBarcodeSystemMain {
+public class MainActivity extends BaseBarScannerActivity<MainPresenterImp>
+        implements MainContract.View, ViewPager.OnPageChangeListener, IBarcodeSystemMain {
 
 
     /*当前选中的页签下表，用于恢复*/
@@ -80,7 +88,7 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
     protected void initViews() {
         setupToolBar(R.id.toolbar, R.id.toolbar_title, mCaption);
         /*设置viewPager*/
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(4);
         mViewPager.addOnPageChangeListener(this);
         mTabLayout.setTabMode(TabLayout.MODE_FIXED);
     }
@@ -94,7 +102,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
     public void initData(Bundle savedInstanceState) {
         setupMainContent(savedInstanceState);
     }
-
 
     /**
      * 设置viewpager的当前显示页
@@ -165,67 +172,6 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
             getFragmentByPosition(mCurrentPage).setUserVisibleHint(true);
         }
     }
-
-    /**
-     * 拦截点击事件，在屏幕的任何空白处点击关闭软键盘。
-     * 注意dispatcherTouchEvent是事件WMS->Activity
-     * 的回到，之后才有Window.superDispatchTouchEvent()->DecorView上面
-     * //* @param ev 该方法已经废弃，因为我们的需求需要显示auto这样的控件，所以该方法将会
-     * 导致auto的提示控件也消失
-     *
-     * @return
-     */
-//    @Override
-//    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-//            View v = getCurrentFocus();
-//            if (isShouldHideInput(v, ev)) {
-//                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//                if (imm != null) {
-//                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-//                }
-//            }
-//            return super.dispatchTouchEvent(ev);
-//        }
-//        // 必不可少，否则所有的组件都不会有TouchEvent了
-//        if (getWindow().superDispatchTouchEvent(ev)) {
-//            return true;
-//        }
-//        return onTouchEvent(ev);
-//    }
-//
-//    private boolean isShouldHideInput(View v, MotionEvent event) {
-//        if (v != null && (v instanceof EditText)) {
-//            int[] leftTop = {0, 0};
-//            //获取输入框当前的location位置
-//            v.getLocationInWindow(leftTop);
-//            int left = leftTop[0];
-//            int top = leftTop[1];
-//            int bottom = top + v.getHeight();
-//            int right = left + v.getWidth();
-//            if (event.getX() > left && event.getX() < right
-//                    && event.getY() > top && event.getY() < bottom) {
-//                // 点击的是输入框区域，保留点击EditText的事件
-//                return false;
-//            } else {
-//                //使EditText触发一次失去焦点事件
-//                v.setFocusable(false);
-////                v.setFocusable(true); //这里不需要是因为下面一句代码会同时实现这个功能
-//                v.setFocusableInTouchMode(true);
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-            exitBy2Click();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
 
     /**
      * 获取一个Fragment实例对象
@@ -300,7 +246,20 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            exitBy2Click();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
+    /**
+     * 处理扫描结果，将扫描结果分发到Fragment的中
+     * @param type
+     * @param list
+     */
     @Override
     public void handleBarCodeScanResult(String type, String[] list) {
         if (list == null || list.length <= 0)
@@ -323,5 +282,4 @@ public class MainActivity extends BaseBarScannerActivity<MainPresenterImp> imple
             fragment.handleBarCodeScanResult(type, list);
         }
     }
-
 }

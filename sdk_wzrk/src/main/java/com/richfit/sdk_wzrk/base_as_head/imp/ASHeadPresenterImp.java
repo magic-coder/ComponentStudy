@@ -11,6 +11,7 @@ import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.SimpleEntity;
+import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadPresenter;
 import com.richfit.sdk_wzrk.base_as_head.IASHeadView;
 
@@ -29,7 +30,7 @@ import io.reactivex.subscribers.ResourceSubscriber;
 public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
         implements IASHeadPresenter {
 
-    IASHeadView mView;
+    protected IASHeadView mView;
 
     public ASHeadPresenterImp(Context context) {
         super(context);
@@ -90,6 +91,37 @@ public class ASHeadPresenterImp extends BaseHeadPresenterImp<IASHeadView>
 
                             }
                         });
+        addSubscriber(subscriber);
+    }
+
+
+    @Override
+    public void getWorks(int flag) {
+        mView = getView();
+        ResourceSubscriber<ArrayList<WorkEntity>> subscriber = mRepository.getWorks(flag)
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<ArrayList<WorkEntity>>() {
+                    @Override
+                    public void onNext(ArrayList<WorkEntity> works) {
+                        if (mView != null) {
+                            mView.showWorks(works);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadWorksFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (mView != null) {
+                            mView.loadWorksComplete();
+                        }
+                    }
+                });
         addSubscriber(subscriber);
     }
 

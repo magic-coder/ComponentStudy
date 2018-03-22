@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@id/root_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/tv_ref_line_num_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/ref_line_num" />
+
+            <Spinner
+                android:id="@id/sp_ref_line_num"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/material_num" />
+
+            <com.richfit.common_lib.widget.RichEditText
+                android:id="@id/et_material_num"
+                style="@style/RightRichEditTextItemStyle" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/material_desc" />
+
+            <TextView
+                android:id="@id/tv_material_desc"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/material_unit" />
+
+            <TextView
+                android:id="@id/tv_material_unit"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/special_inv_flag" />
+
+            <TextView
+                android:id="@id/tv_special_inv_flag"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_work"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/tv_work_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/work" />
+
+            <TextView
+                android:id="@+id/tv_work"
+                style="@style/RightTextViewItemStyle"
+
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_inslot_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/insLot_quantity" />
+
+            <TextView
+                android:id="@id/tv_insLot_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/act_quantity_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/act_rec_quantity" />
+
+            <TextView
+                android:id="@id/tv_act_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <!--建议仓位-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqzt_suggested_location" />
+
+            <TextView
+                android:id="@id/cqzt_tv_suggested_location"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <!--建议批次-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/cqzt_suggested_batch_flag" />
+
+            <TextView
+                android:id="@id/cqzt_tv_suggested_batch_flag"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_batch_flag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/tv_batch_flag_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/batch_flag" />
+
+            <EditText
+                android:id="@id/et_batch_flag"
+                style="@style/RightEditTextItemStyle"
+                android:gravity="center_horizontal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_inv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/tv_inv_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/store_location" />
+
+
+            <Spinner
+                android:id="@id/sp_inv"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@id/ll_location_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/location_type" />
+
+            <Spinner
+                android:id="@id/sp_location_type"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_min_height"
+                android:layout_weight="2" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@id/ll_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/tv_location_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/s_location" />
+
+
+            <com.richfit.common_lib.widget.RichAutoEditText
+                android:id="@id/et_location"
+                style="@style/RightRichAutoItemStyle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@id/ll_location_quantity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/location_quantity" />
+
+            <TextView
+                android:id="@id/tv_location_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@id/quantity_name"
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/rec_quantity" />
+
+            <EditText
+                android:id="@id/et_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:background="@drawable/edit_selector"
+                android:inputType="numberDecimal"
+                android:textSize="15sp" />
+
+
+            <CheckBox
+                android:id="@id/cb_single"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:hint="@string/single" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="@string/total_quantity" />
+
+            <TextView
+                android:id="@id/tv_total_quantity"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="制造商" />
+
+            <TextView
+                android:id="@id/cqzt_tv_manufacturer"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="保质期" />
+
+            <TextView
+                android:id="@id/cqzt_tv_durabilityPeriod"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                style="@style/LeftTextViewItemStyle"
+                android:text="生产日期" />
+
+            <TextView
+                android:id="@id/cqzt_tv_productionDate"
+                style="@style/RightTextViewItemStyle" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

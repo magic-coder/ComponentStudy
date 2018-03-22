@@ -36,6 +36,7 @@ import com.richfit.data.constant.Global;
 import com.richfit.data.helper.CommonUtil;
 import com.richfit.data.helper.TransformerHelper;
 import com.richfit.domain.bean.InvEntity;
+import com.richfit.domain.bean.InventoryEntity;
 import com.richfit.domain.bean.InventoryQueryParam;
 import com.richfit.domain.bean.LocationInfoEntity;
 import com.richfit.domain.bean.RefDetailEntity;
@@ -121,7 +122,7 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     @BindView(R2.id.ll_location_type)
     LinearLayout llLocationType;
     @BindView(R2.id.sp_location_type)
-    Spinner spLocationType;
+    protected Spinner spLocationType;
 
 
     /*当前匹配的行明细（行号）*/
@@ -147,6 +148,8 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
     protected List<String> mLocationList;
     /*仓储类型*/
     protected List<SimpleEntity> mLocationTypes;
+    //建议仓位
+    protected String mActLocation;
 
     @Override
     protected int getContentId() {
@@ -965,4 +968,19 @@ public abstract class BaseASCollectFragment<P extends IASCollectPresenter> exten
         return queryParam;
     }
 
+    @Override
+    public void getSuggestedLocationSuccess(InventoryEntity suggestedInventory) {
+        if (suggestedInventory != null && !TextUtils.isEmpty(suggestedInventory.actLocation)) {
+            mActLocation = suggestedInventory.actLocation;
+        }
+    }
+
+    @Override
+    public void getSuggestedLocationFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void getSuggestedLocationComplete() {
+    }
 }

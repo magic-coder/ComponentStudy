@@ -49,4 +49,7 @@ public interface IASCollectPresenter extends IBaseCollectPresenter<IASCollectVie
     void getInventoryInfo(String queryType, String workId, String invId, String workCode, String invCode,
                           String storageNum, String materialNum, String materialId, String location, String batchFlag,
                           String specialInvFlag, String specialInvNum, String invType, Map<String,Object> extraMap);
+
+
+    void getSuggestInventoryInfo(String queryTyp,String workCode,String invCode,String materialNum,Map<String,Object> extraMap);
 }

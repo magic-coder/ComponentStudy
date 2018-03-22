@@ -108,6 +108,9 @@ public class DSDetailPresenterImp extends BaseDetailPresenterImp<IDSDetailView>
                     bundle.putString(Global.EXTRA_LOCATION_TYPE_KEY, node.locationType);
                     //备注
                     bundle.putString(Global.EXTRA_REMARK_KEY, parentNode.remark);
+                    //建议仓位
+                    bundle.putString(Global.EXTRA_SUGGEST_LOCATION_KEY, node.suggestLocation);
+                    bundle.putString(Global.EXTRA_SUGGEST_BATCH_FLAG_KEY, node.suggestBatch);
 
                     intent.putExtras(bundle);
                     Activity activity = (Activity) mContext;

@@ -192,12 +192,22 @@
   {
     "id": "20",
     "tabTitle": "数据采集",
-    "fragmentTag": "cqyt_msy315_collect_fragment_tag",
+    "fragmentTag": "cqyt_ubsto_collect_fragment_tag",
     "bizType": "312",
     "refType": "4",
     "mode": 0,
     "fragmentType": 2,
     "className": "com.richfit.module_cqyt.module_ms.ubsto.CQYTUbstoCollectFragment"
+  },
+  {
+    "id": "20",
+    "tabTitle": "库存查询",
+    "fragmentTag": "cqyt_ubsto_invy_fragment_tag",
+    "bizType": "312",
+    "refType": "4",
+    "mode": 0,
+    "fragmentType": 3,
+    "className": "com.richfit.module_cqyt.module_inv.CQDSInvYFragment"
   },
   {
     "id": "21",

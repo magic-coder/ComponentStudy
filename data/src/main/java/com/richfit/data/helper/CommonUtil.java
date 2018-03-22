@@ -446,4 +446,22 @@ public class CommonUtil {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
     }
+
+
+    /**
+     * 去除前导零
+     *
+     * @param refNum
+     * @return
+     */
+    public static String decreaseZero(String refNum) {
+        String str = "";
+        if (!TextUtils.isEmpty(refNum)) {
+            str = refNum.replaceFirst("^0*", "");
+        }
+        return str;
+    }
+
+
+
 }

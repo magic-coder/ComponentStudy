@@ -43,4 +43,5 @@ dependencies {
     compile 'com.speedata:libuhf:6.9.4'
     compile 'com.speedata:deivice:+'
     compile 'org.greenrobot:eventbus:3.0.0'
+    implementation files('libs/DataCollection.jar')
 }

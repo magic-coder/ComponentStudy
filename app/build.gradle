@@ -83,6 +83,13 @@ android {
             storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_cqzt_key.jks')//签名文件路径
             storePassword 'yff3445683'
         }
+
+        sign_zycj {
+            keyAlias 'xyzmonday'
+            keyPassword 'yff3445683'
+            storeFile file('E:\\2017-04\\barcodesystem_keystore\\bcs_cqzt_key.jks')//签名文件路径
+            storePassword 'yff3445683'
+        }
     }
 
 
@@ -94,15 +101,6 @@ android {
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //修改生成的apk名字，格式为 app名_版本号_打包时间_渠道名_release.apk
-//            applicationVariants.all { variant ->
-//                variant.outputs.each { output ->
-//                    def oldFile = output.outputFile
-//                    if (variant.buildType.name.equals('release')) {
-//                        def releaseApkName = getProductName() + "_v${variant.productFlavors[0].versionName}_${releaseTime()}_" + variant.productFlavors[0].name + '_release.apk'
-//                        output.outputFile = new File(oldFile.parent, releaseApkName)
-//                    }
-//                }
-//            }
             applicationVariants.all { variant ->
                 variant.outputs.all { output ->
 
@@ -130,7 +128,7 @@ android {
             buildConfigField "String", "APP_NAME", '"qysh"'
             buildConfigField "boolean", "ISSERVICEDL", 'true'
             versionCode 1
-            versionName "1.6"
+            versionName "1.7"
             signingConfig signingConfigs.sign_qysh
         }
 
@@ -160,7 +158,7 @@ android {
             buildConfigField "String", "APP_NAME", '"cqyt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.51"
+            versionName "1.7"
             signingConfig signingConfigs.sign_cqyt
         }
 
@@ -184,14 +182,26 @@ android {
             signingConfig signingConfigs.sign_hanc
         }
 
-        cqzt {
+
+        //中油测井
+        zycj {
             buildConfigField "String", "SERVER_URL", '"http://11.11.136.206:9087/gcjs_middleware/MobileProcess/"'
+            buildConfigField "String", "CONFIG_FILE_NAME", '"ZYCJ_BizConfig.json"'
+            buildConfigField "String", "APP_NAME", '"zycj"'
+            buildConfigField "boolean", "ISSERVICEDL", 'false'
+            versionCode 1
+            versionName "1.0"
+            signingConfig signingConfigs.sign_zycj
+        }
+
+        cqzt {
+            buildConfigField "String", "SERVER_URL", '"http://11.11.190.231:9087/gcjs_middleware/MobileProcess/"'
             buildConfigField "String", "CONFIG_FILE_NAME", '"CQZT_BizConfig.json"'
             buildConfigField "String", "APP_NAME", '"cqzt"'
             buildConfigField "boolean", "ISSERVICEDL", 'false'
             versionCode 1
-            versionName "1.0"
-            signingConfig signingConfigs.sign_cqzt
+            versionName "1.1"
+            signingConfig signingConfigs.sign_zycj
         }
     }
 
@@ -234,12 +244,15 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.jakewharton:butterknife:8.6.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
-    compile project(':module_qysh')
-   // compile project(':module_qhyt')
+    implementation files('libs/DataCollection.jar')
+    //compile project(':module_qysh')
+    // compile project(':module_qhyt')
     //compile project(':module_xngd')
-    //compile project(':module_cqyt')
+     compile project(':module_cqyt')
     //compile project(':module_mcq')
-     //compile project(':module_hc')
+    //compile project(':module_hc')
+     // compile project(':module_cq')
+    //compile project(':module_zycj')
 
 }
 tasks.whenTaskAdded { task ->

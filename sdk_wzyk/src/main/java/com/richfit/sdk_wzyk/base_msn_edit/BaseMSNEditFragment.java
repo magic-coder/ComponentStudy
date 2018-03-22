@@ -624,6 +624,8 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
         InventoryQueryParam param = provideInventoryQueryParam();
         switch (retryAction) {
             case Global.RETRY_LOAD_SINGLE_CACHE_ACTION:
+                Map<String,String> extraMap = new HashMap<>();
+
                 mPresenter.getTransferInfoSingle(mRefData.bizType, getString(tvMaterialNum),
                         Global.USER_ID, mRefData.workId, mRefData.invId, mRefData.recWorkId,
                         mRefData.recInvId, getString(tvSendBatchFlag), "", -1);
@@ -646,6 +648,16 @@ public abstract class BaseMSNEditFragment<P extends IMSNEditPresenter> extends B
                 break;
         }
         super.retry(retryAction);
+    }
+
+    @Override
+    public void loadSuggestInfoSuccess(String suggestLocation, String suggestBatchFlag) {
+
+    }
+
+    @Override
+    public void loadSuggestInfoFail(String message) {
+        showMessage(message);
     }
 }
 

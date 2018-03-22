@@ -41,7 +41,9 @@ public class MSEditPresenterImp extends BaseEditPresenterImp<IMSEditView>
     public void uploadCollectionDataSingle(ResultEntity result) {
         mView = getView();
         Flowable<String> flowable;
-        if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
+        if(mRepository.isLocal()) {
+            flowable =    mRepository.uploadCollectionDataSingle(result);
+        } else if (!TextUtils.isEmpty(result.recLocation) && !"barcode".equalsIgnoreCase(result.recLocation)) {
             //检查接收仓位
             Map<String, Object> extraMap = new HashMap<>();
             extraMap.put("locationType", result.locationType);

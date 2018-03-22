@@ -56,6 +56,8 @@ public interface IDSCollectPresenter extends IBaseCollectPresenter<IDSCollectVie
             String specialInvFlag, String specialInvNum, String invType, Map<String, Object> extraMap
     );
 
+    void getSuggestInventoryInfo(String queryTyp,String workCode,String invCode,String materialNum,Map<String,Object> extraMap);
+
     //检查仓位是否存在，离线使用
     void checkLocation(String queryType, String workId, String invId, String batchFlag,
                        String location,Map<String,Object> extraMap);

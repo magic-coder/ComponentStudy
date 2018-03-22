@@ -2,33 +2,14 @@ package com.richfit.module_cqyt.module_ms.ubsto;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.widget.RxAdapterView;
-import com.richfit.common_lib.lib_adapter.SimpleAdapter;
-import com.richfit.common_lib.utils.UiUtil;
 import com.richfit.data.constant.Global;
-import com.richfit.data.helper.CommonUtil;
-import com.richfit.domain.bean.InventoryQueryParam;
-import com.richfit.domain.bean.LocationInfoEntity;
-import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ResultEntity;
-import com.richfit.domain.bean.SimpleEntity;
 import com.richfit.module_cqyt.R;
-import com.richfit.module_cqyt.module_ms.y313.CQYTMSY313EditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.BaseDSEditFragment;
 import com.richfit.sdk_wzck.base_ds_edit.imp.DSEditPresenterImp;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by monday on 2017/7/5.

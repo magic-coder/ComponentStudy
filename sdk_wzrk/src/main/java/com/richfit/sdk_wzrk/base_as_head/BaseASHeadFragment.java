@@ -18,6 +18,7 @@ import com.richfit.domain.bean.RefDetailEntity;
 import com.richfit.domain.bean.ReferenceEntity;
 import com.richfit.domain.bean.ResultEntity;
 import com.richfit.domain.bean.SimpleEntity;
+import com.richfit.domain.bean.WorkEntity;
 import com.richfit.sdk_wzrk.R;
 import com.richfit.sdk_wzrk.R2;
 
@@ -100,7 +101,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
                 !TextUtils.isEmpty(mUploadMsgEntity.transId) && !TextUtils.isEmpty(mUploadMsgEntity.refNum)) {
             etRefNum.setText(mUploadMsgEntity.refNum);
             getRefData(mUploadMsgEntity.refNum);
-            //如果是離線那麼鎖定控件
+            //如果是离线那么锁定所有的控件
             lockUIUnderEditState(etRefNum);
         }
     }
@@ -163,7 +164,7 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
     public void cacheProcessor(String cacheFlag, String transId, String refNum,
                                String refCodeId, String refType, String bizType) {
         if (!TextUtils.isEmpty(cacheFlag)) {
-            //如果是离线直接获取缓存，不能让用户删除缓存
+            //如果是离线直接获取缓存，不能让用户删除缓存（因为有可能是过账已经成功，数据上传到sap时出错了，所以不允许删除）
             if (mUploadMsgEntity != null && mPresenter != null && mPresenter.isLocal()) {
                 mPresenter.getTransferInfo(mRefData, refCodeId, bizType, refType);
                 return;
@@ -301,6 +302,21 @@ public abstract class BaseASHeadFragment<P extends IASHeadPresenter> extends Bas
                 break;
         }
         super.retry(action);
+    }
+
+    @Override
+    public void showWorks(List<WorkEntity> works) {
+
+    }
+
+    @Override
+    public void loadWorksFail(String message) {
+        showMessage(message);
+    }
+
+    @Override
+    public void loadWorksComplete() {
+
     }
 
     /*返回移动类型*/

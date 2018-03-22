@@ -178,7 +178,7 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
         addSubscriber(subscriber);
     }
 
-    private ReferenceEntity calcTotalQuantity(ReferenceEntity refData) {
+    protected ReferenceEntity calcTotalQuantity(ReferenceEntity refData) {
         List<RefDetailEntity> billDetailList = refData.billDetailList;
         for (RefDetailEntity target : billDetailList) {
             HashSet<String> sendLocationSet = new HashSet<>();
@@ -205,7 +205,6 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
                 }
                 locQuantityMap.put(sendLocation, String.valueOf(totalQuantity));
             }
-            L.e("发出仓位的仓位数量 = " + locQuantityMap);
             //改变所有发出仓位的quantity
             for (LocationInfoEntity loc : locationList) {
                 loc.quantity = locQuantityMap.get(loc.location);
@@ -409,5 +408,34 @@ public class MSNCollectPresenterImp extends BaseCollectPresenterImp<IMSNCollectV
                         }
                     }
                 });
+    }
+
+    @Override
+    public void getSuggestLocationAndBatchFlag(String workCode, String invCode, String materialNum, String queryType) {
+        ResourceSubscriber<InventoryEntity> subscriber = mRepository.getSuggestInventoryInfo(workCode, invCode, materialNum, queryType, null)
+                .filter(list -> list != null && list.size() > 0)
+                .map(list -> list.get(0))
+                .compose(TransformerHelper.io2main())
+                .subscribeWith(new ResourceSubscriber<InventoryEntity>() {
+                    @Override
+                    public void onNext(InventoryEntity result) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoSuccess(result.suggestLocation, result.suggestBatch);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (mView != null) {
+                            mView.loadSuggestInfoFail(t.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        addSubscriber(subscriber);
     }
 }

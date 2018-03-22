@@ -991,6 +991,16 @@ public abstract class BaseMSNCollectFragment<P extends IMSNCollectPresenter> ext
         super.retry(retryAction);
     }
 
+    @Override
+    public void loadSuggestInfoSuccess(String suggestLocation, String suggestBatchFlag) {
+
+    }
+
+    @Override
+    public void loadSuggestInfoFail(String message) {
+        showMessage(message);
+    }
+
     /**
      * 子类检查必要的抬头界面的字段
      */

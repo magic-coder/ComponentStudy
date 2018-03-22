@@ -174,8 +174,9 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         }
         mShowMsg.setLength(0);
         mExtraTansMap.clear();
+        mExtraTansMap.put("refNum",mRefData.recordNum);
         mPresenter.submitData2BarcodeSystem(mRefData.refCodeId, mTransId, mBizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
     /**
@@ -199,7 +200,7 @@ public abstract class BaseASDetailFragment<P extends IASDetailPresenter> extends
         mShowMsg.setLength(0);
         mExtraTansMap.clear();
         mPresenter.submitData2SAP(mTransId, mRefData.bizType, mRefType, Global.USER_ID,
-                mRefData.voucherDate, transToSapFlag, null);
+                mRefData.voucherDate, transToSapFlag, mExtraTansMap);
     }
 
     /**

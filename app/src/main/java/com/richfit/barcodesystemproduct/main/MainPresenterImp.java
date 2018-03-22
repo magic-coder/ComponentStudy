@@ -64,7 +64,7 @@ public class MainPresenterImp extends BasePresenter<MainContract.View>
                                 argument.putParcelable(Global.EXTRA_UPLOAD_MSG_KEY, uploadMsgEntity);
                             return RefUtil.newInstance(config.className, argument);
                         })
-                        .buffer(3)
+                        .buffer(4)
                         .map(fragments -> {
                             MainPagerViewAdapter adapter = new MainPagerViewAdapter(fragmentManager, fragments);
                             return adapter;
